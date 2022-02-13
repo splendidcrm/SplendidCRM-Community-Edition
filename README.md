@@ -5,3 +5,5 @@ The quickest way to get started is to request our installer. The installer will 
 
 [Download Community Edition](http://www.splendidcrm.com/OpenSource/DownloadCommunityEdition.aspx "Download Community Edition")
 
+## Minimum Requirements
+1. Windows 10 or higher, Windows Server 2012 or higher.
