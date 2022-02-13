@@ -1,0 +1,6 @@
+bin/
+checkin.bat
+Build.sql
+Manifest.xml
+Parameters.xml
+CreateLogin.sql
