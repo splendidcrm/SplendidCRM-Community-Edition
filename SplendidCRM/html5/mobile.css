@@ -1,0 +1,108 @@
+/*
+ * This program is free software: you can redistribute it and/or modify it under the terms of the 
+ * GNU Affero General Public License as published by the Free Software Foundation, either version 3 
+ * of the License, or (at your option) any later version.
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License version 3, 
+ * the Appropriate Legal Notices must display the following words on all interactive user interfaces: 
+ * "Copyright (C) 2005-2022 SplendidCRM Software, Inc. All rights reserved."
+ */
+
+.navTopSpacer
+{
+	position: fixed;
+	top: 0px;
+	height: 0px;
+	width: 100%;
+	z-index: 100;
+	/* background-color: white;*/
+}
+
+.navTop
+{
+	position: fixed;
+	top: 0px;
+	width: 100%;
+	z-index: 100;
+}
+
+.navCenter
+{
+	width: 70%;
+	text-align: center;
+	white-space: nowrap;
+	font-size: large;
+	border-bottom: solid 1px black;
+	background-color: #FFD14E;
+}
+
+.navChatChannel, .navChatChannel:hover
+{
+	font-size: medium;
+	text-decoration: none;
+}
+
+.navLeft
+{
+	padding: 0px;
+	width: 15%;
+	text-align: left;
+	white-space: nowrap;
+	text-decoration: none;
+	border-bottom: solid 1px black;
+	background-color: #FFD14E;
+}
+
+.navLeft a
+{
+	text-decoration: none;
+}
+
+.navButton
+{
+	padding-left: 4px;
+	padding-right: 4px;
+}
+
+.navRight
+{
+	padding: 3px;
+	width: 15%;
+	text-align: right;
+	white-space: nowrap;
+	border-bottom: solid 1px black;
+	background-color: #FFD14E;
+}
+
+.iw-cm-menu li
+{
+	background-color: #FFD14E;
+	height: 16px;
+	font-size: 14px;
+}
+
+.iw-mIcon
+{
+	height: 16px;
+	top: 2px;
+	left: 2px;
+}
+
+.iw-contextMenu li.iw-mDisable
+{
+	background-color: #FFD14E;
+	color: black;
+	font-weight: bold;
+	opacity:.9;
+}
+.iw-mOverlay
+{
+	opacity:.1;
+}
+
+li.iw-mSelected
+{
+	background-color: #036;
+	color           : #F2F2F2;
+}
+

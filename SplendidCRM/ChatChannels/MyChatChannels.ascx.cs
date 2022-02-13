@@ -1,0 +1,116 @@
+/**********************************************************************************************************************
+ * SplendidCRM is a Customer Relationship Management program created by SplendidCRM Software, Inc. 
+ * Copyright (C) 2005-2022 SplendidCRM Software, Inc. All rights reserved.
+ * 
+ * This program is free software: you can redistribute it and/or modify it under the terms of the 
+ * GNU Affero General Public License as published by the Free Software Foundation, either version 3 
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+ * See the GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License along with this program. 
+ * If not, see <http://www.gnu.org/licenses/>. 
+ * 
+ * You can contact SplendidCRM Software, Inc. at email address support@splendidcrm.com. 
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License version 3, 
+ * the Appropriate Legal Notices must display the following words on all interactive user interfaces: 
+ * "Copyright (C) 2005-2011 SplendidCRM Software, Inc. All rights reserved."
+ *********************************************************************************************************************/
+using System;
+using System.Data;
+using System.Data.Common;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.HtmlControls;
+using System.Diagnostics;
+
+namespace SplendidCRM.ChatChannels
+{
+	/// <summary>
+	///		Summary description for MyChatChannels.
+	/// </summary>
+	public class MyChatChannels : DashletControl
+	{
+		protected _controls.DashletHeader  ctlDashletHeader ;
+		protected _controls.SearchView     ctlSearchView    ;
+
+		protected Label         lblError       ;
+		protected bool          bShowEditDialog = false;
+		protected string        sUSER_CHAT_CHANNELS;
+
+		protected void Page_Command(object sender, CommandEventArgs e)
+		{
+			try
+			{
+				if ( e.CommandName == "Search" )
+				{
+					bShowEditDialog = true;
+				}
+				else if ( e.CommandName == "Refresh" )
+				{
+				}
+				else if ( e.CommandName == "Remove" )
+				{
+					if ( !Sql.IsEmptyString(sDetailView) )
+					{
+						SqlProcs.spDASHLETS_USERS_InitDisable(Security.USER_ID, sDetailView, m_sMODULE, this.AppRelativeVirtualPath.Substring(0, this.AppRelativeVirtualPath.Length-5));
+						SplendidCache.ClearUserDashlets(sDetailView);
+						Response.Redirect(Page.AppRelativeVirtualPath + Request.Url.Query);
+					}
+				}
+			}
+			catch(Exception ex)
+			{
+				SplendidError.SystemError(new StackTrace(true).GetFrame(0), ex);
+				lblError.Text = ex.Message;
+			}
+		}
+
+		private void Page_Load(object sender, System.EventArgs e)
+		{
+			this.Visible = this.Visible && (SplendidCRM.Security.GetUserAccess(m_sMODULE, "list") >= 0);
+			if ( !this.Visible )
+				return;
+
+			try
+			{
+				sUSER_CHAT_CHANNELS = SplendidCache.MyChatChannels();
+				ScriptManager mgrAjax = ScriptManager.GetCurrent(this.Page);
+				if ( !Sql.IsEmptyString(sUSER_CHAT_CHANNELS) )
+					ChatManager.RegisterScripts(Context, mgrAjax);
+			}
+			catch(Exception ex)
+			{
+				SplendidError.SystemError(new StackTrace(true).GetFrame(0), ex);
+				lblError.Text = ex.Message;
+			}
+		}
+
+		#region Web Form Designer generated code
+		override protected void OnInit(EventArgs e)
+		{
+			//
+			// CODEGEN: This call is required by the ASP.NET Web Form Designer.
+			//
+			InitializeComponent();
+			base.OnInit(e);
+		}
+		
+		/// <summary>
+		///		Required method for Designer support - do not modify
+		///		the contents of this method with the code editor.
+		/// </summary>
+		private void InitializeComponent()
+		{
+			this.Load += new System.EventHandler(this.Page_Load);
+			ctlDashletHeader.Command += new CommandEventHandler(Page_Command);
+			ctlSearchView.Command    += new CommandEventHandler(Page_Command);
+			m_sMODULE = "ChatChannels";
+		}
+		#endregion
+	}
+}
+

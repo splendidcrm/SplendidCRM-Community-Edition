@@ -1,0 +1,1 @@
+<%@ ServiceHost Language="C#" Service="SplendidCRM.Import.Rest" CodeBehind="Rest.svc.cs" Factory="System.ServiceModel.Activation.WebScriptServiceHostFactory" %>

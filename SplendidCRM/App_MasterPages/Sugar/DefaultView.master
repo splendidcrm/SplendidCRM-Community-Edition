@@ -1,0 +1,259 @@
+<%@ Master Language="C#" AutoEventWireup="false" CodeBehind="DefaultView.master.cs" Inherits="SplendidCRM.Themes.Sugar.DefaultView" %>
+<%@ Import Namespace="SplendidCRM" %>
+<script runat="server">
+/**********************************************************************************************************************
+ * SplendidCRM is a Customer Relationship Management program created by SplendidCRM Software, Inc. 
+ * Copyright (C) 2005-2022 SplendidCRM Software, Inc. All rights reserved.
+ * 
+ * This program is free software: you can redistribute it and/or modify it under the terms of the 
+ * GNU Affero General Public License as published by the Free Software Foundation, either version 3 
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+ * See the GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License along with this program. 
+ * If not, see <http://www.gnu.org/licenses/>. 
+ * 
+ * You can contact SplendidCRM Software, Inc. at email address support@splendidcrm.com. 
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License version 3, 
+ * the Appropriate Legal Notices must display the following words on all interactive user interfaces: 
+ * "Copyright (C) 2005-2011 SplendidCRM Software, Inc. All rights reserved."
+ *********************************************************************************************************************/
+</script>
+<!DOCTYPE HTML>
+<html id="htmlRoot" runat="server">
+<head runat="server">
+	<%@ Register TagPrefix="SplendidCRM" Tagname="MetaHeader" Src="~/_controls/MetaHeader.ascx" %>
+	<SplendidCRM:MetaHeader ID="ctlMetaHeader" Runat="Server" />
+	<link type="text/css" rel="stylesheet" href="~/Include/javascript/jquery-ui-1.9.1.custom.css" runat="server" />
+	<script type="text/javascript" src="<%# Application["scriptURL"] %>ModulePopupScripts.aspx?LastModified=<%# Server.UrlEncode(Sql.ToString(Application["Modules.LastModified"])) + "&UserID=" + Security.USER_ID.ToString() %>"></script>
+	<%# Application["CONFIG.external_scripts"] %>
+</head>
+<body style="background-color: white;">
+<form id="frmMain" method="post" runat="server">
+<script runat="server">
+// 10/22/2009 Paul.  Use the AJAX Toolkit technique to combine ScriptResource.axd files.  .NET 3.5 SP1 has a CompositeScript group.
+// 11/23/2009 Paul.  We will never need the scripts to be in debug mode. We also do not want localization. 
+</script>
+<ajaxToolkit:ToolkitScriptManager ID="mgrAjax" CombineScripts="true" EnableScriptGlobalization="true" EnableScriptLocalization="false" ScriptMode="Release" runat="server" />
+
+<div id="divHeader" Visible='<%# !PrintView %>' runat="server">
+	<%@ Register TagPrefix="SplendidCRM" Tagname="Reminders" Src="../Six/Reminders.ascx" %>
+	<SplendidCRM:Reminders ID="ctlReminders" Visible='<%# !PrintView && Security.IsAuthenticated() && Sql.ToBoolean(Application["CONFIG.enable_reminder_popdowns"]) %>' Runat="Server" />
+	<div style="<%= Sql.IsEmptyString(Application["CONFIG.header_background"]) ? String.Empty : "background-image: url(" + Sql.ToString(Session["themeURL"]) + Sql.ToString(Application["CONFIG.header_background"]) + ");" %>">
+		<table cellspacing="0" cellpadding="0" border="0" width="100%">
+			<tr>
+				<td height="60" rowspan="2"><asp:Image ID="imgCompanyLogo" BorderWidth="0" Runat="server" /></td>
+<td rowspan="2" align="center">
+<%= Application["CONFIG.header_banner"] %>
+</td>
+				<td align="right" valign="top" nowrap class="myArea" style="padding-right: 10px;">
+					<asp:Panel Visible="<%# SplendidCRM.Security.IsAuthenticated() %>" runat="server">
+					<asp:Label CssClass="welcome" Text='<%# (SplendidCRM.Security.IsImpersonating() ? L10n.Term("Users.LBL_IMPERSONATING") : L10n.Term(".NTC_WELCOME")) + " <b>" + SplendidCRM.Security.USER_NAME + "</b>" %>' runat="server" />
+<%
+if ( (!SplendidCRM.Security.IsWindowsAuthentication() || SplendidCRM.Security.IsImpersonating()) && SplendidCRM.Security.IsAuthenticated() )
+{
+	%>
+					[ <asp:HyperLink ID="lnkLogout" Text='<%# L10n.Term(".LBL_LOGOUT") %>' NavigateUrl="~/Users/Logout.aspx" CssClass="myAreaLink" Runat="server" /> ]
+	<%
+}
+%>
+					&nbsp;|&nbsp;
+					<asp:HyperLink ID="lnkMyAccount" Text='<%# L10n.Term(".LBL_MY_ACCOUNT") %>' NavigateUrl="~/Users/MyAccount.aspx" CssClass="myAreaLink" Runat="server" />
+					&nbsp;|&nbsp;
+<%
+if ( SplendidCRM.Security.GetUserAccess("Employees", "access") >= 0 )
+{
+	%>
+					<asp:HyperLink ID="lnkEmployees" Text='<%# L10n.Term(".LBL_EMPLOYEES") %>' NavigateUrl="~/Employees/default.aspx" CssClass="myAreaLink" Runat="server" />
+					&nbsp;|&nbsp;
+	<%
+}
+if ( SplendidCRM.Security.IS_ADMIN || SplendidCRM.Security.IS_ADMIN_DELEGATE )
+{
+	%>
+					<asp:HyperLink ID="lnkAdmin" Text='<%# L10n.Term(".LBL_ADMIN") %>' NavigateUrl="~/Administration/default.aspx" CssClass="myAreaLink" Runat="server" />
+	<%
+	if ( bDebug && SplendidCRM.Security.IS_ADMIN )
+	{
+		%>
+					&nbsp; <asp:LinkButton ID="lnkReload"  CommandName="Admin.Reload" OnCommand="Page_Command" CssClass="listViewTdToolsS1" Text='<%# L10n.Term(".LBL_RELOAD") %>' Runat="server" />
+		<%
+	}
+	%>
+					&nbsp;|&nbsp;
+	<%
+}
+%>
+					<asp:PlaceHolder Visible='<%# !Sql.ToBoolean(Application["CONFIG.hide_training"]) %>' runat="server">
+						<asp:HyperLink ID="lnkTraining" Text='<%# L10n.Term(".LBL_TRAINING") %>' NavigateUrl="~/Home/TrainingPortal.aspx" CssClass="myAreaLink" Runat="server" />
+						&nbsp;|&nbsp;
+					</asp:PlaceHolder>
+					<asp:HyperLink ID="lnkAbout" Text='<%# L10n.Term(".LNK_ABOUT") %>' NavigateUrl="~/Home/About.aspx" CssClass="myAreaLink" Runat="server" />
+					<br>
+<%= Application["CONFIG.platform_title"] %>
+					</asp:Panel>
+				</td>
+			</tr>
+			<tr>
+				<td align="right">
+					<table cellspacing="0" cellpadding="0" border="0">
+						<tr height="20">
+							<td class="subTabBar" height="20" colspan="2">
+								<asp:ContentPlaceHolder ID="cntUnifiedSearch" runat="server">
+									<div id="divUnifiedSearch">
+										&nbsp;<b><%= L10n.Term(".LBL_SEARCH") %></b>
+										<script type="text/javascript">
+										function UnifiedSearch()
+										{
+											var frm = document.forms[0];
+											// 01/21/2014 Paul.  Need to escape the query value to allow for symbols in the query. 
+											var sUrl = '<%= Application["rootURL"] %>Home/UnifiedSearch.aspx?txtUnifiedSearch=' + escape(frm['<%= txtUnifiedSearch.ClientID %>'].value);
+											window.location.href = sUrl;
+											return false;
+										}
+										</script>
+										&nbsp;<asp:TextBox ID="txtUnifiedSearch" CssClass="searchField" size="14" Text='<%# Request["txtUnifiedSearch"] %>' runat="server" />
+										<asp:ImageButton ID="btnUnifiedSearch" SkinID="searchButton" AlternateText='<%# L10n.Term(".LBL_SEARCH") %>' OnClientClick="return UnifiedSearch();" CssClass="searchButton" runat="server" />
+										&nbsp;
+									</div>
+								</asp:ContentPlaceHolder>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+		<%@ Register TagPrefix="SplendidCRM" Tagname="TabMenu" Src="TabMenu.ascx" %>
+		<SplendidCRM:TabMenu ID="ctlTabMenu" Visible='<%# !PrintView && !Sql.ToBoolean(Session["USER_SETTINGS/GROUP_TABS"]) %>' Runat="Server" />
+		<%@ Register TagPrefix="SplendidCRM" Tagname="GroupMenu" Src="GroupMenu.ascx" %>
+		<SplendidCRM:GroupMenu ID="ctlGroupMenu" Visible='<%# !PrintView && Sql.ToBoolean(Session["USER_SETTINGS/GROUP_TABS"]) %>' Runat="Server" />
+	</div>
+	<asp:ContentPlaceHolder ID="cntLastViewed" runat="server">
+		<%@ Register TagPrefix="SplendidCRM" Tagname="LastViewed" Src="LastViewed.ascx" %>
+		<SplendidCRM:LastViewed ID="ctlLastViewed" Visible='<%# !PrintView %>' Runat="Server" />
+		<%@ Register TagPrefix="SplendidCRM" Tagname="Actions" Src="Actions.ascx" %>
+		<SplendidCRM:Actions ID="ctlActions" Visible='<%# !PrintView %>' Runat="Server" />
+	</asp:ContentPlaceHolder>
+</div>
+<script type="text/javascript">
+function showLeftCol(bShow, bSetCookie)
+{
+	/*
+	var fldLeftSidebar = document.getElementById('<%= tdShortcuts.ClientID   %>');
+	var fldShowHandle  = document.getElementById('<%= imgShowHandle.ClientID %>');
+	var fldHideHandle  = document.getElementById('<%= imgHideHandle.ClientID %>');
+	if ( bShow )
+	{
+		if ( fldLeftSidebar != null ) fldLeftSidebar.style.display = 'inline';
+		if ( fldShowHandle  != null ) fldShowHandle.style.display  = 'none'  ;
+		if ( fldHideHandle  != null ) fldHideHandle.style.display  = 'inline';
+		if ( bSetCookie )
+			document.cookie = 'showLeftCol=true;path=<%= Request.ApplicationPath %>';
+	}
+	else
+	{
+		if ( fldLeftSidebar != null ) fldLeftSidebar.style.display = 'none'  ;
+		if ( fldShowHandle  != null ) fldShowHandle.style.display  = 'inline';
+		if ( fldHideHandle  != null ) fldHideHandle.style.display  = 'none'  ;
+		if ( bSetCookie )
+			document.cookie = 'showLeftCol=false;path=<%= Request.ApplicationPath %>';
+	}
+	*/
+}
+// 02/23/2017 Paul.  Add support for Team Hierarchy. 
+function showTeamTree(bShow, bSetCookie)
+{
+	var fldTeamSidebar    = document.getElementById('<%= tdTeamTree.ClientID %>');
+	var fldTeamShowHandle = document.getElementById('<%= imgTeamShowHandle.ClientID %>');
+	var fldTeamHideHandle = document.getElementById('<%= imgTeamHideHandle.ClientID %>');
+	if ( bShow )
+	{
+		if ( fldTeamSidebar    != null ) fldTeamSidebar.style.display    = 'table-cell';
+		if ( fldTeamShowHandle != null ) fldTeamShowHandle.style.display = 'none'  ;
+		if ( fldTeamHideHandle != null ) fldTeamHideHandle.style.display = 'inline';
+		if ( bSetCookie )
+			document.cookie = 'showTeamTree=true;path=<%= Request.ApplicationPath %>';
+	}
+	else
+	{
+		if ( fldTeamSidebar    != null ) fldTeamSidebar.style.display    = 'none'  ;
+		if ( fldTeamShowHandle != null ) fldTeamShowHandle.style.display = 'inline';
+		if ( fldTeamHideHandle != null ) fldTeamHideHandle.style.display = 'none'  ;
+		if ( bSetCookie )
+			document.cookie = 'showTeamTree=false;path=<%= Request.ApplicationPath %>';
+	}
+}
+</script>
+
+<%-- 03/02/2017 Paul.  All layouts need to have a main table that has tdShortcuts of type TableCell to support the TeamTree.  --%>
+<asp:Table width="100%" cellspacing="0" cellpadding="0" border="0" style="padding-top: 5px;" runat="server">
+	<asp:TableRow>
+		<asp:TableCell width="10px" valign="top" Visible='false' runat="server">
+			<asp:Image ID="imgShowHandle" SkinID="show" onclick="showLeftCol(true, true);"  runat="server" />
+			<asp:Image ID="imgHideHandle" SkinID="hide" onclick="showLeftCol(false, true);" runat="server" />
+		</asp:TableCell>
+		<asp:TableCell id="tdShortcuts" style="vertical-align: top;" Visible='<%# !PrintView %>' runat="server">
+			<asp:ContentPlaceHolder ID="cntSidebar" Visible="false" runat="server" />
+		</asp:TableCell>
+		<asp:TableCell ID="tdTeamTree" class="lastViewPanel" valign="Top" style="padding-top: 10px;" runat="server">
+			<%@ Register TagPrefix="SplendidCRM" TagName="TeamTree" Src="~/_controls/TeamTree.ascx" %>
+			<SplendidCRM:TeamTree ID="ctlTeamTree" Runat="Server" />
+		</asp:TableCell>
+		<asp:TableCell ID="tdTeamTreeHandle" width="10px" valign="top" runat="server">
+			<div style="padding-top: 10px;">
+				<asp:Image ID="imgTeamShowHandle" SkinID="show" onclick="showTeamTree(true, true);"  runat="server" />
+				<asp:Image ID="imgTeamHideHandle" SkinID="hide" onclick="showTeamTree(false, true);" runat="server" />
+			</div>
+		</asp:TableCell>
+		<asp:TableCell style="padding-left: 10px; padding-right: 10px; vertical-align: top; padding-bottom: 6px;">
+
+			<asp:ContentPlaceHolder ID="cntBody" runat="server" />
+
+		</asp:TableCell>
+	</asp:TableRow>
+</asp:Table>
+<table width="100%" cellspacing="0" cellpadding="0" border="0" style="padding-top: 5px;">
+	<tr ID="trFooterMenu" Visible='<%# !PrintView %>' runat="server">
+		<td width="10px" valign="top"></td>
+		<td colspan="2" align="center" class="footer">
+			<div id="divFooterMenu">
+				<hr width="80%" size="1" class="footerHR">
+<asp:PlaceHolder ID="phFooterMenu" Runat="server" />
+				<hr width="80%" size="1" class="footerHR">
+			</div>
+		</td>
+	</tr>
+</table>
+
+<div id="divTheme" style="padding-top: 6px;">
+	<table ID="tblTheme" cellpadding="0" cellspacing="2" border="0" align="center" Visible='<%# !PrintView %>' runat="server">
+		<tr>
+			<td align="right"><%= L10n.Term("Users.LBL_THEME") %></td>
+			<td>
+				<asp:DropDownList ID="lstTHEME" DataValueField="NAME" DataTextField="NAME" OnSelectedIndexChanged="lstTHEME_Changed" AutoPostBack="true" Runat="server" />
+			</td>
+		</tr>
+		<tr>
+			<td align="right"><%= L10n.Term("Users.LBL_LANGUAGE") %></td>
+			<td>
+				<asp:DropDownList ID="lstLANGUAGE" DataValueField="NAME" DataTextField="NATIVE_NAME" OnSelectedIndexChanged="lstLANGUAGE_Changed" AutoPostBack="true" Runat="server" />
+				&nbsp;
+				<asp:HyperLink NavigateUrl="~/Administration/Terminology/Import/default.aspx" Text='<%# L10n.Term(".LBL_IMPORT") %>' Visible="<%# (SplendidCRM.Security.AdminUserAccess("Languages", "import") >= 0) %>" runat="server" />
+			</td>
+		</tr>
+	</table>
+	<br>
+</div>
+
+<%@ Register TagPrefix="SplendidCRM" Tagname="Copyright" Src="~/_controls/Copyright.ascx" %>
+<SplendidCRM:Copyright ID="ctlCopyright" Runat="Server" />
+
+<script type="text/javascript" src="<%# Application["scriptURL"] %>UpdatePanelWaitCursor.js"></script>
+</form>
+</body>
+</html>
+

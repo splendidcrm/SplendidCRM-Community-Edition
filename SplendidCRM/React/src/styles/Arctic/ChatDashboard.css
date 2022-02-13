@@ -1,0 +1,208 @@
+/**********************************************************************************************************************
+ * SplendidCRM is a Customer Relationship Management program created by SplendidCRM Software, Inc. 
+ * Copyright (C) 2005-2015 SplendidCRM Software, Inc. All rights reserved.
+ * 
+ * This program is free software: you can redistribute it and/or modify it under the terms of the 
+ * GNU Affero General Public License as published by the Free Software Foundation, either version 3 
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+ * See the GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License along with this program. 
+ * If not, see <http://www.gnu.org/licenses/>. 
+ * 
+ * You can contact SplendidCRM Software, Inc. at email address support@splendidcrm.com. 
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License version 3, 
+ * the Appropriate Legal Notices must display the following words on all interactive user interfaces: 
+ * "Copyright (C) 2005-2011 SplendidCRM Software, Inc. All rights reserved."
+ *********************************************************************************************************************/
+
+.ChatChannelsCell
+{
+	width: 15%;
+	border: 1px solid #003564;
+}
+.ChatMessagesCell
+{
+	width: 85%;
+	border: 1px solid #003564;
+}
+.ChatChannelsDiv
+{
+	overflow-y: scroll;
+	text-align: left;
+	background-color: #FFD14E;
+	color: #1F3562;
+	font-size: 14px;
+}
+.ChatChannelsInactive
+{
+	margin: 4px;
+	padding: 4px;
+}
+.ChatChannelsActive
+{
+	margin: 4px;
+	padding: 4px;
+	color: #1F3562;
+	background-color: #FFBB19;
+	border-radius: 6px;
+}
+.ChatUserCell
+{
+	background-color: #FFD14E;
+	color: #1F3562;
+	font-weight: bold;
+}
+.ChatUserName
+{
+	margin: 4px;
+	font-size: 14px;
+}
+.ChatUserPicture
+{
+	margin: 4px;
+	width: 36px;
+	height: 36px;
+	float: left;
+	border-radius: 4px;
+}
+
+.ChatMessagesDiv
+{
+	overflow-y: scroll;
+	text-align: left;
+	font-size: 14px;
+	line-height: 20px;
+}
+.ChatMessagesDateRule
+{
+	border: none;
+	color: #DDDDDD;
+	background-color: #DDDDDD;
+	height: 2px;
+}
+.ChatMessagesLastDate
+{
+	background-color: White;
+	text-align: center;
+	font-size: 15px;
+	font-weight: bold;
+	color: Black;
+	white-space: nowrap;
+}
+.ChatMessagesRow
+{
+	margin: 4px;
+}
+.ChatMessagesPicture
+{
+	margin: 4px;
+	width: 36px;
+	height: 36px;
+	float: left;
+	border-radius: 4px;
+}
+.ChatMessagesIdentity
+{
+}
+.ChatMessagesCreatedBy
+{
+	margin-right: 4px;
+	font-weight: bold;
+	color: Black;
+}
+.ChatMessagesDateEntered
+{
+	margin-right: 4px;
+	color: Gray;
+}
+.ChatMessagesParent
+{
+	margin-right: 14px;
+}
+.ChatMessagesDescription
+{
+	word-wrap: break-word;
+}
+.ChatMessagesMimeType
+{
+	width: 16px;
+	height: 16px;
+	margin-left: 4px;
+}
+.ChatMessagesFileSize
+{
+	margin-left: 4px;
+}
+.ChatMessagesFileType
+{
+	margin-left: 4px;
+}
+a.ChatMessagesFilename
+{
+	font-weight: bold;
+	color: #2A80B9;
+	text-decoration: none;
+}
+a.ChatMessagesMore
+{
+	padding-left: 4px;
+	text-decoration: none;
+}
+a.ChatMessagesLess
+{
+	padding-left: 4px;
+	text-decoration: none;
+}
+.ChatMessagesClearFloat
+{
+	clear: both;
+}
+.ChatInputCell
+{
+	border: 1px solid #003564;
+	white-space: nowrap;
+}
+.ChatInputText
+{
+	margin-left: 5px;
+	margin-right: 3px;
+	width: 85%;
+}
+.ChatInputSubmit
+{
+}
+.ChatParentPanel
+{
+	white-space: nowrap;
+}
+.ChatParentLabel
+{
+	margin-left: 5px;
+}
+.ChatFileUpload
+{
+	margin-left: 5px;
+}
+.ChatParentType
+{
+	margin-left: 5px;
+}
+.ChatParentName
+{
+	margin-left: 3px;
+}
+.ChatParentSelect
+{
+	margin-left: 3px;
+}
+.ChatParentClear
+{
+	margin-left: 3px;
+}
+
+

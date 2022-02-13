@@ -1,0 +1,231 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<xml>
+	<Version>
+		<Build>14.0.7929</Build>
+		<Date>09/17/2021</Date>
+		<Description>SplendidCRM Community Edition 14.0.7929 (358M)</Description>
+		<URL>http://www.splendidcrm.com/Products/Editions/SplendidCRMCommunity.aspx</URL>
+	</Version>
+	<Version>
+		<Build>13.0.7687</Build>
+		<Date>01/17/2021</Date>
+		<Description>SplendidCRM Community Edition 13.0.7687 (356M)</Description>
+		<URL>http://www.splendidcrm.com/Products/Editions/SplendidCRMCommunity.aspx</URL>
+	</Version>
+	<Version>
+		<Build>13.0.7573</Build>
+		<Date>09/26/2020</Date>
+		<Description>SplendidCRM Community Edition 13.0.7573 (284M)</Description>
+		<URL>http://www.splendidcrm.com/Products/Editions/SplendidCRMCommunity.aspx</URL>
+	</Version>
+	<Version>
+		<Build>12.6.7081</Build>
+		<Date>01/27/2020</Date>
+		<Description>SplendidCRM Community Edition 12.6.7081 (275M)</Description>
+		<URL>http://www.splendidcrm.com/Products/Editions/SplendidCRMCommunity.aspx</URL>
+	</Version>
+	<Version>
+		<Build>12.5.6969</Build>
+		<Date>01/30/2019</Date>
+		<Description>SplendidCRM Community Edition 12.5.6969 (390M)</Description>
+		<URL>http://www.splendidcrm.com/Products/Editions/SplendidCRMCommunity.aspx</URL>
+	</Version>
+	<Version>
+		<Build>12.0.6620</Build>
+		<Date>02/15/2018</Date>
+		<Description>SplendidCRM Community Edition 12.0.6620 (390M)</Description>
+		<URL>http://www.splendidcrm.com/Products/Editions/SplendidCRMCommunity.aspx</URL>
+	</Version>
+	<Version>
+		<Build>11.6.6438</Build>
+		<Date>09/27/2017</Date>
+		<Description>SplendidCRM Community Edition 11.6.6438 (390M)</Description>
+		<URL>http://www.splendidcrm.com/Products/Editions/SplendidCRMCommunity.aspx</URL>
+	</Version>
+	<Version>
+		<Build>11.5.6402</Build>
+		<Date>07/14/2017</Date>
+		<Description>SplendidCRM Community Edition 11.5.6402 (390M)</Description>
+		<URL>http://www.splendidcrm.com/Products/Editions/SplendidCRMCommunity.aspx</URL>
+	</Version>
+	<Version>
+		<Build>11.1.6340</Build>
+		<Date>05/29/2017</Date>
+		<Description>SplendidCRM Community Edition 11.1.6340 (390M)</Description>
+		<URL>http://www.splendidcrm.com/Products/Editions/SplendidCRMCommunity.aspx</URL>
+	</Version>
+	<Version>
+		<Build>11.0.6163</Build>
+		<Date>12/06/2016</Date>
+		<Description>SplendidCRM Community Edition 11.0.6163 (390M)</Description>
+		<URL>http://www.splendidcrm.com/Products/Editions/SplendidCRMCommunity.aspx</URL>
+	</Version>
+	<Version>
+		<Build>10.4.5952</Build>
+		<Date>09/08/2016</Date>
+		<Description>SplendidCRM Community Edition 10.4.5952 (390M)</Description>
+		<URL>http://www.splendidcrm.com/Products/Editions/SplendidCRMCommunity.aspx</URL>
+	</Version>
+	<Version>
+		<Build>10.3.5952</Build>
+		<Date>04/18/2016</Date>
+		<Description>SplendidCRM Community Edition 10.3.5952 (390M)</Description>
+		<URL>http://www.splendidcrm.com/Products/Editions/SplendidCRMCommunity.aspx</URL>
+	</Version>
+	<Version>
+		<Build>10.1.5827</Build>
+		<Date>12/15/2015</Date>
+		<Description>SplendidCRM Community Edition 10.1.5782 (390M)</Description>
+		<URL>http://www.splendidcrm.com/Products/Editions/SplendidCRMCommunity.aspx</URL>
+	</Version>
+	<Version>
+		<Build>10.0.5782</Build>
+		<Date>10/31/2015</Date>
+		<Description>SplendidCRM Community Edition 10.0.5782 (270M)</Description>
+		<URL>http://www.splendidcrm.com/Products/Editions/SplendidCRMCommunity.aspx</URL>
+	</Version>
+	<Version>
+		<Build>9.2.5619</Build>
+		<Date>05/22/2015</Date>
+		<Description>SplendidCRM Community Edition 9.2.5619 (215M)</Description>
+		<URL>http://www.splendidcrm.com/Products/Editions/SplendidCRMCommunity.aspx</URL>
+	</Version>
+	<Version>
+		<Build>9.0.5505</Build>
+		<Date>01/27/2015</Date>
+		<Description>SplendidCRM Community Edition 9.0.5505 (215M)</Description>
+		<URL>http://www.splendidcrm.com/Products/Editions/SplendidCRMCommunity.aspx</URL>
+	</Version>
+	<Version>
+		<Build>8.0.5061</Build>
+		<Date>11/09/2013</Date>
+		<Description>SplendidCRM Community Edition 8.0.5061 (215M)</Description>
+		<URL>http://www.splendidcrm.com/Products/Editions/SplendidCRMCommunity.aspx</URL>
+	</Version>
+	<Version>
+		<Build>7.5.4976</Build>
+		<Date>08/16/2013</Date>
+		<Description>SplendidCRM Community Edition 7.5.4976 (215M)</Description>
+		<URL>http://www.splendidcrm.com/Products/Editions/SplendidCRMCommunity.aspx</URL>
+	</Version>
+	<Version>
+		<Build>7.1.4846</Build>
+		<Date>04/08/2013</Date>
+		<Description>SplendidCRM Community Edition 7.1.4846 (215M)</Description>
+		<URL>http://www.splendidcrm.com/Products/Editions/SplendidCRMCommunity.aspx</URL>
+	</Version>
+	<Version>
+		<Build>7.0.4782</Build>
+		<Date>02/04/2013</Date>
+		<Description>SplendidCRM Community Edition 7.0.4782 (215M)</Description>
+		<URL>http://www.splendidcrm.com/Products/Editions/SplendidCRMCommunity.aspx</URL>
+	</Version>
+	<Version>
+		<Build>7.0.4774</Build>
+		<Date>01/28/2013</Date>
+		<Description>SplendidCRM Community Edition 7.0.4774 (215M)</Description>
+		<URL>http://www.splendidcrm.com/Products/Editions/SplendidCRMCommunity.aspx</URL>
+	</Version>
+	<Version>
+		<Build>6.6.4539</Build>
+		<Date>06/05/2012</Date>
+		<Description>SplendidCRM Community Edition 6.6.4539 (85M)</Description>
+		<URL>http://www.splendidcrm.com/Products/Editions/SplendidCRMCommunity.aspx</URL>
+	</Version>
+	<Version>
+		<Build>6.5.4511</Build>
+		<Date>05/08/2012</Date>
+		<Description>SplendidCRM Community Edition 6.5.4511 (85M)</Description>
+		<URL>http://www.splendidcrm.com/Products/Editions/SplendidCRMCommunity.aspx</URL>
+	</Version>
+	<Version>
+		<Build>6.1.4439</Build>
+		<Date>02/26/2012</Date>
+		<Description>SplendidCRM Community Edition 6.1.4439 (85M)</Description>
+		<URL>http://www.splendidcrm.com/Home/Downloads/tabid/101/Default.aspx</URL>
+	</Version>
+	<Version>
+		<Build>6.0.4359</Build>
+		<Date>12/08/2011</Date>
+		<Description>SplendidCRM Community Edition 6.0.4359 (74M)</Description>
+		<URL>http://www.splendidcrm.com/Home/Downloads/tabid/101/Default.aspx</URL>
+	</Version>
+	<Version>
+		<Build>5.5.4203</Build>
+		<Date>07/06/2011</Date>
+		<Description>SplendidCRM Community Edition 5.5.4203 (74M)</Description>
+		<URL>http://www.splendidcrm.com/Home/Downloads/tabid/101/Default.aspx</URL>
+	</Version>
+	<Version>
+		<Build>5.0.4000</Build>
+		<Date>12/14/2010</Date>
+		<Description>SplendidCRM Community Edition 5.0.4000 (74M)</Description>
+		<URL>http://www.splendidcrm.com/Home/Downloads/tabid/101/Default.aspx</URL>
+	</Version>
+	<Version>
+		<Build>4.7.3964</Build>
+		<Date>11/08/2010</Date>
+		<Description>SplendidCRM Community Edition 4.7.3964 (74M)</Description>
+		<URL>http://www.splendidcrm.com/Home/Downloads/tabid/101/Default.aspx</URL>
+	</Version>
+	<Version>
+		<Build>4.5.3817.13149</Build>
+		<Date>06/14/2010</Date>
+		<Description>SplendidCRM Community Edition 4.5.3817.13149 (74M)</Description>
+		<URL>http://www.splendidcrm.com/Home/Downloads/tabid/101/Default.aspx</URL>
+	</Version>
+	<Version>
+		<Build>4.4.3775.30109</Build>
+		<Date>05/03/2010</Date>
+		<Description>SplendidCRM Community Edition 4.4.3775.30109 (74M)</Description>
+		<URL>http://www.splendidcrm.com/Home/Downloads/tabid/101/Default.aspx</URL>
+	</Version>
+	<Version>
+		<Build>4.2.3716.10943</Build>
+		<Date>03/05/2010</Date>
+		<Description>SplendidCRM Community Edition 4.2.3716.10943 (74M)</Description>
+		<URL>http://www.splendidcrm.com/Home/Downloads/tabid/101/Default.aspx</URL>
+	</Version>
+	<Version>
+		<Build>4.1.3651.31899</Build>
+		<Date>12/30/2009</Date>
+		<Description>SplendidCRM Community Edition 4.1.3651.31899 (74M)</Description>
+		<URL>http://www.splendidcrm.com/Home/Downloads/tabid/101/Default.aspx</URL>
+	</Version>
+	<Version>
+		<Build>4.0.3566.15830</Build>
+		<Date>10/06/2009</Date>
+		<Description>SplendidCRM Community Edition 4.0.3566.15830 (72M)</Description>
+		<URL>http://www.splendidcrm.com/Home/Downloads/tabid/101/Default.aspx</URL>
+	</Version>
+	<Version>
+		<Build>3.0.3425.41822</Build>
+		<Date>05/18/2009</Date>
+		<Description>SplendidCRM Community Edition 3.0.3425.41822 (65M)</Description>
+		<URL>http://www.splendidcrm.com/Home/Downloads/tabid/101/Default.aspx</URL>
+	</Version>
+	<Version>
+		<Build>3.0.3259.3335</Build>
+		<Date>12/03/2008</Date>
+		<Description>SplendidCRM Community Edition 3.0.3259.3335 (70M)</Description>
+		<URL>http://www.splendidcrm.com/Home/Downloads/tabid/101/Default.aspx</URL>
+	</Version>
+	<Version>
+		<Build>2.1.3074.33397</Build>
+		<Date>01/06/2008</Date>
+		<Description>SplendidCRM Open-Source Version 2.1.3074.33397 (37M)</Description>
+		<URL>http://www.splendidcrm.com/Home/Downloads/tabid/101/Default.aspx</URL>
+	</Version>
+	<Version>
+		<Build>2.0.2950.42250</Build>
+		<Date>01/06/2008</Date>
+		<Description>SplendidCRM Open-Source Version 2.0.2950.42250 (16M)</Description>
+		<URL>http://www.splendidcrm.com/Home/Downloads/tabid/101/Default.aspx</URL>
+	</Version>
+	<Version>
+		<Build>1.4.2774.40222</Build>
+		<Date>08/06/2007</Date>
+		<Description>SplendidCRM Open-Source Version 1.4.2774.40222 Upgrade (14M)</Description>
+		<URL>http://www.splendidcrm.com/Home/Downloads/tabid/101/Default.aspx</URL>
+	</Version>
+</xml>

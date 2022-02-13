@@ -1,0 +1,81 @@
+/* line 1, node_modules\bpmn-js-properties-panel\styles\tabs.less */
+.bpp-properties-tab-bar {
+  border-bottom: 1px solid #ccc;
+  padding: 0 15px;
+}
+/* line 5, node_modules\bpmn-js-properties-panel\styles\tabs.less */
+.bpp-properties-tab-bar .scroll-tabs-button {
+  cursor: pointer;
+  font-size: 16px;
+  padding: 3px 4px 3px 4px;
+  color: #666;
+}
+/* line 11, node_modules\bpmn-js-properties-panel\styles\tabs.less */
+.bpp-properties-tab-bar .scroll-tabs-button:hover {
+  font-weight: bold;
+}
+/* line 15, node_modules\bpmn-js-properties-panel\styles\tabs.less */
+.bpp-properties-tab-bar .scroll-tabs-button.scroll-tabs-left {
+  float: left;
+  margin-left: -15px;
+}
+/* line 20, node_modules\bpmn-js-properties-panel\styles\tabs.less */
+.bpp-properties-tab-bar .scroll-tabs-button.scroll-tabs-right {
+  float: right;
+  margin-right: -15px;
+}
+/* line 27, node_modules\bpmn-js-properties-panel\styles\tabs.less */
+.bpp-properties-tab-bar:not(.scroll-tabs-overflow) .scroll-tabs-button {
+  display: none;
+}
+/* line 33, node_modules\bpmn-js-properties-panel\styles\tabs.less */
+ul.bpp-properties-tabs-links {
+  margin: 5px 0 -1px 0;
+  padding: 0;
+  white-space: nowrap;
+  overflow: hidden;
+}
+/* line 39, node_modules\bpmn-js-properties-panel\styles\tabs.less */
+ul.bpp-properties-tabs-links > li {
+  display: inline-block;
+  margin: 0;
+}
+/* line 43, node_modules\bpmn-js-properties-panel\styles\tabs.less */
+ul.bpp-properties-tabs-links > li.bpp-hidden {
+  display: none;
+}
+/* line 47, node_modules\bpmn-js-properties-panel\styles\tabs.less */
+ul.bpp-properties-tabs-links > li > a {
+  display: inline-block;
+  font-size: 12px;
+  padding: 4px 7px;
+  border: 1px solid #ccc;
+  border-radius: 3px 3px 0 0;
+  border-bottom: transparent;
+  background-color: #f8f8f8;
+  color: #666;
+  text-decoration: none;
+}
+/* line 62, node_modules\bpmn-js-properties-panel\styles\tabs.less */
+ul.bpp-properties-tabs-links > li > a:hover {
+  color: #4d4d4d;
+}
+/* line 68, node_modules\bpmn-js-properties-panel\styles\tabs.less */
+ul.bpp-properties-tabs-links > li + li {
+  margin-left: 4px;
+}
+/* line 74, node_modules\bpmn-js-properties-panel\styles\tabs.less */
+ul.bpp-properties-tabs-links > li.bpp-active a {
+  padding-bottom: 5px;
+  border-top: 2px solid #52B415;
+  border-bottom: none;
+}
+/* line 83, node_modules\bpmn-js-properties-panel\styles\tabs.less */
+.bpp-properties-tab,
+.bpp-properties-tab.bpp-hidden {
+  display: none;
+}
+/* line 88, node_modules\bpmn-js-properties-panel\styles\tabs.less */
+.bpp-properties-tab.bpp-active {
+  display: block;
+}

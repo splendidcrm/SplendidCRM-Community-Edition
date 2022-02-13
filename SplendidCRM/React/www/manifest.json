@@ -1,0 +1,9 @@
+{
+	"name": "SplendidCRM Mobile Client",
+	"short_name": "SplendidCRM",
+	"orientation": "portrait",
+	"display": "standalone",
+	"start_url": ".",
+	"description": "The SplendidCRM Mobile Client is a companion product to SplendidCRM that provides a mobile interface to the server app.",
+	"background_color": "#ffffff"
+}

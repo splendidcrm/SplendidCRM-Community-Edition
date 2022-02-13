@@ -1,0 +1,6 @@
+<browsers>
+  <!-- 11/24/2010 Paul.  .NET 4 has broken the compatibility of the browser file system. 
+       We are going to minimize our reliance on browser files in order to reduce deployment issues. 
+       Browser detection logic has been moved to SplendidInit.InitSession(). 
+  -->
+</browsers>

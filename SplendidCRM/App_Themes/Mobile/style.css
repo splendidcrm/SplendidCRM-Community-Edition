@@ -1,0 +1,218 @@
+body
+{
+	margin: 0px 0px 0px 0px;
+}
+form
+{
+	margin: 0px;
+}
+h3
+{
+	float: left;
+}
+.h3Row
+{
+	border-color: #999999;
+	background-image: url(images/bgGray.gif);
+}
+.evenListRowS1
+{
+	border-bottom: solid 1px #f6f6f6;
+}
+.oddListRowS1
+{
+	border-bottom: solid 1px #f6f6f6;
+	background: #f6f6f6;
+}
+.required
+{
+	color: #ff0000;
+}
+.error
+{
+	color: #ff0000;
+}
+.checkbox,.radio
+{
+	border: none;
+	background-color: transparent;
+	margin: 0px;
+	vertical-align: bottom;
+}
+a.listViewTdToolsS1:link, a.listViewTdToolsS1:visited
+{
+	text-decoration: none;
+}
+a.listViewTdToolsS1:hover
+{
+	text-decoration: none;
+}
+a.tabDetailViewDFLink:link, a.tabDetailViewDFLink:visited
+{
+	text-decoration: underline;
+}
+a.tabDetailViewDFLink:hover
+{
+}
+.dataLabel
+{
+	text-align: left;
+	font-weight: normal;
+}
+.dataField
+{
+	font-weight: normal;
+}
+.listViewPaginationTdS1 .tabDetailViewDL
+{
+	border: none;
+	vertical-align: top;
+}
+.tabDetailViewDL
+{
+	vertical-align: top;
+	text-align: right;
+	border-bottom: 1px solid;
+}
+.tabDetailViewDF
+{
+	border-bottom: 1px solid;
+	vertical-align: top;
+}
+a.tabDetailViewDFLink:link, a.tabDetailViewDFLink:visited
+{
+	text-decoration: underline;
+}
+a.tabDetailViewDFLink:hover
+{
+}
+.PasswordHelp
+{
+	background-image: url(images/help.gif);
+	height: 16px;
+	width: 16px;
+}
+
+.overdueTask
+{
+	color: Red;
+}
+.futureTask
+{
+	color: Green;
+}
+/* 05/14/2016 Paul.  Add Tags module. */
+.Tags
+{
+	color: white;
+	background-color: #565656;
+	-webkit-border-radius: 4 4 4 4;
+	-moz-border-radius: 4 4 4 4;
+	border-radius: 4px 4px 4px 4px;
+	padding: 2px 5px 2px 5px;
+	margin-top: 1px;
+	margin-bottom: 2px;
+	display: inline-block;
+}
+
+/* 08/02/2016 Paul.  Add buttons used with Business Processes. */
+.ProcessApprove
+{
+	background-color: #308000;
+	background-image: none;
+	color: white;
+}
+.ProcessReject
+{
+	background-color: #E90000;
+	background-image: none;
+	color: white;
+}
+.ProcessRoute
+{
+	background-color: #0760E0;
+	background-image: none;
+	color: white;
+}
+.ProcessClaim
+{
+	background-color: #308000;
+	background-image: none;
+	color: white;
+}
+.ProcessStatus
+{
+	font-size: 14px;
+}
+.ProcessOverdue
+{
+	color: red;
+}
+.ProcessAddNotes
+{
+	background-color: #0F5BF5;
+	background-image: none;
+	-webkit-border-radius: 4 4 4 4;
+	-moz-border-radius: 4 4 4 4;
+	border-radius: 4px 4px 4px 4px;
+	font-family: Arial;
+	color: #ffffff;
+	font-size: 12px;
+	padding: 4px 10px 4px 10px;
+	text-decoration: none;
+	height: 26px;
+	margin-top: 0px;
+	margin-right: 0px;
+}
+.ProcessAddNotes:hover
+{
+	background: #2F7BFf;
+	color: #ffffff;
+	text-decoration: none;
+}
+
+/* 09/24/2016 Paul.  Use style instead of inline size. */
+.paginationButtonPrevious
+{
+	width: 24px;
+	height: 24px;
+	border-collapse: collapse;
+}
+.paginationButtonNext
+{
+	width: 24px;
+	height: 24px;
+	border-collapse: collapse;
+}
+/* 06/27/2018 Paul.  Data Privacy Erased. */
+.Erased
+{
+	color: white;
+	background-color: #565656;
+	-webkit-border-radius: 4 4 4 4;
+	-moz-border-radius: 4 4 4 4;
+	border-radius: 4px 4px 4px 4px;
+	padding: 2px 5px 2px 5px;
+	margin-top: 1px;
+	margin-bottom: 2px;
+	display: inline-block;
+}
+/* 06/29/2018 Paul.  Add buttons used with Data Privacy. */
+.DataPrivacyComplete
+{
+	background-color: #308000;
+	background-image: none;
+	color: white;
+}
+.DataPrivacyErase
+{
+	background-color: #308000;
+	background-image: none;
+	color: white;
+}
+.DataPrivacyReject
+{
+	background-color: #E90000;
+	background-image: none;
+	color: white;
+}

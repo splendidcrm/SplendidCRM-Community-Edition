@@ -1,0 +1,37 @@
+/* line 1, node_modules\bpmn-js-properties-panel\styles\header.less */
+.bpp-properties-header {
+  padding: 15px;
+  padding-bottom: 5px;
+}
+/* line 5, node_modules\bpmn-js-properties-panel\styles\header.less */
+.bpp-properties-header > .label {
+  font-size: 120%;
+  font-weight: bolder;
+}
+/* line 10, node_modules\bpmn-js-properties-panel\styles\header.less */
+.bpp-properties-header > .search {
+  display: none;
+  margin-top: 5px;
+  position: relative;
+}
+/* line 15, node_modules\bpmn-js-properties-panel\styles\header.less */
+.bpp-properties-header > .search input {
+  position: relative;
+  border-radius: 15px;
+  width: 100%;
+  z-index: 1;
+}
+/* line 22, node_modules\bpmn-js-properties-panel\styles\header.less */
+.bpp-properties-header > .search button {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  border: none;
+  background-color: transparent;
+  z-index: 2;
+}
+/* line 30, node_modules\bpmn-js-properties-panel\styles\header.less */
+.bpp-properties-header > .search button:before {
+  content: '\E805';
+}

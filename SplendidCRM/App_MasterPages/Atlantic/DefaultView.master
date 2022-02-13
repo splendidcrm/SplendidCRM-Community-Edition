@@ -1,0 +1,126 @@
+<%@ Master Language="C#" AutoEventWireup="false" CodeBehind="DefaultView.master.cs" Inherits="SplendidCRM.Themes.Atlantic.DefaultView" %>
+<%@ Import Namespace="SplendidCRM" %>
+<script runat="server">
+/**********************************************************************************************************************
+ * SplendidCRM is a Customer Relationship Management program created by SplendidCRM Software, Inc. 
+ * Copyright (C) 2005-2022 SplendidCRM Software, Inc. All rights reserved.
+ * 
+ * This program is free software: you can redistribute it and/or modify it under the terms of the 
+ * GNU Affero General Public License as published by the Free Software Foundation, either version 3 
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+ * See the GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License along with this program. 
+ * If not, see <http://www.gnu.org/licenses/>. 
+ * 
+ * You can contact SplendidCRM Software, Inc. at email address support@splendidcrm.com. 
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License version 3, 
+ * the Appropriate Legal Notices must display the following words on all interactive user interfaces: 
+ * "Copyright (C) 2005-2011 SplendidCRM Software, Inc. All rights reserved."
+ *********************************************************************************************************************/
+/* 05/05/2010 Paul.  Can't use 4.01 as it will prevent the toolbar from maintaining the fixed position. 
+ * PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+*/
+</script>
+<!DOCTYPE HTML>
+<html id="htmlRoot" runat="server">
+<head runat="server">
+	<%@ Register TagPrefix="SplendidCRM" Tagname="MetaHeader" Src="~/_controls/MetaHeader.ascx" %>
+	<SplendidCRM:MetaHeader ID="ctlMetaHeader" Runat="Server" />
+	<link type="text/css" rel="stylesheet" href="~/Include/javascript/jquery-ui-1.9.1.custom.css" runat="server" />
+	<script type="text/javascript" src="<%# Application["scriptURL"] %>ModulePopupScripts.aspx?LastModified=<%# Server.UrlEncode(Sql.ToString(Application["Modules.LastModified"])) + "&UserID=" + Security.USER_ID.ToString() %>"></script>
+	<%# Application["CONFIG.external_scripts"] %>
+</head>
+<body style="background-color: white;">
+<form id="frmMain" method="post" runat="server">
+<script runat="server">
+// 10/22/2009 Paul.  Use the AJAX Toolkit technique to combine ScriptResource.axd files.  .NET 3.5 SP1 has a CompositeScript group.
+// 11/23/2009 Paul.  We will never need the scripts to be in debug mode. We also do not want localization. 
+</script>
+<ajaxToolkit:ToolkitScriptManager ID="mgrAjax" CombineScripts="true" EnableScriptGlobalization="true" EnableScriptLocalization="false" ScriptMode="Release" runat="server" />
+
+<div id="divHeader" Visible='<%# !PrintView %>' runat="server">
+	<%@ Register TagPrefix="SplendidCRM" Tagname="SixToolbar" Src="SixToolbar.ascx" %>
+	<SplendidCRM:SixToolbar ID="ctlSixToolbar" Visible='<%# !PrintView && Security.IsAuthenticated() %>' runat="Server" />
+	<%@ Register TagPrefix="SplendidCRM" Tagname="Reminders" Src="../Six/Reminders.ascx" %>
+	<SplendidCRM:Reminders ID="ctlReminders" Visible='<%# !PortalCache.IsPortal() && !PrintView && Security.IsAuthenticated() && Sql.ToBoolean(Application["CONFIG.enable_reminder_popdowns"]) %>' Runat="Server" />
+
+	<table cellspacing="0" cellpadding="0" border="0" class="SixToolbarLogin" Visible='<%# !Security.IsAuthenticated() %>' runat="server">
+		<tr>
+			<td nowrap>
+				<table ID="tblLoginHeader" class="tabToolbarFrame" cellspacing="0" cellpadding="0" border="0" runat="server">
+					<tr>
+						<td>
+							<asp:Image ID="imgCompanyLogo" ImageUrl='<%# Sql.IsEmptyString(Application["CONFIG.header_home_image"]) ? "~/Include/images/SplendidCRM_Icon.gif" : Sql.ToString(Application["CONFIG.header_home_image"]) %>' runat="server" />
+						</td>
+					</tr>
+				</table>
+			</td>
+			<td width="100%" class="tabRow"><asp:Image SkinID="blank" Width="1" Height="1" runat="server" /></td>
+		</tr>
+	</table>
+</div>
+<script type="text/javascript">
+function showLeftCol(bShow, bSetCookie)
+{
+}
+// 02/23/2017 Paul.  Add support for Team Hierarchy. 
+function showTeamTree(bShow, bSetCookie)
+{
+	var fldTeamSidebar    = document.getElementById('<%= tdTeamTree.ClientID %>');
+	var fldTeamShowHandle = document.getElementById('<%= imgTeamShowHandle.ClientID %>');
+	var fldTeamHideHandle = document.getElementById('<%= imgTeamHideHandle.ClientID %>');
+	if ( bShow )
+	{
+		if ( fldTeamSidebar    != null ) fldTeamSidebar.style.display    = 'table-cell';
+		if ( fldTeamShowHandle != null ) fldTeamShowHandle.style.display = 'none'  ;
+		if ( fldTeamHideHandle != null ) fldTeamHideHandle.style.display = 'inline';
+		if ( bSetCookie )
+			document.cookie = 'showTeamTree=true;path=<%= Request.ApplicationPath %>';
+	}
+	else
+	{
+		if ( fldTeamSidebar    != null ) fldTeamSidebar.style.display    = 'none'  ;
+		if ( fldTeamShowHandle != null ) fldTeamShowHandle.style.display = 'inline';
+		if ( fldTeamHideHandle != null ) fldTeamHideHandle.style.display = 'none'  ;
+		if ( bSetCookie )
+			document.cookie = 'showTeamTree=false;path=<%= Request.ApplicationPath %>';
+	}
+}
+</script>
+
+<asp:Table SkinID="tabFrame" runat="server">
+	<asp:TableRow>
+		<asp:TableCell ID="tdTeamTree" CssClass="lastViewPanel" VerticalAlign="Top" style="padding-top: 10px;">
+			<%@ Register TagPrefix="SplendidCRM" TagName="TeamTree" Src="~/_controls/TeamTree.ascx" %>
+			<SplendidCRM:TeamTree ID="ctlTeamTree" Runat="Server" />
+		</asp:TableCell>
+		<asp:TableCell ID="tdTeamTreeHandle" width="24px" valign="top">
+			<div style="padding-top: 10px;">
+				<asp:Image ID="imgTeamShowHandle" SkinID="show" onclick="showTeamTree(true, true);"  runat="server" />
+				<asp:Image ID="imgTeamHideHandle" SkinID="hide" onclick="showTeamTree(false, true);" runat="server" />
+			</div>
+		</asp:TableCell>
+		<asp:TableCell style="padding-left: 10px; padding-right: 10px; vertical-align: top; padding-bottom: 6px;">
+			<asp:ContentPlaceHolder ID="cntUnifiedSearch" Visible="false" runat="server" />
+			<asp:ContentPlaceHolder ID="cntLastViewed"    Visible="false" runat="server" />
+			<asp:ContentPlaceHolder ID="cntSidebar"       Visible="false" runat="server" />
+			<asp:ContentPlaceHolder ID="cntBody"                          runat="server" />
+		</asp:TableCell>
+	</asp:TableRow>
+</asp:Table>
+
+<%@ Register TagPrefix="SplendidCRM" Tagname="Copyright" Src="~/_controls/Copyright.ascx" %>
+<SplendidCRM:Copyright ID="ctlCopyright" Runat="Server" />
+
+<asp:PlaceHolder ID="plcMenuPopups" runat="server" />
+
+<script type="text/javascript" src="<%# Application["scriptURL"] %>UpdatePanelWaitCursor.js"></script>
+</form>
+</body>
+</html>
+

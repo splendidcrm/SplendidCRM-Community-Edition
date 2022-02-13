@@ -1,0 +1,26 @@
+{
+    "compilerOptions": {
+        "outDir": "./dist/",
+        "sourceMap": true,
+        "noImplicitAny": false,
+        "module": "commonjs",
+        "target": "es5",
+        "jsx": "react",
+        "lib": ["esnext", "dom"],
+        "experimentalDecorators": true,
+        "esModuleInterop": true
+    },
+    "include": [
+        "./src/**/*"
+    ],
+	"exclude": [
+		"./node_modules/**/*",
+		"./_sgbak/**/*",
+		"./src/components/_sgbak/**/*",
+		"./src/views/_sgbak/**/*",
+		"./src/scripts/_sgbak/**/*",
+		"./src/EditComponents/_sgbak/**/*",
+		"./src/DetailComponents/_sgbak/**/*",
+		"./src/GridComponents/_sgbak/**/*"
+	]
+}

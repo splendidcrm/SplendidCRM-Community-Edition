@@ -1,0 +1,9 @@
+<MSDeploy.iisApp>
+	<iisApp path="SplendidCRM" />
+	<setAcl path="SplendidCRM"            setAclAccess="ReadAndExecute,Write,Modify" />
+	<setAcl path="SplendidCRM/Web.config" setAclAccess="Read,Write,Modify" setAclResourceType="File" />
+	<setAcl path="SplendidCRM/App_Data"   setAclAccess="Read,Write,Modify" />
+	<dbfullsql path="CreateLogin.sql" />
+	<!-- dbfullsql path="Build.sql" commandTimeout="6000" / -->
+	<alias from="Build.sql" to="SplendidCRM/App_Data/Build.sql" />
+</MSDeploy.iisApp>

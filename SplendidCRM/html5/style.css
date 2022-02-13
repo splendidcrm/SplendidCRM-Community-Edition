@@ -1,0 +1,64 @@
+/*
+ * This program is free software: you can redistribute it and/or modify it under the terms of the 
+ * GNU Affero General Public License as published by the Free Software Foundation, either version 3 
+ * of the License, or (at your option) any later version.
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License version 3, 
+ * the Appropriate Legal Notices must display the following words on all interactive user interfaces: 
+ * "Copyright (C) 2005-2022 SplendidCRM Software, Inc. All rights reserved."
+ */
+
+#lblError
+{
+	color: #ff0000;
+	white-space: pre-line;
+}
+
+/* http://reference.sitepoint.com/css/white-space */
+.RawMessage
+{
+	width: 100%;
+	white-space: pre-line;
+	background-color: Gray;
+	height: 200px;
+	font-size: 11px;
+	overflow-y: scroll;
+}
+.RawMessageHidden
+{
+	width: 100%;
+	white-space: pre-line;
+	background-color: Gray;
+	height: 200px;
+	font-size: 11px;
+	overflow-y: scroll;
+	display: none;
+}
+.RawMessageError
+{
+	width: 100%;
+	color: #ff0000;
+	white-space: pre-line;
+	font-size: 11px;
+}
+#divSelection
+{
+	vertical-align: top;
+	height: 100%;
+	overflow-y: scroll;
+}
+#divSelectionTitle
+{
+	margin-top: 0px;
+	margin-bottom: 0px;
+	font-size: 13px;
+	font-weight: bold;
+	color: #666666;
+	text-transform: uppercase;
+}
+#divHeader_OfflineCache
+{
+	vertical-align: top;
+	height: 60px;
+	overflow-y: scroll;
+}

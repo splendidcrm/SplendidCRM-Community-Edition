@@ -1,0 +1,557 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<xml>
+	<!-- http://www.sugarforge.org/softwaremap/languagepacks.php -->
+	<LanguagePack>
+		<Name>Arabic Egypt Language Package</Name>
+		<Date>2007-02-12 10:03</Date>
+		<Description>نظام متابعة العملاء شوجر سي آر إم</Description>
+		<URL>http://www.sugarforge.org/frs/download.php/2589/AR-egypt.zip</URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Arabic Language Files-KINDI Technologies</Name>
+		<Date>2006-12-08</Date>
+		<Description>Translation of SugarCRM Open Source for Arabic by KINDI Technologies ترجمة شوقر سي أر إم إلى اللغة العربية من طرف كنـدي للتكنولوجيات</Description>
+		<URL></URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Arabic SugarCRM</Name>
+		<Date>2005-12-14</Date>
+		<Description>Arabic SugarCRM is the Arabic vesrion of SugarCRM. Manage your customers relationships as easy as SugarCRM permits to and in Arabic Language. </Description>
+		<URL></URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Arabic Translation - SugarCRM Enterprise</Name>
+		<Date>2007-04-13 12:30</Date>
+		<Description>Arabic Translation for SugarCRM Enterprise version by IT Synergy. الترجمة العربية لنسخة SugarCRM للمؤسسات من شركة IT Synergy </Description>
+		<URL>http://www.sugarforge.org/frs/download.php/2778/ar4enterprise-0.9.6.zip</URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Australian Language Pack</Name>
+		<Date>2005-06-01 00:43</Date>
+		<Description>Australian Language pack. This language pack handles the minor differences in spelling &amp; terminology between US English &amp; Australian English. </Description>
+		<URL>http://www.sugarforge.org/frs/download.php/194/OzLang_1_0.zip</URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Austrian German Language Files</Name>
+		<Date>2006-04-23 15:30</Date>
+		<Description>Contains language pack files for Austrian German. </Description>
+		<URL>http://www.sugarforge.org/frs/download.php/1241/lang_ge_at_420a_V2.zip</URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Bahasa Indonesia Language Pack</Name>
+		<Date>2007-01-03</Date>
+		<Description>Bahasa Indonesia Language Pack for SugarCRM </Description>
+		<URL></URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Bahasa Malaysia Language Pack</Name>
+		<Date>2005-11-02</Date>
+		<Description>Bahasa Malaysia Language Pack for SugarCRM </Description>
+		<URL></URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Basque (Basque Country) Language Files</Name>
+		<Date>2006-09-09 08:41</Date>
+		<Description>Contains Basque (Basque Country ) language pack </Description>
+		<URL>http://www.sugarforge.org/frs/download.php/3005/SugarOpen-4.2-lang-eu_eu-20060909.zip</URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Brazilian Portuguese Language Pack</Name>
+		<Date>2007-03-02 13:17</Date>
+		<Description>The definitive Brazilian Portuguese Language Pack for SugarCRM. Maintained since SugarCRM version 2.5. The latest release is for version 4.5.1. </Description>
+		<URL>http://www.sugarforge.org/frs/download.php/2648/langpack-pt_br-4.5.1-Lampada.zip</URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Brazilian Portuguese Language Pack</Name>
+		<Date>2006-01-09 03:52</Date>
+		<Description>Brazilian Portuguese (PT_BR) Language Pack with installer for Sugar 4.0 </Description>
+		<URL>http://www.sugarforge.org/frs/download.php/890/SugarCRM-4.0-PT_BR-langpack-r01.zip</URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Bulgarian Language Pack</Name>
+		<Date>2005-12-19 13:34</Date>
+		<Description>Bulgarian language for Sugar CRM </Description>
+		<URL>http://www.sugarforge.org/frs/download.php/851/bg_bg-SugarCRM-LanguagePack-BETA3.5.1x.zip</URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Croatian language pack for SugarCRM</Name>
+		<Date>2006-01-28</Date>
+		<Description>Contains Croatian (HR) language pack and other Croatian language files for SugarCRM version 4.x. Sadrži hrvatski lokalizacijski paket za SugarCRM od verzije 4.x nadalje. </Description>
+		<URL></URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Czech language files</Name>
+		<Date>2007-06-22 02:36</Date>
+		<Description>Contains czech language pack and other czech files </Description>
+		<URL>http://www.sugarforge.org/frs/download.php/3064/SugarOS-4.5.1d-lang_cs_cz-20070620.zip</URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Czech language pack</Name>
+		<Date>2007-06-23 04:32</Date>
+		<Description>Czech translate for SugarCRM OS. Main site and major pages are translated.</Description>
+		<URL>http://www.sugarforge.org/frs/download.php/3070/SugarCRM_langpack_cs_cz_4-5-0.zip</URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Danish Language pack</Name>
+		<Date>2005-11-16 01:26</Date>
+		<Description>Danish Language pack installation for SugarCRM </Description>
+		<URL>http://www.sugarforge.org/frs/download.php/716/SugarCRM-3.5.1-Danish-langpack-v.0.3.zip</URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Danish translation</Name>
+		<Date>2006-05-22 01:28</Date>
+		<Description>Danish translation for SugarCRM </Description>
+		<URL>http://www.sugarforge.org/frs/download.php/1328/da_dk.tar.gz</URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Deutsche (German) Language Files</Name>
+		<Date>2007-02-14 08:57</Date>
+		<Description>Contains language pack files for German. Übersetzung von Sugar CRM auf Deutsch. </Description>
+		<URL>http://www.sugarforge.org/frs/download.php/2599/SugarCRM_langpack_ge_ge_4-5-1.zip</URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Dutch languagepack</Name>
+		<Date>2006-11-13 02:58</Date>
+		<Description>Translation of languagefiles to Dutch.</Description>
+		<URL>http://www.sugarforge.org/frs/download.php/2219/Sugar_4.5.x_languagepack_dutch_20061113.zip</URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>English (United Kingdom / Great Britian)</Name>
+		<Date>2007-06-18 02:21</Date>
+		<Description>There's nowt wrong with American, but it's not proper English. Get the Great British / United Kingdom regional language pack to ensure you have proper Anglicised English version of SugarCRM. </Description>
+		<URL>http://www.sugarforge.org/frs/download.php/3024/sugarmcrm_en_gb-v4.5.1d_langpack.zip</URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Estonian language</Name>
+		<Date>2005-05-13</Date>
+		<Description>Contains Estonian language pack and other useful or needed files. </Description>
+		<URL></URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Farsi (Persian ) Languages for Sugar CRM</Name>
+		<Date>2005-11-30</Date>
+		<Description>Translation and add farsi languages and shamsi date to sugar crm </Description>
+		<URL></URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Farsi Translation/Localization</Name>
+		<Date>2006-03-21</Date>
+		<Description>SugarCRM-Farsi Edition is a completely translated SugarCRM with Farsi localization (RTL, Hijri dates) and UTF-8 encoding. </Description>
+		<URL></URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Finnish language files</Name>
+		<Date>2007-02-13 16:27</Date>
+		<Description>Finnish language pack and other Finnish language files</Description>
+		<URL>http://www.sugarforge.org/frs/download.php/2597/SugarSuite-4.5.1-lang-fi_fi-2007-02-14.zip</URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Francais (French) Language Files</Name>
+		<Date>2007-07-26 15:00</Date>
+		<Description>Contient les fichiers pour la personnalisation en Français - Contains French language pack</Description>
+		<URL>http://www.sugarforge.org/frs/download.php/3215/SugarCRM-4.5.1e-LangPack-fr_FR-2007-07-27.zip</URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>FRANCAIS Pack Langue - CARRENET</Name>
+		<Date>2007-05-09 07:09</Date>
+		<Description>Traduction complète de SugarCRM Open Source en Français.</Description>
+		<URL>http://www.sugarforge.org/frs/download.php/2876/pack_francais_Carrenet_OS-4.5.1c.zip</URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>French (Français) SugarCRM Open Source</Name>
+		<Date>2006-04-10</Date>
+		<Description>Développements et documentations en français sur l'utilisation de SugarCRM Open Source. Developments and French documentations for SugarCRM Open Source.</Description>
+		<URL></URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Greek language pack</Name>
+		<Date>2005-06-30</Date>
+		<Description>All SugarCRM files translated in Greek </Description>
+		<URL></URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Greek Language Pack</Name>
+		<Date>2007-01-13 09:38</Date>
+		<Description>Since I have been using SugarCRM for quite a long time, I thought is was high time I created a greek language pack for it. Comments and suggestions are always welcome of course... </Description>
+		<URL>http://www.sugarforge.org/frs/download.php/2471/el_gr.zip</URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Greek Language Pack</Name>
+		<Date>2006-04-08 03:50</Date>
+		<Description>This project reflects the effort of 3 students (Lagoyiannis Stathis, Skaltsa Maria, Tsetoura Lena) of the "Technical University of Patras - School of Information Systems in Management and Economy" to contribute to the Open Source Community </Description>
+		<URL>http://www.sugarforge.org/frs/download.php/1194/SugarSuite-3.5.1-lang-el_gr-2006-4-8.zip</URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Greek Language Pack WORKING!!!</Name>
+		<Date>2007-02-05 02:47</Date>
+		<Description>Finaly finished translation for all greek users.</Description>
+		<URL>http://www.sugarforge.org/frs/download.php/2560/el_gr.zip</URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Hebrew Language Pack</Name>
+		<Date>2007-04-23</Date>
+		<Description>Hebrew Language Pack for SugarCRM from Lampada CRM. This language pack is best used with a RTL Theme. </Description>
+		<URL></URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Hebrew עברית</Name>
+		<Date>2007-04-23 12:24</Date>
+		<Description>Hebrew Pack for SugarOS. Including: Language Pack and RTL Themes. שפה העברית למערכת, חבילה כוללת: קבצי שפה ותבניות ימין לשמאל</Description>
+		<URL>http://www.sugarforge.org/frs/download.php/2795/langpack-he_il-4.5.1-Lampada.zip</URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Hungarian Translation</Name>
+		<Date>2005-12-25</Date>
+		<Description>Hungarian Language Pack </Description>
+		<URL></URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Italian Language (Italiano)</Name>
+		<Date>2007-03-05 15:00</Date>
+		<Description>Full Italian Translation for SugarCRM OS. Traduzione italiana completa di SugarCRM OS. Supporto completo caratteri speciali. Da Witcom s.r.l.</Description>
+		<URL>http://www.sugarforge.org/frs/download.php/2651/it_it_4.5.1.langpack.zip</URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Italian Language Pack</Name>
+		<Date>2005-03-13 03:52</Date>
+		<Description>Contains Italian language pack files. Contiene i file per la definizione di SugarCRM in lingua italiana. </Description>
+		<URL>http://www.sugarforge.org/frs/download.php/23/SugarSuite-2.5.1-lang-it_it.zip</URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Italian Language Pack PRO ENT OS 4.5.1</Name>
+		<Date>2007-07-04 07:27</Date>
+		<Description>Italian Language Pack Sugar PRO ENT OS by Opensymbol Srl Sugar Version 4.0, 4.5</Description>
+		<URL>http://www.sugarforge.org/frs/download.php/3098/Sugar_it_IT_PRO_ENT_OS_451_certified_1.zip</URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Japanese Language Pack</Name>
+		<Date>2005-03-14</Date>
+		<Description>You can buy Sugar Open Source Japanese Installer at @Exchange. https://exchange.cosf.jp/</Description>
+		<URL></URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Korean Laguage Pack</Name>
+		<Date>2006-08-23</Date>
+		<Description>다같이 사용하는 오픈소스의 한글화. </Description>
+		<URL></URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Korean language files</Name>
+		<Date>2006-09-11 15:09</Date>
+		<Description>Korean language pack and files </Description>
+		<URL>http://www.sugarforge.org/frs/download.php/1888/LANGPACK-KOREAN-450.zip</URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Korean Language Files</Name>
+		<Date>2005-04-03</Date>
+		<Description>Korean localization for SugarCRM </Description>
+		<URL></URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Latvian language pack</Name>
+		<Date>2006-02-05</Date>
+		<Description>Latvian language pack </Description>
+		<URL></URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Lithuanian Language Pack</Name>
+		<Date>2005-11-10</Date>
+		<Description>Lithuanian language translation </Description>
+		<URL></URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Norwegian LanguagePack</Name>
+		<Date>2005-12-04 14:58</Date>
+		<Description>Norwegian sugartranslation. Aims to keep a Norwegian translation up to date with the current SugarCrm OS version. </Description>
+		<URL>http://www.sugarforge.org/frs/download.php/795/nb_no-0.1-langpack.zip</URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Norwegian (Norsk) language files</Name>
+		<Date>2007-07-18 05:41</Date>
+		<Description>Norwegian language files </Description>
+		<URL>http://www.sugarforge.org/frs/download.php/3174/norwegian-langpack_v4.5.1d.zip</URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Persian Sugar</Name>
+		<Date>2006-03-31</Date>
+		<Description>Translation/Localization of Sugar for Persian (farsi) language </Description>
+		<URL></URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Polish Language Files</Name>
+		<Date>2005-11-03 14:14</Date>
+		<Description>Contains Polish language pack and other polish files </Description>
+		<URL>http://www.sugarforge.org/frs/download.php/658/SugarSuite-3.5.1-lang-pl_pl-pl-beta-2005-11-03.zip</URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Polski (Polish) Language Files</Name>
+		<Date>2007-07-13 07:16</Date>
+		<Description>Contains Polish language pack and other Polish language files. Zawiera Polski pakiet językowy i inne Polskie pliki językowe. </Description>
+		<URL>http://www.sugarforge.org/frs/download.php/3141/SugarCRM_os.4.5.1e.LangPack_PL_13_07_2007.zip</URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Portuguese Language Files</Name>
+		<Date>2005-05-31 09:34</Date>
+		<Description>Contains Portuguese language pack and other Portuguese language files. Language Pack e outros arquivos em Portugues. </Description>
+		<URL>http://www.sugarforge.org/frs/download.php/189/SugarFull-3.0c-lang-pt_br_2005-05-22.zip</URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Portuguese (Portugal) Language Files</Name>
+		<Date>2007-07-17 15:11</Date>
+		<Description>Language pack for pt_pt (portuguese from portugal). </Description>
+		<URL>http://www.sugarforge.org/frs/download.php/3173/pt_pt.451e.zip</URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Portuguese Portugal Language Pack,The</Name>
+		<Date>2007-07-17</Date>
+		<Description>Portuguese language Pack based on Brazilian Portuguese Language Pack, produced by Javali to the community </Description>
+		<URL></URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Portuguese (PT) - pt_pt - Language Pack</Name>
+		<Date>2005-11-09</Date>
+		<Description>Portuguese (pt_pt) Language Files </Description>
+		<URL></URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Romanian Language Files</Name>
+		<Date>2006-11-15 08:00</Date>
+		<Description>Contains Romanian language pack files for SugarCRM. </Description>
+		<URL>http://www.sugarforge.org/frs/download.php/2288/sugarcrm_os_4.5.0f_romanian_langpack.zip</URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Russian language pack</Name>
+		<Date>2007-07-10 00:14</Date>
+		<Description>Russian language pack</Description>
+		<URL>http://www.sugarforge.org/frs/download.php/3128/SugarRus_fixed.zip</URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>RUSSIAN RAPIRA Language Pack</Name>
+		<Date>2006-11-04</Date>
+		<Description>Russian language pack for SugarCRM 4.5.x</Description>
+		<URL></URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Simplified Chinese</Name>
+		<Date>2005-07-21</Date>
+		<Description>SugarCRM 简体中文 </Description>
+		<URL></URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Simplified Chinese Language Files</Name>
+		<Date>2005-07-13</Date>
+		<Description>Simplified Chinese localization for SugarCRM [SugarCRM 简体中文] </Description>
+		<URL></URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Simplified Chinese Language Pack</Name>
+		<Date>2007-06-25 12:02</Date>
+		<Description>Simplified Chinese Language Pack for SugarCRM 4.5.1 release.</Description>
+		<URL>http://www.sugarforge.org/frs/download.php/3073/zh_cnLangPack-4.5.1d.zip</URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Simplified Chinese Language Pack</Name>
+		<Date>2006-09-25</Date>
+		<Description>Development and maintenance of the Simplified Chinese Language Pack for SugarCRM. </Description>
+		<URL></URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Spanish (Latin America) language files</Name>
+		<Date>2006-07-13 08:42</Date>
+		<Description>Contains Spanish (Latin America) language pack and other Spanish files </Description>
+		<URL>http://www.sugarforge.org/frs/download.php/1572/SugarOpen-4.2.1-lang-sp_ve.zip</URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Spanish (Spain) Language Files</Name>
+		<Date>2007-07-09 10:30</Date>
+		<Description>Contains Spanish (Spain) language pack and other Spanish files</Description>
+		<URL>http://www.sugarforge.org/frs/download.php/3119/SugarEnt-4.5.1e-lang-es_es-20070709.zip</URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Arabic</Name>
+		<Date>2006-04-01</Date>
+		<Description>Translate the SugarCrm to Arabic language </Description>
+		<URL></URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Thai ภาษาไทย</Name>
+		<Date>2007-05-13 19:26</Date>
+		<Description>Thai Language Pack is a project to develop a Thai localization pack for SugarCRM. ภาษาไทย สำหรับ Sugar CRM </Description>
+		<URL>http://www.sugarforge.org/frs/download.php/2918/th-451.zip</URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Lithuanian translation 3.0.1b</Name>
+		<Date>2005-07-24</Date>
+		<Description>A lithuanian translation package for SugarCRM 3 or higher </Description>
+		<URL></URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Bulgarian Translation 4.0.0 </Name>
+		<Date>2006-01-23 06:25</Date>
+		<Description>An updated version of the Bulgarian Translation for SugarCRM, version 4.0.0 </Description>
+		<URL>http://www.sugarforge.org/frs/download.php/909/SugarCRM_4.x_Bulgarian_Translation_Beta_0.1.zip</URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Chinese Simplized-C3CRM</Name>
+		<Date>2006-12-07 08:22</Date>
+		<Description>C3CRM is developed based on SugarCRM. Besides modules in SugarSuite, we furtherly add practical modules : Products, Pricebooks, Quotes, ProductService, Followup, Contracts, Shares, Apps, Reports and so on. We will provide more as you wish.http://c3crm.com </Description>
+		<URL>http://www.sugarforge.org/frs/download.php/2341/C3CRM3.2.1.zip</URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Hungarian Language Pack</Name>
+		<Date>2007-08-08 23:43</Date>
+		<Description>Hungarian Language Pack for SugarCRM</Description>
+		<URL>http://www.sugarforge.org/frs/download.php/3253/SugarCRM-4.5.1e_UTF-8-LanguagePack-Hungarian_v0.1.zip</URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Thai Edition</Name>
+		<Date>2005-12-11 01:07</Date>
+		<Description>The SugarCRM Thai Edition is a project to develop a Thailand localization for SugarCRM. http://www.sugarcrm.in.th </Description>
+		<URL>http://www.sugarforge.org/frs/download.php/819/SugarSuite-Full-3.5.1d-ThaiEdition.zip</URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Chinese 中国</Name>
+		<Date>2006-10-19 23:53</Date>
+		<Description>sugarcrm的中文汉化, 自定义模块和修改模块。</Description>
+		<URL>http://www.sugarforge.org/frs/download.php/2120/SugarCRM4.5_lanuage_zh-cn.zip</URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Indonesia Sugarindo CRM</Name>
+		<Date>2007-04-30 02:47</Date>
+		<Description>SugarCRM localization for Indonesia. Also support Products &amp; Quotes modules based on C3CRM. </Description>
+		<URL>http://www.sugarforge.org/frs/download.php/2824/SugarindoMODIrontec1.2.zip</URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Svenska (Swedish) Language Files</Name>
+		<Date>2006-11-20 09:20</Date>
+		<Description>Contains language pack files for Swedish. Översättning av SugarCRM till svenska</Description>
+		<URL>http://www.sugarforge.org/frs/download.php/2256/SugarCRM-4.2-Swedish-0.1.zip</URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Swiss German Language Files</Name>
+		<Date>2007-02-15 10:00</Date>
+		<Description>Contains language pack files for Swiss German.</Description>
+		<URL>http://www.sugarforge.org/frs/download.php/2605/SugarCRM_langpack_ge_ch_4-5-1.zip</URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Thai Language Pack</Name>
+		<Date>2007-05-25 05:20</Date>
+		<Description>Thai Language Pack for SugarOS 4.51 Full translation for Web User Interface in Thai Language.</Description>
+		<URL>http://www.sugarforge.org/frs/download.php/2948/ThaiLangPack1.0.zip</URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Traditional Chinese[正體中文]</Name>
+		<Date>2005-03-22</Date>
+		<Description>You could find more information here about the usage in Traditional Chinese. 這個專案是為了支援中文環境而存在，有任何問題歡迎透過台灣PHP聯盟提出！ http://twpug.net/ </Description>
+		<URL></URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Turkish Language Files</Name>
+		<Date>2005-05-06</Date>
+		<Description>Contains language pack files for Turkish (Türkçe) </Description>
+		<URL></URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Turkish Language Pack</Name>
+		<Date>2005-08-01</Date>
+		<Description>Turkish Language Pack </Description>
+		<URL></URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>User Friendly Polish Language Pack</Name>
+		<Date>2007-05-02 17:26</Date>
+		<Description>This translation project is focused on best funcionality during daily use. Easy, fully intuitive expressions, tested on duty, maximum useful, with most improved satisfaction of using SugarCRM! </Description>
+		<URL>http://www.sugarforge.org/frs/download.php/2840/tlum030507.zip</URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Vietnamese Language Pack</Name>
+		<Date>2006-10-08</Date>
+		<Description>Provide Vietnamese Language Pack </Description>
+		<URL></URL>
+	</LanguagePack>
+
+	<LanguagePack>
+		<Name>Chinese 简体中文语言包</Name>
+		<Date>2006-07-17 19:01</Date>
+		<Description>致力于提供最新官方版本的简体中文语言包, 作者主页：http://4utopia.org</Description>
+		<URL>http://www.sugarforge.org/frs/download.php/1586/SugarCRM4.2_LanuagePack_zh-cn.zip</URL>
+	</LanguagePack>
+
+</xml>

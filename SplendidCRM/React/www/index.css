@@ -1,0 +1,377 @@
+body
+{
+	background-color: white;
+}
+.app
+{
+	background-color: #e9ecef;
+}
+.table
+{
+	margin-bottom: 0;
+}
+#topnav
+{
+	padding: 0;
+	.dropdown-toggle::after
+	{
+		display: none;
+	}
+	.navbar-brand
+	{
+		padding: 0;
+		img
+		{
+			height: 3rem;
+		}
+	}
+	.navbar-nav
+	{
+		margin-left: 0 !important;
+	}
+	.dropdown-menu
+	{
+		top: 95%;
+	}
+	a
+	{
+		text-decoration: none;
+	}
+}
+.autocomplete
+{
+	.dropdown-menu
+	{
+		right: 0;
+	}
+}
+.react-bootstrap-table table
+{
+	table-layout: auto;
+}
+.breadcrumb
+{
+	margin-bottom: 0;
+	font-size: 1.5rem;
+}
+.breadcrumb-item
+{
+	a:link, a:visited
+	{
+		text-decoration: none;
+	}
+	a:hover
+	{
+		text-decoration: underline;
+	}
+}
+/* 05/17/2019 Paul.  Remove padding around user picture. */
+.userContextMenu
+{
+	a
+	{
+		padding: 0;
+	}
+}
+/* 07/07/2019 Paul.  The checkboxes on SplendidGrid are too small. */
+.react-bootstrap-table th > .selection-input-4,
+.react-bootstrap-table td > .selection-input-4
+{
+	transform: scale(1.5);
+	vertical-align: text-top;
+	margin: 4px;
+}
+
+/* https://www.w3schools.com/css/css_tooltip.asp */
+.reactTooltip
+{
+	position: relative;
+	display: inline-block;
+	margin-left: 2px;
+	margin-right: 2px;
+}
+
+.reactTooltip .reactTooltipText
+{
+	visibility: hidden;
+	width: 120px;
+	background-color: #ffffcc;
+	border: 1px solid #999999;
+	color: black;
+	text-align: center;
+	padding: 5px 0;
+	border-radius: 6px;
+	position: absolute;
+	z-index: 1;
+}
+
+.reactTooltip:hover .reactTooltipText
+{
+	visibility: visible;
+}
+
+.hoverTooltip
+{
+	position: relative;
+	display: inline-block;
+	margin-left: 2px;
+	margin-right: 2px;
+}
+
+.hoverTooltip .hoverTooltipText
+{
+	visibility: hidden;
+	position: absolute;
+	z-index: 1;
+}
+
+.hoverTooltip:hover .hoverTooltipText
+{
+	visibility: visible;
+}
+
+.fc-day-grid-event .fc-content
+{
+	white-space: normal;
+}
+.fix-checkbox, .ms-Checkbox-label, ms-Checkbox-checkbox, ms-Label
+{
+	display: inline;
+}
+.grab
+{
+	cursor: grab;
+	cursor: -moz-grab;
+	cursor: -webkit-grab;
+}
+
+/* 09/07/2019 Paul. bootstrap sets the line height, which messes with Six theme. */
+body
+{
+	line-height: 1;
+}
+
+/* 09/16/2019 Paul.  Correct problem with NavDropdown. */
+#topnav .dropdown-menu
+{
+	left: unset;
+}
+/* 09/19/2019 Paul.  Remove gentelella width for React Client.  */
+textarea
+{
+	width: 100%;
+}
+/* 09/19/2019 Paul.  Remove gentelella styles.  */
+.button
+{
+	background: unset;
+	filter: unset;
+	box-shadow: unset;
+	border-radius: unset;
+	border-top: unset;
+	padding: 2px 6px;
+	font-size: unset;
+}
+/* 09/20/2019 Paul.  Remove gentelella styles.  */
+td span
+{
+	line-height: unset;
+}
+/* 12/09/2019 Paul.  Don't like spacing below menu dropdown. */
+.nav-link
+{
+	padding-bottom: .25em;
+}
+/* 12/09/2019 Paul.  Don't like NavItem down arrow. */
+.dropdown-toggle:after
+{
+	content: none;
+}
+/* 12/11/2019 Paul.  Remove bold setting. */
+label
+{
+	font-weight: unset;
+	margin-bottom: unset;
+}
+
+.teamTreeItem
+{
+	padding: 6px 5px;
+	color: #444444;
+	white-space: nowrap;
+}
+.teamTreeItem a:link, .teamTreeItem a:visited
+{
+	border-left: 1px solid #cccccc;
+	text-decoration: none;
+}
+
+.reportTreeItem
+{
+	font-size: 12px;
+	line-height: 16px;
+	white-space: nowrap;
+}
+.reportTreeItem
+{
+	border-left: 1px solid #cccccc;
+	text-decoration: none;
+}
+.reportTreeItem:hover
+{
+	text-decoration: underline;
+}
+
+.tree-view
+{
+	overflow-x: hidden;
+}
+.tree-view_arrow
+{
+	transform: scale(2);
+}
+.tree-view_arrow-collapsed
+{
+	transform: scale(2) rotate(-90deg);
+}
+/* 01/24/2020 Paul.  Don't like the spacing around dashlet header. */
+.card-body
+{
+	flex: 0 1 auto;
+	padding-top: .25rem;
+	padding-right: .5rem;
+	padding-bottom: 0rem;
+	padding-left: .5rem;
+}
+hr
+{
+	margin-top: .25rem;
+	margin-bottom: .5rem;
+}
+/* 03/31/2020 Paul.  Don't like bootstrap settings. */
+pre
+{
+	font-size: unset;
+	color: unset;
+}
+
+.ReportDesignerTable
+{
+	font-size: 12px;
+	line-height: 16px;
+	font-family: Verdana, Arial, Helvetica, AppleGothic, sans-serif;
+	cursor: pointer;
+}
+.ReportDesignerTableSelected
+{
+	padding-top: 0px;
+	background-color: #FFE6B0;
+	color: black;
+	border: 1px #FFB951 solid;
+	opacity: 0.8;
+}
+
+/* 12/26/2017 Paul.  Update login screen. */
+.LoginActionsShadingTable
+{
+	width: 400px;
+	border: none;
+}
+.LoginActionsShadingHorizontal
+{
+	height: 0px;
+	background-color: inherit;
+	opacity: 0.6;
+	filter: alpha(opacity=60);
+}
+.LoginActionsShadingVertical
+{
+	width: 0px;
+	background-color: inherit;
+	opacity: 0.6;
+	filter: alpha(opacity=60);
+}
+.LoginActionsInnerTable
+{
+	border-left: none;
+	border-right: none;
+	border-bottom: none;
+	border-top: none;
+	background-color: inherit;
+}
+.loginForm
+{
+	background-color: #f5f5f5;
+}
+.loginField input[type=text], .loginField input[type=password]
+{
+	width: 90%;
+}
+.LoginActionsInnerTable input[type=text], .LoginActionsInnerTable input[type=password]
+{
+	margin: 10px;
+	padding: 0 20px 0 20px;
+	border: none;
+	line-height: 50px;
+	height: 50px;
+	color: #999999;
+	border-radius: 3px;
+	font-size: 16px;
+}
+.LoginActionsInnerTable a
+{
+	color: #f08377;
+	text-decoration: none;
+	font-size: 13px;
+}
+.LoginActionsInnerTable .utilsLink span
+{
+	color: #f08377;
+	text-decoration: none;
+	font-size: 13px;
+}
+.LoginActionsInnerTable .dataLabel
+{
+	display: none;
+}
+.loginInstructions
+{
+	display: none;
+}
+
+.SixToolbarLogin
+{
+	width: 100%;
+	height: 45px;
+	background-color: #64707B;
+	color: #003564;
+	left: 0px;
+	top: 0px;
+}
+
+.buttonLogin
+{
+	background-image: none;
+	background-repeat: inherit;
+	background-position: inherit;
+	background-color: #F08276;
+	filter: unset;
+	border: none;
+	border-radius: 3px;
+	padding: 0 20px 0 20px;
+	color: white;
+	cursor: pointer;
+	font-size: 13px;
+	font-weight: 500;
+	text-transform: uppercase;
+	margin: 0;
+	height: 30px;
+	line-height: 30px;
+}
+
+.buttonLogin:hover, .buttonLogin:focus
+{
+	background-color: #808F9C;
+	color: white;
+}
+

@@ -1,0 +1,239 @@
+/*
+ * This program is free software: you can redistribute it and/or modify it under the terms of the 
+ * GNU Affero General Public License as published by the Free Software Foundation, either version 3 
+ * of the License, or (at your option) any later version.
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License version 3, 
+ * the Appropriate Legal Notices must display the following words on all interactive user interfaces: 
+ * "Copyright (C) 2005-2022 SplendidCRM Software, Inc. All rights reserved."
+ */
+
+/* http://www.bennadel.com/blog/1734-Using-CSS-Fixed-Position-Elements-Across-Browsers.htm */
+/* 05/04/2010 Paul.  Must change the DOCTYPE to <!DOCTYPE HTML> */
+.AtlanticToolbar
+{
+	width: 100%;
+	height: 45px;
+	background-color: #FFD14E;
+	color: #003564;
+	left: 0px;
+	top: 0px;
+}
+.AtlanticToolbarUser
+{
+	height: 45px;
+	background-color: #FFD14E;
+	color: #003564;
+	right: 0px;
+	top: 0px;
+}
+
+.AtlanticTabToolbarFrame
+{
+	border: none;
+	border-collapse: collapse;
+	border-spacing: 0px;
+	height: 45px;
+	width: 100%;
+}
+.AtlanticTabRow
+{
+	background-color: #FFD14E;
+	height: 20px;
+}
+.AtlanticCurrentTab
+{
+	padding: 4px 15px 0px 15px;
+	background-color: #FFBB19;
+	font-size: 15px;
+	height: 37px;
+}
+a.AtlanticCurrentTabLink:link, a.AtlanticCurrentTabLink:visited, a.AtlanticCurrentTabLink:hover
+{
+	text-decoration: none;
+}
+a.AtlanticCurrentTabLink:link, a.AtlanticCurrentTabLink:visited
+{
+	color: #003564;
+}
+a.AtlanticCurrentTabLink:hover
+{
+	color: #003564;
+}
+.AtlanticOtherQuickCreate
+{
+	border: none;
+	border-collapse: collapse;
+	width: 100%;
+	padding: 4px 5px 0px 5px;
+	background-color: #FFD14E;
+	color: #003564;
+	font-size: 15px;
+	height: 37px;
+}
+.AtlanticOtherQuickCreate:hover
+{
+	background-color: #FFDC87;
+}
+.AtlanticOtherUser
+{
+	border: none;
+	border-collapse: collapse;
+	width: 100%;
+	padding: 4px 10px 0px 10px;
+	background-color: #FFD14E;
+	color: #003564;
+	font-size: 15px;
+	height: 37px;
+}
+.AtlanticOtherUser:hover
+{
+	background-color: #FFDC87;
+}
+.AtlanticOtherHome
+{
+	padding: 0px 5px 0px 5px;
+	background-color: #FFD14E;
+	color: #003564;
+	width: 45px;
+	height: 45px;
+}
+.AtlanticOtherHome:hover
+{
+	background-color: #FFDC87;
+}
+.AtlanticOtherTab
+{
+	padding: 4px 15px 0px 15px;
+	background-color: #FFD14E;
+	color: #003564;
+	font-size: 15px;
+	height: 37px;
+}
+.AtlanticOtherTab:hover
+{
+	background-color: #FFDC87;
+}
+a.AtlanticOtherTabLink:link, a.AtlanticOtherTabLink:visited
+{
+	text-decoration: none;
+	padding-top: 0px;
+}
+a.AtlanticOtherTabLink:hover
+{
+	text-decoration: none;
+}
+a.AtlanticOtherTabLink:link, a.AtlanticOtherTabLink:visited
+{
+	color: #003564;
+}
+a.AtlanticOtherTabLink:hover
+{
+	color: #003564;
+}
+
+.AtlanticOtherTabMoreLink, .AtlanticOtherTabMoreLink:link, .AtlanticOtherTabMoreLink:active, .AtlanticOtherTabMoreLink:visited, .AtlanticOtherTabMoreLink:hover
+{
+	padding: 1px 5px 1px 7px;
+	color: #636363;
+	text-decoration: none;
+	line-height: 22px;
+	display: block;
+	font-size: 13px;
+}
+.AtlanticOtherTabMoreLink:hover, .AtlanticOtherTabMoreLink:active
+{
+	color: white;
+	background-color: #31597b;
+}
+
+.AtlanticModuleActionsMenuItems, .AtlanticModuleActionsMenuItems:link, .AtlanticModuleActionsMenuItems:active, .AtlanticModuleActionsMenuItems:visited, .AtlanticModuleActionsMenuItems:hover
+{
+	padding: 1px 5px 1px 7px;
+	color: #636363;
+	text-decoration: none;
+	line-height: 22px;
+	display: block;
+	font-size: 13px;
+}
+.AtlanticModuleActionsMenuItems:hover, .AtlanticModuleActionsMenuItems:active
+{
+	color: white;
+	background-color: #31597b;
+}
+.AtlanticMoreActionsInnerTable
+{
+	width: 200px;
+	border-left: 1px solid #9c9c9c;
+	border-right: 1px solid #9c9c9c;
+	border-bottom: 1px solid #9c9c9c;
+	background-color: White;
+	-moz-box-shadow: 0 5px 5px #888;
+	-webkit-box-shadow: 0 5px 5px #888;
+	box-shadow: 0 5px 5px #888;
+}
+.AtlanticMoreActionsInnerCell
+{
+	vertical-align: top;
+	padding: 8px 8px 8px 8px;
+	border-left: solid 1px #cecece;
+}
+.AtlanticOtherTabMoreArrow
+{
+	vertical-align: middle;
+}
+.AtlanticPanelHoverHidden
+{
+	display: none;
+	visibility: hidden;
+}
+.AtlanticModuleActionsInnerTable
+{
+	width: 200px;
+	border-left: 1px solid #9c9c9c;
+	border-right: 1px solid #9c9c9c;
+	border-bottom: 1px solid #9c9c9c;
+	background-color: White;
+	-moz-box-shadow: 0 5px 5px #888;
+	-webkit-box-shadow: 0 5px 5px #888;
+	box-shadow: 0 5px 5px #888;
+}
+.AtlanticModuleActionsInnerCell
+{
+	vertical-align: top;
+	padding: 8px 8px 8px 8px;
+	border-left: solid 1px #cecece;
+}
+.AtlanticModuleActionsInnerHeader
+{
+	font-size: 10pt;
+	color: #9c9c9c;
+	display:block;
+}
+.AtlanticModuleActionsMenuItems, .AtlanticModuleActionsMenuItems:link, .AtlanticModuleActionsMenuItems:active, .AtlanticModuleActionsMenuItems:visited, .AtlanticModuleActionsMenuItems:hover
+{
+	padding: 1px 5px 1px 7px;
+	color: #636363;
+	text-decoration: none;
+	line-height: 22px;
+	display: block;
+	font-size: 13px;
+}
+.AtlanticModuleActionsMenuItems:hover, .AtlanticModuleActionsMenuItems:active
+{
+	color: white;
+	background-color: #31597b;
+}
+
+/* 04/25/2013 Paul.  Correction to Six theme. */
+.ModuleActionsShadingTable
+{
+	width: 200px;
+	border: 1px solid #9c9c9c;
+}
+/* 12/26/2017 Paul.  Update login screen. */
+.LoginActionsShadingTable
+{
+	width: 200px;
+	border: 1px solid #9c9c9c;
+}

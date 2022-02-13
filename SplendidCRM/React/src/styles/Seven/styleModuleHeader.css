@@ -1,0 +1,243 @@
+/**********************************************************************************************************************
+ * SplendidCRM is a Customer Relationship Management program created by SplendidCRM Software, Inc. 
+ * Copyright (C) 2005-2022 SplendidCRM Software, Inc. All rights reserved.
+ * 
+ * This program is free software: you can redistribute it and/or modify it under the terms of the 
+ * GNU Affero General Public License as published by the Free Software Foundation, either version 3 
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+ * See the GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License along with this program. 
+ * If not, see <http://www.gnu.org/licenses/>. 
+ * 
+ * You can contact SplendidCRM Software, Inc. at email address support@splendidcrm.com. 
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License version 3, 
+ * the Appropriate Legal Notices must display the following words on all interactive user interfaces: 
+ * "Copyright (C) 2005-2011 SplendidCRM Software, Inc. All rights reserved."
+ *********************************************************************************************************************/
+
+/* 05/25/2015 Paul.  New styles to support the Seven theme. */
+.ModuleHeaderFrame
+{
+	margin-top: 8px;
+	background-color: #F5F5F5;
+	border-bottom: 1px solid #E9E9E9;
+	height: 50px;
+	width: 100%;
+}
+.ModuleHeaderModule
+{
+	margin-left: 10px;
+	margin-right: 12px;
+	padding-top: 4px;
+	padding-left: 6px;
+	background-color: #777777;
+	border-radius: 4px;
+	color: #E6ECE2;
+	font-size: 16px;
+	vertical-align: top;
+	text-align: left;
+	display: inline-block;
+	width: 40px;
+	height: 40px;
+}
+.ModuleHeaderName
+{
+	color: #58595B;
+	font-size: 16px;
+	font-weight: 500;
+}
+.ListHeaderModule
+{
+	margin-left: 4px;
+	margin-right: 4px;
+	font-size: 12px;
+	width: 30px;
+	height: 30px;
+}
+.ListHeaderName
+{
+	color: #58595B;
+	font-size: 14px;
+	font-weight: 500;
+}
+
+/* Home */
+.ModuleHeaderModuleTags                      { background-color: #FFE044; color: black; }
+.ModuleHeaderModuleDashboard                 { background-color: #FFD044; }
+.ModuleHeaderModuleFeeds                     { background-color: #FFC044; }
+.ModuleHeaderModuleHome                      { background-color: #FFBB11; }
+.ModuleHeaderModuleiFrames                   { background-color: #FFB044; }
+.ModuleHeaderModuleHelp                      { background-color: #FFA044; }
+
+/* Marketing */
+.ModuleHeaderModuleCampaigns                 { background-color: #990000; }
+.ModuleHeaderModuleCampaignLog               { background-color: #aa2222; }
+.ModuleHeaderModuleCampaignTrackers          { background-color: #bb3333; }
+.ModuleHeaderModuleCallMarketing             { background-color: #cc4444; }
+.ModuleHeaderModuleEmailMarketing            { background-color: #dd5555; }
+.ModuleHeaderModuleEmailTemplates            { background-color: #ee6666; }
+.ModuleHeaderModuleProspects                 { background-color: #009900; }
+.ModuleHeaderModuleProspectLists             { background-color: #22aa22; }
+
+/* Marketing Admin */
+.ModuleHeaderModuleEmailMan                  { background-color: #cc4444; }
+.ModuleHeaderModuleSimpleEmail               { background-color: #cc5555; }
+.ModuleHeaderModuleOutboundEmail             { background-color: #cc6666; }
+.ModuleHeaderModuleOutboundSms               { background-color: #cc7777; }
+
+.ModuleHeaderModuleSurveys                   { background-color: #00a8a8; }
+.ModuleHeaderModuleSurveyPages               { background-color: #00b0b0; }
+.ModuleHeaderModuleSurveyQuestions           { background-color: #00b8b8; }
+.ModuleHeaderModuleSurveyResults             { background-color: #00c0c0; }
+.ModuleHeaderModuleSurveyQuestionResults     { background-color: #00c8c8; }
+.ModuleHeaderModuleSurveyThemes              { background-color: #00d0d0; }
+
+/* Sales */
+.ModuleHeaderModuleOpportunities             { background-color: #009900; }
+.ModuleHeaderModuleRevenueLineItems          { background-color: #009999; }
+.ModuleHeaderModuleAccounts                  { background-color: #22aa22; }
+.ModuleHeaderModuleContacts                  { background-color: #33bb33; }
+.ModuleHeaderModuleLeads                     { background-color: #44cc44; }
+
+/* Order Management */
+.ModuleHeaderModuleQuotes                    { background-color: #000099; }
+.ModuleHeaderModuleQuotesLineItems           { background-color: #111199; }
+.ModuleHeaderModuleOrders                    { background-color: #2222aa; }
+.ModuleHeaderModuleOrdersLineItems           { background-color: #3333bb; }
+.ModuleHeaderModuleInvoices                  { background-color: #4444cc; }
+.ModuleHeaderModuleInvoicesLineItems         { background-color: #5555dd; }
+.ModuleHeaderModulePayments                  { background-color: #6666ee; }
+.ModuleHeaderModuleCreditCards               { background-color: #7777ff; }
+
+/* Product Admin */
+.ModuleHeaderModuleProducts                  { background-color: #3030bb; }
+.ModuleHeaderModuleProductTemplates          { background-color: #4040bb; }
+.ModuleHeaderModuleProductCatalog            { background-color: #4848bb; }
+.ModuleHeaderModuleProductCategories         { background-color: #5050bb; }
+.ModuleHeaderModuleProductTypes              { background-color: #5858bb; }
+.ModuleHeaderModuleManufacturers             { background-color: #6060bb; }
+.ModuleHeaderModuleShippers                  { background-color: #6868bb; }
+.ModuleHeaderModuleTaxRates                  { background-color: #7070bb; }
+.ModuleHeaderModuleDiscounts                 { background-color: #7878bb; }
+.ModuleHeaderModulePaymentGateway            { background-color: #8080bb; }
+.ModuleHeaderModulePaymentTerms              { background-color: #8888bb; }
+.ModuleHeaderModulePaymentTypes              { background-color: #9090bb; }
+
+/* Productivity / Collaboration */
+.ModuleHeaderModuleActivities                { background-color: #800000; }
+.ModuleHeaderModuleCalls                     { background-color: #802222; }
+.ModuleHeaderModuleMeetings                  { background-color: #803333; }
+.ModuleHeaderModuleEmails                    { background-color: #804444; }
+.ModuleHeaderModuleEmailClient               { background-color: #805555; }
+.ModuleHeaderModuleSmsMessages               { background-color: #806666; }
+.ModuleHeaderModuleNotes                     { background-color: #807777; }
+.ModuleHeaderModuleTasks                     { background-color: #808888; }
+.ModuleHeaderModuleCalendar                  { background-color: #809999; }
+.ModuleHeaderModuleDocuments                 { background-color: #80aaaa; }
+.ModuleHeaderModuleImages                    { background-color: #80bbbb; }
+
+/* Collaboration */
+.ModuleHeaderModuleChatDashboard             { background-color: #dd6600; }
+.ModuleHeaderModuleChatChannels              { background-color: #dd7711; }
+.ModuleHeaderModuleChatMessages              { background-color: #dd8822; }
+.ModuleHeaderModuleForums                    { background-color: #dd9933; }
+.ModuleHeaderModuleForumTopics               { background-color: #ddaa44; }
+.ModuleHeaderModulePosts                     { background-color: #ddbb55; }
+.ModuleHeaderModuleThreads                   { background-color: #ddcc66; }
+
+/* Service and Support */
+.ModuleHeaderModuleBugs                      { background-color: #bb0000; }
+.ModuleHeaderModuleReleases                  { background-color: #bb1111; }
+.ModuleHeaderModuleCases                     { background-color: #bb2222; }
+.ModuleHeaderModuleContracts                 { background-color: #bb3333; }
+.ModuleHeaderModuleContractTypes             { background-color: #bb4444; }
+.ModuleHeaderModuleKBDocuments               { background-color: #bb5555; }
+.ModuleHeaderModuleKBTags                    { background-color: #bb6666; }
+.ModuleHeaderModuleProject                   { background-color: #bb7777; }
+.ModuleHeaderModuleProjectTask               { background-color: #bb8888; }
+.ModuleHeaderModuleInboundEmail              { background-color: #bb9999; }
+
+/* Integration and Management */
+/* Communications */
+.ModuleHeaderModuleAsterisk                  { background-color: #00bb77; }
+.ModuleHeaderModuleAvaya                     { background-color: #00bb88; }
+.ModuleHeaderModuleExchange                  { background-color: #00bb99; }
+.ModuleHeaderModuleTwilio                    { background-color: #00bbaa; }
+.ModuleHeaderModuleTwitterMessages           { background-color: #00bbbb; }
+.ModuleHeaderModuleTwitterTracks             { background-color: #00bbcc; }
+.ModuleHeaderModuleFacebook                  { background-color: #00bbdd; }
+
+/* Financial */
+.ModuleHeaderModulePayPal                    { background-color: #0055aa; }
+.ModuleHeaderModulePayTrace                  { background-color: #1166aa; }
+.ModuleHeaderModuleQuickBooks                { background-color: #2277aa; }
+
+/* Marketing Automation */
+.ModuleHeaderModuleHubSpot                   { background-color: #008855; }
+.ModuleHeaderModuleMarketo                   { background-color: #118866; }
+.ModuleHeaderModuleConstantContact           { background-color: #228877; }
+.ModuleHeaderModuleiContact                  { background-color: #338888; }
+.ModuleHeaderModuleGetResponse               { background-color: #448899; }
+.ModuleHeaderModuleMailChimp                 { background-color: #5588aa; }
+.ModuleHeaderModulePardot                    { background-color: #6688bb; }
+
+/* Reporting */
+.ModuleHeaderModuleReports                   { background-color: #800080; }
+.ModuleHeaderModuleReportDesigner            { background-color: #900090; }
+.ModuleHeaderModuleReportRules               { background-color: #a000a0; }
+.ModuleHeaderModuleCharts                    { background-color: #b000b0; }
+
+/* Admin Users */
+.ModuleHeaderModuleUsers                     { background-color: #00aa00; }
+.ModuleHeaderModuleEmployees                 { background-color: #11a811; }
+.ModuleHeaderModuleUserLogins                { background-color: #22b022; }
+.ModuleHeaderModuleUserSignatures            { background-color: #33b833; }
+.ModuleHeaderModuleTeams                     { background-color: #44c044; }
+.ModuleHeaderModuleTeamNotices               { background-color: #55c855; }
+.ModuleHeaderModuleACLRoles                  { background-color: #66d066; }
+
+/* Admin Layout */
+.ModuleHeaderModuleDetailViewsRelationships  { background-color: #101010; }
+.ModuleHeaderModuleDynamicLayout             { background-color: #181818; }
+.ModuleHeaderModuleEditCustomFields          { background-color: #202020; }
+.ModuleHeaderModuleFieldValidators           { background-color: #282828; }
+.ModuleHeaderModuleDynamicButtons            { background-color: #303030; }
+.ModuleHeaderModuleShortcuts                 { background-color: #383838; }
+.ModuleHeaderModuleLanguages                 { background-color: #404040; }
+.ModuleHeaderModuleBusinessRules             { background-color: #484848; }
+.ModuleHeaderModuleRulesWizard               { background-color: #505050; }
+.ModuleHeaderModuleDropdown                  { background-color: #585858; }
+.ModuleHeaderModuleTerminology               { background-color: #606060; }
+
+/* Admin */
+.ModuleHeaderModuleAdministration            { background-color: #707070; }
+.ModuleHeaderModuleAuditEvents               { background-color: #787878; }
+.ModuleHeaderModuleConfig                    { background-color: #808080; }
+.ModuleHeaderModuleCurrencies                { background-color: #888888; }
+.ModuleHeaderModuleImport                    { background-color: #909090; }
+.ModuleHeaderModuleModuleBuilder             { background-color: #989898; }
+.ModuleHeaderModuleModules                   { background-color: #a0a0a0; }
+.ModuleHeaderModuleNumberSequences           { background-color: #a8a8a8; }
+.ModuleHeaderModuleRegions                   { background-color: #b0b0b0; }
+.ModuleHeaderModuleSchedulers                { background-color: #b8b8b8; }
+.ModuleHeaderModuleSimpleStorage             { background-color: #c0c0c0; }
+.ModuleHeaderModuleSystemLog                 { background-color: #c8c8c8; }
+.ModuleHeaderModuleSystemSyncLog             { background-color: #d0d0d0; }
+.ModuleHeaderModuleUndelete                  { background-color: #d8d8d9; }
+.ModuleHeaderModuleZipCodes                  { background-color: #e0e0d9; }
+.ModuleHeaderModuleCurrencyLayer             { background-color: #888888; }
+.ModuleHeaderModuleDataPrivacy               { background-color: #f0f0f0; }
+
+/* Admin Workflow */
+.ModuleHeaderModuleWorkflows                 { background-color: #cc8000; }
+.ModuleHeaderModuleWorkflowActionShells      { background-color: #cc8811; }
+.ModuleHeaderModuleWorkflowAlertShells       { background-color: #cc9022; }
+.ModuleHeaderModuleWorkflowTriggerShells     { background-color: #cc9833; }
+.ModuleHeaderModuleWorkflowAlertTemplates    { background-color: #cca044; }
+.ModuleHeaderModuleWorkflowEventLog          { background-color: #cca855; }
+.ModuleHeaderModuleBusinessProcesses         { background-color: #cc8000; }

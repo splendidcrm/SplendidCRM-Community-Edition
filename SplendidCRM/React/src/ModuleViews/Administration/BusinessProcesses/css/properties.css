@@ -1,0 +1,339 @@
+/* line 16, node_modules\bpmn-js-properties-panel\styles\properties.less */
+.bpp-properties-panel {
+  background-color: #f8f8f8;
+  position: relative;
+}
+/* line 20, node_modules\bpmn-js-properties-panel\styles\properties.less */
+.bpp-properties-panel:empty {
+  display: none;
+}
+/* line 24, node_modules\bpmn-js-properties-panel\styles\properties.less */
+.bpp-properties-panel label,
+.bpp-properties-panel input {
+  vertical-align: middle;
+}
+/* line 30, node_modules\bpmn-js-properties-panel\styles\properties.less */
+.bpp-properties-panel input,
+.bpp-properties-panel button,
+.bpp-properties-panel textarea {
+  padding: 3px 6px;
+  border: 1px solid #ccc;
+}
+/* line 36, node_modules\bpmn-js-properties-panel\styles\properties.less */
+.bpp-properties-panel input:focus,
+.bpp-properties-panel button:focus,
+.bpp-properties-panel textarea:focus {
+  outline: none;
+  border-color: #52B415;
+  box-shadow: 0 0 1px 2px rgba(82, 180, 21, 0.2);
+}
+/* line 40, node_modules\bpmn-js-properties-panel\styles\properties.less */
+.bpp-properties-panel input.invalid,
+.bpp-properties-panel button.invalid,
+.bpp-properties-panel textarea.invalid {
+  border-color: #cc3333;
+  background: #f0c2c2;
+}
+/* line 42, node_modules\bpmn-js-properties-panel\styles\properties.less */
+.bpp-properties-panel input.invalid:focus,
+.bpp-properties-panel button.invalid:focus,
+.bpp-properties-panel textarea.invalid:focus {
+  box-shadow: 0 0 1px 2px rgba(204, 51, 51, 0.2);
+}
+/* line 49, node_modules\bpmn-js-properties-panel\styles\properties.less */
+.bpp-properties-panel [type=text],
+.bpp-properties-panel textarea,
+.bpp-properties-panel select {
+  width: 100%;
+}
+/* line 55, node_modules\bpmn-js-properties-panel\styles\properties.less */
+.bpp-properties-panel textarea {
+  resize: vertical;
+}
+/* line 59, node_modules\bpmn-js-properties-panel\styles\properties.less */
+.bpp-properties-panel label {
+  font-weight: bolder;
+  display: inline-block;
+  vertical-align: middle;
+  color: #666;
+}
+/* line 71, node_modules\bpmn-js-properties-panel\styles\_mixins.less */
+.bpp-properties-panel label[for] {
+  cursor: pointer;
+}
+/* line 74, node_modules\bpmn-js-properties-panel\styles\_mixins.less */
+.bpp-properties-panel label.bpp-hidden {
+  display: none;
+}
+/* line 63, node_modules\bpmn-js-properties-panel\styles\properties.less */
+.bpp-properties-panel .entry-label {
+  font-weight: bolder;
+  display: inline-block;
+  vertical-align: middle;
+  color: #666;
+  font-size: 120%;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  transition: margin 0.218s linear;
+  font-style: italic;
+}
+/* line 71, node_modules\bpmn-js-properties-panel\styles\_mixins.less */
+.bpp-properties-panel .entry-label[for] {
+  cursor: pointer;
+}
+/* line 74, node_modules\bpmn-js-properties-panel\styles\_mixins.less */
+.bpp-properties-panel .entry-label.bpp-hidden {
+  display: none;
+}
+/* line 71, node_modules\bpmn-js-properties-panel\styles\properties.less */
+.bpp-properties-panel .entry-label.divider {
+  border-top: 1px dotted #ccc;
+  padding-top: 8px;
+  margin-top: 16px;
+  width: 100%;
+}
+/* line 79, node_modules\bpmn-js-properties-panel\styles\properties.less */
+.bpp-properties-panel button {
+  position: absolute;
+  top: 0;
+  height: 23px;
+  width: 24px;
+  overflow: hidden;
+  cursor: pointer;
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+}
+/* line 44, node_modules\bpmn-js-properties-panel\styles\_mixins.less */
+.bpp-properties-panel button > span {
+  display: none;
+}
+/* line 48, node_modules\bpmn-js-properties-panel\styles\_mixins.less */
+.bpp-properties-panel button:before {
+  font-family: "bpmn-js-pp";
+  font-style: normal;
+  font-weight: normal;
+  speak: none;
+  display: inline-block;
+  text-decoration: inherit;
+  text-align: center;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  position: relative;
+}
+/* line 53, node_modules\bpmn-js-properties-panel\styles\_mixins.less */
+.bpp-properties-panel button.add:before {
+  content: '\E803';
+}
+/* line 57, node_modules\bpmn-js-properties-panel\styles\_mixins.less */
+.bpp-properties-panel button.clear:before {
+  content: '\E802';
+}
+/* line 61, node_modules\bpmn-js-properties-panel\styles\_mixins.less */
+.bpp-properties-panel button:hover {
+  color: #52B415;
+}
+/* line 84, node_modules\bpmn-js-properties-panel\styles\properties.less */
+.bpp-error-message,
+.bpp-error-message.bpp-entry-link {
+  color: #cc3333;
+}
+/* line 89, node_modules\bpmn-js-properties-panel\styles\properties.less */
+.bpp-row {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+/* line 92, node_modules\bpmn-js-properties-panel\styles\properties.less */
+.bpp-row:first-of-type {
+  margin-top: 0;
+}
+/* line 95, node_modules\bpmn-js-properties-panel\styles\properties.less */
+.bpp-row:last-of-type {
+  margin-bottom: 0;
+}
+/* line 100, node_modules\bpmn-js-properties-panel\styles\properties.less */
+.bpp-textfield,
+.bpp-textarea {
+  margin-bottom: 3px;
+}
+/* line 105, node_modules\bpmn-js-properties-panel\styles\properties.less */
+.bpp-radios-group {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 9px 0;
+}
+/* line 110, node_modules\bpmn-js-properties-panel\styles\properties.less */
+.bpp-radios-group .bpp-radio-wrapper {
+  margin: 6px 0;
+}
+/* line 114, node_modules\bpmn-js-properties-panel\styles\properties.less */
+.bpp-radios-group input,
+.bpp-radios-group label {
+  vertical-align: middle;
+}
+/* line 119, node_modules\bpmn-js-properties-panel\styles\properties.less */
+.bpp-radios-group input {
+  margin-top: 0;
+  margin-left: 0;
+}
+/* line 127, node_modules\bpmn-js-properties-panel\styles\properties.less */
+.bpp-radios-group input,
+.bpp-checkbox input {
+  margin-left: 0;
+}
+/* line 132, node_modules\bpmn-js-properties-panel\styles\properties.less */
+.bpp-radios-group label:after,
+.bpp-checkbox label:after {
+  display: none;
+}
+/* line 139, node_modules\bpmn-js-properties-panel\styles\properties.less */
+.bpp-textfield input {
+  padding-right: 28px;
+}
+/* line 143, node_modules\bpmn-js-properties-panel\styles\properties.less */
+.bpp-textfield .clear {
+  background: transparent;
+  border: none;
+  top: 0;
+  right: 0;
+}
+/* line 151, node_modules\bpmn-js-properties-panel\styles\properties.less */
+.bpp-combo-input {
+  margin-top: 7px;
+}
+/* line 156, node_modules\bpmn-js-properties-panel\styles\properties.less */
+.bpp-select select {
+  height: 23px;
+}
+/* line 159, node_modules\bpmn-js-properties-panel\styles\properties.less */
+.bpp-select button.add {
+  top: -22px;
+  right: 0;
+}
+/* line 169, node_modules\bpmn-js-properties-panel\styles\properties.less */
+.bpp-select button.add,
+.bpp-element-list button.add,
+.bpp-select button.clear,
+.bpp-element-list button.clear {
+  top: -23px;
+  border-bottom: none;
+}
+/* line 176, node_modules\bpmn-js-properties-panel\styles\properties.less */
+.bpp-select button.add,
+.bpp-element-list button.add {
+  right: 0px;
+}
+/* line 180, node_modules\bpmn-js-properties-panel\styles\properties.less */
+.bpp-select button.clear,
+.bpp-element-list button.clear {
+  right: 23px;
+}
+/* line 185, node_modules\bpmn-js-properties-panel\styles\properties.less */
+.bpp-properties-entry {
+  margin-bottom: 9px;
+}
+/* line 188, node_modules\bpmn-js-properties-panel\styles\properties.less */
+.bpp-properties-entry .bpp-field-wrapper {
+  position: relative;
+}
+/* line 191, node_modules\bpmn-js-properties-panel\styles\properties.less */
+.bpp-properties-entry .bpp-field-wrapper input[readonly] + .clear {
+  display: none;
+}
+/* line 197, node_modules\bpmn-js-properties-panel\styles\properties.less */
+.bpp-hidden {
+  display: none;
+}
+/* line 201, node_modules\bpmn-js-properties-panel\styles\properties.less */
+label.bpp-hidden {
+  display: none;
+}
+/* line 206, node_modules\bpmn-js-properties-panel\styles\properties.less */
+.bpp-table-add-row > button {
+  position: relative;
+  margin-left: 10px;
+}
+/* line 212, node_modules\bpmn-js-properties-panel\styles\properties.less */
+.bpp-table {
+  margin-top: 10px;
+}
+/* line 216, node_modules\bpmn-js-properties-panel\styles\properties.less */
+.bpp-table-row {
+  margin-bottom: 2px;
+  overflow: hidden;
+}
+/* line 220, node_modules\bpmn-js-properties-panel\styles\properties.less */
+.bpp-table-row > input,
+.bpp-table-row > button {
+  float: left;
+}
+/* line 225, node_modules\bpmn-js-properties-panel\styles\properties.less */
+.bpp-table-row > label {
+  padding-left: 5px;
+}
+/* line 232, node_modules\bpmn-js-properties-panel\styles\properties.less */
+.bpp-table-row > label.bpp-table-row-columns-1,
+.bpp-table-row > input.bpp-table-row-columns-1 {
+  width: 100%;
+}
+/* line 234, node_modules\bpmn-js-properties-panel\styles\properties.less */
+.bpp-table-row > label.bpp-table-row-columns-1.bpp-table-row-removable,
+.bpp-table-row > input.bpp-table-row-columns-1.bpp-table-row-removable {
+  width: calc(100% - 24px);
+}
+/* line 239, node_modules\bpmn-js-properties-panel\styles\properties.less */
+.bpp-table-row > label.bpp-table-row-columns-2,
+.bpp-table-row > input.bpp-table-row-columns-2 {
+  width: 50%;
+}
+/* line 241, node_modules\bpmn-js-properties-panel\styles\properties.less */
+.bpp-table-row > label.bpp-table-row-columns-2.bpp-table-row-removable,
+.bpp-table-row > input.bpp-table-row-columns-2.bpp-table-row-removable {
+  width: calc(50% - 12px);
+}
+/* line 244, node_modules\bpmn-js-properties-panel\styles\properties.less */
+.bpp-table-row > label.bpp-table-row-columns-2:nth-child(2),
+.bpp-table-row > input.bpp-table-row-columns-2:nth-child(2) {
+  border-left: none;
+}
+/* line 250, node_modules\bpmn-js-properties-panel\styles\properties.less */
+.bpp-table-row > button {
+  border-left: none;
+  position: static;
+}
+/* line 256, node_modules\bpmn-js-properties-panel\styles\properties.less */
+.bpp-properties-static {
+  margin-bottom: 0;
+  margin-top: 0;
+  border: 1px solid #ccc;
+  background-color: white;
+  padding: 3px 6px;
+  font: 13.3333px Arial;
+  width: 100%;
+}
+/* line 266, node_modules\bpmn-js-properties-panel\styles\properties.less */
+.bpp-entry-link {
+  cursor: pointer;
+  color: #52B415;
+}
+/* line 271, node_modules\bpmn-js-properties-panel\styles\properties.less */
+.bpp-icon-warning:before {
+  font-family: "bpmn-js-pp";
+  font-style: normal;
+  font-weight: normal;
+  speak: none;
+  display: inline-block;
+  text-decoration: inherit;
+  text-align: center;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  content: '\E806';
+}
+
+
+

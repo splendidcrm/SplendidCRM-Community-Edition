@@ -1,0 +1,56 @@
+.Calendar
+{
+  border-top: 2px solid #fff;
+  border-right: 2px solid #000;
+  border-bottom: 2px solid #000;
+  border-left: 2px solid #fff;
+  font-size: 11px;
+  color: #000;
+/*  cursor: default;*/
+  background: #c8d0d4;
+  font-family: tahoma,verdana,sans-serif;
+}
+
+.CalendarTitle /* This holds the current "month, year" */
+{
+  font-weight: bold;
+  font-size: 11px;
+  padding: 1px;
+  border: 1px solid #000;
+  background: #788084;
+  color: #fff;
+  text-align: center;
+}
+.CalendarDayHeader /* Cells <TD> containing the day names */
+{
+  border-bottom: 1px solid #000;
+  padding: 2px;
+  text-align: center;
+  background: #e8f0f4;
+}
+.CalendarDay 
+{
+  font-weight: bold;
+  padding: 1px;
+  color: #fff;
+  text-align: center;
+}
+.CalendarWeekendDay /* How a weekend day name shows in header */
+{
+  color: #f00;
+}
+.CalendarDay /* Cells <TD> containing month days dates */
+{
+  width: 2em;
+  text-align: right;
+  padding: 2px 4px 2px 2px;
+}
+.CalendarOtherMonthDay
+{
+  background: #e8f0f4;
+}
+.CalendarToday /* Cell showing today date */
+{
+  font-weight: bold;
+  color: #00f;
+}

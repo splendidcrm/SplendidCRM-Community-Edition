@@ -1,0 +1,1681 @@
+/**********************************************************************************************************************
+ * SplendidCRM is a Customer Relationship Management program created by SplendidCRM Software, Inc. 
+ * Copyright (C) 2005-2022 SplendidCRM Software, Inc. All rights reserved.
+ * 
+ * This program is free software: you can redistribute it and/or modify it under the terms of the 
+ * GNU Affero General Public License as published by the Free Software Foundation, either version 3 
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+ * See the GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License along with this program. 
+ * If not, see <http://www.gnu.org/licenses/>. 
+ * 
+ * You can contact SplendidCRM Software, Inc. at email address support@splendidcrm.com. 
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License version 3, 
+ * the Appropriate Legal Notices must display the following words on all interactive user interfaces: 
+ * "Copyright (C) 2005-2011 SplendidCRM Software, Inc. All rights reserved."
+ *********************************************************************************************************************/
+body
+{
+	margin: 0px 0px 0px 0px;
+	font-size: 12px;
+	font-weight: normal;
+	font-family: Arial, Verdana, sans-serif;
+}
+p
+{
+	margin-top: 0px;
+	margin-bottom: 5px;
+}
+h1, h2
+{
+	margin-top: 0px;
+	margin-bottom: 0px;
+	font-size: 13px;
+	font-weight: bold;
+	color: #666666;
+	text-transform: uppercase;
+}
+/* 10/24/2010 Paul.  Set margin top to 0 to reduce wasted space. */
+h3
+{
+	margin-top: 0px;
+	margin-bottom: 3px;
+	padding-top: 3px;
+	font-size: 12px;
+	font-weight: bold;
+	color: #666666;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+}
+/* 10/28/2010 Paul.  Set margin top to 0 to reduce wasted space. */
+h4, h5
+{
+	margin-top: 0px;
+	margin-bottom: 2px;
+	padding-left: 4px;
+	font-size: 12px;
+	font-weight: bold;
+	color: #444444;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+}
+table, td
+{
+	font-size: 11px;
+	color: #444444;
+}
+hr
+{
+	height: 1px;
+}
+a:link, a:visited
+{
+	color: #444444;
+	text-decoration: underline;
+}
+a:hover
+{
+	text-decoration: underline;
+}
+h2 a:link, h2 a:visited, h2 a:hover
+{
+	color: #666666;
+	text-decoration: none;
+}
+/* 08/03/2010 Paul.  TextArea was not inheriting the document font. */
+input, select, textarea
+{
+	border: 1px solid #999999;
+	background-color: #ffffff;
+	font-size: 12px;
+	font-family: inherit;
+}
+input:focus, select:focus, textarea:focus
+{
+	border-color: #aaaaaa;
+	background-color: #ffffff;
+}
+.moduleTitle
+{
+	margin-bottom: 5px;
+	padding-top: 1px;
+	padding-bottom: 3px;
+}
+/* 05/12/2016 Paul.  Need to add some space on IE11. */
+.checkbox, .checkbox input, .radio, .radio input
+{
+	margin-bottom: 0px;
+	border: none;
+	background-color: transparent;
+	vertical-align: bottom;
+}
+.button
+{
+	border: 1px solid #999999;
+	background-color: #eeeeee;
+	background-image: url(images/bgGray.gif);
+	background-repeat: repeat-x;
+	background-position: bottom;
+	font-weight: normal;
+	color: #444444;
+}
+.button:hover, .button:focus
+{
+	border-color: #999999;
+	color: #444444;
+}
+.buttonOn, .buttonOn:focus
+{
+	border: 1px solid #999999;
+	background-color: #eeeeee;
+	background-image: url(images/bgGray.gif);
+	background-repeat: repeat-x;
+	background-position: top;
+	font-size: 12px;
+	font-weight: normal;
+	color: #444444;
+}
+.required, .warning, .error
+{
+	color: #ff0000;
+}
+.tooltip
+{
+	display: none;
+	background-color:#ffffcc;
+	border: 1px solid #999999;
+}
+
+table.h3Row
+{
+	margin-bottom: 0px;
+	margin-top: 10px;
+	padding: 2px 5px 2px 5px;
+	border-top: 1px solid #999999;
+	background-color: #fafafa;
+	color: #444444;
+	vertical-align: middle;
+}
+
+.button-panel
+{
+	margin-bottom: 2px;
+}
+
+/* Menu styles */
+.subMenu
+{
+	margin: 0px 0px 10px 0px;
+	padding: 0px 0px 0px 0px;
+	border-top: 0px;
+	border-bottom: 1px solid #cccccc;
+	font-size: 11px;
+	background-color: #ffffff;
+	color: #444444;
+	width: 100%;
+}
+ul.subMenu li
+{
+	margin: 0px 0px 0px 0px;
+	border: none;
+	border-top: 1px solid #cccccc;
+	list-style: none;
+}
+ul.subMenu li a
+{
+	padding: 3px 3px 3px 6px;
+	border: none;
+	text-decoration: none;
+	text-align: left;
+	display: block;
+}
+ul.subMenu li a:hover
+{
+	background-color: #f8f8f8;
+	color: #990033;
+}
+ul.subMenu li span
+{
+	padding: 3px 3px 3px 6px;
+	border: none;
+	text-decoration: none;
+	text-align: left;
+	display: block;
+}
+ul.subMenu li span:hover
+{
+	background-color: #f8f8f8;
+	color: #990033;
+}
+
+/* ListView styles */
+table.listView
+{
+	border-top: 1px solid #cccccc;
+	border-left: 1px solid #999999;
+	border-bottom: 1px solid #cccccc;
+	border-right: 1px solid #999999;
+	font-size: 11px;
+}
+tr.listViewPaginationTdS1
+{
+	padding: 1px 5px 2px 5px;
+	border-bottom: 1px solid #cccccc;
+	background-color: #eeeeee;
+	color: #999999;
+}
+table.listView th, tr.listViewThS1
+{
+	padding: 3px 5px 3px 5px;
+	border-top: 1px solid #cccccc;
+	border-left: 1px solid #999999;
+	border-bottom: 1px solid #cccccc;
+	border-right: 1px solid #999999;
+	background-color: #ebebed;
+	font-weight: bold;
+	color: #444444;
+	text-align: left;
+}
+/* 02/15/2021 Paul.  React client requires th definition. */
+.listViewThS1 th
+{
+	border-top: 1px solid #cccccc;
+	border-bottom: 1px solid #cccccc;
+}
+.listViewThS1 td
+{
+	border-top: 1px solid #cccccc;
+	border-bottom: 1px solid #cccccc;
+}
+.listViewThS1 a
+{
+	text-decoration: none;
+}
+.listViewThS1 a:hover
+{
+	text-decoration: underline;
+}
+table.listView td
+{
+	border-left: none;
+	border-right: none;
+}
+table.listView td a:link, table.listView td a:visited, a.listViewThLinkS1:link, a.listViewThLinkS1:visited
+{
+	color: #444444;
+}
+.pageNumbers
+{
+	color: #444444;
+	vertical-align: 0.3em;
+}
+table.listview th a:hover, a.listViewThLinkS1:hover
+{
+	color: #990033;
+}
+tr.oddListRowS1, tr.evenListRowS1
+{
+	padding: 2px 8px 4px 5px;
+	border-bottom: 1px solid #cccccc;
+	vertical-align: middle;
+}
+tr.oddListRowS1:hover, tr.evenListRowS1:hover
+{
+	background: #ecf7ff;
+}
+tr.oddListRowS1
+{
+	background-color: #f6f6f6;
+}
+a.listViewTdLinkS1:link, a.listViewTdLinkS1:visited
+{
+	color: #990033;
+	text-decoration: none;
+}
+a.listViewTdLinkS1:hover
+{
+	color: #000000;
+	text-decoration: underline;
+}
+a.listViewTdToolsS1:link, a.listViewTdToolsS1:visited, a.listViewTdToolsS1:hover
+{
+	text-decoration: none;
+}
+a.listViewCheckLink:link, a.listViewCheckLink:visited
+{
+	font-size: 11px;
+	font-weight: normal;
+	text-decoration: none;
+}
+a.listViewCheckLink:hover
+{
+}
+
+/* EditView styles */
+/* 12/02/2010 Paul.  We use the tabForm in a panel. */
+/* 06/01/2015 Paul.  We removed paragraph tags from EditView so we need to add margin after the form. */
+.tabForm
+{
+	border-top: 1px solid #d8d8d8;
+	border-bottom: 1px solid #d8d8d8;
+	border-left: 1px solid #d8d8d8;
+	border-right: 1px solid #d8d8d8;
+	padding: 10px 5px 12px 10px;
+	background-color: #f6f6f6;
+	font-size: 12px;
+	color: #000000;
+	margin-bottom: 4px;
+}
+table.tabForm td ul li
+{
+	margin-bottom: 10px;
+	list-style-type: none;
+}
+
+table.tabSearchForm
+{
+	border-top: 1px solid #999999;
+	border-bottom: 1px solid #999999;
+	padding-top: 10px;
+	padding-bottom: 5px;
+	padding-left: 10px;
+	padding-right: 5px;
+	background-color: #f6f6f6;
+	background-image: url(images/bgGrayForm.gif);
+	background-repeat: repeat-x;
+	background-position: top;
+	font-size: 12px;
+	color: #000000;
+}
+table.tabSearchForm td ul li
+{
+	margin-bottom: 10px;
+	list-style-type: none;
+}
+
+table.tabEditView
+{
+	border: none;
+	border-collapse: collapse;
+	width: 100%;
+}
+table.tabEditView td
+{
+	border: inherit;
+}
+table.tabEditView th
+{
+	margin-top: 0px;
+	padding-left: 0px;
+	padding-top: 0px;
+	text-align: left;
+}
+td.dataLabel
+{
+	padding: 5px 5px 5px 5px;
+}
+.dataLabel
+{
+	font-size: 12px;
+	font-weight: normal;
+	text-align: left;
+}
+.dataField
+{
+	font-size: 12px;
+	font-weight: normal;
+}
+
+/* DetailView styles */
+table.tabDetailView
+{
+	padding: 2px 5px 3px 5px;
+	border-top: 1px solid #d8d8d8;
+	border-bottom: 1px solid #d8d8d8;
+	border-left: 1px solid #d8d8d8;
+	border-right: 1px solid #d8d8d8;
+	border-collapse: collapse;
+	font-size: 12px; 
+	vertical-align: top;
+	width: 100%;
+}
+.tabDetailViewDL
+{
+	padding: 5px 6px 5px 6px;
+	border-bottom: 1px solid #dddddd;
+	background-color: #f6f6f6;
+	font-size: 12px; 
+	vertical-align: top;
+	text-align: right;
+	color: #000000;
+}
+.tabDetailViewDF
+{
+	padding: 5px 10px 5px 6px;
+	border-bottom: 1px solid #dddddd;
+	background-color: #ffffff;
+	font-size: 12px;
+	color: #444444;
+	vertical-align: top;
+}
+a.tabDetailViewDFLink:link, a.tabDetailViewDFLink:visited
+{
+	color: #000000;
+	text-decoration: underline;
+}
+a.tabDetailViewDFLink:hover
+{
+	color: #000000;
+}
+table.tabDetailView2
+{
+	border-left: 1px solid #999999;
+	border-right: 1px solid #999999;
+	border-top: 1px solid #999999;
+	border-bottom: 1px solid #999999;
+	border-collapse: collapse;
+	background-color: #cccccc;
+	width: 100%;
+}
+.tabDetailViewDL2
+{
+	padding: 3px 6px 4px 6px;
+	background-color: #eeeeee;
+	font-size: 13px;
+	font-weight: normal;
+	color: #000000;
+	vertical-align: middle;
+}
+.tabDetailViewDF2
+{
+	padding: 4px 10px 4px 6px;
+	background-color: #fafafa;
+	font-size: 13px;
+	font-weight: normal;
+	color: #444444;
+	vertical-align: middle;
+}
+a.tabDetailViewDL2Link:link, a.tabDetailViewDL2Link:visited
+{
+	color: #444444;
+	text-decoration: underline;
+}
+table.tabSearchView
+{
+	border: none;
+	border-collapse: collapse;
+	width: 100%;
+}
+
+/* LeftColumn (NewRecord) styles */
+table.leftColumnModuleHead th
+{
+	padding-top: 4px;
+	padding-left: 6px;
+	padding-bottom: 4px;
+	border-top: 1px solid #999999;
+	background-color: #ffffff;
+	background-image: url(images/bgGray.gif);
+	background-repeat: repeat-x;
+	background-position: top;
+	color: #444444;
+	text-align: left;
+}
+.leftColumnModuleName
+{
+	padding-top: 4px;
+	padding-left: 3px;
+	padding-bottom: 4px;
+	text-transform: uppercase;
+}
+.leftColumnModuleS3
+{
+	padding: 8px 8px 5px 8px;
+	border-bottom: 1px solid #cccccc;
+	background-color: #fff;
+	background-repeat: repeat-x;
+	background-position: bottom;
+	font-size: 11px;
+	color: #444444;
+}
+.leftColumnModuleS3 input, .leftColumnModuleS3 select
+{
+	margin-top: 2px;
+	margin-bottom: 4px;
+}
+td.leftColumnModuleS3 .button
+{
+	padding-top: 0px;
+	font-size: 11px;
+	vertical-align: bottom;
+}
+.leftColumnModuleS3 td
+{
+	padding-top: 0px;
+	padding-left: 0px;
+	padding-bottom: 0px;
+	font-size: 11px;
+	vertical-align: bottom;
+}
+
+/* SearchTab styles */
+ul.tablist
+{
+	margin: 0px 0px 0px 0px;
+	padding-top: 3px;
+	padding-left: 0px;
+	padding-bottom: 3px;
+	padding-right: 0px;
+	border-bottom: 1px solid #999999;
+	font-size: 12px;
+}
+ul.tablist li
+{
+	margin: 0px 0px 0px 0px;
+	list-style: none;
+	display: inline;
+}
+ul.tablist li a
+{
+	margin: 0px 0px 0px 0px;
+	padding: 3px 8px 3px 8px;
+	border-top: 1px solid #cccccc;
+	border-right: 1px solid #cccccc;
+	border-bottom: none;
+	background-color: #ffffff;
+	background-image: none;
+	background-repeat: repeat-x;
+	background-position: top;
+	text-decoration: none;
+}
+ul.tablist li a:link, ul.tablist li a:visited
+{
+	color: #444444;
+	text-decoration: none;
+}
+ul.tablist li a:hover
+{
+	border-top: 1px solid #999999;
+	background-color: #fafafa;
+	background-image: none;
+	background-repeat: repeat-x;
+	background-position: bottom;
+	color: #990033;
+}
+ul.tablist li a.current, ul.tablist li a.current:hover
+{
+	border-bottom: 1px solid #dddddd;
+	background-repeat: repeat-x;
+	background-position: bottom;
+	font-weight: bold;
+}
+ul.tablist li a.current
+{
+	border-right-color: #999999;
+	background-image: url(images/bgGray.gif);
+}
+ul.tablist li a.current:hover
+{
+	background-image: none;
+	color: #990033;
+}
+
+/* Footer styles */
+.footer
+{
+	margin-top: 6px;
+	margin-bottom: 20px;
+	padding: 6px 6px 6px 6px;
+	border-top: 1px solid #999999;
+	border-bottom: 1px solid #cccccc;
+	background-color: #f6f6f6;
+	color: #999999;
+	line-height: 22px;
+	width: 98%;
+}
+a.footerLink:link, a.footerLink:visited
+{
+	text-decoration: none;
+}
+a.footerLink:hover
+{
+	color: #990033;
+	text-decoration: underline;
+}
+.footerHR
+{
+	color: #666666;
+}
+
+/* LastViewed styles */
+.lastView
+{
+	padding-top: 3px;
+	padding-left: 10px;
+	padding-bottom: 3px;
+	border-top: 1px solid #eeeeee;
+	border-bottom: 1px solid #999999;
+	background-color: #eeeeee;
+	color: #444444;
+	vertical-align: middle;
+	font-size: 11px;
+}
+.lastViewLink, a.lastViewLink:link, a.lastViewLink:visited
+{
+	padding: 2px 5px 2px 5px;
+	border-left: 1px solid #cccccc;
+	color: #444444;
+	text-decoration: none;
+}
+a.lastViewLink:hover
+{
+	background-color: #ffffff;
+	color: #990033;
+}
+
+/* Tab Menu */
+table.tabFrame
+{
+	border: none;
+	width: 100%;
+}
+.tabRow
+{
+	border-bottom: 1px solid #999999;
+	background-image : url(images/otherTab.gif);
+	background-repeat: repeat-x;
+	background-position: bottom right;
+}
+.tabPopdown
+{
+	width: 100%;
+	background-image : url(images/tabPopdown.gif);
+	background-repeat:no-repeat;
+	background-position: center center;
+	height: 8px;
+}
+.currentTab
+{
+	padding: 2px 15px 0px 15px;
+	background-image : url(images/currentTab.gif);
+	background-repeat: no-repeat;
+	background-position: bottom center;
+	font-size: 15px;
+	font-weight: bold;
+	height: 37px;
+}
+.currentTabLeft
+{
+	border-color: #ffffff;
+	background-image : url(images/currentTab.gif);
+	background-repeat: no-repeat;
+	background-position: bottom left;
+	height: 37px;
+}
+.currentTabRight
+{
+	border-color: #ffffff;
+	background-image : url(images/currentTab.gif);
+	background-repeat: no-repeat;
+	background-position: bottom right;
+	height: 37px;
+}
+a.currentTabLink:link, a.currentTabLink:visited, a.currentTabLink:hover
+{
+	text-decoration: none;
+}
+a.currentTabLink:link, a.currentTabLink:visited
+{
+	color: white;
+}
+a.currentTabLink:hover
+{
+	color: white;
+}
+.otherTab
+{
+	padding: 6px 15px 0px 15px;
+	border-bottom: solid 1px;
+	background-position: bottom center;
+	border-color: #999999;
+	background-image : url(images/otherTab.gif);
+	background-repeat: no-repeat;
+	color: #636363;
+	font-size: 15px;
+	font-weight: bold;
+	height: 37px;
+}
+.otherTabLeft
+{
+	border-bottom: 1px solid #999999;
+	background-image : url(images/otherTab.gif);
+	background-repeat: no-repeat;
+	background-position: bottom left;
+	color: #636363;
+	height: 37px;
+}
+.otherTabRight
+{
+	border-bottom: 1px solid #999999;
+	background-image : url(images/otherTab.gif);
+	background-repeat: no-repeat;
+	background-position: bottom right;
+	color: #636363;
+	height: 37px;
+}
+a.otherTabLink:link, a.otherTabLink:visited
+{
+	text-decoration: none;
+	padding-top: 0px;
+}
+a.otherTabLink:hover
+{
+	text-decoration: none;
+}
+a.otherTabLink:link, a.otherTabLink:visited
+{
+	color: #636363;
+}
+a.otherTabLink:hover
+{
+	color: #636363;
+}
+
+.otherTabMoreLink, .otherTabMoreLink:link, .otherTabMoreLink:active, .otherTabMoreLink:visited, .otherTabMoreLink:hover
+{
+	padding: 1px 5px 3px 7px;
+	color: #636363;
+	text-decoration: none;
+	display: block;
+	font-size: 15px;
+	font-weight: bold;
+}
+.otherTabMoreLink:hover, .otherTabMoreLink:active
+{
+	color: white;
+	background-color: #31597b;
+}
+
+#subtabs
+{
+	border-bottom: 1px solid #999999;
+	background-image: url(images/bgGray.gif);
+	background-repeat: repeat-x;
+	background-position: bottom;
+	height: 21px;
+}
+.menu
+{
+	border: 1px solid #999999;
+	background-color: #f6f6f6;
+	position: absolute;
+	display: none;
+	visibility: hidden;
+	opacity: 0.9;
+}
+.menuItem, .menuItem:link, .menuItem:active, .menuItem:visited, .menuItem:hover
+{
+	padding: 1px 5px 1px 7px;
+	border-left: none;
+	border-right: none;
+	border-bottom: 1px solid #c0c0c0;
+	background-color: #f6f6f6;
+	color: #000000;
+	text-decoration: none;
+	line-height: 18px;
+	width: 120px;
+	display: block;
+}
+.menuItem:hover, .menuItem:active
+{
+	color: #000000;
+}
+
+/* Header styles */
+.myArea, .welcome
+{
+	font-size: 13px;
+}
+a.myAreaLink:link, a.myAreaLink:visited, a.myAreaLink:hover
+{
+	text-decoration: none;
+	font-size: 13px;
+}
+.subTabBar
+{
+}
+.searchField
+{
+	border: 1px solid #999999;
+	background-color: #eeeeee;
+	font-size: 14px;
+}
+.searchButton, searchButton:focus
+{
+	background-color: #fafafa;
+	cursor: hand;
+}
+
+a.utilsLink:link, a.utilsLink:visited
+{
+	padding-bottom: 3px;
+	font-size: 12px;
+	font-weight: normal;
+	text-decoration: none;
+	color: #999999;
+}
+a.utilsLink:hover
+{
+	text-decoration: underline;
+}
+a.listViewPaginationLinkS1:link, a.listViewPaginationLinkS1:visited
+{
+	padding: 2px 0px 3px 0px;
+	font-size: 12px;
+	font-weight: bold;
+	color: #444444;
+	text-decoration: none;
+}
+.listViewPaginationTdS1
+{
+	padding: 1px 5px 2px 5px;
+	border: none;
+	background-color: #eeeeee;
+	font-size: 12px;
+	vertical-align: top;
+	color: #444444;
+}
+.listViewPaginationTdS1 td
+{
+	background-color: #fafafa;
+}
+a.listViewPaginationLinkS1:hover
+{
+	color: #990033;
+	text-decoration: underline;
+}
+
+/* Popup Calendar */
+table.Calendar
+{
+	border-top: 2px solid #ffffff;
+	border-left: 2px solid #ffffff;
+	border-bottom: 2px solid #000000;
+	border-right: 2px solid #000000;
+	background-color: #c8d0d4;
+	font-size: 11px;
+	color: #000000;
+}
+table.CalendarTitle td
+{
+	padding: 1px 1px 1px 1px;
+	border: 1px solid #000000;
+	background: #788084;
+	font-size: 11px;
+	font-weight: bold;
+	color: #ffffff;
+	text-align: center;
+}
+th.CalendarDayHeader
+{
+	padding: 2px 2px 2px 2px;
+	border-bottom: 1px solid #000000;
+	background-color: #e8f0f4;
+	text-align: center;
+}
+td.CalendarDay
+{
+	padding: 2px 4px 2px 2px;
+	font-weight: bold;
+	color: #ffffff;
+	text-align: right;
+	width: 2em;
+}
+td.CalendarWeekendDay
+{
+	color: #ff0000;
+}
+td.CalendarOtherMonthDay
+{
+	background-color: #e8f0f4;
+}
+td.CalendarToday
+{
+	font-weight: bold;
+	color: #0000ff;
+}
+
+/* Calendar View styles */
+table.monthBox
+{
+	font-size: 12px;
+}
+table.monthHeader
+{
+	margin-top: 10px;
+	border-top: 1px solid #999999;
+	background-color: #ffffff;
+	background-image: url(images/bgGray.gif);
+	background-repeat: repeat-x;
+	background-position: top;
+	color: #444444;
+	height: 25px;
+}
+td.monthHeaderPrevTd
+{
+	padding-left: 5px;
+}
+td.monthHeaderNextTd
+{
+	padding-right: 5px;
+}
+.monthHeaderH3
+{
+	margin-bottom: 3px;
+	padding-top: 3px;
+	font-size: 12px;
+	font-weight: bold;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+}
+a.NextPrevLink:link, a.NextPrevLink:visited, a.NextPrevLink:hover
+{
+	color: #990033;
+	text-decoration: none;
+}
+td.monthCalBody
+{
+	background-color: #dddddd;
+}
+td.dailyCalBodyTime
+{
+	padding: 7px 7px 7px 7px;
+	border-color: #dddddd;
+	background-color: #f6f6f6;
+	color: #000000;
+	vertical-align: top;
+	height: 20px;
+}
+td.dailyCalBodyItems
+{
+	padding: 5px 5px 5px 5px;
+	background-color: #ffffff;
+	font-size: 12px;
+	color: #444444;
+	text-align: left;
+}
+a.weekCalBodyDayLink:link, a.weekCalBodyDayLink:visited
+{
+	color: #000000;
+}
+table.monthFooter
+{
+}
+.monthFooterPrev, .monthFooterNext
+{
+	padding: 3px 7px 3px 7px;
+	background-color: transparent;
+}
+th.monthCalBodyTHDay
+{
+	padding: 5px;
+	border-top: 1px solid #cccccc;
+	background-color: #eeeeee;
+	color: #444444;
+}
+.monthCalBodyWeekDay
+{
+	padding: 3px 3px 3px 3px;
+	background-color: #ffffff;
+	text-align: right;
+}
+.monthCalBodyWeekEnd
+{
+	padding: 3px 3px 3px 3px;
+	background-color: #f6f6f6;
+	color: #444444;
+	text-align: right;
+}
+.monthCalBodyTodayWeekDay, .monthCalBodyTodayWeekEnd
+{
+	padding: 3px 3px 3px 3px;
+	border: 1px solid #990033;
+	background-color: #ffffff;
+	color: #444444;
+	text-align: right;
+}
+a.monthCalBodyWeekDayDateLink:link, a.monthCalBodyWeekDayDateLink:visited
+{
+	font-size: 12px;
+	font-weight: bold;
+}
+a.monthCalBodyDayItemLink:link, a.monthCalBodyDayItemLink:visited, a.monthCalBodyDayItemLink:hover
+{
+	font-size: 10px;
+}
+.monthCalBodyDayItem
+{
+	margin: 7px 0px 7px 0px;
+	padding: 5px 0px 8px 0px;
+	border-top: 1px solid #cccccc;
+	border-bottom: 1px solid #dddddd;
+	background-color: #ffffff;
+}
+.monthCalBodyDayItemTd
+{
+	vertical-align: top;
+}
+.monthCalBodyDayIconTd
+{
+	padding-right: 3px;
+	vertical-align: top;
+}
+.dailyCalBodyItems
+{
+	padding: 5px 5px 5px 5px;
+	background-color: #ffffff;
+	font-size: 12px;
+	color: #444444;
+	text-align: left;
+}
+.yearCalBodyMonth
+{
+	padding-top: 5px;
+}
+a.yearCalBodyMonthLink:link, a.yearCalBodyMonthLink:visited
+{
+	margin-bottom: 5px;
+	padding: 5px 5px 5px 5px;
+	font-size: 12px;
+	font-weight: bold;
+	text-decoration: none;
+	text-transform: uppercase;
+	width: 100%;
+}
+a.yearCalBodyMonthLink:hover
+{
+	text-decoration: underline;
+}
+.dateFormat
+{
+	font-size: 11px;
+	font-weight: normal;
+	font-style: italic;
+}
+
+/* Chart styles */
+table.chartForm
+{
+	padding: 5px 5px 5px 5px;
+	border: 1px solid #999999;
+	background-color: #efefef;
+}
+table.chartForm td
+{
+	background-color: #efefef;
+}
+a.chartToolsLink:link, a.chartToolsLink:visited
+{
+	font-size: 11px;
+	font-weight: normal;
+	color: #444444;
+	text-decoration: none;
+}
+a.chartToolsLink:hover
+{
+	color: #990033;
+	text-decoration: none;
+}
+.chartFootnote
+{
+	font-size: 11px;
+}
+
+.tm
+{
+	font-size: 8px;
+	font-family: Verdana;
+}
+
+h5.listViewSubHeadS1
+{
+	margin-bottom: 2px;
+	padding-left: 4px;
+	font-size: 12px;
+	font-weight: bold;
+	color: #444;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+}
+.rssItemDate
+{
+	font-size: 11px;
+	color: #666666;
+}
+
+/* Scheduler styles */
+.schedulerDiv
+{
+	margin-top: 0px;
+	border-bottom: 1px solid #999999;
+	border-collapse: collapse;
+	background-color: #fafafa;
+	font-size: 12px;
+	color: #000000;
+	text-align: left;
+	width: 100%;
+}
+.schedulerTable
+{
+	border-collapse: collapse;
+	width: 100%;
+}
+table.schedulerTable td
+{
+	height: 18px;
+}
+.schedulerTopRow, .schedulerDeleteHeaderCell, .schedulerAttendeeHeaderCell, .schedulerAttendeeHeaderCell
+{
+	border-bottom: 1px solid #dddddd;
+	height: 22px;
+}
+.schedulerTimeCell, .schedulerAttendeeDeleteCell
+{
+	padding-left: 4px;
+	border-left: 1px solid #dddddd;
+}
+.schedulerAttendeeCell
+{
+	padding-left: 4px;
+	border-bottom: 1px solid #dddddd;
+	border-right: 1px solid #dddddd;
+	overflow: hidden;
+	width: 125px;
+}
+.schedulerSlotCellStartTime
+{
+	padding: 0px 0px 0px 0px;
+	border-top: 1px solid #dddddd;
+	border-left: 4px solid #75af4f;
+	border-bottom: 1px solid #dddddd;
+	border-right: 1px solid #dddddd;
+	background-color: #eeeeee;
+	width: 15px;
+}
+.schedulerSlotCellEndTime
+{
+	padding: 0px 0px 0px 0px;
+	border-top: 1px solid #dddddd;
+	border-left: 4px solid #ff0000;
+	border-bottom: 1px solid #dddddd;
+	border-right: 1px solid #dddddd;
+	background-color: #eeeeee;
+	width: 15px;
+}
+.schedulerSlotCellHour
+{
+	padding: 0px 0px 0px 0px;
+	border: 1px solid #dddddd;
+	background-color: #eeeeee;
+	width: 15px;
+}
+.schedulerTopDateCell
+{
+	margin-top: 10px;
+	padding: 2px 5px 2px 5px;
+	border-top: 1px solid #999999;
+	background-color: #ffffff;
+	background-image: url(images/bgGray.gif);
+	background-repeat: repeat-x;
+	background-position: top;
+	font-size: 12px;
+	font-weight: bold;
+	vertical-align: middle;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+}
+.contentBox
+{
+	margin: 10px 0px 10px 0px;
+	padding: 0px 10px 0px 0px;
+	border-top: 1px solid #dddddd;
+	border-bottom: 1px solid #dddddd;
+}
+
+.ToolbarShadingTable
+{
+	width: 80%;
+	border: 1px solid #9c9c9c;
+}
+.ToolbarInnerTable
+{
+	width: 100%;
+	border: 1px solid #9c9c9c;
+	background-color: White;
+	padding: 8px 8px 8px 8px;
+}
+.ToolbarInnerTableCell
+{
+	padding-top: 10px;
+	padding-bottom: 6px;
+	padding-left: 10px;
+	padding-right: 25px;
+}
+/* 12/26/2017 Paul.  Update login screen. */
+.loginField input[type=text], .loginField input[type=password]
+{
+	width: 180px;
+}
+.LoginActionsShadingTable
+{
+	width: 490px;
+	border: 1px solid #9c9c9c;
+}
+.LoginActionsShadingHorizontal
+{
+	height: 16px;
+	background-color: #b6b6b6;
+	opacity: 0.6;
+	filter: alpha(opacity=60);
+}
+.LoginActionsShadingVertical
+{
+	width: 16px;
+	background-color: #b6b6b6;
+	opacity: 0.6;
+	filter: alpha(opacity=60);
+}
+.LoginActionsInnerTable
+{
+	width: 100%;
+	border: 1px solid #9c9c9c;
+	background-color: White;
+}
+
+.ModuleActionsShadingTable
+{
+	width: 490px;
+	border: 1px solid #9c9c9c;
+}
+.MoreActionsShadingTable
+{
+	width: 200px;
+	border: 1px solid #9c9c9c;
+}
+.ModuleActionsShadingHorizontal
+{
+	height: 16px;
+	background-color: #b6b6b6;
+	opacity: 0.6;
+	filter: alpha(opacity=60);
+}
+.ModuleActionsShadingVertical
+{
+	width: 16px;
+	background-color: #b6b6b6;
+	opacity: 0.6;
+	filter: alpha(opacity=60);
+}
+.ModuleActionsInnerTable
+{
+	width: 100%;
+	border: 1px solid #9c9c9c;
+	background-color: White;
+}
+.ModuleActionsInnerCell
+{
+	width: 50%;
+	vertical-align: top;
+	padding: 8px 8px 8px 8px;
+	border-left: solid 1px #cecece;
+}
+.ModuleActionsInnerHeader
+{
+	font-size: 10pt;
+	color: #9c9c9c;
+	display:block;
+}
+.ModuleActionsMenuItems, .ModuleActionsMenuItems:link, .ModuleActionsMenuItems:active, .ModuleActionsMenuItems:visited, .ModuleActionsMenuItems:hover
+{
+	padding: 1px 5px 1px 7px;
+	color: #636363;
+	text-decoration: none;
+	line-height: 18px;
+	display: block;
+}
+.ModuleActionsMenuItems:hover, .ModuleActionsMenuItems:active
+{
+	color: white;
+	background-color: #31597b;
+}
+/* 11/26/2010 Paul.  Add styles for the Check All hover. */
+.ActionMenu
+{
+	border: 1px solid #999999;
+	background-color: #f6f6f6;
+}
+.ActionMenuItem
+{
+	padding: 1px 5px 1px 7px;
+	color: #000000;
+	line-height: 18px;
+	width: 120px;
+	text-align: left;
+	border-bottom: 1px solid #999999;
+}
+.ActionMenuItem:hover
+{
+	background-color: #fdfdfd;
+}
+a.ActionMenuLink:link, a.ActionMenuLink:active, a.ActionMenuLink:visited, a.ActionMenuLink:hover
+{
+	color: #000000;
+	font-weight: normal;
+	text-decoration: none;
+}
+
+/* http://www.bennadel.com/blog/1734-Using-CSS-Fixed-Position-Elements-Across-Browsers.htm */
+/* 05/04/2010 Paul.  Must change the DOCTYPE to <!DOCTYPE HTML> */
+/* 10/18/2014 Paul.  Add z-index so that toolbar stays on top of report. */
+.SixToolbar
+{
+	width: 100%;
+	height: 45px;
+	background-color: #295173;
+	position: fixed;
+	left: 0px;
+	top: 0px;
+	_position: absolute;
+	_top: expression( ie6 = (document.documentElement.scrollTop + "px") );
+	z-index: 100;
+}
+/* 11/06/2013 Paul.  Add support for RTL languages. */
+.SixToolbarRTL
+{
+	width: 100%;
+	height: 45px;
+	background-color: #295173;
+	position: fixed;
+	right: 0px;
+	top: 0px;
+	_position: absolute;
+	_top: expression( ie6 = (document.documentElement.scrollTop + "px") );
+	z-index: 100;
+}
+
+/* 05/23/2010 Paul.  New styles for the EmailClient.  */
+/* 05/23/2010 Paul.  The TreeView has a bug that forces 1em, so we need to use 1em to prevent the size from switching. */
+a.nodeEmailFolderLink
+{
+	text-decoration: none;
+	font-size: 1em;
+}
+a.leafEmailFolderLink, a.leafEmailFolderLink:visited, a.leafEmailFolderLink:hover
+{
+}
+a.parentEmailFolderLink, a.parentEmailFolderLink:visited, a.parentEmailFolderLink:hover
+{
+}
+a.selectedEmailFolderLink, a.selectedEmailFolderLink:visited, a.selectedEmailFolderLink:hover
+{
+	background-color: #CCCCCC;
+}
+a.nodeStudioFolderLink
+{
+	text-decoration: none;
+	font-size: 1em;
+}
+a.leafStudioFolderLink, a.leafStudioFolderLink:visited, a.leafStudioFolderLink:hover
+{
+}
+a.parentStudioFolderLink, a.parentStudioFolderLink:visited, a.parentStudioFolderLink:hover
+{
+}
+a.selectedStudioFolderLink, a.selectedStudioFolderLink:visited, a.selectedStudioFolderLink:hover
+{
+	background-color: #CCCCCC;
+}
+.EmailDetailViewDL
+{
+	padding: 2px 4px 2px 4px;
+	background-color: #f6f6f6;
+	font-size: 11px;
+	vertical-align: top;
+	text-align: right;
+	font-weight: bold;
+	color: #9C9A9C;
+}
+.EmailDetailViewDF
+{
+	padding: 2px 4px 2px 4px;
+	background-color: #f6f6f6;
+	font-size: 11px;
+	vertical-align: top;
+	text-align: left;
+	color: #000000;
+}
+.jQueryDragHandle
+{
+	background-image: url(images/draghandle_list.gif);
+	background-repeat: no-repeat;
+	background-position: top;
+}
+tr.jQueryDragBorder td
+{
+	background-color: #d6d6d6;
+}
+.pointer
+{
+	padding-top: 0px;
+	padding-bottom: 0px;
+	padding-left: 8px;
+	padding-right: 8px;
+	line-height: 16px;
+	font-size: 18px;
+	font-weight: bold;
+	color: #666666;
+}
+/* 01/07/2013 Paul.  Need to prevent a nowrap style from getting inherited. */
+.ListViewInfoHover
+{
+	width: 300px;
+	border: 1px solid #9c9c9c;
+	background-color: White;
+	white-space: normal;
+}
+.PanelHoverHidden
+{
+	display: none;
+	visibility: hidden;
+}
+/* 08/28/2010 Paul.  Moved from Jigsaw control. */
+.buttonLogin
+{
+	border: 1px solid #444444;
+	font-size: 11px;
+	color: #ffffff;
+	background-color: #666666;
+	font-weight: bold;
+}
+
+/* 09/20/2010 Paul.  Restore ACL styles. */
+.aclAll
+{
+	color: Green;
+	font-weight: bold;
+}
+.aclOwner
+{
+	color: Black;
+	font-weight: bold;
+}
+.aclNone
+{
+	color: Red;
+	font-weight: bold;
+}
+.aclEnabled
+{
+	color: Green;
+	font-weight: bold;
+}
+.aclDisabled
+{
+	color: Red;
+	font-weight: bold;
+}
+.aclNormal
+{
+	color: Green;
+	font-weight: bold;
+}
+.modalBackground
+{
+	background-color: Gray;
+	filter: alpha(opacity=70);
+	opacity: 0.7;
+}
+.modalPopup
+{
+	background-color: White;
+	border-width: 3px;
+	border-style: solid;
+	border-color: Gray;
+	padding: 3px;
+	width: 400px;
+}
+.PasswordHelp
+{
+	background-image: url(images/help.gif);
+	height: 16px;
+	width: 16px;
+}
+
+.overdueTask
+{
+	color: Red;
+}
+.futureTask
+{
+	color: Green;
+}
+.QueryDesigner
+{
+	background-color: #f4f4f4;
+	vertical-align: top;
+	color: black;
+}
+.QueryDesigner_Selected
+{
+	background-color: #0A246A;
+	vertical-align: top;
+	color: white;
+}
+/* 06/06/2015 Paul.  Removed the two <br/> tags and switch to style. */
+.CheckAllPaddingBottom
+{
+	height: 14px;
+}
+/* 02/15/2016 Paul.  Grab is used on the new layout editor. */
+.grab
+{
+	cursor: hand;
+	cursor: grab;
+	cursor: -moz-grab;
+	cursor: -webkit-grab;
+}
+/* 05/14/2016 Paul.  Add Tags module. */
+.Tags
+{
+	color: white;
+	background-color: #565656;
+	-webkit-border-radius: 4 4 4 4;
+	-moz-border-radius: 4 4 4 4;
+	border-radius: 4px 4px 4px 4px;
+	padding: 2px 5px 2px 5px;
+	margin-top: 1px;
+	margin-bottom: 2px;
+	display: inline-block;
+}
+
+/* 08/02/2016 Paul.  Add buttons used with Business Processes. */
+.ProcessApprove
+{
+	background-color: #308000;
+	background-image: none;
+	color: white;
+}
+.ProcessReject
+{
+	background-color: #E90000;
+	background-image: none;
+	color: white;
+}
+.ProcessRoute
+{
+	background-color: #0760E0;
+	background-image: none;
+	color: white;
+}
+.ProcessClaim
+{
+	background-color: #308000;
+	background-image: none;
+	color: white;
+}
+.ProcessStatus
+{
+	font-size: 14px;
+}
+.ProcessOverdue
+{
+	color: red;
+}
+.ProcessAddNotes
+{
+	background-color: #0F5BF5;
+	background-image: none;
+	-webkit-border-radius: 4 4 4 4;
+	-moz-border-radius: 4 4 4 4;
+	border-radius: 4px 4px 4px 4px;
+	font-family: Arial;
+	color: #ffffff;
+	font-size: 12px;
+	padding: 4px 10px 4px 10px;
+	text-decoration: none;
+	height: 26px;
+	margin-top: 0px;
+	margin-right: 0px;
+}
+.ProcessAddNotes:hover
+{
+	background: #2F7BFf;
+	color: #ffffff;
+	text-decoration: none;
+}
+
+/* 09/24/2016 Paul.  Use style instead of inline size. */
+.paginationButtonPrevious
+{
+	width: 24px;
+	height: 24px;
+	border-collapse: collapse;
+}
+.paginationButtonNext
+{
+	width: 24px;
+	height: 24px;
+	border-collapse: collapse;
+}
+
+/* 06/15/2017 Paul.  Move Process styles from MyProcesses.ascx user control to stylesheet. */
+.MyProcessFrame               { text-align: left; background-color: white; border-left: 1px solid #E1E1E1; border-right: 1px solid #E1E1E1; border-bottom: 1px solid #E1E1E1; padding: 4px; }
+.MyProcessFrame a:link        { font-weight: bold; text-decoration: none; }
+.MyProcessActiveTab           { font-weight: bold;   background-color: white;   text-align: center; cursor: pointer; border-left: 1px solid #E1E1E1; border-right: 1px solid #E1E1E1; border-top: 1px solid #E1E1E1; padding-top: 4px; padding-bottom: 4px; margin: 0px; }
+.MyProcessInactiveTab         { font-weight: normal; background-color: #F6F6F6; text-align: center; cursor: pointer; border: 1px solid #E1E1E1; margin: 0px; }
+.MyProcessCount               { font-size: 14px; }
+.MyProcessCountLabel          { font-size: 11px; }
+.MyProcessName                { font-size: 14px; color: #667DE9; }
+.MyProcessOverdue             { font-size: 11px; }
+.MyProcessActivityName        { font-size: 11px; font-weight: bold; color: black; }
+.MyProcessAssignedUser        { font-size: 11px; color: #667DE9; }
+.MyProcessBusinessProcessName { font-size: 11px; font-weight: bold; color: black; }
+.MyProcessCell                { border-left: 1px solid #E1E1E1; border-right: 1px solid #E1E1E1; border-bottom: 1px solid #E1E1E1; }
+
+/* 06/27/2018 Paul.  Data Privacy Erased. */
+.Erased
+{
+	color: white;
+	background-color: #565656;
+	-webkit-border-radius: 4 4 4 4;
+	-moz-border-radius: 4 4 4 4;
+	border-radius: 4px 4px 4px 4px;
+	padding: 2px 5px 2px 5px;
+	margin-top: 1px;
+	margin-bottom: 2px;
+	display: inline-block;
+}
+/* 06/29/2018 Paul.  Add buttons used with Data Privacy. */
+.DataPrivacyComplete
+{
+	background-color: #308000;
+	background-image: none;
+	color: white;
+}
+.DataPrivacyErase
+{
+	background-color: #308000;
+	background-image: none;
+	color: white;
+}
+.DataPrivacyReject
+{
+	background-color: #E90000;
+	background-image: none;
+	color: white;
+}

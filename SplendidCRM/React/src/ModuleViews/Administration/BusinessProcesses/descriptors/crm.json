@@ -1,0 +1,595 @@
+{
+	"name": "SplendidCRM",
+	"prefix": "crm",
+	"uri": "http://splendidcrm",
+	"xml": {
+		"tagAlias": "lowerCase"
+	},
+	"associations": [ ],
+	"types": [
+		{
+			"name": "CrmProcess",
+			"extends": [ "bpmn:Process" ],
+			"properties":
+			[
+				{
+					"name": "PROCESS_STATUS",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "PROCESS_USER_ID",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "PROCESS_USER_NAME",
+					"isAttr": true,
+					"type": "String"
+				}
+			]
+		},
+		{
+			"name": "CrmStartEvent",
+			"extends": [ "bpmn:StartEvent" ],
+			"properties": [
+				{
+					"name": "BASE_MODULE",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "RECORD_TYPE",
+					"isAttr": true,
+					"type": "String"
+				}
+			]
+		},
+		{
+			"name": "CrmTimerStartEvent",
+			"extends": [ "bpmn:TimerEventDefinition" ],
+			"properties": [
+				{
+					"name": "JOB_INTERVAL",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "FREQUENCY_LIMIT_UNITS",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "FREQUENCY_LIMIT_VALUE",
+					"isAttr": true,
+					"type": "String"
+				}
+			]
+		},
+		{
+			"name": "CrmTimerIntermediateCatchEvent",
+			"extends": [ "bpmn:TimerEventDefinition" ],
+			"properties": [
+				{
+					"name": "DURATION",
+					"isAttr": true,
+					"type": "String"
+				}
+			]
+		},
+		{
+			"name": "CrmModuleFilter",
+			"superClass": [ "Element" ],
+			"properties": [
+				{
+					"name": "MODULE_FILTER_JSON",
+					"type": "String",
+					"isBody": true
+				},
+				{
+					"name": "MODULE_FILTER_SQL",
+					"type": "String",
+					"isAttr": true
+				}
+			]
+		},
+		{
+			"name": "CrmMessageTemplate",
+			"extends": [ "bpmn:MessageEventDefinition" ],
+			"properties": [
+				{
+					"name": "ALERT_TYPE",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "SOURCE_TYPE",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "ALERT_SUBJECT",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "ALERT_TEXT",
+					"isAttr": false,
+					"type": "String"
+				},
+				{
+					"name": "CUSTOM_TEMPLATE_ID",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "CUSTOM_TEMPLATE_NAME",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "ASSIGNED_USER_ID",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "ASSIGNED_USER_NAME",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "TEAM_ID",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "TEAM_NAME",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "TEAM_SET_LIST",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "TEAM_SET_NAME",
+					"isAttr": true,
+					"type": "String"
+				}
+			]
+		},
+		{
+			"name": "CrmMessageRecipients",
+			"superClass": [ "Element" ],
+			"properties": [
+				{
+					"name": "fields",
+					"type": "CrmRecipient",
+					"isMany": true
+				}
+			]
+		},
+		{
+			"name": "CrmRecipient",
+			"superClass": [ "Element" ],
+			"properties": [
+				{
+					"name": "id",
+					"type": "String",
+					"isAttr": true
+				},
+				{
+					"name": "SEND_TYPE",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "RECIPIENT_TYPE",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "RECIPIENT_ID",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "RECIPIENT_NAME",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "RECIPIENT_TABLE",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "RECIPIENT_FIELD",
+					"isAttr": true,
+					"type": "String"
+				}
+			]
+		},
+		{
+			"name": "CrmMessageReports",
+			"superClass": [ "Element" ],
+			"properties": [
+				{
+					"name": "fields",
+					"type": "CrmReport",
+					"isMany": true
+				}
+			]
+		},
+		{
+			"name": "CrmReport",
+			"superClass": [ "Element" ],
+			"properties": [
+				{
+					"name": "id",
+					"type": "String",
+					"isAttr": true
+				},
+				{
+					"name": "REPORT_ID",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "REPORT_NAME",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "RENDER_FORMAT",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "SCHEDULED_USER_ID",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "SCHEDULED_USER_NAME",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "properties",
+					"type": "camunda:Properties"
+				}
+			]
+		},
+		{
+			"name": "CrmTask",
+			"extends": [ "bpmn:Task" ],
+			"properties":
+			[
+				{
+					"name": "OPERATION",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "MODULE_NAME",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "FIELD_PREFIX",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "SOURCE_ID",
+					"isAttr": true,
+					"type": "String"
+				}
+			]
+		},
+		{
+			"name": "CrmBusinessRuleTask",
+			"extends": [ "bpmn:BusinessRuleTask" ],
+			"properties":
+			[
+				{
+					"name": "BUSINESS_RULE_OPERATION",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "ACTIVITY_NAME",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "PROCEDURE_NAME",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "ASSIGN_FIELD",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "ASSIGN_TYPE",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "ASSIGN_EXPRESSION",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "SWITCH_FIELD",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "SWITCH_DEFAULT",
+					"isAttr": true,
+					"type": "String"
+				}
+			]
+		},
+		{
+			"name": "CrmReadOnlyFields",
+			"superClass": [ "Element" ],
+			"properties": 
+			[
+				{
+					"name": "values",
+					"type": "camunda:Property",
+					"isMany": true
+				}
+			]
+		},
+		{
+			"name": "CrmRequiredFields",
+			"superClass": [ "Element" ],
+			"properties": 
+			[
+				{
+					"name": "values",
+					"type": "camunda:Property",
+					"isMany": true
+				}
+			]
+		},
+		{
+			"name": "CrmEscalationEvent",
+			"extends": [ "bpmn:EscalationEventDefinition" ],
+			"properties":
+			[
+				{
+					"name": "APPROVAL_VARIABLE_NAME",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "ESCALATION_TYPE",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "CHANGE_ASSIGNED_USER",
+					"isAttr": true,
+					"type": "Boolean"
+				},
+				{
+					"name": "CHANGE_ASSIGNED_TEAM_ID",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "CHANGE_ASSIGNED_TEAM_NAME",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "CHANGE_PROCESS_USER",
+					"isAttr": true,
+					"type": "Boolean"
+				},
+				{
+					"name": "CHANGE_PROCESS_TEAM_ID",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "CHANGE_PROCESS_TEAM_NAME",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "USER_ASSIGNMENT_METHOD",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "STATIC_ASSIGNED_USER_ID",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "STATIC_ASSIGNED_USER_NAME",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "DYNAMIC_PROCESS_TEAM_ID",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "DYNAMIC_PROCESS_TEAM_NAME",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "DYNAMIC_PROCESS_ROLE_ID",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "DYNAMIC_PROCESS_ROLE_NAME",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "DURATION_UNITS",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "DURATION_VALUE",
+					"isAttr": true,
+					"type": "Integer"
+				}
+			]
+		},
+		{
+			"name": "CrmUserTask",
+			"extends": [ "bpmn:Task" ],
+			"properties":
+			[
+				{
+					"name": "APPROVAL_VARIABLE_NAME",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "USER_TASK_TYPE",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "CHANGE_ASSIGNED_USER",
+					"isAttr": true,
+					"type": "Boolean"
+				},
+				{
+					"name": "CHANGE_ASSIGNED_TEAM_ID",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "CHANGE_ASSIGNED_TEAM_NAME",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "CHANGE_PROCESS_USER",
+					"isAttr": true,
+					"type": "Boolean"
+				},
+				{
+					"name": "CHANGE_PROCESS_TEAM_ID",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "CHANGE_PROCESS_TEAM_NAME",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "USER_ASSIGNMENT_METHOD",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "STATIC_ASSIGNED_USER_ID",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "STATIC_ASSIGNED_USER_NAME",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "STATIC_ASSIGNED_TEAM_ID",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "STATIC_ASSIGNED_TEAM_NAME",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "DYNAMIC_PROCESS_TEAM_ID",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "DYNAMIC_PROCESS_TEAM_NAME",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "DYNAMIC_PROCESS_ROLE_ID",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "DYNAMIC_PROCESS_ROLE_NAME",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "DURATION_UNITS",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "DURATION_VALUE",
+					"isAttr": true,
+					"type": "Integer"
+				}
+			]
+		},
+		{
+			"name": "CrmProcessVariables",
+			"superClass": [ "Element" ],
+			"properties": [
+				{
+					"name": "values",
+					"type": "CrmVariable",
+					"isMany": true
+				}
+			]
+		},
+		{
+			"name": "CrmVariable",
+			"superClass": [ "Element" ],
+			"properties": [
+				{
+					"name": "id",
+					"type": "String",
+					"isAttr": true
+				},
+				{
+					"name": "VARIABLE_NAME",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "VARIABLE_TYPE",
+					"isAttr": true,
+					"type": "String"
+				},
+				{
+					"name": "VARIABLE_DEFAULT",
+					"isAttr": true,
+					"type": "String"
+				}
+			]
+		}
+	]
+}

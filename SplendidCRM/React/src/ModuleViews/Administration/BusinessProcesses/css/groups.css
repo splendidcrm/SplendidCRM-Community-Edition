@@ -1,0 +1,84 @@
+/* line 1, node_modules\bpmn-js-properties-panel\styles\groups.less */
+.bpp-properties-group {
+  padding: 6px 15px 6px 15px;
+  position: relative;
+  max-height: 2000px;
+  overflow: hidden;
+  transition: max-height 0.218s ease-in-out, padding-top 0.218s ease-in-out, padding-bottom 0.218s ease-in-out;
+}
+/* line 10, node_modules\bpmn-js-properties-panel\styles\groups.less */
+.bpp-properties-group:empty {
+  display: none;
+}
+/* line 14, node_modules\bpmn-js-properties-panel\styles\groups.less */
+.bpp-properties-group > .group-toggle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 4px;
+  cursor: pointer;
+  transition: background-color 0.218s linear;
+}
+/* line 22, node_modules\bpmn-js-properties-panel\styles\groups.less */
+.bpp-properties-group > .group-toggle:hover {
+  background-color: #8fc071;
+}
+/* line 27, node_modules\bpmn-js-properties-panel\styles\groups.less */
+.bpp-properties-group > .group-label {
+  font-weight: bolder;
+  display: inline-block;
+  vertical-align: middle;
+  color: #666;
+  font-size: 120%;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  transition: margin 0.218s linear;
+  font-style: italic;
+}
+/* line 71, node_modules\bpmn-js-properties-panel\styles\_mixins.less */
+.bpp-properties-group > .group-label[for] {
+  cursor: pointer;
+}
+/* line 74, node_modules\bpmn-js-properties-panel\styles\_mixins.less */
+.bpp-properties-group > .group-label.bpp-hidden {
+  display: none;
+}
+/* line 36, node_modules\bpmn-js-properties-panel\styles\groups.less */
+.bpp-properties-group:hover > .group-toggle {
+  background-color: #ccc;
+}
+/* line 38, node_modules\bpmn-js-properties-panel\styles\groups.less */
+.bpp-properties-group:hover > .group-toggle:hover {
+  background-color: #8fc071;
+}
+/* line 43, node_modules\bpmn-js-properties-panel\styles\groups.less */
+.bpp-properties-group.group-closed {
+  max-height: 20px;
+  border-top: none;
+  cursor: pointer;
+  background-color: rgba(143, 192, 113, 0.2);
+  padding-top: 0;
+  padding-bottom: 0;
+}
+/* line 51, node_modules\bpmn-js-properties-panel\styles\groups.less */
+.bpp-properties-group.group-closed > div {
+  visibility: hidden;
+}
+/* line 55, node_modules\bpmn-js-properties-panel\styles\groups.less */
+.bpp-properties-group.group-closed > .group-label {
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+/* line 60, node_modules\bpmn-js-properties-panel\styles\groups.less */
+.bpp-properties-group.group-closed:hover > .group-label {
+  color: #52B415;
+}
+/* line 65, node_modules\bpmn-js-properties-panel\styles\groups.less */
+.bpp-properties-group + .bpp-properties-group {
+  border-top: 1px dotted #ccc;
+}
+/* line 69, node_modules\bpmn-js-properties-panel\styles\groups.less */
+.bpp-properties-group:last-child {
+  padding-bottom: 9px;
+}

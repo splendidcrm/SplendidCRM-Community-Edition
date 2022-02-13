@@ -1,0 +1,27 @@
+/* line 2, node_modules\bpmn-js-properties-panel\styles\listeners.less */
+.cam-add-listener > button {
+  position: relative;
+  margin-left: 10px;
+}
+/* line 8, node_modules\bpmn-js-properties-panel\styles\listeners.less */
+[data-list-entry-container] > .bpp-listener-area {
+  border: 1px solid #ccc;
+  margin: 10px 1px;
+  padding: 10px;
+}
+/* line 14, node_modules\bpmn-js-properties-panel\styles\listeners.less */
+.bpp-listener-area {
+  position: relative;
+}
+/* line 16, node_modules\bpmn-js-properties-panel\styles\listeners.less */
+.bpp-listener-area > button {
+  position: absolute;
+  right: 0;
+  top: 0;
+  border: none;
+  background: none;
+}
+/* line 25, node_modules\bpmn-js-properties-panel\styles\listeners.less */
+.bpp-listener-area + .bpp-listener-area {
+  margin-top: 20px;
+}
