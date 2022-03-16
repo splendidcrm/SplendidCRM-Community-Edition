@@ -85,7 +85,8 @@ class SplendidStream extends React.Component<ISplendidStreamProps, ISplendidStre
 			if ( this._isMounted )
 			{
 				newState.error = null;
-				this.setState(newState as ISplendidStreamState, resolve);
+				// 02/20/2022 Paul.  Latest version of TypeScript does not allow resolve to return undefined, so return null. 
+				this.setState(newState as ISplendidStreamState, () => resolve(null) );
 			}
 		});
 	}
@@ -859,7 +860,7 @@ class SplendidStream extends React.Component<ISplendidStreamProps, ISplendidStre
 					}) => (
 						<div>
 							<DumpSQL SQL={ __sql } />
-							? <table className='listView' cellSpacing={ 1 } cellPadding={ 3 } style={ {width: '100%'} }>
+							<table className='listView' cellSpacing={ 1 } cellPadding={ 3 } style={ {width: '100%'} }>
 								<tr className='listViewPaginationTdS1'>
 									<td style={ {textAlign: 'right'} } className='react-bootstrap-table-pagination-total pageNumbers'>
 										<span className='paginationButtonPrevious' style={ {cursor: 'pointer'} } onClick={ () => this._onPrevPage(paginationProps) }>

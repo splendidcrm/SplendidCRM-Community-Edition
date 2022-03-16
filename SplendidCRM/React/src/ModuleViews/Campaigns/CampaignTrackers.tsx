@@ -831,6 +831,8 @@ class CampaignsCampaignTrackers extends React.Component<ISubPanelViewProps, ISub
 			}
 			else
 			{
+				// 02/26/2022 Paul.  Fire the complete event so that precompile is not blocked. 
+				this._onComponentComplete(MODULE_NAME, RELATED_MODULE, GRID_NAME, null);
 				return null;
 			}
 		}

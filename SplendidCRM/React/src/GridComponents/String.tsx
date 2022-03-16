@@ -18,7 +18,7 @@ import Security                             from '../scripts/Security'     ;
 import { Crm_Config }                       from '../scripts/Crm'          ;
 import { NormalizeDescription }             from '../scripts/EmailUtils'   ;
 import { FromJsonDate, formatNumber }       from '../scripts/Formatting'   ;
-import { isNumber } from 'util';
+// 02/21/2022 Paul.  isNumber is defined in jQuery.  use !isNaN() instead. 
 // 4. Components and Views. 
 
 interface IStringProps
@@ -155,7 +155,8 @@ export default class String extends React.PureComponent<IStringProps, IStringSta
 						if ( DATA_FORMAT.indexOf('{0:N') >= 0 )
 						{
 							DATA_FORMAT = DATA_FORMAT.replace('{0:N', '').replace('}', '');
-							if ( isNumber(parseInt(DATA_FORMAT)) )
+							// 02/21/2022 Paul.  isNumber is defined in jQuery.  use !isNaN() instead. 
+							if ( !isNaN(parseInt(DATA_FORMAT)) )
 							{
 								oNumberFormat.CurrencyDecimalDigits = parseInt(DATA_FORMAT);
 							}
@@ -164,7 +165,8 @@ export default class String extends React.PureComponent<IStringProps, IStringSta
 						else if ( DATA_FORMAT.indexOf('{0:F') >= 0 )
 						{
 							DATA_FORMAT = DATA_FORMAT.replace('{0:F', '').replace('}', '');
-							if ( isNumber(parseInt(DATA_FORMAT)) )
+							// 02/21/2022 Paul.  isNumber is defined in jQuery.  use !isNaN() instead. 
+							if ( !isNaN(parseInt(DATA_FORMAT)) )
 							{
 								oNumberFormat.CurrencyDecimalDigits = parseInt(DATA_FORMAT);
 							}

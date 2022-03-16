@@ -3,7 +3,8 @@ const { resolve } = require('path');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const WebpackPwaManifest = require('webpack-pwa-manifest');
-var HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
+// 02/22/2022 Paul.  Error with this plugin: TypeError: Cannot read property 'tap' of undefined
+//var HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const webpack = require('webpack');
 module.exports = {
   resolve: {
@@ -14,7 +15,7 @@ module.exports = {
     rules: [
       {
         test: /\.tsx?$/,
-        loaders: [
+        use: [
           {
             loader: 'thread-loader',
             options: { 
@@ -35,13 +36,25 @@ module.exports = {
         use: ['style-loader', { loader: 'css-loader', options: { importLoaders: 1 } }, 'postcss-loader',],
       },
       {
-        test: /\.scss$/,
-        loaders: [
-          'style-loader',
-          { loader: 'css-loader', options: { importLoaders: 1 } },
-          'postcss-loader',
-          'sass-loader',
-        ],
+        test: /\.(scss)$/,
+        use: [{
+          loader: 'style-loader', // inject CSS to page
+        }, {
+          loader: 'css-loader', // translates CSS into CommonJS modules
+        }, {
+          loader: 'postcss-loader', // Run postcss actions
+          options: {
+            postcssOptions: {
+               plugins: function () { // postcss plugins, can be exported to postcss.config.js
+                 return [
+                   require('autoprefixer')
+                 ];
+               }
+            }
+          }
+        }, {
+          loader: 'sass-loader' // compiles Sass to CSS
+        }]
       },
       {
         test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
@@ -49,7 +62,7 @@ module.exports = {
       },
       {
         test: /\.(jpe?g|png|gif|svg)$/i,
-        loaders: [
+        use: [
           'url-loader',
         ],
       },
@@ -57,13 +70,15 @@ module.exports = {
   },
   plugins: [
     new ForkTsCheckerWebpackPlugin({
-      checkSyntacticErrors: true,
-      tsconfig: '../tsconfig.json',
-      measureCompilationTime: true,
-      useTypescriptIncrementalApi: true,
-      memoryLimit: 4096
+      typescript:{
+         checkSyntacticErrors: true,
+         configFile: '../tsconfig.json',
+         measureCompilationTime: true,
+         useTypescriptIncrementalApi: true,
+         memoryLimit: 4096
+     }
     }),
-    new HardSourceWebpackPlugin(),
+    //new HardSourceWebpackPlugin(),
     new HtmlWebpackPlugin({ template: 'index.html.ejs', mobile: false }),
     new WebpackPwaManifest({
       name: 'SplendidCRM Web App',
@@ -77,12 +92,13 @@ module.exports = {
           sizes: [16, 32]
         }
       ]
-    })
+    }),
+    new webpack.ProvidePlugin({process: 'process/browser'}),
   ],
   performance: {
     hints: false,
   },
-  externals: function (context, request, callback) {
+  externals: function ({context, request}, callback) {
     if (/xlsx|canvg|pdfmake/.test(request)) {
       return callback(null, "commonjs " + request);
     }

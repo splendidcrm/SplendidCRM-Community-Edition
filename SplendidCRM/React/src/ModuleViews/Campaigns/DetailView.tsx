@@ -60,6 +60,7 @@ class CampaignDetailView extends React.Component<IDetailViewProps, IDetailViewSt
 	constructor(props: IDetailViewProps)
 	{
 		super(props);
+		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.constructor');
 		let archiveView: boolean = false;
 		if ( props.location.pathname.indexOf('/ArchiveView') >= 0 )
 		{

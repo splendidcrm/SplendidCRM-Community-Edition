@@ -9,13 +9,12 @@
  */
 
 // 1. React and fabric. 
-require('react-hot-loader/patch');
-require('core-js'               );
-require('whatwg-fetch'          );
+// 02/26/2022 Paul.  Remove core-js as we don't seem to be using any of its features. 
+// 02/26/2022 Paul.  Remove react-hot-loader as we do not need hot loading and it should not be used in production. 
+// 02/26/2022 Paul.  Remove whatwg-fetch as it is no londer needed as we require latest browsers. 
 import * as React                                  from 'react'                  ;
 import * as ReactDOM                               from 'react-dom'              ;
 import { Router }                                  from 'react-router'           ;
-import { AppContainer }                            from 'react-hot-loader'       ;
 import * as RoutesModule                           from './routes'               ;
 import { Provider }                                from 'mobx-react'             ;
 import { RouterStore, syncHistoryWithStore }       from 'mobx-react-router'      ;
@@ -215,11 +214,10 @@ document.getComponentById = document.getComponentById || function (id: string)
 function render()
 {
 	ReactDOM.render(
-		<AppContainer>
 			<Provider {...stores}>
 				<TrackingRouter history={history} children={routes} />
 			</Provider>
-		</AppContainer>,
+		,
 		document.getElementById('root') as HTMLElement
 	);
 }
@@ -231,6 +229,15 @@ if (!window.cordova)
 else
 {
 	document.addEventListener('deviceready', render, false);
+	// 03/05/2022 Paul.  divFooterCopyright is not flowing below content on Android, so just hide. 
+	window.onload = function()
+	{
+		let divFooterCopyright = document.getElementById('divFooterCopyright');
+		if ( divFooterCopyright )
+		{
+			divFooterCopyright.style.display = 'none';
+		}
+	}
 }
 
 declare let module: { hot: any };

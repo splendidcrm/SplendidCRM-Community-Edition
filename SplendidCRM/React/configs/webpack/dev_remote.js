@@ -1,14 +1,11 @@
 // development config
-const merge = require('webpack-merge');
+const { merge } = require('webpack-merge');
 const webpack = require('webpack');
 const commonConfig = require('./common');
 let cookie;
 module.exports = (env) => merge(commonConfig, {
   mode: 'development',
   entry: [
-    'core-js',
-    'whatwg-fetch',
-    'react-hot-loader/patch', // activate HMR for React    
     'react',
     'webpack-dev-server/client?http://localhost:3000',// bundle the client for webpack-dev-server and connect to the provided endpoint
     'webpack/hot/only-dev-server', // bundle the client for hot reloading, only- means to only hot reload for successful updates

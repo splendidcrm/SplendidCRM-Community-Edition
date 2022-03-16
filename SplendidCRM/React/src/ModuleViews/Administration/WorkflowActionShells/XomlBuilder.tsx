@@ -193,7 +193,7 @@ export default class XomlBuilder extends React.Component<IXomlBuilderProps, IQue
 	// As soon as the render method has been executed the componentDidMount function is called. 
 	async componentDidMount()
 	{
-		const { row, DATA_FIELD, DisplayColumns } = this.props;
+		const { row, DATA_FIELD, PARENT_ID, DisplayColumns } = this.props;
 		this._isMounted = true;
 		try
 		{
@@ -343,7 +343,10 @@ export default class XomlBuilder extends React.Component<IXomlBuilderProps, IQue
 			}
 
 			let oPreviewSQL : string = await this.getReportSQL(MODULE, RELATED, filterXml, relatedModuleXml, relationshipXml, DisplayColumns);
-			let oPreviewXOML: string = await this.getWorkflowXOML(MODULE, RELATED, filterXml, relatedModuleXml, relationshipXml);
+			// 03/04/2022 Paul.  We don't want an error during precompile. 
+			let oPreviewXOML: string = null;
+			if ( PARENT_ID != null )
+				oPreviewXOML = await this.getWorkflowXOML(MODULE, RELATED, filterXml, relatedModuleXml, relationshipXml);
 			//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.componentDidMount', this.designerModules);
 			this.setState(
 			{

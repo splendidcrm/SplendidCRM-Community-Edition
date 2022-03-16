@@ -27,7 +27,7 @@ import SplendidCache                          from '../../scripts/SplendidCache'
 import { DynamicLayout_Module }               from '../../scripts/DynamicLayout'         ;
 import { AuthenticatedMethod, LoginRedirect } from '../../scripts/Login'                 ;
 import { Crm_Config, Crm_Modules }            from '../../scripts/Crm'                   ;
-import { EndsWith }                           from '../../scripts/utility'               ;
+import { StartsWith, EndsWith }               from '../../scripts/utility'               ;
 import { UpdateModule, UpdateRelatedItem, UpdateRelatedList, DeleteRelatedItem, DeleteModuleItem } from '../../scripts/ModuleUpdate';
 // 4. Components and Views. 
 import ErrorComponent                         from '../../components/ErrorComponent'    ;
@@ -38,6 +38,8 @@ import SearchView                             from '../../views/SearchView'     
 import DynamicPopupView                       from '../../views/DynamicPopupView'       ;
 import EditView                               from '../../views/EditView'               ;
 import SubPanelButtonsFactory                 from '../../ThemeComponents/SubPanelButtonsFactory';
+// 02/15/2022 Paul.  Add support for Campaign Preview. 
+import CampaignPreviewView                    from './PreviewView'                      ;
 
 const Content = posed.div(
 {
@@ -93,6 +95,8 @@ interface ISubPanelViewState
 	open             : boolean;
 	customView       : any;
 	subPanelVisible  : boolean;
+	// 02/15/2022 Paul.  Add support for Campaign Preview. 
+	previewOpen      : boolean;
 }
 
 @observer
@@ -237,6 +241,7 @@ class CampaignsEmailMarketing extends React.Component<ISubPanelViewProps, ISubPa
 			open             ,
 			customView       : null,
 			subPanelVisible  : Sql.ToBoolean(props.isPrecompile),  // 08/31/2021 Paul.  Must show sub panel during precompile to allow it to continue. 
+			previewOpen      : false,
 		};
 	}
 
@@ -371,6 +376,11 @@ class CampaignsEmailMarketing extends React.Component<ISubPanelViewProps, ISubPa
 				else if ( sCommandName == 'Emails.Compose' )
 				{
 					this.props.history.push(`/Reset/Emails/Edit?PARENT_ID=${PARENT_ID}`);
+				}
+				// 02/15/2022 Paul.  Add support for Campaign Preview. 
+				else if ( StartsWith(sCommandName, 'CampaignPreview') )
+				{
+					this.setState({ previewOpen: true });
 				}
 				else
 				{
@@ -668,10 +678,15 @@ class CampaignsEmailMarketing extends React.Component<ISubPanelViewProps, ISubPa
 		}
 	}
 
+	private _onPreviewClose = () =>
+	{
+		this.setState({ previewOpen: false });
+	}
+
 	public render()
 	{
 		const { PARENT_TYPE, row, layout, CONTROL_VIEW_NAME, disableView, disableEdit, disableRemove } = this.props;
-		const { RELATED_MODULE, GRID_NAME, TABLE_NAME, SORT_FIELD, SORT_DIRECTION, PRIMARY_FIELD, PRIMARY_ID, error, showCancel, showFullForm, showTopButtons, showBottomButtons, showSearch, showInlineEdit, item, popupOpen, multiSelect, archiveView, open, customView, subPanelVisible } = this.state;
+		const { PARENT_ID, RELATED_MODULE, GRID_NAME, TABLE_NAME, SORT_FIELD, SORT_DIRECTION, PRIMARY_FIELD, PRIMARY_ID, error, showCancel, showFullForm, showTopButtons, showBottomButtons, showSearch, showInlineEdit, item, popupOpen, multiSelect, archiveView, open, customView, subPanelVisible, previewOpen } = this.state;
 		// 05/04/2019 Paul.  Reference obserable IsInitialized so that terminology update will cause refresh. 
 		// 05/06/2019 Paul.  The trick to having the SearchView change with the tabs is to change the key. 
 		// 06/25/2019 Paul.  The SplendidGrid is getting a componentDidUpdate event instead of componentDidMount, so try specifying a key. 
@@ -703,6 +718,12 @@ class CampaignsEmailMarketing extends React.Component<ISubPanelViewProps, ISubPa
 			{
 				return (
 					<React.Fragment>
+						<CampaignPreviewView
+							isOpen={ previewOpen }
+							callback={ this._onPreviewClose }
+							MODULE_NAME='Campaigns'
+							CAMPAIGN_ID={ PARENT_ID }
+						/>
 						<DynamicPopupView
 							isOpen={ popupOpen }
 							callback={ this._onSelect }
@@ -831,6 +852,8 @@ class CampaignsEmailMarketing extends React.Component<ISubPanelViewProps, ISubPa
 			}
 			else
 			{
+				// 02/26/2022 Paul.  Fire the complete event so that precompile is not blocked. 
+				this._onComponentComplete(MODULE_NAME, RELATED_MODULE, GRID_NAME, null);
 				return null;
 			}
 		}

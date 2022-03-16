@@ -112,7 +112,13 @@ namespace SplendidCRM.Users
 		protected Table           tblICloudPanel                  ;
 		protected HtmlTable       tblICloudOptions                ;
 		protected Button          btnICloudTest                   ;
+		protected Button          btnICloudAuthorize              ;
+		protected Button          btnICloudDelete                 ;
+		protected Button          btnICloudAuthorized             ;
+		protected Button          btnICloudRefreshToken           ;
+		protected Label           lblICloudAuthorized             ;
 		protected Label           lblCloudAuthorizedStatus        ;
+		
 		// 01/15/2017 Paul.  Add support for Office 365 OAuth. 
 		protected Table           tblOffice365Panel               ;
 		protected HtmlTable       tblOffice365Options             ;
@@ -716,12 +722,16 @@ namespace SplendidCRM.Users
 				}
 			}
 			#endregion
-			#region iCloud.Test
+			#region Apple iCloud
 			// 12/13/2011 Paul.  Add support for Apple iCloud. 
 			else if ( e.CommandName == "iCloud.Test" )
 			{
 				try
 				{
+					StringBuilder sbErrors = new StringBuilder();
+					//SplendidCRM.iCloudSync.TestAccessToken(Application, gID, sbErrors);
+					lblCloudAuthorizedStatus.Text = sbErrors.ToString();
+					/*
 					Guid gINBOUND_EMAIL_KEY = Sql.ToGuid(Application["CONFIG.InboundEmailKey"]);
 					Guid gINBOUND_EMAIL_IV  = Sql.ToGuid(Application["CONFIG.InboundEmailIV" ]);
 					TextBox txtMAIL_SMTPUSER       = FindControl("MAIL_SMTPUSER"      ) as TextBox;
@@ -785,15 +795,77 @@ namespace SplendidCRM.Users
 							//ctlFacebookButtons.ErrorText = L10n.Term("Users.LBL_ICLOUD_TEST_SUCCESSFUL");
 						}
 					}
+					*/
 				}
 				catch(Exception ex)
 				{
 					SplendidError.SystemError(new StackTrace(true).GetFrame(0), ex);
-					ctlDynamicButtons .ErrorText = ex.Message;
-					//ctlFacebookButtons.ErrorText = ex.Message;
+					lblCloudAuthorizedStatus.Text = ex.Message;
+				}
+			}
+			// 02/13/2022 Paul.  Sign in with Apple now uses OAuth 2.0. 
+			else if ( e.CommandName == "iCloud.Authorize" )
+			{
+				try
+				{
+					string sCode       = OAUTH_CODE.Text;
+					string sIdToken    = OAUTH_ACCESS_TOKEN.Text;
+					StringBuilder sbErrors = new StringBuilder();
+					SplendidCRM.iCloudSync.AcquireAccessToken(Context, gID, sCode, sIdToken, sbErrors);
+					if ( sbErrors.Length == 0 )
+					{
+						lblCloudAuthorizedStatus.Text = L10n.Term("OAuth.LBL_TEST_SUCCESSFUL");
+						btnICloudAuthorize      .Visible = false;
+						btnICloudDelete         .Visible = true ;
+						btnICloudTest           .Visible = true ;
+						btnICloudRefreshToken   .Visible = true && bDebug;
+						lblCloudAuthorizedStatus.Visible = true ;
+						Session["ICLOUD_OAUTH_ENABLED"] = true;
+					}
+					else
+					{
+						throw(new Exception(sbErrors.ToString()));
+					}
+				}
+				catch(Exception ex)
+				{
+					lblCloudAuthorizedStatus.Text = ex.Message;
+					Session["ICLOUD_OAUTH_ENABLED"] = false;
+				}
+			}
+			else if ( e.CommandName == "iCloud.Delete" )
+			{
+				try
+				{
+					SqlProcs.spOAUTH_TOKENS_Delete(gID, "iCloud");
+					btnICloudAuthorize   .Visible = true ;
+					btnICloudDelete      .Visible = false;
+					btnICloudTest        .Visible = false;
+					btnICloudRefreshToken.Visible = false;
+					lblICloudAuthorized  .Visible = false;
+					Session["ICLOUD_OAUTH_ENABLED"] = false;
+				}
+				catch(Exception ex)
+				{
+					lblCloudAuthorizedStatus.Text =  Utils.ExpandException(ex);
+				}
+			}
+			else if ( e.CommandName == "iCloud.RefreshToken" )
+			{
+				try
+				{
+					SplendidCRM.iCloudSync.RefreshAccessToken(Context, gID, true);
+					lblCloudAuthorizedStatus.Text = L10n.Term("OAuth.LBL_TEST_SUCCESSFUL");
+					Session["ICLOUD_OAUTH_ENABLED"] = true;
+				}
+				catch(Exception ex)
+				{
+					lblCloudAuthorizedStatus.Text =  Utils.ExpandException(ex);
+					Session["ICLOUD_OAUTH_ENABLED"] = false;
 				}
 			}
 			#endregion
+			#region GoogleApps
 			// 09/05/2015 Paul.  Google now uses OAuth 2.0. 
 			else if ( e.CommandName == "GoogleApps.Authorize" )
 			{
@@ -880,6 +952,8 @@ namespace SplendidCRM.Users
 					Session["GOOGLEAPPS_OAUTH_ENABLED"] = false;
 				}
 			}
+			#endregion
+			#region Office365
 			// 01/16/2017 Paul.  Add support for Office 365 OAuth. 
 			else if ( e.CommandName == "Office365.Authorize" )
 			{
@@ -994,6 +1068,7 @@ namespace SplendidCRM.Users
 					lblOffice365AuthorizedStatus.Text =  Utils.ExpandException(ex);
 				}
 			}
+			#endregion
 			else if ( e.CommandName == "Cancel" )
 			{
 				if ( !Sql.IsEmptyGuid(gPARENT_ID) )
@@ -1328,6 +1403,20 @@ namespace SplendidCRM.Users
 											catch(Exception ex)
 											{
 												SplendidError.SystemError(new StackTrace(true).GetFrame(0), "GOOGLEAPPS_OAUTH_ENABLED is not defined. " + ex.Message);
+											}
+											// 02/13/2022 Paul.  Sign in with Apple now uses OAuth 2.0. 
+											try
+											{
+												bool bICLOUD_OAUTH_ENABLED = Sql.ToBoolean(rdr["ICLOUD_OAUTH_ENABLED"]);
+												btnICloudAuthorize   .Visible = !bICLOUD_OAUTH_ENABLED;
+												btnICloudDelete      .Visible =  bICLOUD_OAUTH_ENABLED;
+												btnICloudTest        .Visible =  bICLOUD_OAUTH_ENABLED;
+												btnICloudRefreshToken.Visible =  bICLOUD_OAUTH_ENABLED && bDebug;
+												lblICloudAuthorized  .Visible =  bICLOUD_OAUTH_ENABLED;
+											}
+											catch(Exception ex)
+											{
+												SplendidError.SystemError(new StackTrace(true).GetFrame(0), "APPLE_OAUTH_ENABLED is not defined. " + ex.Message);
 											}
 											// 12/04/2005 Paul.  Only allow the admin flag to be changed if the current user is an admin. 
 											chkIS_ADMIN.Enabled = Security.IS_ADMIN;
@@ -1688,6 +1777,13 @@ namespace SplendidCRM.Users
 						btnGoogleAppsTest        .Visible =  bGOOGLEAPPS_OAUTH_ENABLED;
 						btnGoogleAppsRefreshToken.Visible =  bGOOGLEAPPS_OAUTH_ENABLED && bDebug;
 						lblGoogleAppsAuthorized  .Visible =  bGOOGLEAPPS_OAUTH_ENABLED;
+						// 02/13/2022 Paul.  Sign in with Apple now uses OAuth 2.0. 
+						bool bICLOUD_OAUTH_ENABLED = false;
+						btnICloudAuthorize   .Visible = !bICLOUD_OAUTH_ENABLED && Sql.ToBoolean(Context.Application["CONFIG.iCloud.Enabled"]);
+						btnICloudDelete      .Visible =  bICLOUD_OAUTH_ENABLED;
+						btnICloudTest        .Visible =  bICLOUD_OAUTH_ENABLED;
+						btnICloudRefreshToken.Visible =  bICLOUD_OAUTH_ENABLED && bDebug;
+						lblICloudAuthorized  .Visible =  bICLOUD_OAUTH_ENABLED;
 
 						try
 						{

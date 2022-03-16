@@ -27,6 +27,10 @@ import CampaignsEditView         from './Campaigns/EditView'        ;
 import CampaignsDetailView       from './Campaigns/DetailView'      ;
 import CampaignsRoiDetailView    from './Campaigns/RoiDetailView'   ;
 import CampaignsTrackDetailView  from './Campaigns/TrackDetailView' ;
+// 02/16/2022 Paul.  Campaign subpanels were not being included. 
+import CampaignsCallMarketing    from './Campaigns/CallMarketing'   ;
+import CampaignsEmailMarketing   from './Campaigns/EmailMarketing'  ;
+import CampaignsCampaignTrackers from './Campaigns/CampaignTrackers';
 import CampaignTrackersEditView  from './CampaignTrackers/EditView' ;
 import CasesEditView             from './Cases/EditView'            ;
 import ChartsListView            from './Charts/ListView'           ;
@@ -236,6 +240,10 @@ export default function ModuleViewFactory(sLAYOUT_NAME: string)
 		case 'Campaigns.DetailView'      :  view = CampaignsDetailView      ;  break;
 		case 'Campaigns.RoiDetailView'   :  view = CampaignsRoiDetailView   ;  break;
 		case 'Campaigns.TrackDetailView' :  view = CampaignsTrackDetailView ;  break;
+		// 02/16/2022 Paul.  Campaign subpanels were not being included. 
+		case 'Campaigns.CallMarketing'   :  view = CampaignsCallMarketing   ;  break;
+		case 'Campaigns.EmailMarketing'  :  view = CampaignsEmailMarketing  ;  break;
+		case 'Campaigns.CampaignTrackers':  view = CampaignsCampaignTrackers;  break;
 		case 'CampaignTrackers.EditView' :  view = CampaignTrackersEditView ;  break;
 		case 'Cases.EditView'            :  view = CasesEditView            ;  break;
 		case 'Charts.ListView'           :  view = ChartsListView           ;  break;

@@ -8,10 +8,12 @@
  * "Copyright (C) 2005-2022 SplendidCRM Software, Inc. All rights reserved."
  */
 var cmdHelper  = require('bpmn-js-properties-panel/lib/helper/CmdHelper');
-var domQuery   = require('min-dom/lib/query');
-var domAttr    = require('min-dom/lib/attr');
-var domClosest = require('min-dom/lib/closest');
-var domify     = require('min-dom/lib/domify');
+// 03/01/2022 Paul.  Updated packaging for min-dom. 
+var minDom     = require('min-dom');
+var domQuery   = minDom.query  ;
+var domAttr    = minDom.attr   ;
+var domClosest = minDom.closest;
+var domify     = minDom.domify ;
 var filter     = require('lodash/collection/filter');
 var forEach    = require('lodash/collection/forEach');
 var keys       = require('lodash/object/keys');

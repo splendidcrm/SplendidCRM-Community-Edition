@@ -34,9 +34,12 @@ import ErrorComponent                               from '../../../components/Er
 import HeaderButtonsFactory                         from '../../../ThemeComponents/HeaderButtonsFactory';
 import SearchView                                   from './SearchView'                         ;
 
+// 02/22/2022 Paul.  RenameTabs modifies the Terminology table. 
+const MODULE_NAME: string = 'Terminology';
+
 interface IRenameTabsListViewProps extends RouteComponentProps<any>
 {
-	MODULE_NAME           : string;
+	//MODULE_NAME           : string;
 	RELATED_MODULE?       : string;
 	GRID_NAME?            : string;
 	TABLE_NAME?           : string;
@@ -88,7 +91,6 @@ export default class RenameTabsListView extends React.Component<IRenameTabsListV
 
 	async componentDidMount()
 	{
-		const { MODULE_NAME } = this.props;
 		this._isMounted = true;
 		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.componentDidMount', this.state.rowDefaultSearch);
 		try
@@ -136,7 +138,7 @@ export default class RenameTabsListView extends React.Component<IRenameTabsListV
 	{
 		if ( this.props.onComponentComplete )
 		{
-			const { MODULE_NAME, RELATED_MODULE, GRID_NAME } = this.props;
+			const { RELATED_MODULE, GRID_NAME } = this.props;
 			const { vwMain, error } = this.state;
 			//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onComponentComplete ' + GRID_NAME, vwMain);
 			if ( vwMain != null && error == null )
@@ -215,7 +217,7 @@ export default class RenameTabsListView extends React.Component<IRenameTabsListV
 
 	private Page_Command = async (sCommandName, sCommandArguments) =>
 	{
-		const { MODULE_NAME, history } = this.props;
+		const { history } = this.props;
 		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.Page_Command ' + sCommandName, sCommandArguments);
 		switch ( sCommandName )
 		{
@@ -326,7 +328,6 @@ export default class RenameTabsListView extends React.Component<IRenameTabsListV
 
 	public render()
 	{
-		const { MODULE_NAME } = this.props;
 		const { error, vwMain, editIndex, editNAME, editDISPLAY_NAME, __sql } = this.state;
 		let { rowDefaultSearch } = this.state;
 

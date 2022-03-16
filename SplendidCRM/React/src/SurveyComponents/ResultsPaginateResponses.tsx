@@ -70,7 +70,8 @@ class ResultsPaginateResponses extends React.Component<IResultsPaginateResponses
 			if ( this._isMounted )
 			{
 				newState.error = null;
-				this.setState(newState as IResultsPaginateResponsesState, resolve);
+				// 02/25/2022 Paul.  Latest version of TypeScript does not allow resolve to return undefined, so return null. 
+				this.setState(newState as IResultsPaginateResponsesState, () => resolve(null) );
 			}
 		});
 	}

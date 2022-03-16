@@ -2646,7 +2646,8 @@ namespace SplendidCRM.Administration
 							{ new AdminModule(L10n, "DynamicLayout"         , "Administration.LBL_MANAGE_LAYOUT"                 , "Administration.LBL_MANAGE_LAYOUT"           , "AdminDynamicLayout"   , "Layout.gif")
 							, new AdminModule(L10n, "Dropdown"              , "Administration.LBL_DROPDOWN_EDITOR"               , "Administration.DESC_DROPDOWN_EDITOR"        , "List"                 )
 							, new AdminModule(L10n, "EditCustomFields"      , "Administration.LBL_EDIT_CUSTOM_FIELDS"            , "Administration.DESC_EDIT_CUSTOM_FIELDS"     , "List"                 )
-							, new AdminModule(L10n, "Terminology"           , "Administration.LBL_CONFIGURE_TABS"                , "Administration.LBL_CHOOSE_WHICH"            , "ConfigureTabs"        , "ConfigureTabs.gif"                         )
+							// 02/22/2022 Paul.  ConfigureTabs modifies the Modules table. 
+							, new AdminModule(L10n, "Modules"               , "Administration.LBL_CONFIGURE_TABS"                , "Administration.LBL_CHOOSE_WHICH"            , "ConfigureTabs"        , "ConfigureTabs.gif"                         )
 							, new AdminModule(L10n, "Terminology"           , "Administration.LBL_RENAME_TABS"                   , "Administration.LBL_CHANGE_NAME_TABS"        , "RenameTabs"           , "RenameTabs.gif"                            )
 							, new AdminModule(L10n, "iFrames"               , "Administration.LBL_IFRAME"                        , "Administration.DESC_IFRAME"                 , 22, dictModuleTabOrder , "iFrames.LBL_ADD_SITE"                      )
 							, new AdminModule(L10n, "Terminology"           , "Administration.LBL_MANAGE_TERMINOLOGY_TITLE"      , "Administration.LBL_MANAGE_TERMINOLOGY"      , 23, dictModuleTabOrder , String.Empty                                )

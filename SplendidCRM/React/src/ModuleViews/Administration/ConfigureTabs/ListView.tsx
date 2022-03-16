@@ -33,9 +33,12 @@ import ErrorComponent                               from '../../../components/Er
 import HeaderButtonsFactory                         from '../../../ThemeComponents/HeaderButtonsFactory';
 import DraggableRow                                 from '../Dropdown/DraggableRow'             ;
 
+// 02/22/2022 Paul.  ConfigureTabs modifies the Modules table. 
+const MODULE_NAME: string = 'Modules';
+
 interface IConfigureTabsListViewProps extends RouteComponentProps<any>
 {
-	MODULE_NAME           : string;
+	//MODULE_NAME           : string;
 	RELATED_MODULE?       : string;
 	GRID_NAME?            : string;
 	TABLE_NAME?           : string;
@@ -75,7 +78,6 @@ export default class ConfigureTabsListView extends React.Component<IConfigureTab
 
 	async componentDidMount()
 	{
-		const { MODULE_NAME } = this.props;
 		this._isMounted = true;
 		try
 		{
@@ -123,7 +125,7 @@ export default class ConfigureTabsListView extends React.Component<IConfigureTab
 	{
 		if ( this.props.onComponentComplete )
 		{
-			const { MODULE_NAME, RELATED_MODULE, GRID_NAME } = this.props;
+			const { RELATED_MODULE, GRID_NAME } = this.props;
 			const { vwMain, error } = this.state;
 			//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onComponentComplete ' + GRID_NAME, vwMain);
 			if ( vwMain != null && error == null )
@@ -160,7 +162,6 @@ export default class ConfigureTabsListView extends React.Component<IConfigureTab
 
 	private Page_Command = async (sCommandName, sCommandArguments) =>
 	{
-		const { MODULE_NAME, history } = this.props;
 		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.Page_Command ' + sCommandName, sCommandArguments);
 		switch ( sCommandName )
 		{
@@ -311,7 +312,6 @@ export default class ConfigureTabsListView extends React.Component<IConfigureTab
 
 	public render()
 	{
-		const { MODULE_NAME } = this.props;
 		const { error, vwMain, __sql } = this.state;
 
 		// 05/04/2019 Paul.  Reference obserable IsInitialized so that terminology update will cause refresh. 

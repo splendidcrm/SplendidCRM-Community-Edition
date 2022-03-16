@@ -658,10 +658,11 @@ export function isEmptyObject(obj)
 // https://www.labnol.org/code/19616-detect-touch-screen-javascript
 export function isTouchDevice()
 {
+	// 02/20/2022 Paul.  msMaxTouchPoints is no longer supported, so remove. 
   return (
     !!(typeof window !== 'undefined' &&
       ('ontouchstart' in window || (window.DocumentTouch && typeof document !== 'undefined' && document instanceof window.DocumentTouch))) ||
-    !!(typeof navigator !== 'undefined' && (navigator.maxTouchPoints || navigator.msMaxTouchPoints))
+    !!(typeof navigator !== 'undefined' && (navigator.maxTouchPoints))
   );
 }
 

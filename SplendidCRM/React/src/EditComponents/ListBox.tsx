@@ -755,7 +755,8 @@ export default class ListBox extends EditComponent<IEditComponentProps, IListBox
 				let cssRequired = { paddingLeft: '4px', display: (VALUE_MISSING ? 'inline' : 'none') };
 				// 08/03/2017 Paul.  We need a way to insert NONE into the a ListBox while still allowing multiple rows. 
 				// The trick will be to use a negative number.  Use an absolute value here to reduce the areas to fix. 
-				if ( Math.abs(FORMAT_ROWS) > 0 && DATA_FORMAT == 'cvs' )
+				// 02/25/2022 Paul.  Should be csv not cvs.  Support both for backward compatibility. 
+				if ( Math.abs(FORMAT_ROWS) > 0 && (DATA_FORMAT == 'csv' || DATA_FORMAT == 'cvs') )
 				{
 					// 05/23/2019 Paul.  select value should not be null. 
 					// 01/29/2020 Paul.  Use a better multi-select. 

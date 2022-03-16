@@ -3,7 +3,9 @@ var any                  = require('lodash/collection/any'                      
 var every                = require('lodash/collection/every'                        );
 var filter               = require('lodash/collection/filter'                       );
 var forEach              = require('lodash/collection/forEach'                      );
-var inherits             = require('inherits'                                       );
+// 03/02/2022 Paul.  Must switch to from instead of require to support diagram-js >= 1.0. 
+import inherits          from 'inherits';
+//var inherits             = require('inherits'                                       );
 var getParents           = require('bpmn-js/lib/features/modeling/util/ModelingUtil').getParents;
 var is                   = require('bpmn-js/lib/util/ModelUtil'                     ).is;
 var isAny                = require('bpmn-js/lib/features/modeling/util/ModelingUtil').isAny;
@@ -11,7 +13,9 @@ var getBusinessObject    = require('bpmn-js/lib/util/ModelUtil'                 
 var isExpanded           = require('bpmn-js/lib/util/DiUtil'                        ).isExpanded;
 var isEventSubProcess    = require('bpmn-js/lib/util/DiUtil'                        ).isEventSubProcess;
 var isInterrupting       = require('bpmn-js/lib/util/DiUtil'                        ).isInterrupting;
-var RuleProvider         = require('diagram-js/lib/features/rules/RuleProvider'     );
+// 03/02/2022 Paul.  Must switch to from instead of require to support diagram-js >= 1.0. 
+import RuleProvider      from 'diagram-js/lib/features/rules/RuleProvider'     ;
+//var RuleProvider         = require('diagram-js/lib/features/rules/RuleProvider'     );
 var isBoundaryAttachment = require('bpmn-js/lib/features/snapping/BpmnSnappingUtil' ).getBoundaryAttachment;
 
 /**********************************************************************************************************************

@@ -9,5 +9,5 @@
  */
 
 export const AppName = 'SplendidCRM';
-export const AppVersion = '14.0.8077';
+export const AppVersion = '14.0.8109';
 

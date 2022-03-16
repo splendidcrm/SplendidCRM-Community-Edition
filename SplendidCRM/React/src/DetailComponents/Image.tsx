@@ -16,6 +16,7 @@ import { IDetailComponentProps, IDetailComponentState, DetailComponent } from '.
 import Sql                   from '../scripts/Sql'                ;
 import Credentials           from '../scripts/Credentials'        ;
 import { Crm_Modules }       from '../scripts/Crm'                ;
+import { Trim, inArray }     from '../scripts/utility'            ;
 // 4. Components and Views. 
 
 interface IImageState
@@ -27,6 +28,8 @@ interface IImageState
 	DISPLAY_NAME: string;
 	URL         : string;
 	CSS_CLASS?  : string;
+	WIDTH       : string;
+	HEIGHT      : string;
 }
 
 export default class Image extends React.Component<IDetailComponentProps, IImageState>
@@ -45,6 +48,15 @@ export default class Image extends React.Component<IDetailComponentProps, IImage
 		{
 			this.setState({ CSS_CLASS: DATA_VALUE });
 		}
+		// 02/22/2022 Paul.  Allow image to be formatted. 
+		else if ( PROPERTY_NAME == 'width' )
+		{
+			this.setState({ WIDTH: DATA_VALUE });
+		}
+		else if ( PROPERTY_NAME == 'height' )
+		{
+			this.setState({ HEIGHT: DATA_VALUE });
+		}
 	}
 
 	constructor(props: IDetailComponentProps)
@@ -54,6 +66,10 @@ export default class Image extends React.Component<IDetailComponentProps, IImage
 		let DATA_FIELD       : string = '';
 		let DATA_VALUE       : string = '';
 		let URL              : string = '';
+		let DATA_FORMAT      : string = null;
+		// 02/22/2022 Paul.  Allow image to be formatted. 
+		let WIDTH            : string = null;
+		let HEIGHT           : string = null;
 
 		let ID: string = null;
 		try
@@ -65,6 +81,33 @@ export default class Image extends React.Component<IDetailComponentProps, IImage
 				DATA_FIELD        = Sql.ToString (layout.DATA_FIELD );
 				// 12/24/2012 Paul.  Use regex global replace flag. 
 				ID = baseId + '_' + DATA_FIELD.replace(/\s/g, '_');
+				
+				// 02/22/2022 Paul.  Allow image to be formatted. 
+				DATA_FORMAT       = Sql.ToString (layout.DATA_FORMAT);
+				if ( !Sql.IsEmptyString(DATA_FORMAT) )
+				{
+					try
+					{
+						let arrDATA_FORMAT: string[] = DATA_FORMAT.split(';');
+						for ( let i = 0; i < arrDATA_FORMAT.length; i++ )
+						{
+							let arrNAME_VALUE: string[] = arrDATA_FORMAT[i].split('=');
+							if ( arrNAME_VALUE.length == 2 )
+							{
+								let sNAME : string = Trim(arrNAME_VALUE[0]);
+								let sVALUE: string = Trim(arrNAME_VALUE[1]);
+								if ( sNAME.toLowerCase() == "width" )
+									WIDTH = sVALUE;
+								else if ( sNAME.toLowerCase() == "height" )
+									HEIGHT = sVALUE;
+							}
+						}
+					}
+					catch
+					{
+						// 02/22/2022 Paul.  Ignore any errors. 
+					}
+				}
 				
 				if ( row != null )
 				{
@@ -89,6 +132,8 @@ export default class Image extends React.Component<IDetailComponentProps, IImage
 			DATA_VALUE  ,
 			DISPLAY_NAME: DATA_VALUE,
 			URL         ,
+			WIDTH       ,
+			HEIGHT      ,
 		};
 	}
 
@@ -147,13 +192,18 @@ export default class Image extends React.Component<IDetailComponentProps, IImage
 			//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.shouldComponentUpdate ' + DATA_FIELD, CSS_CLASS, nextProps, nextState);
 			return true;
 		}
+		// 02/22/2022 Paul.  Allow image to be formatted. 
+		else if ( nextState.WIDTH != this.state.WIDTH || nextState.HEIGHT != this.state.HEIGHT )
+		{
+			return true;
+		}
 		return false;
 	}
 
 	public render()
 	{
 		const { baseId, layout, row } = this.props;
-		const { ID, FIELD_INDEX, DATA_FIELD, DATA_VALUE, DISPLAY_NAME, URL, CSS_CLASS } = this.state;
+		const { ID, FIELD_INDEX, DATA_FIELD, DATA_VALUE, DISPLAY_NAME, URL, CSS_CLASS, WIDTH, HEIGHT } = this.state;
 		if ( layout == null )
 		{
 			return (<span>layout prop is null</span>);
@@ -173,7 +223,8 @@ export default class Image extends React.Component<IDetailComponentProps, IImage
 		}
 		else if ( !Sql.IsEmptyString(DATA_VALUE) )
 		{
-			return (<img id={ ID } key={ ID } src={ URL } title={ DISPLAY_NAME } className={ CSS_CLASS } />);
+			// 02/22/2022 Paul.  Allow image to be formatted. 
+			return (<img id={ ID } key={ ID } src={ URL } title={ DISPLAY_NAME } className={ CSS_CLASS } width={ WIDTH } height={ HEIGHT } />);
 		}
 		else
 		{

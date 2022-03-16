@@ -221,7 +221,8 @@ class DynamicButtons extends React.Component<IDynamicButtonsProps, IDynamicButto
 						let more = React.createElement('input', {type: 'image', className: ButtonStyle + 'MoreButton', style: {verticalAlign: 'bottom'}, src: themeURL + 'images/moreWhite.gif', onClick: (e) => { e.preventDefault() }});
 						titleChildren.push(more);
 					}
-					let navItem = React.createElement(NavItem, { id: 'pnlDynamicButtons', key: 'pnlDynamicButtons', title: title, alignRight: true }, pnlDynamicButtonsChildren);
+					// 02/25/2022 Paul.  NavDropdownProps requires children parameter, though it does not seem to be used.  This error appeared with bootstrap 5. 
+					let navItem = React.createElement(NavItem, { id: 'pnlDynamicButtons', key: 'pnlDynamicButtons', title: title, alignRight: true, children: null}, pnlDynamicButtonsChildren);
 					//pnlDynamicButtons = React.createElement(Nav, {className: 'ml-auto', navbar: true}, [navItem]);
 					pnlDynamicButtons = navItem;
 				}
@@ -242,7 +243,8 @@ class DynamicButtons extends React.Component<IDynamicButtonsProps, IDynamicButto
 				let title = React.createElement('span', {style: {verticalAlign: 'top'}}, titleChildren);
 				let more = React.createElement('input', {type: 'image', className: ButtonStyle + 'MoreButton', style: {verticalAlign: 'top', width: '20px', height: '20px'}, src: themeURL + 'images/datagrid_more.gif', onClick: (e) => { e.preventDefault() }});
 				titleChildren.push(more);
-				let navItem = React.createElement(NavItem, { id: 'pnlDynamicButtons', key: 'pnlDynamicButtons', title: more, style: {textAlign: 'left', verticalAlign: 'top', padding: 0, margin: 0} }, pnlDynamicButtonsChildren);
+				// 02/25/2022 Paul.  NavDropdownProps requires children parameter, though it does not seem to be used.  This error appeared with bootstrap 5. 
+				let navItem = React.createElement(NavItem, { id: 'pnlDynamicButtons', key: 'pnlDynamicButtons', title: more, style: {textAlign: 'left', verticalAlign: 'top', padding: 0, margin: 0}, children: null }, pnlDynamicButtonsChildren);
 				//pnlDynamicButtons = React.createElement(Nav, {className: 'ml-auto', navbar: true}, [navItem]);
 				pnlDynamicButtons = navItem;
 			}

@@ -22,14 +22,56 @@
 using System;
 using System.Text;
 using System.Web;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Json;
 
 namespace SplendidCRM
 {
+	[DataContract]
+	public class AppleAccessToken
+	{
+		[DataMember] public string token_type    { get; set; }
+		[DataMember] public string expires_in    { get; set; }
+		[DataMember] public string access_token  { get; set; }
+		[DataMember] public string refresh_token { get; set; }
+		[DataMember] public string id_token      { get; set; }
+
+		public string AccessToken
+		{
+			get { return access_token;  }
+			set { access_token = value; }
+		}
+		public string RefreshToken
+		{
+			get { return refresh_token;  }
+			set { refresh_token = value; }
+		}
+		public Int64 ExpiresInSeconds
+		{
+			get { return Sql.ToInt64(expires_in);  }
+			set { expires_in = Sql.ToString(value); }
+		}
+		public string TokenType
+		{
+			get { return token_type;  }
+			set { token_type = value; }
+		}
+	}
+
 	public class iCloudSync
 	{
 		public static bool Validate_iCloud(HttpApplicationState Application, string sICLOUD_USERNAME, string sICLOUD_PASSWORD, StringBuilder sbErrors)
 		{
 			return false;
+		}
+
+		public static void AcquireAccessToken(HttpContext Context, Guid gUSER_ID, string sCode, string sIdToken, StringBuilder sbErrors)
+		{
+		}
+
+		public static AppleAccessToken RefreshAccessToken(HttpContext Context, Guid gUSER_ID, bool bForceRefresh)
+		{
+			return null;
 		}
 
 		public class UserSync

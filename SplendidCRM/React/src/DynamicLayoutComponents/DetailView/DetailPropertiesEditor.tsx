@@ -463,7 +463,8 @@ export default class DetailPropertiesEditor extends React.Component<IDetailPrope
 				{
 					case 'DATA_LABEL'  :  bShowField = true ;  break;
 					case 'DATA_FIELD'  :  bShowField = true ;  break;
-					case 'DATA_FORMAT' :  bShowField = false;  break;
+					// 02/22/2022 Paul.  Allow image to be formatted. 
+					case 'DATA_FORMAT' :  bShowField = true ;  break;
 					case 'URL_FIELD'   :  bShowField = false;  break;
 					case 'URL_FORMAT'  :  bShowField = false;  break;
 					case 'URL_TARGET'  :  bShowField = false;  break;

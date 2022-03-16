@@ -214,6 +214,21 @@ export default class SurveyQuestionsEditView extends React.Component<IEditViewPr
 			, 'Hidden'
 			];
 		}
+		// 03/07/2022 Paul.  Initialize demo if new question. 
+		let dtDemographicNames: any = {};
+		if ( Sql.IsEmptyGuid(props.ID) )
+		{
+			for ( let n: number = 0; n < this.lstDemographicNames.length; n++ )
+			{
+				let sNAME : string = this.lstDemographicNames[n];
+				let field : any = {};
+				field.VISIBLE  = true ;
+				field.REQUIRED = false;
+				field.NAME     = L10n.ListTerm('survey_question_demographic_fields', sNAME);
+				dtDemographicNames[sNAME] = field;
+			}
+			}
+
 		this.state =
 		{
 			__total                   : 0,
@@ -254,7 +269,7 @@ export default class SurveyQuestionsEditView extends React.Component<IEditViewPr
 			PLACEMENT_LIST            ,
 			dtRatings                 : [],
 			dtMenus                   : [],
-			dtDemographicNames        : {},
+			dtDemographicNames        : dtDemographicNames,
 		};
 	}
 
@@ -1518,7 +1533,8 @@ export default class SurveyQuestionsEditView extends React.Component<IEditViewPr
 			xField["@Name"    ] = sNAME;
 			xField["@Visible" ] = (field ? field['VISIBLE' ] : false);
 			xField["@Required"] = (field ? field['REQUIRED'] : false);
-			xField.value        = (field ? field['NAME'    ] : null );
+			// 03/07/2022 Paul.  Value should be cap first. 
+			xField.Value        = (field ? field['NAME'    ] : null );
 			if ( Sql.ToBoolean(row["DEMOGRAPHIC_" + sNAME + "_REQUIRED"]) )
 				row['REQUIRED'] = true;
 			// 09/30/2018 Paul.  Add survey record creation to survey. 

@@ -2369,6 +2369,31 @@ namespace SplendidCRM
 						Image imgField = new Image();
 						// 04/13/2006 Paul.  Give the image a name so that it can be validated with SplendidTest. 
 						imgField.ID = sDATA_FIELD;
+						// 02/22/2022 Paul.  Allow image to be formatted. 
+						if ( !Sql.IsEmptyString(sDATA_FORMAT) )
+						{
+							try
+							{
+								string[] arrDATA_FORMAT = sDATA_FORMAT.Split(';');
+								for ( int i = 0; i < arrDATA_FORMAT.Length; i++ )
+								{
+									string[] arrNAME_VALUE = arrDATA_FORMAT[i].Split('=');
+									if ( arrNAME_VALUE.Length == 2 )
+									{
+										string sNAME  = arrNAME_VALUE[0].Trim();
+										string sVALUE = arrNAME_VALUE[1].Trim();
+										if ( sNAME.ToLower() == "width" )
+											imgField.Width = new Unit(sVALUE);
+										else if ( sNAME.ToLower() == "height" )
+											imgField.Width = new Unit(sVALUE);
+									}
+								}
+							}
+							catch
+							{
+								// 02/22/2022 Paul.  Ignore any errors. 
+							}
+						}
 						// 01/18/2010 Paul.  Apply ACL Field Security. 
 						imgField.Visible = bLayoutMode || bIsReadable;
 						try

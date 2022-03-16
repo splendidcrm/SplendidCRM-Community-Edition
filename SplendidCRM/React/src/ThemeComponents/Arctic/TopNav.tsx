@@ -33,7 +33,6 @@ import { UpdateModule }                          from '../../scripts/ModuleUpdat
 import ErrorComponent                            from '../../components/ErrorComponent'    ;
 import DynamicButtons                            from '../../components/DynamicButtons'    ;
 import DynamicEditView                           from '../../views/DynamicEditView'        ;
-import { start } from '@popperjs/core';
 
 interface ITopNavProps extends RouteComponentProps<any>
 {

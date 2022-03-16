@@ -128,6 +128,41 @@
 		window.open(authenticateUrl, 'Office365AuthorizePopup', 'width=830,height=830,status=1,toolbar=0,location=0,resizable=1');
 		return false;
 	}
+
+	// 02/13/2022 Paul.  Sign in with Apple now uses OAuth 2.0. 
+	function iCloudAuthorize()
+	{
+		// https://sarunw.com/posts/sign-in-with-apple-4/
+		var state           = '<%= Guid.NewGuid().ToString() %>';
+		var client_id       = '<%= Application["CONFIG.iCloud.ClientID"] %>';
+		var redirect_url    = '<%= Request.Url.Scheme + "://" + Request.Url.Host + Sql.ToString(Application["rootURL"]) + "OAuth/iCloudLanding.aspx" %>';
+		var response_type   = 'code id_token';
+		var scope           = 'name email';
+		var authenticateUrl = 'https://appleid.apple.com/auth/authorize'
+		                    + '?response_type=' + response_type
+		                    + '&client_id='     + client_id
+		                    + '&redirect_uri='  + encodeURIComponent(redirect_url)
+		                    + '&scope='         + escape(scope)
+		                    + '&state='         + state
+		                    + '&response_mode=form_post';
+		window.open(authenticateUrl, 'Office365AuthorizePopup', 'width=830,height=830,status=1,toolbar=0,location=0,resizable=1');
+		return false;
+	}
+
+	function iCloudCodeUpdate(code, id_token)
+	{
+		document.getElementById('<%= OAUTH_CODE.ClientID %>').value = code;
+		document.getElementById('<%= OAUTH_ACCESS_TOKEN.ClientID %>').value = id_token;
+		var btnICloudAuthorized = document.getElementById('<%= btnICloudAuthorized.ClientID %>');
+		btnICloudAuthorized.click();
+	}
+
+	function iCloudAuthTokenError(error)
+	{
+		var lblCloudAuthorizedStatus = document.getElementById('<%= lblCloudAuthorizedStatus.ClientID %>');
+		lblCloudAuthorizedStatus.innerHTML = error;
+	}
+
 </script>
 </SplendidCRM:InlineScript>
 <div id="divMain">
@@ -323,6 +358,7 @@
 		Refresh Token:      <asp:TextBox ID="OAUTH_REFRESH_TOKEN" runat="server" />&nbsp;&nbsp;
 		Expires In:         <asp:TextBox ID="OAUTH_EXPIRES_IN"    runat="server" />&nbsp;&nbsp;
 		Authorization Code: <asp:TextBox ID="OAUTH_CODE"          runat="server" />&nbsp;&nbsp;
+		<asp:Button ID="btnICloudAuthorized"    CommandName="iCloud.Authorize"     OnCommand="Page_Command" Text="Apple Authorized" style="display: none;" runat="server" />
 		<asp:Button ID="btnGoogleAuthorized"    CommandName="GoogleApps.Authorize" OnCommand="Page_Command" Text="Google Apps Authorized" style="display: none;" runat="server" />
 		<asp:Button ID="btnOffice365Authorized" CommandName="Office365.Authorize"  OnCommand="Page_Command" Text="Office 365 Authorized"  style="display: none;" runat="server" />
 	</div>
@@ -366,7 +402,7 @@
 				&nbsp;
 				<asp:Button ID="btnGoogleAppsTest"         Visible="false" CommandName="GoogleApps.Test"          OnCommand="Page_Command" style="margin-top: 4px;"  CssClass="button" Text='<%# "  " + L10n.Term("OAuth.LBL_TEST_BUTTON_LABEL") + "  " %>' Runat="server" />
 				&nbsp;
-				<asp:Button ID="btnGoogleAppsRefreshToken" Visible="false"  CommandName="GoogleApps.RefreshToken" OnCommand="Page_Command" style="margin-top: 4px;"  CssClass="button" Text='<%# "  " + L10n.Term("OAuth.LBL_REFRESH_TOKEN_LABEL") + "  " %>' Runat="server" />
+				<asp:Button ID="btnGoogleAppsRefreshToken" Visible="false" CommandName="GoogleApps.RefreshToken"  OnCommand="Page_Command" style="margin-top: 4px;"  CssClass="button" Text='<%# "  " + L10n.Term("OAuth.LBL_REFRESH_TOKEN_LABEL") + "  " %>' Runat="server" />
 				&nbsp;
 				<asp:Label ID="lblGoogleAuthorizedStatus" CssClass="error" EnableViewState="false" runat="server" />
 			</asp:TableCell>
@@ -381,7 +417,15 @@
 						<th colspan="4"><h4><asp:Label Text='<%# L10n.Term("Users.LBL_ICLOUD_OPTIONS_TITLE") %>' runat="server" /></h4></th>
 					</tr>
 				</table>
-				<asp:Button ID="btnICloudTest" CommandName="iCloud.Test"  OnCommand="Page_Command" style="margin-top: 4px;" CssClass="button" Text='<%# "  " + L10n.Term("Users.LBL_EMAIL_TEST") + "  " %>' Runat="server" />
+				<asp:Label ID="lblICloudAuthorized"    Visible="false" Text='<%# L10n.Term("OAuth.LBL_AUTHORIZED") %>' runat="server" />
+				&nbsp;
+				<asp:Button ID="btnICloudAuthorize"    Visible="false" OnClientClick="return iCloudAuthorize();" style="margin-top: 4px;" CssClass="button" Text='<%# "  " + L10n.Term("OAuth.LBL_AUTHORIZE_BUTTON_LABEL") + "  " %>' Runat="server" />
+				&nbsp;
+				<asp:Button ID="btnICloudDelete"       Visible="false" CommandName="iCloud.Delete"        OnCommand="Page_Command" style="margin-top: 4px;" CssClass="button" Text='<%# "  " + L10n.Term("OAuth.LBL_DELETE_BUTTON_LABEL") + "  " %>' Runat="server" />
+				&nbsp;
+				<asp:Button ID="btnICloudTest"         Visible="false" CommandName="iCloud.Test"          OnCommand="Page_Command" style="margin-top: 4px;" CssClass="button" Text='<%# "  " + L10n.Term("OAuth.LBL_TEST_BUTTON_LABEL") + "  " %>' Runat="server" />
+				&nbsp;
+				<asp:Button ID="btnICloudRefreshToken" Visible="false" CommandName="iCloud.RefreshToken"  OnCommand="Page_Command" style="margin-top: 4px;" CssClass="button" Text='<%# "  " + L10n.Term("OAuth.LBL_REFRESH_TOKEN_LABEL") + "  " %>' Runat="server" />
 				&nbsp;
 				<asp:Label ID="lblCloudAuthorizedStatus" CssClass="error" EnableViewState="false" runat="server" />
 			</asp:TableCell>

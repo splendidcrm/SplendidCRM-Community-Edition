@@ -523,8 +523,11 @@ namespace SplendidCRM
 				}
 				else
 				{
-					tdTeamTree      .Visible = false;
-					tdTeamTreeHandle.Visible = false;
+					// 02/10/2022 Paul.  These will not exist for React UI. 
+					if ( tdTeamTree != null )
+						tdTeamTree      .Visible = false;
+					if ( tdTeamTreeHandle != null )
+						tdTeamTreeHandle.Visible = false;
 				}
 			}
 			catch
