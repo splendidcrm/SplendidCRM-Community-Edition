@@ -591,11 +591,12 @@ export default class DetailPropertiesEditor extends React.Component<IDetailPrope
 			}
 			case "Header"    :
 			{
+				// 04/14/2022 Paul.  Header does not have Data Field.  Enable Data Format for Pacific theme. 
 				switch ( sFieldName )
 				{
 					case 'DATA_LABEL'  :  bShowField = true ;  break;
-					case 'DATA_FIELD'  :  bShowField = true ;  break;
-					case 'DATA_FORMAT' :  bShowField = false;  break;
+					case 'DATA_FIELD'  :  bShowField = false;  break;
+					case 'DATA_FORMAT' :  bShowField = true ;  break;
 					case 'URL_FIELD'   :  bShowField = false;  break;
 					case 'URL_FORMAT'  :  bShowField = false;  break;
 					case 'URL_TARGET'  :  bShowField = false;  break;

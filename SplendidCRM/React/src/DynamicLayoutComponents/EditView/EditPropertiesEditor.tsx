@@ -488,7 +488,8 @@ export default class EditPropertiesEditor extends React.Component<IEditPropertie
 				}
 			}
 		}
-		else if ( name == 'FIELD_VALIDATOR' )
+		// 04/14/2022 Paul.  Correct name is FIELD_VALIDATOR_ID. 
+		else if ( name == 'FIELD_VALIDATOR_ID' )
 		{
 			let sDISPLAY_NAME: string = L10n.ListTerm('FieldValidators', value);
 			let FIELD_VALIDATOR_MESSAGE: string = null;
@@ -1643,6 +1644,7 @@ export default class EditPropertiesEditor extends React.Component<IEditPropertie
 			}
 			case 'Header'             :
 			{
+				// 04/14/2022 Paul.  Header does not need Tab Index or Tool Tip. 
 				switch ( sFieldName )
 				{
 					case 'DATA_LABEL'                :  bShowField = true ;  break;
@@ -1654,7 +1656,7 @@ export default class EditPropertiesEditor extends React.Component<IEditPropertie
 					case 'UI_REQUIRED'               :  bShowField = false;  break;
 					case 'ONCLICK_SCRIPT'            :  bShowField = false;  break;
 					case 'FORMAT_SCRIPT'             :  bShowField = false;  break;
-					case 'FORMAT_TAB_INDEX'          :  bShowField = true ;  break;
+					case 'FORMAT_TAB_INDEX'          :  bShowField = false;  break;
 					case 'FORMAT_MAX_LENGTH'         :  bShowField = false;  break;
 					case 'FORMAT_SIZE'               :  bShowField = false;  break;
 					case 'FORMAT_ROWS'               :  bShowField = false;  break;
@@ -1664,7 +1666,7 @@ export default class EditPropertiesEditor extends React.Component<IEditPropertie
 					case 'FIELD_VALIDATOR_ID'        :  bShowField = false;  break;
 					case 'FIELD_VALIDATOR_MESSAGE'   :  bShowField = false;  break;
 					case 'MODULE_TYPE'               :  bShowField = false;  break;
-					case 'TOOL_TIP'                  :  bShowField = true ;  break;
+					case 'TOOL_TIP'                  :  bShowField = false;  break;
 					case 'RELATED_SOURCE_MODULE_NAME':  bShowField = false;  break;
 					case 'RELATED_SOURCE_VIEW_NAME'  :  bShowField = false;  break;
 					case 'RELATED_SOURCE_ID_FIELD'   :  bShowField = false;  break;
@@ -1767,6 +1769,7 @@ export default class EditPropertiesEditor extends React.Component<IEditPropertie
 	// 11/21/2021 Paul.  Add error log to location customer reported issue. 
 	private AddListBoxProperty = (sFieldName, arrLIST) =>
 	{
+		// 04/14/2022 Paul.  Correct names are CACHE_NAME and FIELD_VALIDATOR_ID. 
 		return(
 			this.IsFieldVisible(sFieldName)
 			? <tr>
@@ -1783,7 +1786,7 @@ export default class EditPropertiesEditor extends React.Component<IEditPropertie
 						{ arrLIST
 						? arrLIST.map((item, index) => 
 							{
-								let sDISPLAY_NAME: string = (sFieldName == 'FIELD_VALIDATOR' ? L10n.ListTerm('FieldValidators', item) : item);
+								let sDISPLAY_NAME: string = (sFieldName == 'FIELD_VALIDATOR_ID' ? L10n.ListTerm('FieldValidators', item) : item);
 								return (<option key={ 'ctlNewRecord_' + sFieldName + '_' + index.toString() } id={ 'ctlNewRecord_' + sFieldName + '_' + + index.toString() } value={ item }>{ sDISPLAY_NAME }</option>);
 							})
 						: console.error((new Date()).toISOString() + ' ' + this.constructor.name + '.AddListBoxProperty', 'arrLIST is null for ' + sFieldName)
@@ -1946,12 +1949,12 @@ export default class EditPropertiesEditor extends React.Component<IEditPropertie
 					{ this.AddTextBoxProperty ('FORMAT_SIZE'               ) }
 					{ this.AddTextBoxProperty ('FORMAT_COLUMNS'            ) }
 					{ this.AddTextBoxProperty ('FORMAT_ROWS'               ) }
-					{ this.AddListBoxProperty ('LIST_NAME'                 , LIST_NAMES      ) }
+					{ this.AddListBoxProperty ('CACHE_NAME'                , LIST_NAMES      ) }
 					{ this.AddTextBoxProperty ('FORMAT_TAB_INDEX'          ) }
 					{ this.AddListBoxProperty ('COLSPAN'                   , COLSPANS        ) }
 					{ this.AddTextBoxProperty ('ROWSPAN'                   ) }
 					{ this.AddTextBoxProperty ('TOOL_TIP'                  ) }
-					{ this.AddListBoxProperty ('FIELD_VALIDATOR'           , FIELD_VALIDATORS) }
+					{ this.AddListBoxProperty ('FIELD_VALIDATOR_ID'        , FIELD_VALIDATORS) }
 					{ this.AddTextBoxProperty ('FIELD_VALIDATOR_MESSAGE'   ) }
 					{ this.AddTextBoxProperty ('RELATED_SOURCE_MODULE_NAME') }
 					{ this.AddTextBoxProperty ('RELATED_SOURCE_VIEW_NAME'  ) }

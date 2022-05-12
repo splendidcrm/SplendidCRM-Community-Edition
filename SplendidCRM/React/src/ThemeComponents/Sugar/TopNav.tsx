@@ -704,7 +704,8 @@ class SugarTopNav extends React.Component<ITopNavProps, ITopNavState>
 			cssBackground = { backgroundImage: 'url(' + this.themeURL + 'images/header_bg.gif' + ')'};
 		}
 
-		let sCompanyLogo: string = Credentials.RemoteServer + 'Include/images/SplendidCRM_Logo.gif';
+		// 04/28/2022 Paul.  New SplendidCRM logo. 
+		let sCompanyLogo: string = Credentials.RemoteServer + 'App_Themes/Sugar/images/SplendidCRM_Logo.png';
 		let sCompanyName: string = Crm_Config.ToString('company_name');
 		let nLogoWidth : number = 207;
 		let nLogoHeight: number =  60;
@@ -1012,7 +1013,7 @@ class SugarTopNav extends React.Component<ITopNavProps, ITopNavState>
 		else
 		{
 			let logoTitle : string = Sql.IsEmptyString(Crm_Config.ToString('company_name'      )) ? 'SplendidCRM Software, Inc.' : Crm_Config.ToString('company_name'      );
-			let logoUrl   : string = Sql.IsEmptyString(Crm_Config.ToString('header_logo_image' )) ? 'SplendidCRM_Logo.gif'       : Crm_Config.ToString('header_logo_image' );
+			let logoUrl   : string = Sql.IsEmptyString(Crm_Config.ToString('header_logo_image' )) ? '~/App_Themes/Sugar/images/SplendidCRM_Logo.png'       : Crm_Config.ToString('header_logo_image' );
 			let logoWidth : string = Sql.IsEmptyString(Crm_Config.ToString('header_logo_width' )) ? '207px'                      : Crm_Config.ToString('header_logo_width' );
 			let logoHeight: string = Sql.IsEmptyString(Crm_Config.ToString('header_logo_height')) ? '60px'                       : Crm_Config.ToString('header_logo_height');
 			// 02/17/2020 Paul.  We do not want to parse the style at this time, so just ignore the value. 

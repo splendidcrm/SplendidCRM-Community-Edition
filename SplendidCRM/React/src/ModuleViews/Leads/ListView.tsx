@@ -67,6 +67,8 @@ interface IListViewState
 	PREVIEW_ID?           : string;
 	selectedItems?        : any;
 	error?                : any;
+	// 04/09/2022 Paul.  Hide/show SearchView. 
+	showSearchView        : string;
 }
 
 class LeadsListView extends React.Component<IListViewProps, IListViewState>
@@ -89,6 +91,14 @@ class LeadsListView extends React.Component<IListViewProps, IListViewState>
 			archiveView = true;
 			GRID_NAME   = props.MODULE_NAME + '.ArchiveView';
 		}
+		// 04/09/2022 Paul.  Hide/show SearchView. 
+		let showSearchView: string = 'show';
+		if ( SplendidCache.UserTheme == 'Pacific' )
+		{
+			showSearchView = localStorage.getItem(GRID_NAME + '.showSearchView');
+			if ( Sql.IsEmptyString(showSearchView) )
+				showSearchView = 'hide';
+		}
 		this.state =
 		{
 			GRID_NAME             ,
@@ -98,7 +108,8 @@ class LeadsListView extends React.Component<IListViewProps, IListViewState>
 			showUpdatePanel       : false,
 			enableMassUpdate      : Crm_Modules.MassUpdate(props.MODULE_NAME),
 			archiveView           ,
-			error                 : null
+			error                 : null,
+			showSearchView        ,
 		};
 	}
 
@@ -182,14 +193,26 @@ class LeadsListView extends React.Component<IListViewProps, IListViewState>
 
 	private _onSearchTabChange = (key) =>
 	{
-		// 11/03/2020 Paul.  When switching between tabs, re-apply the search as some advanced settings may not have been applied. 
-		this.setState( {searchMode: key}, () =>
+		// 04/09/2022 Paul.  Hide/show SearchView. 
+		if ( key == 'Hide' )
 		{
-			if ( this.searchView.current != null )
+			const { GRID_NAME } = this.state;
+			let { showSearchView } = this.state;
+			showSearchView = 'hide';
+			localStorage.setItem(GRID_NAME + '.showSearchView', showSearchView);
+			this.setState({ showSearchView });
+		}
+		else
+		{
+			// 11/03/2020 Paul.  When switching between tabs, re-apply the search as some advanced settings may not have been applied. 
+			this.setState( {searchMode: key}, () =>
 			{
-				this.searchView.current.SubmitSearch();
-			}
-		});
+				if ( this.searchView.current != null )
+				{
+					this.searchView.current.SubmitSearch();
+				}
+			});
+		}
 	}
 
 	// 09/26/2020 Paul.  The SearchView needs to be able to specify a sort criteria. 
@@ -302,6 +325,15 @@ class LeadsListView extends React.Component<IListViewProps, IListViewState>
 				history.push(`/Reset${admin}/${MODULE_NAME}/Edit`);
 				break;
 			}
+			// 04/09/2022 Paul.  Hide/show SearchView. 
+			case 'toggleSearchView':
+			{
+				const { GRID_NAME } = this.state;
+				let showSearchView: string = (this.state.showSearchView == 'show' ? 'hide' : 'show');
+				localStorage.setItem(GRID_NAME + '.showSearchView', showSearchView);
+				this.setState({ showSearchView });
+				break;
+			}
 			default:
 			{
 				if ( this._isMounted )
@@ -397,7 +429,7 @@ class LeadsListView extends React.Component<IListViewProps, IListViewState>
 	public render()
 	{
 		const { MODULE_NAME, RELATED_MODULE, TABLE_NAME, SORT_FIELD, SORT_DIRECTION, rowRequiredSearch } = this.props;
-		const { GRID_NAME, error, searchTabsEnabled, duplicateSearchEnabled, searchMode, showUpdatePanel, enableMassUpdate, PREVIEW_ID } = this.state;
+		const { GRID_NAME, error, searchTabsEnabled, duplicateSearchEnabled, searchMode, showUpdatePanel, enableMassUpdate, PREVIEW_ID, showSearchView } = this.state;
 		// 05/04/2019 Paul.  Reference obserable IsInitialized so that terminology update will cause refresh. 
 		// 05/06/2019 Paul.  The trick to having the SearchView change with the tabs is to change the key. 
 		// 06/25/2019 Paul.  The SplendidGrid is getting a componentDidUpdate event instead of componentDidMount, so try specifying a key. 
@@ -421,7 +453,7 @@ class LeadsListView extends React.Component<IListViewProps, IListViewState>
 					? React.createElement(headerButtons, { MODULE_NAME, MODULE_TITLE, error, enableHelp: true, helpName: 'index', ButtonStyle: 'ModuleHeader', VIEW_NAME: HEADER_BUTTONS, Page_Command: this.Page_Command, showButtons: true, showProcess: false, history: this.props.history, location: this.props.location, match: this.props.match, ref: this.headerButtons })
 					: null
 					}
-					<div>
+					<div style={ {display: (showSearchView == 'show' ? 'block' : 'none')} }>
 						{ searchTabsEnabled
 						? <SearchTabs searchMode={ searchMode } duplicateSearchEnabled={ duplicateSearchEnabled } onTabChange={ this._onSearchTabChange } />
 						: null
@@ -460,6 +492,7 @@ class LeadsListView extends React.Component<IListViewProps, IListViewState>
 						AutoSaveSearch={ Credentials.bSAVE_QUERY && Crm_Config.ToBoolean('save_query') }
 						archiveView={ this.ArchiveViewEnabled() }
 						deferLoad={ true }
+						enableExportHeader={ true }
 						enableSelection={ enableMassUpdate || SplendidCache.GetUserAccess(MODULE_NAME, 'export', this.constructor.name + '.render') >= 0 }
 						enableFavorites={ true }
 						enableFollowing={ true }

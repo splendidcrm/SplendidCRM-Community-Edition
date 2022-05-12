@@ -396,11 +396,7 @@ class InviteesView extends React.Component<IInviteesViewProps, IInviteesViewStat
 			}
 		};
 		// 02/16/2021 Paul.  Need to manually override the bootstrap header style. 
-		if ( SplendidCache.UserTheme == 'Arctic' )
-		{
-			objDataColumn.headerStyle.paddingTop    = '10px';
-			objDataColumn.headerStyle.paddingBottom = '10px';
-		}
+		// 04/24/2022 Paul.  Move Arctic style override to style.css. 
 		arrDataTableColumns.push(objDataColumn);
 
 		objDataColumn =
@@ -456,11 +452,7 @@ class InviteesView extends React.Component<IInviteesViewProps, IInviteesViewStat
 			}
 		};
 		// 02/16/2021 Paul.  Need to manually override the bootstrap header style. 
-		if ( SplendidCache.UserTheme == 'Arctic' )
-		{
-			objDataColumn.headerStyle.paddingTop    = '10px';
-			objDataColumn.headerStyle.paddingBottom = '10px';
-		}
+		// 04/24/2022 Paul.  Move Arctic style override to style.css. 
 		arrDataTableColumns.push(objDataColumn);
 		objDataColumn =
 		{
@@ -492,11 +484,7 @@ class InviteesView extends React.Component<IInviteesViewProps, IInviteesViewStat
 			}
 		};
 		// 02/16/2021 Paul.  Need to manually override the bootstrap header style. 
-		if ( SplendidCache.UserTheme == 'Arctic' )
-		{
-			objDataColumn.headerStyle.paddingTop    = '10px';
-			objDataColumn.headerStyle.paddingBottom = '10px';
-		}
+		// 04/24/2022 Paul.  Move Arctic style override to style.css. 
 		arrDataTableColumns.push(objDataColumn);
 
 		objDataColumn =

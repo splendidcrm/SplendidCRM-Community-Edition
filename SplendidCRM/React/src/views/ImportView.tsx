@@ -1523,11 +1523,7 @@ class ImportView extends React.Component<IImportViewProps, IImportViewState>
 						}
 					};
 					// 02/16/2021 Paul.  Need to manually override the bootstrap header style. 
-					if ( SplendidCache.UserTheme == 'Arctic' )
-					{
-						objDataColumn.headerStyle.paddingTop    = '10px';
-						objDataColumn.headerStyle.paddingBottom = '10px';
-					}
+					// 04/24/2022 Paul.  Move Arctic style override to style.css. 
 					if ( ITEMSTYLE_HORIZONTAL_ALIGN != null )
 					{
 						objDataColumn.classes += ' gridView' + ITEMSTYLE_HORIZONTAL_ALIGN;
@@ -1578,11 +1574,7 @@ class ImportView extends React.Component<IImportViewProps, IImportViewState>
 						}
 					};
 					// 02/16/2021 Paul.  Need to manually override the bootstrap header style. 
-					if ( SplendidCache.UserTheme == 'Arctic' )
-					{
-						objDataColumn.headerStyle.paddingTop    = '10px';
-						objDataColumn.headerStyle.paddingBottom = '10px';
-					}
+					// 04/24/2022 Paul.  Move Arctic style override to style.css. 
 					if ( ITEMSTYLE_HORIZONTAL_ALIGN != null )
 					{
 						objDataColumn.classes += ' gridView' + ITEMSTYLE_HORIZONTAL_ALIGN;
@@ -1734,16 +1726,16 @@ class ImportView extends React.Component<IImportViewProps, IImportViewState>
 				<React.Fragment>
 					{ React.createElement(headerButtons, { MODULE_NAME: 'Import', error, showRequired: true, enableHelp: true, helpName: 'ImportView', ButtonStyle: 'EditHeader', VIEW_NAME: 'Import.ImportView', row: null, Page_Command: this.Page_Command, showButtons: true, history: this.props.history, location: this.props.location, match: this.props.match, ref: this.headerButtons }) }
 					<Tabs key='pnlImportTabs' id='pnlImportTabs' activeKey={ activeTab } onSelect={ this._onTabChange }>
-						<Tab key={ 'SelectSource'    } eventKey={ 'SelectSource'    } title={ (disableImportNumbers ? '' : '1. ') + L10n.Term('Import.LBL_IMPORT_STEP_SELECT_SOURCE'   ) }></Tab>
-						<Tab key={ 'SpecifyDefaults' } eventKey={ 'SpecifyDefaults' } title={ (disableImportNumbers ? '' : '2. ') + L10n.Term('Import.LBL_IMPORT_STEP_SPECIFY_DEFAULTS') }></Tab>
+						<Tab key={ 'SelectSource'    } eventKey={ 'SelectSource'    } tabClassName='ImportViewTab' title={ (disableImportNumbers ? '' : '1. ') + L10n.Term('Import.LBL_IMPORT_STEP_SELECT_SOURCE'   ) }></Tab>
+						<Tab key={ 'SpecifyDefaults' } eventKey={ 'SpecifyDefaults' } tabClassName='ImportViewTab' title={ (disableImportNumbers ? '' : '2. ') + L10n.Term('Import.LBL_IMPORT_STEP_SPECIFY_DEFAULTS') }></Tab>
 						{ bConnect
-						? <Tab key={ 'Connect'       } eventKey={ 'Connect'         } title={ (disableImportNumbers ? '' : '3. ') + L10n.Term('Import.LBL_IMPORT_STEP_CONNECT'         ) }></Tab>
-						: <Tab key={ 'UploadFile'    } eventKey={ 'UploadFile'      } title={ (disableImportNumbers ? '' : '3. ') + L10n.Term('Import.LBL_IMPORT_STEP_UPLOAD_FILE'     ) }></Tab>
+						? <Tab key={ 'Connect'       } eventKey={ 'Connect'         } tabClassName='ImportViewTab' title={ (disableImportNumbers ? '' : '3. ') + L10n.Term('Import.LBL_IMPORT_STEP_CONNECT'         ) }></Tab>
+						: <Tab key={ 'UploadFile'    } eventKey={ 'UploadFile'      } tabClassName='ImportViewTab' title={ (disableImportNumbers ? '' : '3. ') + L10n.Term('Import.LBL_IMPORT_STEP_UPLOAD_FILE'     ) }></Tab>
 						}
-						<Tab key={ 'MapFields'       } eventKey={ 'MapFields'       } title={ (disableImportNumbers ? '' : '4. ') + L10n.Term('Import.LBL_IMPORT_STEP_MAP_FIELDS'      ) }></Tab>
-						<Tab key={ 'DupicateFilter'  } eventKey={ 'DupicateFilter'  } title={ (disableImportNumbers ? '' : '5. ') + L10n.Term('Import.LBL_IMPORT_STEP_DUPLICATE_FILTER') }></Tab>
-						<Tab key={ 'BusinessRules'   } eventKey={ 'BusinessRules'   } title={ (disableImportNumbers ? '' : '6. ') + L10n.Term('Import.LBL_IMPORT_STEP_BUSINESS_RULES'  ) }></Tab>
-						<Tab key={ 'Results'         } eventKey={ 'Results'         } title={ (disableImportNumbers ? '' : '7. ') + L10n.Term('Import.LBL_IMPORT_STEP_RESULTS'         ) }></Tab>
+						<Tab key={ 'MapFields'       } eventKey={ 'MapFields'       } tabClassName='ImportViewTab' title={ (disableImportNumbers ? '' : '4. ') + L10n.Term('Import.LBL_IMPORT_STEP_MAP_FIELDS'      ) }></Tab>
+						<Tab key={ 'DupicateFilter'  } eventKey={ 'DupicateFilter'  } tabClassName='ImportViewTab' title={ (disableImportNumbers ? '' : '5. ') + L10n.Term('Import.LBL_IMPORT_STEP_DUPLICATE_FILTER') }></Tab>
+						<Tab key={ 'BusinessRules'   } eventKey={ 'BusinessRules'   } tabClassName='ImportViewTab' title={ (disableImportNumbers ? '' : '6. ') + L10n.Term('Import.LBL_IMPORT_STEP_BUSINESS_RULES'  ) }></Tab>
+						<Tab key={ 'Results'         } eventKey={ 'Results'         } tabClassName='ImportViewTab' title={ (disableImportNumbers ? '' : '7. ') + L10n.Term('Import.LBL_IMPORT_STEP_RESULTS'         ) }></Tab>
 					</Tabs>
 					<div style={ {paddingTop: '10px', paddingLeft: '20px'} }>
 						<div className='tabForm' style={ {display: (activeTab == 'SelectSource' ? 'flex' : 'none'), flexFlow: 'row wrap', flex: '1 0 100%'} }>

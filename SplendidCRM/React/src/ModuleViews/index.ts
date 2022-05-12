@@ -48,12 +48,14 @@ import DocumentRevisionsEditView  from './DocumentRevisions/EditView' ;
 import EmailsDetailView          from './Emails/DetailView'         ;
 import EmailsEditView            from './Emails/EditView'           ;
 import EmailsListView            from './Emails/ListView'           ;
+import EmailMarketingEditView    from './EmailMarketing/EditView'   ;
 import EmailTemplatesDetailView  from './EmailTemplates/DetailView' ;
 import EmailTemplatesEditView    from './EmailTemplates/EditView'   ;
 import EmployeesDetailView       from './Employees/DetailView'      ;
 import EmployeesEditView         from './Employees/EditView'        ;
 import EmployeesListView         from './Employees/ListView'        ;
 import InvoicesEditView          from './Invoices/EditView'         ;
+import InvoicesPayments          from './Invoices/Payments'         ;
 import KBDocumentsDetailView     from './KBDocuments/DetailView'    ;
 import KBDocumentsEditView       from './KBDocuments/EditView'      ;
 import LeadsDetailView           from './Leads/DetailView'          ;
@@ -66,6 +68,7 @@ import NotesEditView             from './Notes/EditView'            ;
 import OpportunitiesEditView     from './Opportunities/EditView'    ;
 import OrdersEditView            from './Orders/EditView'           ;
 import PaymentsEditView          from './Payments/EditView'         ;
+import PaymentsDetailView        from './Payments/DetailView'       ;
 import ProcessesListView         from './Processes/ListView'        ;
 import ProcessesDetailView       from './Processes/DetailView'      ;
 import ProductsEditView          from './Products/EditView'         ;
@@ -195,13 +198,20 @@ import AzureOrdersDetailView             from './Administration/Azure/AzureOrder
 import AzureOrdersChangeLog              from './Administration/Azure/AzureOrders/ChangeLog'       ;
 import AzureOrdersAppUpdates             from './Administration/Azure/AzureOrders/AzureAppUpdates' ;
 import AzureSqlPricesListView            from './Administration/Azure/AzureSqlPrices/ListView'     ;
+import AzureSqlPricesEditView            from './Administration/Azure/AzureSqlPrices/EditView'     ;
+import AzureSqlPricesSearchBasic         from './Administration/Azure/AzureSqlPrices/SearchBasic'  ;
 import AzureVmPricesListView             from './Administration/Azure/AzureVmPrices/ListView'      ;
+import AzureVmPricesEditView             from './Administration/Azure/AzureVmPrices/EditView'      ;
+import AzureVmPricesSearchBasic          from './Administration/Azure/AzureVmPrices/SearchBasic'   ;
 import AzureAppUpdatesAzureOrders        from './Administration/Azure/AzureAppUpdates/AzureOrders' ;
 import AzureAppUpdatesFiles              from './Administration/Azure/AzureAppUpdates/Files'       ;
+import AzureAppUpdatesEditView           from './Administration/Azure/AzureAppUpdates/EditView'    ;
 import AzureServiceLevelsAzureAppPrices  from './Administration/Azure/AzureServiceLevels/AzureAppPrices';
+import AzureServiceLevelsEditView        from './Administration/Azure/AzureServiceLevels/EditView'      ;
 import AzureAppPricesAzureServiceLevels  from './Administration/Azure/AzureAppPrices/AzureServiceLevels';
 import AzureAppPricesAzureOrders         from './Administration/Azure/AzureAppPrices/AzureOrders'       ;
 import AzureAppPricesFiles               from './Administration/Azure/AzureAppPrices/Files'             ;
+import AzureAppPricesEditView            from './Administration/Azure/AzureAppPrices/EditView'          ;
 import DnsNamesListView                  from './Administration/Azure/DnsNames/ListView'                ;
 import DnsNamesEditView                  from './Administration/Azure/DnsNames/EditView'                ;
 import DnsNamesDetailView                from './Administration/Azure/DnsNames/DetailView'              ;
@@ -221,6 +231,8 @@ import AzureSqlDatabases                 from './Administration/Azure/SqlDatabas
 import AzureDnsNames                     from './Administration/Azure/DnsNames/DnsNames'                ;
 import AzureResourceGroups               from './Administration/Azure/ResourceGroups/ResourceGroups'    ;
 import AzureStorageAccounts              from './Administration/Azure/StorageAccounts/StorageAccounts'  ;
+import CloudServicesListView             from './Administration/Azure/CloudServices/ListView'           ;
+import AzureCloudServices                from './Administration/Azure/CloudServices/CloudServices'      ;
 
 export default function ModuleViewFactory(sLAYOUT_NAME: string)
 {
@@ -262,12 +274,16 @@ export default function ModuleViewFactory(sLAYOUT_NAME: string)
 		case 'Emails.DetailView'         :  view = EmailsDetailView         ;  break;
 		case 'Emails.EditView'           :  view = EmailsEditView           ;  break;
 		case 'Emails.ListView'           :  view = EmailsListView           ;  break;
+		// 04/18/2022 Paul.  Add missing EmailMarketingEditView custom view, otherwise CAMPAIGN_ID does not get saved with the record. 
+		case 'EmailMarketing.EditView'   :  view = EmailMarketingEditView   ;  break;
 		case 'EmailTemplates.DetailView' :  view = EmailTemplatesDetailView ;  break;
 		case 'EmailTemplates.EditView'   :  view = EmailTemplatesEditView   ;  break;
 		case 'Employees.DetailView'      :  view = EmployeesDetailView      ;  break;
 		case 'Employees.EditView'        :  view = EmployeesEditView        ;  break;
 		case 'Employees.ListView'        :  view = EmployeesListView        ;  break;
 		case 'Invoices.EditView'         :  view = InvoicesEditView         ;  break;
+		// 05/06/2022 Paul.  Inline editing is not enabled for Invoice Payments. 
+		case 'Invoices.Payments'         :  view = InvoicesPayments         ;  break;
 		case 'KBDocuments.DetailView'    :  view = KBDocumentsDetailView    ;  break;
 		case 'KBDocuments.EditView'      :  view = KBDocumentsEditView      ;  break;
 		case 'Leads.DetailView'          :  view = LeadsDetailView          ;  break;
@@ -279,6 +295,7 @@ export default function ModuleViewFactory(sLAYOUT_NAME: string)
 		case 'Notes.EditView'            :  view = NotesEditView            ;  break;
 		case 'Opportunities.EditView'    :  view = OpportunitiesEditView    ;  break;
 		case 'Orders.EditView'           :  view = OrdersEditView           ;  break;
+		case 'Payments.DetailView'       :  view = PaymentsDetailView       ;  break;
 		case 'Payments.EditView'         :  view = PaymentsEditView         ;  break;
 		// 11/18/2021 Paul.  Payments.EditView.Inline requires same custom logic as main EditView. 
 		case 'Payments.EditView.Inline'  :  view = PaymentsEditView         ;  break;
@@ -444,13 +461,20 @@ export default function ModuleViewFactory(sLAYOUT_NAME: string)
 		case 'AzureOrders.ChangeLog'            :  view = AzureOrdersChangeLog            ;  break;
 		case 'AzureOrders.AzureAppUpdates'      :  view = AzureOrdersAppUpdates           ;  break;
 		case 'AzureSqlPrices.ListView'          :  view = AzureSqlPricesListView          ;  break;
+		case 'AzureSqlPrices.EditView'          :  view = AzureSqlPricesEditView          ;  break;
+		case 'AzureSqlPrices.SearchBasic'       :  view = AzureSqlPricesSearchBasic       ;  break;
 		case 'AzureVmPrices.ListView'           :  view = AzureVmPricesListView           ;  break;
+		case 'AzureVmPrices.EditView'           :  view = AzureVmPricesEditView           ;  break;
+		case 'AzureVmPrices.SearchBasic'        :  view = AzureVmPricesSearchBasic        ;  break;
 		case 'AzureAppUpdates.AzureOrders'      :  view = AzureAppUpdatesAzureOrders      ;  break;
 		case 'AzureAppUpdates.Files'            :  view = AzureAppUpdatesFiles            ;  break;
+		case 'AzureAppUpdates.EditView'         :  view = AzureAppUpdatesEditView         ;  break;
 		case 'AzureServiceLevels.AzureAppPrices':  view = AzureServiceLevelsAzureAppPrices;  break;
+		case 'AzureServiceLevels.EditView'      :  view = AzureServiceLevelsEditView      ;  break;
 		case 'AzureAppPrices.AzureServiceLevels':  view = AzureAppPricesAzureServiceLevels;  break;
 		case 'AzureAppPrices.AzureOrders'       :  view = AzureAppPricesAzureOrders       ;  break;
 		case 'AzureAppPrices.Files'             :  view = AzureAppPricesFiles             ;  break;
+		case 'AzureAppPrices.EditView'          :  view = AzureAppPricesEditView          ;  break;
 		case 'DnsNames.ListView'                :  view = DnsNamesListView                ;  break;
 		case 'DnsNames.EditView'                :  view = DnsNamesEditView                ;  break;
 		case 'DnsNames.DetailView'              :  view = DnsNamesDetailView              ;  break;
@@ -470,6 +494,9 @@ export default function ModuleViewFactory(sLAYOUT_NAME: string)
 		case 'Azure.~/Administration/Azure/DnsNames/DnsNames'              :  view = AzureDnsNames        ;  break;
 		case 'Azure.~/Administration/Azure/ResourceGroups/ResourceGroups'  :  view = AzureResourceGroups  ;  break;
 		case 'Azure.~/Administration/Azure/StorageAccounts/StorageAccounts':  view = AzureStorageAccounts ;  break;
+		// 04/26/2022 Paul.  Add support for CloudServices module. 
+		case 'Azure.~/Administration/Azure/CloudServices/CloudServices'    :  view = AzureCloudServices   ;  break;
+		case 'CloudServices.ListView'           :  view = CloudServicesListView           ;  break;
 	}
 	if ( view )
 	{

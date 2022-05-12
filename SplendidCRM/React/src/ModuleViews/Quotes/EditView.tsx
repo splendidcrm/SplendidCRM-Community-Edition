@@ -28,7 +28,7 @@ import SplendidDynamic_EditView               from '../../scripts/SplendidDynami
 import { Crm_Config, Crm_Modules }            from '../../scripts/Crm'                         ;
 import { AuthenticatedMethod, LoginRedirect } from '../../scripts/Login'                       ;
 import { sPLATFORM_LAYOUT }                   from '../../scripts/SplendidInitUI'              ;
-import { EditView_LoadItem, EditView_LoadLayout, EditView_ConvertItem } from '../../scripts/EditView';
+import { EditView_LoadItem, EditView_LoadLayout, EditView_ActivateTab, EditView_ConvertItem } from '../../scripts/EditView';
 import { UpdateModule }                       from '../../scripts/ModuleUpdate'                ;
 import { jsonReactState }                     from '../../scripts/Application'                 ;
 // 4. Components and Views. 
@@ -37,6 +37,8 @@ import DumpSQL                                from '../../components/DumpSQL'   
 import DynamicButtons                         from '../../components/DynamicButtons'           ;
 import HeaderButtonsFactory                   from '../../ThemeComponents/HeaderButtonsFactory';
 import QuotesLineItems                        from './QuotesLineItems'                         ;
+// 04/16/2022 Paul.  Add LayoutTabs to Pacific theme. 
+import LayoutTabs                             from '../../components/LayoutTabs'           ;
 
 interface IEditViewProps extends RouteComponentProps<any>
 {
@@ -848,6 +850,15 @@ export default class QuotesEditView extends React.Component<IEditViewProps, IEdi
 		}
 	}
 
+	// 04/16/2022 Paul.  Add LayoutTabs to Pacific theme. 
+	private _onTabChange = (nActiveTabIndex) =>
+	{
+		let { layout } = this.state;
+		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onTabChange', nActiveTabIndex);
+		EditView_ActivateTab(layout, nActiveTabIndex);
+		this.setState({ layout });
+	}
+
 	public render()
 	{
 		const { MODULE_NAME, ID, DuplicateID, ConvertID, isSearchView, isUpdatePanel, callback } = this.props;
@@ -883,6 +894,7 @@ export default class QuotesEditView extends React.Component<IEditViewProps, IEdi
 				: null
 				}
 				<DumpSQL SQL={ __sql } />
+				<LayoutTabs layout={ layout } onTabChange={ this._onTabChange } />
 				{ SplendidDynamic_EditView.AppendEditViewFields(item, layout, this.refMap, callback, this._createDependency, this._onFieldDidMount, this._onChange, this._onUpdate, onSubmit, (isSearchView ? null : 'tabForm'), this.Page_Command) }
 				<QuotesLineItems ID={ ID } row={ item } onChanged={ this._onChange } ref={ this.lineItems } />
 				{ SplendidDynamic_EditView.AppendEditViewFields(item, layoutDescription, this.refMap, callback, this._createDependency, this._onFieldDidMount, this._onChange, this._onUpdate, onSubmit, (isSearchView ? null : 'tabForm'), this.Page_Command) }

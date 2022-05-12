@@ -25,6 +25,7 @@ GO
 -- 11/24/2006 Paul.  COLUMN_TYPE should be of national character type. 
 -- 09/12/2010 Paul.  Add default parameter MODULE_TYPE to ease migration to EffiProz. 
 -- 10/09/2010 Paul.  Add PARENT_FIELD so that we can establish dependent listboxes. 
+-- 02/24/2022 Paul.  Allow a field to be added to the end using an index of -1. 
 Create Procedure dbo.spGRIDVIEWS_COLUMNS_InsBoundList
 	( @GRID_NAME                   nvarchar( 50)
 	, @COLUMN_INDEX                int
@@ -40,21 +41,42 @@ as
 	declare @ID        uniqueidentifier;
 	declare @COLUMN_ID uniqueidentifier;
 	
-	-- BEGIN Oracle Exception
-		select @ID = ID
-		  from GRIDVIEWS_COLUMNS
-		 where GRID_NAME    = @GRID_NAME
-		   and COLUMN_INDEX = @COLUMN_INDEX
-		   and DELETED      = 0            
-		   and DEFAULT_VIEW = 0            ;
-	-- END Oracle Exception
+	-- 02/24/2022 Paul.  Allow a field to be added to the end using an index of -1. 
+	declare @TEMP_COLUMN_INDEX int;	
+	set @TEMP_COLUMN_INDEX = @COLUMN_INDEX;
+	if @COLUMN_INDEX is null or @COLUMN_INDEX = -1 begin -- then
+		-- BEGIN Oracle Exception
+			select @TEMP_COLUMN_INDEX = isnull(max(COLUMN_INDEX), 0) + 1
+			  from GRIDVIEWS_COLUMNS
+			 where GRID_NAME    = @GRID_NAME
+			   and DELETED      = 0            
+			   and DEFAULT_VIEW = 0            ;
+		-- END Oracle Exception
+		-- BEGIN Oracle Exception
+			select @ID = ID
+			  from GRIDVIEWS_COLUMNS
+			 where GRID_NAME    = @GRID_NAME
+			   and DATA_FIELD   = @DATA_FIELD
+			   and DELETED      = 0            
+			   and DEFAULT_VIEW = 0            ;
+		-- END Oracle Exception
+	end else begin
+		-- BEGIN Oracle Exception
+			select @ID = ID
+			  from GRIDVIEWS_COLUMNS
+			 where GRID_NAME    = @GRID_NAME
+			   and COLUMN_INDEX = @COLUMN_INDEX
+			   and DELETED      = 0            
+			   and DEFAULT_VIEW = 0            ;
+		-- END Oracle Exception
+	end -- if;
 	if not exists(select * from GRIDVIEWS_COLUMNS where ID = @ID) begin -- then
 		-- GRID_NAME, COLUMN_INDEX, COLUMN_TYPE, HEADER_TEXT, DATA_FIELD, SORT_EXPRESSION, ITEMSTYLE_WIDTH
 		exec dbo.spGRIDVIEWS_COLUMNS_Update
 			  @COLUMN_ID out
 			, null
 			, @GRID_NAME
-			, @COLUMN_INDEX
+			, @TEMP_COLUMN_INDEX
 			, N'BoundColumn'
 			, @HEADER_TEXT
 			, @SORT_EXPRESSION

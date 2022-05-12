@@ -28,7 +28,7 @@ import { Crm_Config, Crm_Modules }                from '../../scripts/Crm'      
 import { base64ArrayBuffer }                      from '../../scripts/utility'                     ;
 import { AuthenticatedMethod, LoginRedirect }     from '../../scripts/Login'                       ;
 import { sPLATFORM_LAYOUT }                       from '../../scripts/SplendidInitUI'              ;
-import { EditView_LoadItem, EditView_LoadLayout } from '../../scripts/EditView'                    ;
+import { EditView_LoadItem, EditView_LoadLayout, EditView_ActivateTab } from '../../scripts/EditView';
 import { ListView_LoadTable }                     from '../../scripts/ListView'                    ;
 import { SystemSqlColumns }                       from '../../scripts/SystemCacheRequest'          ;
 import { UpdateModule }                           from '../../scripts/ModuleUpdate'                ;
@@ -38,6 +38,8 @@ import ErrorComponent                             from '../../components/ErrorCo
 import DumpSQL                                    from '../../components/DumpSQL'                  ;
 import DynamicButtons                             from '../../components/DynamicButtons'           ;
 import HeaderButtonsFactory                       from '../../ThemeComponents/HeaderButtonsFactory';
+// 04/16/2022 Paul.  Add LayoutTabs to Pacific theme. 
+import LayoutTabs                                 from '../../components/LayoutTabs'           ;
 
 interface IEditViewProps extends RouteComponentProps<any>
 {
@@ -783,6 +785,15 @@ export default class EmailTemplatesEditView extends React.Component<IEditViewPro
 		}
 	}
 
+	// 04/16/2022 Paul.  Add LayoutTabs to Pacific theme. 
+	private _onTabChange = (nActiveTabIndex) =>
+	{
+		let { layout } = this.state;
+		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onTabChange', nActiveTabIndex);
+		EditView_ActivateTab(layout, nActiveTabIndex);
+		this.setState({ layout });
+	}
+
 	public render()
 	{
 		const { MODULE_NAME, ID, LAYOUT_NAME, DuplicateID, isSearchView, isUpdatePanel, isQuickCreate, callback } = this.props;
@@ -819,6 +830,7 @@ export default class EmailTemplatesEditView extends React.Component<IEditViewPro
 				? <DumpSQL SQL={ __sql } />
 				: null
 				}
+				<LayoutTabs layout={ layout } onTabChange={ this._onTabChange } />
 				{ SplendidDynamic_EditView.AppendEditViewFields(item, layout, this.refMap, callback, this._createDependency, null, this._onChange, this._onUpdate, onSubmit, (isSearchView || isQuickCreate ? null : 'tabForm'), this.Page_Command, isSearchView) }
 				<div className='tabForm'>
 					<div className='tabEditView' style={ {display: 'flex', flexFlow: 'row wrap', width: '100%'} }>

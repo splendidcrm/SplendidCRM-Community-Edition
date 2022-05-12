@@ -12,7 +12,8 @@
 // 2. Store and Types. 
 // 3. Scripts. 
 // 4. Components and Views. 
-
+// 04/01/2022 Paul.  Add Pacific theme, derived from Arctic.
+import PacificSubPanelHeaderButtons   from './Pacific/SubPanelHeaderButtons'  ;
 import ArcticSubPanelHeaderButtons    from './Arctic/SubPanelHeaderButtons'   ;
 import AtlanticSubPanelHeaderButtons  from './Atlantic/SubPanelHeaderButtons' ;
 import SevenSubPanelHeaderButtons     from './Seven/SubPanelHeaderButtons'    ;
@@ -25,6 +26,8 @@ export default function SubPanelButtonsFactory(sTHEME: string)
 	let ctl: any = null;
 	switch ( sTHEME )
 	{
+		// 04/01/2022 Paul.  Add Pacific theme, derived from Arctic.
+		case 'Pacific'  :  ctl = PacificSubPanelHeaderButtons  ;  break;
 		case 'Arctic'   :  ctl = ArcticSubPanelHeaderButtons   ;  break;
 		case 'Atlantic' :  ctl = AtlanticSubPanelHeaderButtons ;  break;
 		case 'Mobile'   :  ctl = null                          ;  break;
@@ -39,7 +42,8 @@ export default function SubPanelButtonsFactory(sTHEME: string)
 	}
 	else
 	{
-		ctl = SevenSubPanelHeaderButtons;
+		// 04/01/2022 Paul.  Add Pacific theme, derived from Arctic.
+		ctl = PacificSubPanelHeaderButtons;
 		//console.log((new Date()).toISOString() + ' ' + 'SubPanelButtonsFactory not found ' + sTHEME + ', using Arctic');
 	}
 	return ctl;

@@ -98,12 +98,32 @@ export function EditView_LoadLayout(EDIT_NAME, ignoreMissing?: boolean)
 	{
 		// 11/02/2019 Paul.  Return a clone of the layout so that we can dynamically modify the layout. 
 		// 11/02/2019 Paul.  Hidden property is used to dynamically hide and show layout fields. 
+		// 04/16/2022 Paul.  We need to initialize tabs for every layout. 
+		let bPacificTheme: boolean = (Credentials.sUSER_THEME == 'Pacific');
+		let bTabsEnabled : boolean = false;
 		let newArray: any[] = [];
-		layout.forEach((item) =>
+		layout.forEach((lay) =>
 		{
-			newArray.push(Object.assign({hidden: false}, item));
+			newArray.push(Object.assign({hidden: false}, lay));
+			if ( bPacificTheme && !bTabsEnabled )
+			{
+				let FIELD_TYPE : string = lay.FIELD_TYPE;
+				if ( FIELD_TYPE == 'Header' || FIELD_TYPE == 'Separator' || FIELD_TYPE == 'Line' )
+				{
+					let DATA_FORMAT: string = lay.DATA_FORMAT;
+					if ( (DATA_FORMAT == 'tab' || DATA_FORMAT == 'tab-only' ) )
+					{
+						bTabsEnabled = true;
+					}
+				}
+			}
 		});
 		layout = newArray;
+		// 04/16/2022 Paul.  The first tab is always active by default. 
+		if ( bTabsEnabled )
+		{
+			EditView_ActivateTab(layout, 0);
+		}
 	}
 	return layout;
 }
@@ -209,5 +229,86 @@ export function EditView_InitItem(layout: EDITVIEWS_FIELD[])
 		}
 	}
 	return item;
+}
+
+export function EditView_GetTabList(layout: any[])
+{
+	let arrTabs    : any[] = [];
+	if ( layout && layout.length > 0 )
+	{
+		let VIEW_NAME: string = '';
+		for ( let nLayoutIndex = 0; nLayoutIndex < layout.length; nLayoutIndex++ )
+		{
+			let lay = layout[nLayoutIndex];
+			let FIELD_TYPE : string = lay.FIELD_TYPE;
+			// 04/16/2022 Paul.  Only a header can start a tab. 
+			if ( FIELD_TYPE == 'Header' )
+			{
+				let DATA_FORMAT: string = lay.DATA_FORMAT;
+				// 04/14/2022 Paul.  tab is for Pacific theme.  tab-only means header is not displayed unless tabs are displayed on Pacfic theme. 
+				if ( (DATA_FORMAT == 'tab' || DATA_FORMAT == 'tab-only' ) )
+				{
+					let DATA_LABEL : string = lay.DATA_LABEL;
+					if ( Sql.IsEmptyString(VIEW_NAME) )
+					{
+						VIEW_NAME = lay.EDIT_NAME;
+					}
+					if ( DATA_LABEL != null && DATA_LABEL.indexOf('.') >= 0 )
+					{
+						DATA_LABEL = L10n.Term(DATA_LABEL);
+					}
+					arrTabs.push({ nLayoutIndex, DATA_LABEL, VIEW_NAME });
+				}
+			}
+		}
+	}
+	return arrTabs;
+}
+
+export function EditView_ActivateTab(layout: any[], nActiveTabIndex: number)
+{
+	if ( layout && layout.length > 0 )
+	{
+		let bActiveSet: boolean = false;
+		for ( let nLayoutIndex = 0; nLayoutIndex < layout.length; nLayoutIndex++ )
+		{
+			let lay: any = layout[nLayoutIndex];
+			let FIELD_TYPE : string = lay.FIELD_TYPE;
+			// 04/16/2022 Paul.  Separators usually start a new table or division, so separators after active tab need to be treated as a set. 
+			if ( FIELD_TYPE == 'Header' || FIELD_TYPE == 'Separator' || FIELD_TYPE == 'Line' )
+			{
+				if ( nLayoutIndex == nActiveTabIndex )
+				{
+					lay.ActiveTab = true;
+					bActiveSet = true;
+				}
+				else if ( FIELD_TYPE == 'Header' )
+				{
+					let DATA_FORMAT: string = lay.DATA_FORMAT;
+					// 04/15/2022 Paul.  Turn off set once new tab reached. 
+					if ( (DATA_FORMAT == 'tab' || DATA_FORMAT == 'tab-only' ) )
+					{
+						bActiveSet = false;
+						lay.ActiveTab = false;
+					}
+					else if ( bActiveSet )
+					{
+						// 04/15/2022 Paul.  Otherwise, non tab header is part of set. 
+						lay.ActiveTab = true;
+					}
+				}
+				else if ( FIELD_TYPE == 'Separator' || FIELD_TYPE == 'Line' )
+				{
+					// 04/15/2022 Paul.  Separator will be part of active set. 
+					lay.ActiveTab = bActiveSet;
+				}
+				else if ( lay.ActiveTab )
+				{
+					lay.ActiveTab = false;
+				}
+				//console.log((new Date()).toISOString() + ' EditView_ActivateTab: ' + nLayoutIndex.toString() + '. ' + FIELD_TYPE + ' ' + lay.DATA_FORMAT + ' ' + lay.ActiveTab.toString());
+			}
+		}
+	}
 }
 

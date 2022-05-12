@@ -20,6 +20,9 @@ export default interface DETAILVIEWS_RELATIONSHIP
 	PRIMARY_FIELD                 : string;  // nvarchar
 	SORT_FIELD                    : string;  // nvarchar
 	SORT_DIRECTION                : string;  // nvarchar
+	// 03/31/2022 Paul.  Add Insight fields.
+	INSIGHT_VIEW?                 : string;  // nvarchar
+	INSIGHT_LABEL?                : string;  // nvarchar
 	initialOpen?                  : boolean;
 }
 

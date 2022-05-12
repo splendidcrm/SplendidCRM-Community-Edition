@@ -214,7 +214,7 @@ export default class BaseMyTeamDashlet extends React.Component<IBaseMyTeamDashle
 		<div style={ {display: 'flex', flexGrow: 1} }>
 			<div className="card" style={ {flexGrow: 1, margin: '.5em', overflowX: 'auto'} }>
 				<Appear onAppearOnce={ (ioe) => this.setState({ dashletVisible: true }) }>
-					<div className="card-body">
+					<div className="card-body DashletHeader">
 						<h3 style={ {float: 'left'} }>{ L10n.Term(TITLE) }</h3>
 						<span
 							style={ {cursor: 'pointer', float: 'right', textDecoration: 'none', marginLeft: '.5em'} }

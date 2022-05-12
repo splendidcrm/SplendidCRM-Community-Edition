@@ -71,9 +71,9 @@ function set_focus()
 				<asp:Table Width="100%" CellPadding="0" CellSpacing="0" HorizontalAlign="Center" CssClass="LoginActionsInnerTable" runat="server">
 					<asp:TableRow>
 						<asp:TableCell style="padding-top: 20px; padding-bottom: 20px; padding-left: 40px; padding-right: 40px;">
-							<asp:Table Width="100%" BorderWidth="0" CellPadding="0" CellSpacing="2" runat="server">
+							<asp:Table Width="100%" BorderWidth="0" CellPadding="0" CellSpacing="2" CssClass="loginAppName" runat="server">
 								<asp:TableRow runat="server">
-									<asp:TableCell style="font-family: Arial; font-size: 14pt; font-weight: bold; color: #003564;">
+									<asp:TableCell style="font-family: Arial; font-size: 14pt; font-weight: bold;">
 										SplendidCRM <%# Application["CONFIG.service_level"] %>
 									</asp:TableCell>
 								</asp:TableRow>
@@ -91,29 +91,31 @@ function set_focus()
 								</asp:TableRow>
 								<asp:TableRow ID="trUserName" runat="server">
 									<asp:TableCell Width="30%" CssClass="dataLabel"><%# L10n.Term("Users.LBL_USER_NAME") %></asp:TableCell>
-									<asp:TableCell Width="70%" CssClass="loginField">
-										<asp:TextBox ID="txtUSER_NAME" placeholder='<%# Sql.ToString(Application["CONFIG.default_theme"]) == "Arctic" ? L10n.Term("Users.LBL_USER_NAME").Replace(":", "") : String.Empty %>' Runat="server" /> &nbsp;<%# (Sql.IsEmptyString(Application["CONFIG.default_user_name"]) ? String.Empty : "(" + Sql.ToString(Application["CONFIG.default_user_name"]) + ")") %>
+									<asp:TableCell Width="70%" CssClass="loginField" Wrap="true">
+										<asp:TextBox ID="txtUSER_NAME" placeholder='<%# (sTheme == "Arctic" || sTheme == "Pacific") ? L10n.Term("Users.LBL_USER_NAME").Replace(":", "") : String.Empty %>' Runat="server" />
+									</asp:TableCell>
+									<asp:TableCell Wrap="false" style="color: black" HorizontalAlign="Right" Visible='<%# !Sql.IsEmptyString(Application["CONFIG.default_user_name"]) %>'>
+										<%# (Sql.IsEmptyString(Application["CONFIG.default_user_name"]) ? String.Empty : "(" + Sql.ToString(Application["CONFIG.default_user_name"]) + ")") %>
 									</asp:TableCell>
 								</asp:TableRow>
 								<asp:TableRow ID="trPassword" runat="server">
 									<asp:TableCell Width="30%" CssClass="dataLabel"><%# L10n.Term("Users.LBL_PASSWORD") %></asp:TableCell>
-									<asp:TableCell Width="70%" CssClass="loginField">
-										<asp:TextBox ID="txtPASSWORD" TextMode="Password" placeholder='<%# Sql.ToString(Application["CONFIG.default_theme"]) == "Arctic" ? L10n.Term("Users.LBL_PASSWORD").Replace(":", "") : String.Empty %>' Runat="server" /> &nbsp;<%# (Sql.IsEmptyString(Application["CONFIG.default_password"]) ? String.Empty : "(" + Sql.ToString(Application["CONFIG.default_password"]) + ")") %>
+									<asp:TableCell Width="70%" CssClass="loginField" Wrap="true">
+										<asp:TextBox ID="txtPASSWORD" TextMode="Password" placeholder='<%# (sTheme == "Arctic" || sTheme == "Pacific") ? L10n.Term("Users.LBL_PASSWORD").Replace(":", "") : String.Empty %>' Runat="server" />
+									</asp:TableCell>
+									<asp:TableCell Wrap="false" style="color: black" HorizontalAlign="Right" Visible='<%# !Sql.IsEmptyString(Application["CONFIG.default_password"]) %>'>
+										<%# (Sql.IsEmptyString(Application["CONFIG.default_password"]) ? String.Empty : "(" + Sql.ToString(Application["CONFIG.default_password"]) + ")") %>
 									</asp:TableCell>
 								</asp:TableRow>
 							</asp:Table>
 							<asp:Table Width="100%" BorderWidth="0" CellPadding="0" CellSpacing="2" HorizontalAlign="Center" runat="server">
 								<asp:TableRow>
-									<asp:TableCell Width="30%">&nbsp;</asp:TableCell>
+									<asp:TableCell Width="30%" Visible='<%# (sTheme != "Arctic" && sTheme != "Pacific") %>'>&nbsp;</asp:TableCell>
 									<asp:TableCell Width="70%" Wrap="false">
 										<asp:Table Width="100%" BorderWidth="0" CellPadding="0" CellSpacing="2" runat="server">
 											<asp:TableRow>
 												<asp:TableCell HorizontalAlign="Left">
 													<asp:Button ID="btnLogin" CommandName="Login" OnCommand="Page_Command" CssClass="button" Text='<%# " "  + L10n.Term("Users.LBL_LOGIN_BUTTON_LABEL") + " "  %>' ToolTip='<%# L10n.Term("Users.LBL_LOGIN_BUTTON_TITLE") %>' Runat="server" />
-													&nbsp;
-													<asp:HyperLink ID="lnkWorkOnline"  Text='<%# L10n.Term("Offline.LNK_WORK_ONLINE"  ) %>' NavigateUrl="~/Users/ClientLogin.aspx" Visible="false" runat="server" />
-													<asp:HyperLink ID="lnkHTML5Client" Text='<%# L10n.Term(".LNK_MOBILE_CLIENT"       ) %>' NavigateUrl="~/html5/default.aspx"     Visible="false" runat="server" />
-													<asp:HyperLink ID="lnkReactClient" Text='<%# L10n.Term(".LNK_REACT_CLIENT"        ) %>' NavigateUrl="~/React/default.aspx"     Visible="false" runat="server" />
 												</asp:TableCell>
 												<asp:TableCell>
 													<%@ Register TagPrefix="SplendidCRM" Tagname="FacebookLogin" Src="FacebookLogin.ascx" %>
@@ -123,11 +125,18 @@ function set_focus()
 										</asp:Table>
 									</asp:TableCell>
 								</asp:TableRow>
-								<asp:TableRow ID="trShowForgotPassword" Visible=<%# !Security.IsWindowsAuthentication() && !Utils.CachedFileExists(Context, "~/Users/ClientLogin.aspx") %> runat="server">
-									<asp:TableCell ColumnSpan="2" HorizontalAlign="Right" style="padding-top: 10px;">
+							</asp:Table>
+							<asp:Table Width="100%" BorderWidth="0" CellPadding="0" CellSpacing="2" HorizontalAlign="Center" style="padding-top: 10px;" runat="server">
+								<asp:TableRow Visible=<%# !Security.IsWindowsAuthentication() && !Utils.CachedFileExists(Context, "~/Users/ClientLogin.aspx") %> runat="server">
+									<asp:TableCell ID="trShowForgotPassword">
 										<asp:HyperLink NavigateUrl=<%# "javascript:document.getElementById('" + txtFORGOT_USER_NAME.ClientID + "').value = document.getElementById('" + txtUSER_NAME.ClientID + "').value; toggleDisplay('" + pnlForgotPassword.ClientID + "');" %> CssClass="utilsLink" runat="server">
 											<asp:Image SkinID="advanced_search" runat="server" />&nbsp;<asp:Label Text='<%# L10n.Term("Users.LBL_FORGOT_PASSWORD") %>' runat="server" />
 										</asp:HyperLink>
+									</asp:TableCell>
+									<asp:TableCell HorizontalAlign="Right">
+										<asp:HyperLink ID="lnkWorkOnline"  Text='<%# L10n.Term("Offline.LNK_WORK_ONLINE"  ) %>' NavigateUrl="~/Users/ClientLogin.aspx" Visible="false" runat="server" />
+										<asp:HyperLink ID="lnkHTML5Client" Text='<%# L10n.Term(".LNK_MOBILE_CLIENT"       ) %>' NavigateUrl="~/html5/default.aspx"     Visible="false" runat="server" />
+										<asp:HyperLink ID="lnkReactClient" Text='<%# L10n.Term(".LNK_REACT_CLIENT"        ) %>' NavigateUrl="~/React/default.aspx"     Visible="false" runat="server" />
 									</asp:TableCell>
 								</asp:TableRow>
 							</asp:Table>
@@ -141,19 +150,19 @@ function set_focus()
 									<asp:TableRow>
 										<asp:TableCell Width="30%" CssClass="dataLabel"><%# L10n.Term("Users.LBL_USER_NAME") %></asp:TableCell>
 										<asp:TableCell Width="70%" CssClass="loginField">
-											<asp:TextBox ID="txtFORGOT_USER_NAME" placeholder='<%# Sql.ToString(Application["CONFIG.default_theme"]) == "Arctic" ? L10n.Term("Users.LBL_USER_NAME").Replace(":", "") : String.Empty %>' Runat="server" />
+											<asp:TextBox ID="txtFORGOT_USER_NAME" placeholder='<%# (sTheme == "Arctic" || sTheme == "Pacific") ? L10n.Term("Users.LBL_USER_NAME").Replace(":", "") : String.Empty %>' Runat="server" />
 										</asp:TableCell>
 									</asp:TableRow>
 									<asp:TableRow>
 										<asp:TableCell Width="30%" CssClass="dataLabel"><%# L10n.Term("Users.LBL_EMAIL") %></asp:TableCell>
 										<asp:TableCell Width="70%" CssClass="loginField">
-											<asp:TextBox ID="txtFORGOT_EMAIL" placeholder='<%# Sql.ToString(Application["CONFIG.default_theme"]) == "Arctic" ? L10n.Term("Users.LBL_EMAIL").Replace(":", "") : String.Empty %>' Runat="server" />
+											<asp:TextBox ID="txtFORGOT_EMAIL" placeholder='<%# (sTheme == "Arctic" || sTheme == "Pacific") ? L10n.Term("Users.LBL_EMAIL").Replace(":", "") : String.Empty %>' Runat="server" />
 										</asp:TableCell>
 									</asp:TableRow>
 								</asp:Table>
 								<asp:Table Width="100%" BorderWidth="0" CellPadding="0" CellSpacing="2" HorizontalAlign="Center" runat="server">
 									<asp:TableRow>
-										<asp:TableCell Width="30%">&nbsp;</asp:TableCell>
+										<asp:TableCell Width="30%" Visible='<%# (sTheme != "Arctic" && sTheme != "Pacific") %>'>&nbsp;</asp:TableCell>
 										<asp:TableCell Width="70%">
 											<asp:Button ID="btnForgotPassword" CommandName="ForgotPassword" OnCommand="Page_Command" CssClass="button" Text='<%# " "  + L10n.Term(".LBL_SUBMIT_BUTTON_LABEL") + " "  %>' ToolTip='<%# L10n.Term(".LBL_SUBMIT_BUTTON_TITLE") %>' Runat="server" />
 										</asp:TableCell>

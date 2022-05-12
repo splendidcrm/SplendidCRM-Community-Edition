@@ -134,3 +134,23 @@ if exists (select * from INFORMATION_SCHEMA.COLUMNS where TABLE_NAME = 'DETAILVI
 end -- if;
 GO
 
+-- 03/30/2022 Paul.  Add Insight fields. 
+if not exists (select * from INFORMATION_SCHEMA.COLUMNS where TABLE_NAME = 'DETAILVIEWS_RELATIONSHIPS' and COLUMN_NAME = 'INSIGHT_OPERATOR') begin -- then
+	print 'alter table DETAILVIEWS_RELATIONSHIPS add INSIGHT_OPERATOR nvarchar(2000) null';
+	alter table DETAILVIEWS_RELATIONSHIPS add INSIGHT_OPERATOR nvarchar(2000) null;
+	-- alter table DETAILVIEWS_RELATIONSHIPS alter column INSIGHT_OPERATOR nvarchar(2000) null;
+end -- if;
+GO
+
+if not exists (select * from INFORMATION_SCHEMA.COLUMNS where TABLE_NAME = 'DETAILVIEWS_RELATIONSHIPS' and COLUMN_NAME = 'INSIGHT_VIEW') begin -- then
+	print 'alter table DETAILVIEWS_RELATIONSHIPS add INSIGHT_VIEW nvarchar(50) null';
+	alter table DETAILVIEWS_RELATIONSHIPS add INSIGHT_VIEW nvarchar(50) null;
+end -- if;
+GO
+
+if not exists (select * from INFORMATION_SCHEMA.COLUMNS where TABLE_NAME = 'DETAILVIEWS_RELATIONSHIPS' and COLUMN_NAME = 'INSIGHT_LABEL') begin -- then
+	print 'alter table DETAILVIEWS_RELATIONSHIPS add INSIGHT_LABEL nvarchar(100) null';
+	alter table DETAILVIEWS_RELATIONSHIPS add INSIGHT_LABEL nvarchar(100) null;
+end -- if;
+GO
+

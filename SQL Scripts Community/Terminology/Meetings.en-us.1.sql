@@ -225,6 +225,8 @@ exec dbo.spTERMINOLOGY_InsertOnly N'LBL_SYNCED_RECURRING_MSG'                   
 exec dbo.spTERMINOLOGY_InsertOnly N'LBL_SMS_REMINDER_TIME'                         , N'en-US', N'Meetings', null, null, N'SMS Reminder Time:';
 exec dbo.spTERMINOLOGY_InsertOnly N'LBL_LIST_SMS_REMINDER_TIME'                    , N'en-US', N'Meetings', null, null, N'SMS Reminder';
 exec dbo.spTERMINOLOGY_InsertOnly N'SMS_USER_REMINDER_SUBJECT'                     , N'en-US', N'Meetings', null, null, N'SplendidCRM Meeting Reminder - $meeting_name';
+-- 04/15/2022 Paul.  Reorganize layout using Pacific tabs. 
+exec dbo.spTERMINOLOGY_InsertOnly N'LBL_LAYOUT_TAB_RECURRENCE'                     , N'en-US', N'Meetings', null, null, N'Recurrence';
 
 GO
 

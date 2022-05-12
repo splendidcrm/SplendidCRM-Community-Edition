@@ -67,6 +67,8 @@ interface IAdminListViewState
 	enableMassUpdate      : boolean;
 	selectedItems?        : any;
 	error?                : any;
+	// 04/09/2022 Paul.  Hide/show SearchView. 
+	showSearchView        : string;
 }
 
 @observer
@@ -87,6 +89,14 @@ class WorkflowsListView extends React.Component<IAdminListViewProps, IAdminListV
 		this.themeURL = Credentials.RemoteServer + 'App_Themes/' + SplendidCache.UserTheme + '/images/';
 		// 10/28/2020 Paul.  A customer preferred the old icons instead of the new fontawesome icons. 
 		this.legacyIcons = Crm_Config.ToBoolean('enable_legacy_icons');
+		// 04/09/2022 Paul.  Hide/show SearchView. 
+		let showSearchView: string = 'show';
+		if ( SplendidCache.UserTheme == 'Pacific' )
+		{
+			showSearchView = localStorage.getItem(this.constructor.name + '.showSearchView');
+			if ( Sql.IsEmptyString(showSearchView) )
+				showSearchView = 'hide';
+		}
 		this.state =
 		{
 			searchLayout          : null,
@@ -96,7 +106,8 @@ class WorkflowsListView extends React.Component<IAdminListViewProps, IAdminListV
 			searchMode            : 'Basic',
 			showUpdatePanel       : false,
 			enableMassUpdate      : Crm_Modules.MassUpdate(props.MODULE_NAME),
-			error                 : null
+			error                 : null,
+			showSearchView        ,
 		};
 	}
 
@@ -190,14 +201,25 @@ class WorkflowsListView extends React.Component<IAdminListViewProps, IAdminListV
 
 	private _onSearchTabChange = (key) =>
 	{
-		// 11/03/2020 Paul.  When switching between tabs, re-apply the search as some advanced settings may not have been applied. 
-		this.setState( {searchMode: key}, () =>
+		// 04/09/2022 Paul.  Hide/show SearchView. 
+		if ( key == 'Hide' )
 		{
-			if ( this.searchView.current != null )
+			let { showSearchView } = this.state;
+			showSearchView = 'hide';
+			localStorage.setItem(this.constructor.name + '.showSearchView', showSearchView);
+			this.setState({ showSearchView });
+		}
+		else
+		{
+			// 11/03/2020 Paul.  When switching between tabs, re-apply the search as some advanced settings may not have been applied. 
+			this.setState( {searchMode: key}, () =>
 			{
-				this.searchView.current.SubmitSearch();
-			}
-		});
+				if ( this.searchView.current != null )
+				{
+					this.searchView.current.SubmitSearch();
+				}
+			});
+		}
 	}
 
 	// 09/26/2020 Paul.  The SearchView needs to be able to specify a sort criteria. 
@@ -293,6 +315,14 @@ class WorkflowsListView extends React.Component<IAdminListViewProps, IAdminListV
 					admin = '/Administration';
 				}
 				history.push(`/Reset${admin}/${MODULE_NAME}/Edit`);
+				break;
+			}
+			// 04/09/2022 Paul.  Hide/show SearchView. 
+			case 'toggleSearchView':
+			{
+				let showSearchView: string = (this.state.showSearchView == 'show' ? 'hide' : 'show');
+				localStorage.setItem(this.constructor.name + '.showSearchView', showSearchView);
+				this.setState({ showSearchView });
 				break;
 			}
 			default:
@@ -610,11 +640,7 @@ class WorkflowsListView extends React.Component<IAdminListViewProps, IAdminListV
 						}
 					};
 					// 02/16/2021 Paul.  Need to manually override the bootstrap header style. 
-					if ( SplendidCache.UserTheme == 'Arctic' )
-					{
-						objDataColumn.headerStyle.paddingTop    = '10px';
-						objDataColumn.headerStyle.paddingBottom = '10px';
-					}
+					// 04/24/2022 Paul.  Move Arctic style override to style.css. 
 					if ( ITEMSTYLE_HORIZONTAL_ALIGN != null )
 					{
 						objDataColumn.classes += ' gridView' + ITEMSTYLE_HORIZONTAL_ALIGN;
@@ -664,11 +690,7 @@ class WorkflowsListView extends React.Component<IAdminListViewProps, IAdminListV
 						}
 					};
 					// 02/16/2021 Paul.  Need to manually override the bootstrap header style. 
-					if ( SplendidCache.UserTheme == 'Arctic' )
-					{
-						objDataColumn.headerStyle.paddingTop    = '10px';
-						objDataColumn.headerStyle.paddingBottom = '10px';
-					}
+					// 04/24/2022 Paul.  Move Arctic style override to style.css. 
 					if ( ITEMSTYLE_HORIZONTAL_ALIGN != null )
 					{
 						objDataColumn.classes += ' gridView' + ITEMSTYLE_HORIZONTAL_ALIGN;
@@ -769,7 +791,7 @@ class WorkflowsListView extends React.Component<IAdminListViewProps, IAdminListV
 	public render()
 	{
 		const { MODULE_NAME, RELATED_MODULE, GRID_NAME, TABLE_NAME, SORT_FIELD, SORT_DIRECTION, rowRequiredSearch } = this.props;
-		const { error, searchLayout, advancedLayout, searchTabsEnabled, duplicateSearchEnabled, searchMode, showUpdatePanel, enableMassUpdate } = this.state;
+		const { error, searchLayout, advancedLayout, searchTabsEnabled, duplicateSearchEnabled, searchMode, showUpdatePanel, enableMassUpdate, showSearchView } = this.state;
 		// 05/04/2019 Paul.  Reference obserable IsInitialized so that terminology update will cause refresh. 
 		if ( SplendidCache.IsInitialized && SplendidCache.AdminMenu )
 		{
@@ -789,7 +811,7 @@ class WorkflowsListView extends React.Component<IAdminListViewProps, IAdminListV
 				: null
 				}
 				{ searchLayout != null || advancedLayout != null
-				? <div>
+				? <div style={ {display: (showSearchView == 'show' ? 'block' : 'none')} }>
 					{ searchTabsEnabled
 					? <SearchTabs
 						searchMode={ searchMode }

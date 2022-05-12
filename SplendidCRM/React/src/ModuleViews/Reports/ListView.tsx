@@ -73,6 +73,8 @@ interface IListViewState
 	selectedItems?        : any;
 	SELECTED_REPORT_ID    : string;
 	error?                : any;
+	// 04/09/2022 Paul.  Hide/show SearchView. 
+	showSearchView        : string;
 }
 
 class ReportsListView extends React.Component<IListViewProps, IListViewState>
@@ -99,6 +101,14 @@ class ReportsListView extends React.Component<IListViewProps, IListViewState>
 			archiveView = true;
 			GRID_NAME   = props.MODULE_NAME + '.ArchiveView';
 		}
+		// 04/09/2022 Paul.  Hide/show SearchView. 
+		let showSearchView: string = 'show';
+		if ( SplendidCache.UserTheme == 'Pacific' )
+		{
+			showSearchView = localStorage.getItem(GRID_NAME + '.showSearchView');
+			if ( Sql.IsEmptyString(showSearchView) )
+				showSearchView = 'hide';
+		}
 		this.state =
 		{
 			GRID_NAME             ,
@@ -109,7 +119,8 @@ class ReportsListView extends React.Component<IListViewProps, IListViewState>
 			enableMassUpdate      : Crm_Modules.MassUpdate(props.MODULE_NAME),
 			archiveView           ,
 			SELECTED_REPORT_ID    : null,
-			error                 : null
+			error                 : null,
+			showSearchView        ,
 		};
 	}
 
@@ -193,14 +204,26 @@ class ReportsListView extends React.Component<IListViewProps, IListViewState>
 
 	private _onSearchTabChange = (key) =>
 	{
-		// 11/03/2020 Paul.  When switching between tabs, re-apply the search as some advanced settings may not have been applied. 
-		this.setState( {searchMode: key}, () =>
+		// 04/09/2022 Paul.  Hide/show SearchView. 
+		if ( key == 'Hide' )
 		{
-			if ( this.searchView.current != null )
+			const { GRID_NAME } = this.state;
+			let { showSearchView } = this.state;
+			showSearchView = 'hide';
+			localStorage.setItem(GRID_NAME + '.showSearchView', showSearchView);
+			this.setState({ showSearchView });
+		}
+		else
+		{
+			// 11/03/2020 Paul.  When switching between tabs, re-apply the search as some advanced settings may not have been applied. 
+			this.setState( {searchMode: key}, () =>
 			{
-				this.searchView.current.SubmitSearch();
-			}
-		});
+				if ( this.searchView.current != null )
+				{
+					this.searchView.current.SubmitSearch();
+				}
+			});
+		}
 	}
 
 	// 09/26/2020 Paul.  The SearchView needs to be able to specify a sort criteria. 
@@ -311,6 +334,15 @@ class ReportsListView extends React.Component<IListViewProps, IListViewState>
 					admin = '/Administration';
 				}
 				history.push(`/Reset${admin}/${MODULE_NAME}/Edit`);
+				break;
+			}
+			// 04/09/2022 Paul.  Hide/show SearchView. 
+			case 'toggleSearchView':
+			{
+				const { GRID_NAME } = this.state;
+				let showSearchView: string = (this.state.showSearchView == 'show' ? 'hide' : 'show');
+				localStorage.setItem(GRID_NAME + '.showSearchView', showSearchView);
+				this.setState({ showSearchView });
 				break;
 			}
 			default:
@@ -473,6 +505,7 @@ class ReportsListView extends React.Component<IListViewProps, IListViewState>
 		const { MODULE_NAME } = this.props;
 		let nEDIT_ACLACCESS  : number = SplendidCache.GetRecordAccess(row, MODULE_NAME, "edit"  , 'ASSIGNED_USER_ID');
 		let nEXPORT_ACLACCESS: number = SplendidCache.GetRecordAccess(row, MODULE_NAME, "export", 'ASSIGNED_USER_ID');
+		// 04/29/2022 Paul.  Icons should be 16x16. 
 		return (<span>
 			{ nEDIT_ACLACCESS >= 0 && row['REPORT_TYPE'] == 'tabular'
 			? <span style={ {cursor: 'pointer', padding: '3px', textDecoration: 'none'} } onClick={ () => this._onDuplicate(row) } className='listViewTdToolsS1'>{ L10n.Term('.LBL_DUPLICATE_BUTTON_LABEL') }</span>
@@ -481,14 +514,14 @@ class ReportsListView extends React.Component<IListViewProps, IListViewState>
 			<span style={ {cursor: 'pointer', padding: '3px', textDecoration: 'none'} } onClick={ () => this._onAddDashlet(row) } className='listViewTdToolsS1'>{ L10n.Term('Reports.LNK_ADD_DASHLET') }</span>
 			{ Security.IS_ADMIN() && nEXPORT_ACLACCESS >= 0
 			? <span>
-				<img src={ this.themeURL + 'export.gif' } style={ {borderWidth: '0px', height: '10px', width: '10px', paddingLeft: '4px'} } />
+				<img src={ this.themeURL + 'export.gif' } style={ {borderWidth: '0px', height: '16px', width: '16px', paddingLeft: '4px'} } />
 				<span style={ {cursor: 'pointer', padding: '3px', textDecoration: 'none'} } onClick={ () => this._onExportRDL(row) } className='listViewTdToolsS1'>{ L10n.Term('Reports.LBL_EXPORT_RDL') }</span>
 			</span>
 			: null
 			}
 			{ Security.IS_ADMIN() && nEXPORT_ACLACCESS >= 0
 			? <span>
-				<img src={ this.themeURL + 'export.gif' } style={ {borderWidth: '0px', height: '10px', width: '10px', paddingLeft: '4px'} } />
+				<img src={ this.themeURL + 'export.gif' } style={ {borderWidth: '0px', height: '16px', width: '16px', paddingLeft: '4px'} } />
 				<span style={ {cursor: 'pointer', padding: '3px', textDecoration: 'none'} } onClick={ () => this._onExportSQL(row) } className='listViewTdToolsS1'>{ L10n.Term('Reports.LBL_EXPORT_SQL') }</span>
 			</span>
 			: null
@@ -560,11 +593,7 @@ class ReportsListView extends React.Component<IListViewProps, IListViewState>
 			}
 		};
 		// 02/16/2021 Paul.  Need to manually override the bootstrap header style. 
-		if ( SplendidCache.UserTheme == 'Arctic' )
-		{
-			objDataColumn.headerStyle.paddingTop    = '10px';
-			objDataColumn.headerStyle.paddingBottom = '10px';
-		}
+		// 04/24/2022 Paul.  Move Arctic style override to style.css. 
 		arrDataTableColumns.push(objDataColumn);
 
 		// 03/24/2020 Paul.  Manually add MODULE_NAME, REPORT_TYPE as a bound columns. 
@@ -599,11 +628,7 @@ class ReportsListView extends React.Component<IListViewProps, IListViewState>
 			}
 		};
 		// 02/16/2021 Paul.  Need to manually override the bootstrap header style. 
-		if ( SplendidCache.UserTheme == 'Arctic' )
-		{
-			objDataColumn.headerStyle.paddingTop    = '10px';
-			objDataColumn.headerStyle.paddingBottom = '10px';
-		}
+		// 04/24/2022 Paul.  Move Arctic style override to style.css. 
 		arrDataTableColumns.push(objDataColumn);
 
 		let bEnableTeamManagement = Crm_Config.enable_team_management();
@@ -719,11 +744,7 @@ class ReportsListView extends React.Component<IListViewProps, IListViewState>
 						}
 					};
 					// 02/16/2021 Paul.  Need to manually override the bootstrap header style. 
-					if ( SplendidCache.UserTheme == 'Arctic' )
-					{
-						objDataColumn.headerStyle.paddingTop    = '10px';
-						objDataColumn.headerStyle.paddingBottom = '10px';
-					}
+					// 04/24/2022 Paul.  Move Arctic style override to style.css. 
 					if ( ITEMSTYLE_HORIZONTAL_ALIGN != null )
 					{
 						objDataColumn.classes += ' gridView' + ITEMSTYLE_HORIZONTAL_ALIGN;
@@ -773,11 +794,7 @@ class ReportsListView extends React.Component<IListViewProps, IListViewState>
 						}
 					};
 					// 02/16/2021 Paul.  Need to manually override the bootstrap header style. 
-					if ( SplendidCache.UserTheme == 'Arctic' )
-					{
-						objDataColumn.headerStyle.paddingTop    = '10px';
-						objDataColumn.headerStyle.paddingBottom = '10px';
-					}
+					// 04/24/2022 Paul.  Move Arctic style override to style.css. 
 					if ( ITEMSTYLE_HORIZONTAL_ALIGN != null )
 					{
 						objDataColumn.classes += ' gridView' + ITEMSTYLE_HORIZONTAL_ALIGN;
@@ -829,11 +846,7 @@ class ReportsListView extends React.Component<IListViewProps, IListViewState>
 			}
 		};
 		// 02/16/2021 Paul.  Need to manually override the bootstrap header style. 
-		if ( SplendidCache.UserTheme == 'Arctic' )
-		{
-			objDataColumn.headerStyle.paddingTop    = '10px';
-			objDataColumn.headerStyle.paddingBottom = '10px';
-		}
+		// 04/24/2022 Paul.  Move Arctic style override to style.css. 
 		arrDataTableColumns.push(objDataColumn);
 		objDataColumn =
 		{
@@ -865,11 +878,7 @@ class ReportsListView extends React.Component<IListViewProps, IListViewState>
 			}
 		};
 		// 02/16/2021 Paul.  Need to manually override the bootstrap header style. 
-		if ( SplendidCache.UserTheme == 'Arctic' )
-		{
-			objDataColumn.headerStyle.paddingTop    = '10px';
-			objDataColumn.headerStyle.paddingBottom = '10px';
-		}
+		// 04/24/2022 Paul.  Move Arctic style override to style.css. 
 		arrDataTableColumns.push(objDataColumn);
 
 		// 03/24/2020 Paul.  Last column combines all the actions. 
@@ -973,7 +982,7 @@ class ReportsListView extends React.Component<IListViewProps, IListViewState>
 	public render()
 	{
 		const { MODULE_NAME, RELATED_MODULE, TABLE_NAME, SORT_FIELD, SORT_DIRECTION, rowRequiredSearch } = this.props;
-		const { GRID_NAME, error, searchTabsEnabled, duplicateSearchEnabled, searchMode, showUpdatePanel, enableMassUpdate, PREVIEW_ID, SELECTED_REPORT_ID } = this.state;
+		const { GRID_NAME, error, searchTabsEnabled, duplicateSearchEnabled, searchMode, showUpdatePanel, enableMassUpdate, PREVIEW_ID, SELECTED_REPORT_ID, showSearchView } = this.state;
 		// 05/04/2019 Paul.  Reference obserable IsInitialized so that terminology update will cause refresh. 
 		// 05/06/2019 Paul.  The trick to having the SearchView change with the tabs is to change the key. 
 		// 06/25/2019 Paul.  The SplendidGrid is getting a componentDidUpdate event instead of componentDidMount, so try specifying a key. 
@@ -1046,7 +1055,7 @@ class ReportsListView extends React.Component<IListViewProps, IListViewState>
 					? React.createElement(headerButtons, { MODULE_NAME, MODULE_TITLE, error, enableHelp: true, helpName: 'index', ButtonStyle: 'ModuleHeader', VIEW_NAME: HEADER_BUTTONS, Page_Command: this.Page_Command, showButtons: true, showProcess: false, history: this.props.history, location: this.props.location, match: this.props.match, ref: this.headerButtons })
 					: null
 					}
-					<div>
+					<div style={ {display: (showSearchView == 'show' ? 'block' : 'none')} }>
 						{ searchTabsEnabled
 						? <SearchTabs searchMode={ searchMode } duplicateSearchEnabled={ duplicateSearchEnabled } onTabChange={ this._onSearchTabChange } />
 						: null
@@ -1083,6 +1092,7 @@ class ReportsListView extends React.Component<IListViewProps, IListViewState>
 						AutoSaveSearch={ Credentials.bSAVE_QUERY && Crm_Config.ToBoolean('save_query') }
 						archiveView={ this.ArchiveViewEnabled() }
 						deferLoad={ true }
+						enableExportHeader={ true }
 						enableSelection={ enableMassUpdate || SplendidCache.GetUserAccess(MODULE_NAME, 'export', this.constructor.name + '.render') >= 0 }
 						enableFavorites={ true }
 						enableFollowing={ true }

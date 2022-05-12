@@ -240,26 +240,57 @@ class DashboardView extends React.Component<IDashboardViewProps, IDashboardViewS
 				// 01/17/2020 Paul.  Some customers want to disable end-user editing of the dashboards. 
 				// 06/09/2021 Paul.  Add hover titles to icons. 
 				let bDisableEdit: boolean = Crm_Config.ToBoolean('DashboardView.DisableDashboardEdit');
-				let tabs = [];
-				dashboards.map((dashboard) =>
+				let pnlDashboardTabs = null;
+				if ( SplendidCache.UserTheme == 'Pacific' )
 				{
-					let edit = <FontAwesomeIcon icon="edit" size="lg" title={ L10n.Term('Dashboard.LBL_DASHBOARD_TAB_EDIT') } />;
-					tabs.push(<Tab key={ dashboard.ID + '_view' } eventKey={ '/Reset/Dashboard/' + dashboard.ID } title={ dashboard.NAME }></Tab>);
+					let tabs = [];
+					dashboards.map((dashboard) =>
+					{
+						let sClassName: string = 'DashboardTabButton';
+						if ( dashboard.ID == ID )
+							sClassName += ' DashboardTabButtonActive';
+						let tab = <div className={ sClassName }>
+							<button onClick={ (e) => this._onTabChange('/Reset/Dashboard/' + dashboard.ID) }>{ dashboard.NAME }</button>
+							{ !bDisableEdit
+							? <button onClick={ (e) => this._onTabChange('/Reset/Dashboard/DashboardEdit/' + dashboard.ID) }>
+								<FontAwesomeIcon icon='edit' size='lg' title={ L10n.Term('Dashboard.LBL_DASHBOARD_TAB_EDIT') } />
+							</button>
+							: null
+							}
+						</div>;
+						tabs.push(tab);
+					});
 					if ( !bDisableEdit )
 					{
-						tabs.push(<Tab key={ dashboard.ID + '_edit' } eventKey={ '/Reset/Dashboard/DashboardEdit/' + dashboard.ID } title={ edit }></Tab>);
+						tabs.push(<div className='DashboardTabButton'><button id="pnlDashboardCreate" onClick={ (e) => this.props.history.push('/Reset/Dashboard/DashboardEdit/') }><FontAwesomeIcon icon='asterisk' size='lg' title={ L10n.Term('Dashboard.LBL_DASHBOARD_TAB_CREATE') } /></button></div>);
 					}
-				});
-				if ( !bDisableEdit )
+					pnlDashboardTabs = <div style={ {display: 'flex', flexDirection: 'row'} }>{ tabs }</div>;
+				}
+				else
 				{
-					let asterisk = <FontAwesomeIcon icon="asterisk" size="lg" title={ L10n.Term('Dashboard.LBL_DASHBOARD_TAB_CREATE') } />;
-					tabs.push(<Tab key="pnlDashboardCreate" id="pnlDashboardCreate"  eventKey="/Reset/Dashboard/DashboardEdit/"  title={ asterisk }></Tab>);
+					let tabs = [];
+					dashboards.map((dashboard) =>
+					{
+						let edit = <FontAwesomeIcon icon="edit" size="lg" title={ L10n.Term('Dashboard.LBL_DASHBOARD_TAB_EDIT') } />;
+						tabs.push(<Tab key={ dashboard.ID + '_view' } eventKey={ '/Reset/Dashboard/' + dashboard.ID } title={ dashboard.NAME }></Tab>);
+						if ( !bDisableEdit )
+						{
+							tabs.push(<Tab key={ dashboard.ID + '_edit' } eventKey={ '/Reset/Dashboard/DashboardEdit/' + dashboard.ID } title={ edit }></Tab>);
+						}
+					});
+					if ( !bDisableEdit )
+					{
+						let asterisk = <FontAwesomeIcon icon="asterisk" size="lg" title={ L10n.Term('Dashboard.LBL_DASHBOARD_TAB_CREATE') } />;
+						tabs.push(<Tab key="pnlDashboardCreate" id="pnlDashboardCreate"  eventKey="/Reset/Dashboard/DashboardEdit/"  title={ asterisk }></Tab>);
+					}
+					pnlDashboardTabs = 
+						<Tabs key="pnlDashboardTabs" id="pnlDashboardTabs" activeKey={ '/Reset/Dashboard/' + ID } onSelect={ this._onTabChange }>
+							{ tabs }
+						</Tabs>;
 				}
 				return (
 					<div>
-						<Tabs key="pnlDashboardTabs" id="pnlDashboardTabs" activeKey={ '/Reset/Dashboard/' + ID } onSelect={ this._onTabChange }>
-							{ tabs }
-						</Tabs>
+						{ pnlDashboardTabs }
 						<div style={{ display: 'flex', flexDirection: 'column' }}>
 							{ rows.map((row, index) => (
 								<div style={{ display: 'flex' }} key={'row' + index}>

@@ -22,6 +22,7 @@
 -- 10/28/2009 Paul.  Add UTC date to allow this table to sync. 
 -- 10/13/2012 Paul.  Add table info for HTML5 Offline Client. 
 -- 03/20/2016 Paul.  Increase PRIMARY_FIELD size to 255 to support OfficeAddin. 
+-- 03/30/2022 Paul.  Add Insight fields. 
 if not exists (select * from INFORMATION_SCHEMA.TABLES where TABLE_NAME = 'DETAILVIEWS_RELATIONSHIPS' and TABLE_TYPE = 'BASE TABLE')
   begin
 	print 'Create Table dbo.DETAILVIEWS_RELATIONSHIPS';
@@ -44,6 +45,9 @@ if not exists (select * from INFORMATION_SCHEMA.TABLES where TABLE_NAME = 'DETAI
 		, PRIMARY_FIELD                      nvarchar(255) null
 		, SORT_FIELD                         nvarchar(50) null
 		, SORT_DIRECTION                     nvarchar(10) null
+		, INSIGHT_LABEL                      nvarchar(100) null
+		, INSIGHT_OPERATOR                   nvarchar(2000) null
+		, INSIGHT_VIEW                       nvarchar(50) null
 		)
 
 	create index IDX_DETAILVIEWS_RELATIONSHIPS_DETAIL_NAME on dbo.DETAILVIEWS_RELATIONSHIPS (DETAIL_NAME, DELETED, RELATIONSHIP_ENABLED)

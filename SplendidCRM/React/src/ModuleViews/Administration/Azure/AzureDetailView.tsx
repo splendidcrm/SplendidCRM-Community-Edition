@@ -210,7 +210,7 @@ class AdminDetailView extends React.Component<IDetailViewProps, IAdminDetailView
 			return (
 			<React.Fragment>
 				{ headerButtons
-				? React.createElement(headerButtons, { MODULE_NAME, ID, MODULE_TITLE: 'Azure.LBL_AZURE_SETTINGS', enableFavorites: false, error, enableHelp: true, helpName: 'DetailView', ButtonStyle: 'ModuleHeader', VIEW_NAME: DETAIL_NAME, row: null, Page_Command: this.Page_Command, showButtons: true, history: this.props.history, location: this.props.location, match: this.props.match, ref: this.headerButtons, showProcess: false })
+				? React.createElement(headerButtons, { MODULE_NAME, ID, MODULE_TITLE: 'Azure.LBL_AZURE_OVERVIEW', enableFavorites: false, error, enableHelp: true, helpName: 'DetailView', ButtonStyle: 'ModuleHeader', VIEW_NAME: DETAIL_NAME, row: null, Page_Command: this.Page_Command, showButtons: true, history: this.props.history, location: this.props.location, match: this.props.match, ref: this.headerButtons, showProcess: false })
 				: null
 				}
 				<div id="content">

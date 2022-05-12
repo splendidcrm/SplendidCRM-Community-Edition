@@ -66,5 +66,6 @@ using System.Reflection;
 // 01/30/2019 Paul.  Version 12.6 corrects issues with custom field tables not always getting an audit event when base table is updated.  Caused workflow issues. 
 // 12/27/2019 Paul.  Version 13.0 introduces the React Client.
 // 08/29/2021 Paul.  Version 14.0 adds machine learning to Enterprise. 
-[assembly: AssemblyVersion("14.0.*")]
+// 04/10/2022 Paul.  Version 14.5 add Pacific theme. 
+[assembly: AssemblyVersion("14.5.*")]
 

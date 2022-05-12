@@ -456,7 +456,7 @@ export default class PipelineBySalesStage extends React.Component<IDashletProps,
 		<div style={ {display: 'flex', flexGrow: 1} }>
 			<div className="card" style={ {flexGrow: 1, margin: '.5em', overflowX: 'auto'} }>
 				<Appear onAppearOnce={ (ioe) => this.setState({ dashletVisible: true }) }>
-					<div className="card-body">
+					<div className="card-body DashletHeader">
 						<ErrorComponent error={error} />
 						<h3 style={ {float: 'left'} }>{ L10n.Term(TITLE) }</h3>
 						<span

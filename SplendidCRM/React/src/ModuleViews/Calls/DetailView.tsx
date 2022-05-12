@@ -27,7 +27,7 @@ import SplendidDynamic_DetailView                     from '../../scripts/Splend
 import { Crm_Config, Crm_Modules }                    from '../../scripts/Crm'                       ;
 import { AuthenticatedMethod, LoginRedirect }         from '../../scripts/Login'                     ;
 import { sPLATFORM_LAYOUT }                           from '../../scripts/SplendidInitUI'            ;
-import { DetailView_LoadItem, DetailView_LoadLayout } from '../../scripts/DetailView'                ;
+import { DetailView_LoadItem, DetailView_LoadLayout, DetailView_ActivateTab } from '../../scripts/DetailView'                ;
 import { DeleteModuleItem, ArchiveMoveData, ArchiveRecoverData, DeleteModuleRecurrences } from '../../scripts/ModuleUpdate'   ;
 import { jsonReactState }                             from '../../scripts/Application'               ;
 // 4. Components and Views. 
@@ -37,6 +37,8 @@ import DetailViewRelationships                        from '../../views/DetailVi
 import AuditView                                      from '../../views/AuditView'                   ;
 import ActivitiesPopupView                            from '../../views/ActivitiesPopupView'         ;
 import HeaderButtonsFactory                           from '../../ThemeComponents/HeaderButtonsFactory';
+// 04/13/2022 Paul.  Add LayoutTabs to Pacific theme. 
+import LayoutTabs                                     from '../../components/LayoutTabs'             ;
 
 interface IDetailViewState
 {
@@ -502,6 +504,15 @@ class CallsDetailView extends React.Component<IDetailViewProps, IDetailViewState
 		this.setState({ activitiesOpen: false });
 	}
 
+	// 04/13/2022 Paul.  Add LayoutTabs to Pacific theme. 
+	private _onTabChange = (nActiveTabIndex) =>
+	{
+		let { layout } = this.state;
+		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onTabChange', nActiveTabIndex);
+		DetailView_ActivateTab(layout, nActiveTabIndex);
+		this.setState({ layout });
+	}
+
 	public render()
 	{
 		const { ID } = this.props;
@@ -517,6 +528,7 @@ class CallsDetailView extends React.Component<IDetailViewProps, IDetailViewState
 			Credentials.sUSER_THEME;
 			let headerButtons = HeaderButtonsFactory(SplendidCache.UserTheme);
 			// 01/06/20212 Paul.  Must use e.preventDefault() for the recurrences links to work properly. 
+			// 04/13/2022 Paul.  Add LayoutTabs to Pacific theme. 
 			return (
 			<React.Fragment>
 				<AuditView
@@ -562,6 +574,7 @@ class CallsDetailView extends React.Component<IDetailViewProps, IDetailViewState
 					</table>
 					: null
 					}
+					<LayoutTabs layout={ layout } onTabChange={ this._onTabChange } />
 					{ SplendidDynamic_DetailView.AppendDetailViewFields(item, layout, this.refMap, 'tabDetailView', null, this.Page_Command) }
 					<br />
 					<DetailViewRelationships key={ this.props.MODULE_NAME + '_DetailViewRelationships' } PARENT_TYPE={ this.props.MODULE_NAME } DETAIL_NAME={ DETAIL_NAME } row={ item } isPrecompile={ this.props.isPrecompile } onComponentComplete={ this.onRelationshipsComplete } />

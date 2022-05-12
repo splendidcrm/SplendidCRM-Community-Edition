@@ -48,6 +48,9 @@ import JavaScript                    from '../GridComponents/JavaScript'     ;
 import String                        from '../GridComponents/String'         ;
 import LinkButton                    from '../GridComponents/LinkButton'     ;
 import CheckBox                      from '../GridComponents/CheckBox'       ;
+// 03/25/2022 Paul.  Add field chooser. 
+import ListViewFieldChooser          from '../DynamicLayoutComponents/ListView/FieldChooser';
+import NavItem                       from '../components/NavItem'            ;
 
 interface ISplendidGridProps extends RouteComponentProps<any>
 {
@@ -91,11 +94,14 @@ interface ISplendidGridProps extends RouteComponentProps<any>
 	// 04/10/2021 Paul.  Create framework to allow pre-compile of all modules. 
 	isPrecompile?       : boolean;
 	onComponentComplete?: (MODULE_NAME, RELATED_MODULE, LAYOUT_NAME, data) => void;
+	// 04/10/2022 Paul.  Move Pacific Export to pagination header. 
+	enableExportHeader? : boolean;
 }
 
 interface ISplendidGridState
 {
 	layout                  : any;
+	layoutAvailable?        : any;
 	vwMain                  : any;
 	columns                 : any;
 	__total                 : number;
@@ -131,6 +137,14 @@ interface ISplendidGridState
 	tableKey?               : string;
 	loading                 : boolean;
 	exporting               : boolean;
+	isOpenFieldChooser      : boolean;
+	columnsChangedKey       : number;
+	nSelectionKey           : number;
+	// 04/10/2022 Paul.  Move Pacific Export to pagination header. 
+	EXPORT_RANGE            : string;
+	EXPORT_FORMAT           : string;
+	EXPORT_RANGE_LIST       : any[];
+	EXPORT_FORMAT_LIST      : any[];
 }
 
 @observer
@@ -141,6 +155,7 @@ class SplendidGrid extends React.Component<ISplendidGridProps, ISplendidGridStat
 	private themeURL: string = null;
 	private legacyIcons: boolean = false;
 	private searchCount: number  = 0;
+	private chkPacificSelection: HTMLInputElement = null;
 
 	private setStateAsync = (newState: Partial<ISplendidGridState>) =>
 	{
@@ -184,6 +199,21 @@ class SplendidGrid extends React.Component<ISplendidGridProps, ISplendidGridStat
 				SORT_DIRECTION = GRIDVIEW.SORT_DIRECTION;
 			}
 		}
+		// 04/10/2022 Paul.  Move Pacific Export to pagination header. 
+		let EXPORT_RANGE            : string = 'All'  ;
+		let EXPORT_FORMAT           : string = 'Excel';
+		let EXPORT_RANGE_LIST       : any[]  = [];
+		let EXPORT_FORMAT_LIST      : any[]  = [];
+		EXPORT_RANGE_LIST.push({ DISPLAY_NAME: L10n.Term('.LBL_LISTVIEW_OPTION_ENTIRE'  ), NAME: 'All'     });
+		EXPORT_RANGE_LIST.push({ DISPLAY_NAME: L10n.Term('.LBL_LISTVIEW_OPTION_CURRENT' ), NAME: 'Page'    });
+		// 03/18/2021 Paul.  Lists without selection checkboxes should not allow Selected option. 
+		if ( props.enableSelection )
+			EXPORT_RANGE_LIST.push({ DISPLAY_NAME: L10n.Term('.LBL_LISTVIEW_OPTION_SELECTED'), NAME: 'Selected'});
+		
+		EXPORT_FORMAT_LIST.push({ DISPLAY_NAME: L10n.Term('Import.LBL_XML_SPREADSHEET'  ), NAME: 'Excel'   });
+		EXPORT_FORMAT_LIST.push({ DISPLAY_NAME: L10n.Term('Import.LBL_XML'              ), NAME: 'xml'     });
+		EXPORT_FORMAT_LIST.push({ DISPLAY_NAME: L10n.Term('Import.LBL_CUSTOM_CSV'       ), NAME: 'csv'     });
+		EXPORT_FORMAT_LIST.push({ DISPLAY_NAME: L10n.Term('Import.LBL_CUSTOM_TAB'       ), NAME: 'tab'     });
 		this.state =
 		{
 			layout          : null,
@@ -218,6 +248,13 @@ class SplendidGrid extends React.Component<ISplendidGridProps, ISplendidGridStat
 			tableKey        : props.GRID_NAME,
 			loading         : !Sql.ToBoolean(props.disableInitialLoading),
 			exporting       : false,
+			isOpenFieldChooser: false,
+			columnsChangedKey: 0,
+			nSelectionKey    : 0,
+			EXPORT_RANGE      ,
+			EXPORT_FORMAT     ,
+			EXPORT_RANGE_LIST ,
+			EXPORT_FORMAT_LIST,
 		};
 	}
 
@@ -356,6 +393,9 @@ class SplendidGrid extends React.Component<ISplendidGridProps, ISplendidGridStat
 		{
 			const layout = ListView_LoadLayout(GRID_NAME, ignoreMissingLayout);
 			//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.Load layout', layout);
+			// 03/25/2022 Paul.  Add support for field chooser. 
+			const layoutAvailable = ListView_LoadLayout(GRID_NAME + '.Available', true);
+			//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.Load layoutAvailable', GRID_NAME + '.Available', layoutAvailable);
 			// 06/19/2018 Paul.  Make sure to clear the data when loading the layout. 
 			let SELECT_FIELDS = this.GridColumns(layout);
 			let columns: any[] = null;
@@ -370,6 +410,7 @@ class SplendidGrid extends React.Component<ISplendidGridProps, ISplendidGridStat
 			//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.Load', arrSELECT_FIELDS, columns);
 			await this.setStateAsync({
 				layout       ,
+				layoutAvailable,
 				__total      : 0,
 				vwMain       : null,
 				SELECT_FIELDS,
@@ -1002,7 +1043,9 @@ class SplendidGrid extends React.Component<ISplendidGridProps, ISplendidGridStat
 		const { MODULE_NAME, enableSelection, enableMassUpdate, Page_Command, archiveView, isPopupView } = this.props;
 		if ( enableSelection && colIndex == 0 )
 		{
-			if ( enableMassUpdate && Page_Command && SplendidDynamic.StackedLayout(SplendidCache.UserTheme) )
+			// 04/07/2022 Paul.  MassUpdate buttons have been moved to pagination line for the Pacific theme. 
+			let sTheme: string = SplendidCache.UserTheme;
+			if ( enableMassUpdate && Page_Command && SplendidDynamic.StackedLayout(sTheme) && sTheme != 'Pacific' )
 			{
 				// 10/28/2020 Paul.  Must use ArchiveView buttons when in archive view. 
 				return (<DynamicButtons
@@ -1130,6 +1173,7 @@ class SplendidGrid extends React.Component<ISplendidGridProps, ISplendidGridStat
 		{
 			oNumberFormat.CurrencyDecimalDigits = 0;
 		}
+		let sTheme: string = SplendidCache.UserTheme;
 		if ( layout != null )
 		{
 			for ( let nLayoutIndex = 0; layout != null && nLayoutIndex < layout.length; nLayoutIndex++ )
@@ -1226,7 +1270,8 @@ class SplendidGrid extends React.Component<ISplendidGridProps, ISplendidGridStat
 				}
 				if ( DATA_FORMAT == 'ImageButton' && URL_FORMAT == 'Preview' )
 				{
-					bIsReadable = bIsReadable && SplendidDynamic.StackedLayout(SplendidCache.UserTheme);
+					// 04/06/2022 Paul.  Only Seven theme supports preview at this time. 
+					bIsReadable = bIsReadable && SplendidDynamic.StackedLayout(SplendidCache.UserTheme) && sTheme == 'Seven';
 				}
 				// 08/20/2016 Paul.  The hidden field is a DATA_FORMAT, not a COLUMN_TYPE, but keep COLUMN_TYPE just in case anyone used it. 
 				// 07/22/2019 Paul.  Apply ACL Field Security. 
@@ -1264,11 +1309,12 @@ class SplendidGrid extends React.Component<ISplendidGridProps, ISplendidGridStat
 						}
 					};
 					// 02/16/2021 Paul.  Need to manually override the bootstrap header style. 
-					if ( SplendidCache.UserTheme == 'Arctic' )
-					{
-						objDataColumn.headerStyle.paddingTop    = '10px';
-						objDataColumn.headerStyle.paddingBottom = '10px';
-					}
+					// 04/24/2022 Paul.  Move Arctic style override to style.css. 
+					//if ( SplendidCache.UserTheme == 'Arctic' )
+					//{
+					//	objDataColumn.headerStyle.paddingTop    = '10px';
+					//	objDataColumn.headerStyle.paddingBottom = '10px';
+					//}
 					if ( ITEMSTYLE_HORIZONTAL_ALIGN != null )
 					{
 						objDataColumn.classes += ' gridView' + ITEMSTYLE_HORIZONTAL_ALIGN;
@@ -1319,11 +1365,12 @@ class SplendidGrid extends React.Component<ISplendidGridProps, ISplendidGridStat
 						}
 					};
 					// 02/16/2021 Paul.  Need to manually override the bootstrap header style. 
-					if ( SplendidCache.UserTheme == 'Arctic' )
-					{
-						objDataColumn.headerStyle.paddingTop    = '10px';
-						objDataColumn.headerStyle.paddingBottom = '10px';
-					}
+					// 04/24/2022 Paul.  Move Arctic style override to style.css. 
+					//if ( SplendidCache.UserTheme == 'Arctic' )
+					//{
+					//	objDataColumn.headerStyle.paddingTop    = '10px';
+					//	objDataColumn.headerStyle.paddingBottom = '10px';
+					//}
 					if ( ITEMSTYLE_HORIZONTAL_ALIGN != null )
 					{
 						objDataColumn.classes += ' gridView' + ITEMSTYLE_HORIZONTAL_ALIGN;
@@ -1904,6 +1951,7 @@ class SplendidGrid extends React.Component<ISplendidGridProps, ISplendidGridStat
 	{
 		const { selectionChanged } = this.props;
 		let { selectedItems, selectedKeys } = this.state;
+		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onSelectionChanged ' + isSelect.toString(), row);
 		if ( isSelect )
 		{
 			selectedItems[row.ID] = true;
@@ -1935,7 +1983,7 @@ class SplendidGrid extends React.Component<ISplendidGridProps, ISplendidGridStat
 		const { selectionChanged } = this.props;
 		const { vwMain } = this.state;
 		let { selectedItems, selectedKeys } = this.state;
-		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onBootstrapSelectPage', rows);
+		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onBootstrapSelectPage ' + isSelect.toString(), rows);
 		if ( vwMain != null )
 		{
 			for ( let i = 0; i < rows.length; i++ )
@@ -1972,8 +2020,13 @@ class SplendidGrid extends React.Component<ISplendidGridProps, ISplendidGridStat
 	{
 		const { selectionChanged } = this.props;
 		const { vwMain } = this.state;
+		let { nSelectionKey } = this.state;
 		let { selectedItems, selectedKeys } = this.state;
-		e.preventDefault();
+		// 04/07/2022 Paul.  e may be null. 
+		if ( e != null )
+		{
+			e.preventDefault();
+		}
 		if ( vwMain != null )
 		{
 			for ( let i = 0; i < vwMain.length; i++ )
@@ -1989,7 +2042,9 @@ class SplendidGrid extends React.Component<ISplendidGridProps, ISplendidGridStat
 		// 03/15/2021 Paul.  selectedKeys only lists items on current page, not total count. 
 		let checkedCount = Object.keys(selectedItems).length;
 		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onSelectPage', selectedKeys);
-		this.setState({ selectedItems, selectedKeys, checkedCount }, () =>
+		// 04/07/2022 Paul.  Use selection key to force checkbox to update. 
+		nSelectionKey++;
+		this.setState({ selectedItems, selectedKeys, checkedCount, nSelectionKey }, () =>
 		{
 			if ( selectionChanged )
 			{
@@ -2002,6 +2057,7 @@ class SplendidGrid extends React.Component<ISplendidGridProps, ISplendidGridStat
 	{
 		const { MODULE_NAME, ADMIN_MODE, cbCustomLoad, archiveView, rowRequiredSearch, selectionChanged } = this.props;
 		const { layout, SORT_FIELD, SORT_DIRECTION, SEARCH_FILTER, SEARCH_VALUES, RELATED_MODULE, TABLE_NAME, PRIMARY_FIELD, PRIMARY_ID, TOP, __total } = this.state;
+		let { nSelectionKey } = this.state;
 		e.preventDefault();
 		try
 		{
@@ -2086,7 +2142,9 @@ class SplendidGrid extends React.Component<ISplendidGridProps, ISplendidGridStat
 				// 03/15/2021 Paul.  selectedKeys only lists items on current page, not total count. 
 				let checkedCount = Object.keys(selectedItems).length;
 				// 12/01/2020 Paul.  Must alert container that the selection has changed. 
-				this.setState({ selectedItems, selectedKeys, checkedCount, loading: false }, () =>
+				// 04/07/2022 Paul.  Use selection key to force checkbox to update. 
+				nSelectionKey++;
+				this.setState({ selectedItems, selectedKeys, checkedCount, nSelectionKey, loading: false }, () =>
 				{
 					if ( selectionChanged )
 					{
@@ -2106,11 +2164,14 @@ class SplendidGrid extends React.Component<ISplendidGridProps, ISplendidGridStat
 	public onDeselectAll = (e) =>
 	{
 		const { selectionChanged } = this.props;
+		let { nSelectionKey } = this.state;
 		if ( e != null )
 		{
 			e.preventDefault();
 		}
-		this.setState({ selectedItems: {}, selectedKeys: [], checkedCount: 0 }, () =>
+		// 04/07/2022 Paul.  Use selection key to force checkbox to update. 
+		nSelectionKey++;
+		this.setState({ selectedItems: {}, selectedKeys: [], checkedCount: 0, nSelectionKey }, () =>
 		{
 			if ( selectionChanged )
 			{
@@ -2172,27 +2233,183 @@ class SplendidGrid extends React.Component<ISplendidGridProps, ISplendidGridStat
 	{
 		const { mode, checked, indeterminate } = sel;
 		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.selectionHeaderRenderer', sel);
-		let className = 'selection-input-4';
-		let styCheckbox: any = {};
-		if ( this.legacyIcons )
+		let sTheme: string = SplendidCache.UserTheme;
+		if ( sTheme == 'Pacific' )
 		{
-			styCheckbox.transform = 'scale(1.0)';
+			return null;
 		}
-		return React.createElement('input', { type: mode, checked, className, style: styCheckbox, ref: function ref(input: any)
+		else
 		{
-			if ( input )
-				input.indeterminate = indeterminate;
-		}});
+			let className = 'selection-input-4';
+			let styCheckbox: any = {};
+			if ( this.legacyIcons )
+			{
+				styCheckbox.transform = 'scale(1.0)';
+			}
+			return React.createElement('input', { type: mode, checked, className, style: styCheckbox, ref: function ref(input: any)
+			{
+				if ( input )
+					input.indeterminate = indeterminate;
+			}});
+		}
+	}
+
+	// 03/25/2022 Paul.  Add field chooser. 
+	private _onChooseColumns = () =>
+	{
+		this.setState({ isOpenFieldChooser: true });
+	}
+
+	private _onFieldChooserCallback = (action: string, layoutDisplay: any, layoutHidden: any) =>
+	{
+		const { MODULE_NAME } = this.props;
+		const { GRID_NAME, SORT_FIELD, SORT_DIRECTION } = this.state;
+		if ( action == 'Cancel' )
+		{
+			this.setState({ isOpenFieldChooser: false });
+		}
+		else if ( action == 'Save' )
+		{
+			let layout          = layoutDisplay;
+			let layoutAvailable = layoutHidden ;
+			let SELECT_FIELDS   = this.GridColumns(layout);
+			let columns: any[]  = null;
+			if ( this.props.cbCustomColumns )
+			{
+				columns = this.props.cbCustomColumns(GRID_NAME, layout, MODULE_NAME, null);
+			}
+			else
+			{
+				columns = this.BootstrapColumns(GRID_NAME, layout, MODULE_NAME, null);
+			}
+			this.setState(
+			{
+				layout            ,
+				layoutAvailable   ,
+				__total           : 0,
+				vwMain            : null,
+				SELECT_FIELDS     ,
+				columns           ,
+				isOpenFieldChooser: false,
+				columnsChangedKey : (this.state.columnsChangedKey + 1)
+			}, () =>
+			{
+				if ( this.props.onLayoutLoaded )
+				{
+					this.props.onLayoutLoaded();
+				}
+				if ( !this.props.deferLoad )
+				{
+					this.Sort(SORT_FIELD, SORT_DIRECTION);
+				}
+			});
+		}
+	}
+
+	private isPageSelected = () =>
+	{
+		const { vwMain, selectedItems } = this.state;
+		let pageSelectionCount: number = 0;
+		if ( vwMain != null )
+		{
+			for ( let i = 0; i < vwMain.length; i++ )
+			{
+				let row = vwMain[i];
+				if ( selectedItems[row.ID] )
+				{
+					pageSelectionCount++;
+				}
+			}
+		}
+		let isPageSelected: boolean = pageSelectionCount > 0 && pageSelectionCount == vwMain.length;
+		return isPageSelected;
+	}
+
+	private _onPacificSelection = (e) =>
+	{
+		const { enableSelection } = this.props;
+		const { vwMain, selectedItems } = this.state;
+		if ( enableSelection )
+		{
+			let isPageSelected: boolean = this.isPageSelected();
+			//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onPacificSelection', isPageSelected);
+			if ( isPageSelected )
+				this.onDeselectAll(null);
+			else
+				this._onSelectPage(null);
+		}
+	}
+
+	private refPacificSelection = (element) =>
+	{
+		const { enableSelection } = this.props;
+		const { vwMain, selectedItems } = this.state;
+		this.chkPacificSelection = element;
+		if ( this.chkPacificSelection != null && enableSelection )
+		{
+			// 04/07/2022 Paul.  The chkPacificSelection indicates if all items on current page are selected. 
+			let pageCount: number = 0;
+			if ( vwMain != null )
+			{
+				for ( let i = 0; i < vwMain.length; i++ )
+				{
+					let row = vwMain[i];
+					if ( selectedItems[row.ID] )
+					{
+						pageCount++;
+					}
+				}
+			}
+
+			let checked      : boolean = pageCount > 0 && pageCount == vwMain.length;
+			let indeterminate: boolean = pageCount > 0 && pageCount <  vwMain.length;
+			//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.refPacificSelection ' + checked.toString(), indeterminate);
+			//this.chkPacificSelection.checked       = checked;
+			this.chkPacificSelection.indeterminate = indeterminate;
+		}
+	}
+
+	// 04/10/2022 Paul.  Move Pacific Export to pagination header. 
+	private _onEXPORT_RANGE_Change = (event: React.ChangeEvent<HTMLSelectElement>) =>
+	{
+		let EXPORT_RANGE: string = event.target.value;
+		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onEXPORT_RANGE_Change', EXPORT_RANGE);
+		this.setState({ EXPORT_RANGE });
+	}
+
+	private _onEXPORT_FORMAT_Change = (event: React.ChangeEvent<HTMLSelectElement>) =>
+	{
+		let EXPORT_FORMAT: string = event.target.value;
+		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onEXPORT_FORMAT_Change', EXPORT_FORMAT);
+		this.setState({ EXPORT_FORMAT });
+	}
+
+	private _onExport = async (e) =>
+	{
+		const { EXPORT_RANGE, EXPORT_FORMAT } = this.state;
+		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onExport', EXPORT_RANGE, EXPORT_FORMAT);
+		this.ExportModule(EXPORT_RANGE, EXPORT_FORMAT);
+	}
+
+	// 04/23/2022 Paul.  Add no data indicator. 
+	private emptyDataMessage = () =>
+	{
+		return (
+			<div style={ {fontSize: '1.5em'} }>{ L10n.Term('.LBL_NO_DATA') }</div>
+		);
 	}
 
 	public render()
 	{
-		const { readonly, enableSelection, disablePagination } = this.props;
-		const { loaded, vwMain, activePage, layout, columns, selectedItems, selectedKeys, allChecked, SORT_FIELD, SORT_DIRECTION, PRIMARY_ID, TOP, checkedCount, error, tableKey, loading, exporting } = this.state;
-		const { __total, __sql } = this.state;
+		const { readonly, enableSelection, disablePagination, MODULE_NAME, enableMassUpdate, Page_Command, archiveView, enableExportHeader } = this.props;
+		const { loaded, vwMain, activePage, layout, layoutAvailable, columns, selectedItems, selectedKeys, allChecked, SORT_FIELD, SORT_DIRECTION, PRIMARY_ID, TOP, checkedCount, error, tableKey, loading, exporting } = this.state;
+		const { __total, __sql, isOpenFieldChooser, GRID_NAME, columnsChangedKey, nSelectionKey } = this.state;
+		// 04/10/2022 Paul.  Move Pacific Export to pagination header. 
+		const { EXPORT_RANGE, EXPORT_FORMAT, EXPORT_RANGE_LIST, EXPORT_FORMAT_LIST } = this.state;
 		// 05/22/2019 Paul.  Reference obserable IsInitialized so that terminology update will cause refresh. 
 		if ( SplendidCache.IsInitialized && vwMain )
 		{
+			let sTheme: string = SplendidCache.UserTheme;
 			let defaultSorted = [];
 			if ( SORT_DIRECTION && SORT_FIELD )
 			{
@@ -2246,13 +2463,32 @@ class SplendidGrid extends React.Component<ISplendidGridProps, ISplendidGridStat
 			{
 				lblSelectedLabel = L10n.Term('.LBL_SELECTED').replace('{0}', checkedCount);
 			}
+			let titleSelection: any = null;
+			if ( sTheme == 'Pacific' )
+			{
+				let isPageSelected: boolean = this.isPageSelected();
+				//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.render titleSelection checked =', isPageSelected);
+				// 04/07/2022 Paul.  Use selection key to force checkbox to update. 
+				titleSelection = <div className='GridSelectionCount'>
+									<input type='checkbox'
+										key={ 'chkPacificSelection_' + nSelectionKey.toString() }
+										checked={ isPageSelected }
+										className='selection-input-4' 
+										style={ {transform: 'scale(1.5)', verticalAlign: 'text-top', marginLeft: '5px', marginRight: '10px'} }
+										onClick={ this._onPacificSelection }
+										ref={ (element) => this.refPacificSelection(element) }
+									/>
+									<span style={ {marginRight: '10px'} }>{ checkedCount > 0 ? lblSelectedLabel : null }</span>
+									<FontAwesomeIcon icon='caret-down' size='lg' />
+								</div>;
+			}
 			// LBL_LISTVIEW_NO_SELECTED
 			// LBL_SELECT_PAGE
 			// LBL_SELECT_ALL
 			// LBL_DESELECT_ALL
 			// 07/08/2019 Paul.  PaginationListStandalone
 			// https://react-bootstrap-table.github.io/react-bootstrap-table2/storybook/index.html?selectedKind=Pagination&selectedStory=Standalone%20Pagination%20List&full=0&addons=1&stories=1&panelRight=0&addonPanel=storybook%2Factions%2Factions-panel
-			return (<React.Fragment>
+			return (<React.Fragment key={ 'columnsChangedKey_' + columnsChangedKey.toString() }>
 				{ loading || exporting
 				? <div id={ this.constructor.name + '_spinner' } style={ {textAlign: 'center'} }>
 					<FontAwesomeIcon icon="spinner" spin={ true } size="5x" />
@@ -2271,10 +2507,92 @@ class SplendidGrid extends React.Component<ISplendidGridProps, ISplendidGridStat
 							? <ErrorComponent error={error} />
 							: null
 							}
+							{ layoutAvailable
+							? <ListViewFieldChooser
+								ViewName={ GRID_NAME }
+								LayoutType='ListView'
+								isOpen={ isOpenFieldChooser }
+								callback={ this._onFieldChooserCallback }
+								layoutDisplay={ layout }
+								layoutHidden={ layoutAvailable }
+							/>
+							: null
+							}
 							{ !disablePagination
 							? <table className='listView' cellSpacing={ 1 } cellPadding={ 3 } style={ {width: '100%'} }>
 								<tr className='listViewPaginationTdS1'>
+									<td>
+										{ sTheme == 'Pacific' && (enableSelection || (enableMassUpdate && Page_Command))
+										? <div style={ {display: 'flex', flexDirection: 'row', flexWrap: 'nowrap', justifyContent: 'left'} }>
+											{ enableSelection
+											? <NavItem title={ titleSelection }>
+												<input type='submit' onClick={ this._onSelectPage } className='ListHeaderOtherButton' style={ {marginRight: '2px', marginBottom: '0px'} } value={ L10n.Term('.LBL_SELECT_PAGE' ) } />
+												<input type='submit' onClick={ this._onSelectAll  } className='ListHeaderOtherButton' style={ {marginRight: '2px', marginBottom: '0px'} } value={ L10n.Term('.LBL_SELECT_ALL'  ) } />
+												<input type='submit' onClick={ this.onDeselectAll } className='ListHeaderOtherButton' style={ {marginRight: '2px', marginBottom: '0px'} } value={ L10n.Term('.LBL_DESELECT_ALL') } />
+											</NavItem>
+											: null
+											}
+											{ enableMassUpdate && Page_Command
+											? <DynamicButtons
+												ButtonStyle='DataGrid'
+												VIEW_NAME={ MODULE_NAME + '.MassUpdate' + (archiveView ? '.ArchiveView' : '') }
+												row={ null }
+												Page_Command={ Page_Command }
+												onLayoutLoaded={ this._onButtonsLoaded }
+												history={ this.props.history }
+												location={ this.props.location }
+												match={ this.props.match }
+												ref={ this.dynamicButtons }
+											/>
+											: null
+											}
+										</div>
+										: null
+										}
+									</td>
 									<td style={ {textAlign: 'right'} } className='react-bootstrap-table-pagination-total pageNumbers'>
+										{ enableExportHeader && sTheme == 'Pacific'
+										? <React.Fragment>
+											<select
+												id='lstEXPORT_RANGE'
+												onChange={ this._onEXPORT_RANGE_Change }
+												value={ EXPORT_RANGE }
+												style={ {width: 'auto', margin: 2} }
+												>
+												{
+													EXPORT_RANGE_LIST.map((item, index) => 
+													{
+														return (<option key={ '_ctlEditView_EXPORT_RANGE_' + index.toString() } id={ '_ctlEditView_EXPORT_RANGE' + index.toString() } value={ item.NAME }>{ item.DISPLAY_NAME }</option>);
+													})
+												}
+											</select>
+											<select
+												id='lstEXPORT_FORMAT'
+												onChange={ this._onEXPORT_FORMAT_Change }
+												value={ EXPORT_FORMAT }
+												style={ {width: 'auto', margin: 2} }
+												>
+												{
+													EXPORT_FORMAT_LIST.map((item, index) => 
+													{
+														return (<option key={ '_ctlEditView_EXPORT_FORMAT_' + index.toString() } id={ '_ctlEditViewEXPORT_FORMAT' + index.toString() } value={ item.NAME }>{ item.DISPLAY_NAME }</option>);
+													})
+												}
+											</select>
+											<button className='button' onClick={ this._onExport } style={ {marginRight: '8px'} }>
+												<FontAwesomeIcon icon={ { prefix: 'fas', iconName: 'file-export' } } size="lg" style={ {paddingRight: '4px'} } />
+												{ L10n.Term('.LBL_EXPORT_BUTTON_LABEL') }
+											</button>
+										</React.Fragment>
+										: null
+										}
+										{ layoutAvailable
+										? <button className='button' style={ {marginRight: '8px'} } onClick={ this._onChooseColumns }>
+											<FontAwesomeIcon icon={ { prefix: 'fas', iconName: 'list' } } size="lg" />
+											&nbsp;{ L10n.Term('.LBL_AVAILABLE_COLUMNS') }
+										</button>
+										: null
+										}
 										<span className='paginationButtonPrevious' style={ {cursor: 'pointer'} } onClick={ () => this._onPrevPage(paginationProps) }>
 											<img className='paginationButtonPrevious' src={ this.themeURL + (paginationProps.page > 1 ? 'previous.gif' : 'previous_off.gif') } />
 											<span style={ {margin: '3px'} }>{ paginationProps.prePageText }</span>
@@ -2284,7 +2602,7 @@ class SplendidGrid extends React.Component<ISplendidGridProps, ISplendidGridStat
 										</span>
 										<span className='paginationButtonNext' style={ {cursor: 'pointer'} } onClick={ () => this._onNextPage(paginationProps) }>
 											<span style={ {margin: '3px'} }>{ paginationProps.nextPageText }</span>
-											<img className='paginationButtonPrevious' src={ this.themeURL + (paginationProps.page * paginationProps.sizePerPage < paginationProps.totalSize ? 'next.gif' : 'next_off.gif') } />
+											<img className='paginationButtonNext' src={ this.themeURL + (paginationProps.page * paginationProps.sizePerPage < paginationProps.totalSize ? 'next.gif' : 'next_off.gif') } />
 										</span>
 									</td>
 								</tr>
@@ -2308,9 +2626,10 @@ class SplendidGrid extends React.Component<ISplendidGridProps, ISplendidGridStat
 								bootstrap4 compact hover
 								wrapperClasses={ 'bg-white' }
 								rowClasses={ this.rowClasses }
+								noDataIndication={ this.emptyDataMessage }
 								{ ...paginationTableProps }
 							/>
-							{ enableSelection
+							{ enableSelection && sTheme != 'Pacific'
 							? <div>
 								<a href='#' onClick={ this._onSelectPage } className="listViewCheckLink">{ L10n.Term('.LBL_SELECT_PAGE' ) }</a>
 								&nbsp;-&nbsp;

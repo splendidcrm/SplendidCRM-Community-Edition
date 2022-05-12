@@ -31,7 +31,8 @@ exec dbo.spCONFIG_InsertOnly null, 'system', 'default_password'                 
 -- 04/28/2012 Paul.  Make the default theme Atlantic. 
 -- 03/12/2014 Paul.  Make the default theme Seven. 
 -- 10/02/2016 Paul.  Make the default theme Arctic. 
-exec dbo.spCONFIG_InsertOnly null, 'system', 'default_theme'                          , 'Arctic';
+-- 04/01/2022 Paul.  Make the default theme Pacific. 
+exec dbo.spCONFIG_InsertOnly null, 'system', 'default_theme'                          , 'Pacific';
 -- 07/25/2015 Paul.  SugarClassic and Sugar2006 were moved long ago.  We need to change the default to prevent app crash. 
 if exists(select * from CONFIG where NAME = 'default_theme' and VALUE = 'SugarClassic' and DELETED = 0) begin -- then
 	update CONFIG
@@ -350,7 +351,9 @@ GO
 exec dbo.spCONFIG_InsertOnly null, 'system', 'default_email_opt_out'                , 'true';
 exec dbo.spCONFIG_InsertOnly null, 'system', 'default_do_not_call'                  , 'true';
 -- 07/28/2019 Paul.  Specify default so that React client will not complain. 
-exec dbo.spCONFIG_InsertOnly null, 'system', 'enable_dynamic_assignment'              , 'false';
+exec dbo.spCONFIG_InsertOnly null, 'system', 'enable_dynamic_assignment'            , 'false';
+-- 03/30/2022 Paul.  Add Insight fields. 
+exec dbo.spCONFIG_InsertOnly null, 'system', 'enable_insights'                      , 'true';
 GO
 
 set nocount off;

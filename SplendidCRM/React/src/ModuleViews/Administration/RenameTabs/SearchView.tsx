@@ -1189,6 +1189,7 @@ export default class SearchView extends React.Component<ISearchViewProps, ISearc
 			// 07/10/2019 Paul.  Use DynamicEditView so that SearchViews can be customized. 
 			// 07/10/2019 Paul.  Cannot use DynamicEditView as it causes any file that includes SearchView, PopupView to fail to load in DynamicLayout, including SplendidDynamic_EditView. 
 			// 10/27/2020 Paul.  Must allow wrap, otherwise the separator will not work. 
+			// 04/11/2022 Paul.  Change Clear type to button so it can be styled differently. 
 			return (
 				<div className="tabSearchForm" style={ {width: '100%'} }>
 					<div className="tabSearchView" style={ {display: 'flex', flexWrap: 'wrap', width: '100%'} } >
@@ -1218,7 +1219,7 @@ export default class SearchView extends React.Component<ISearchViewProps, ISearc
 								value={ L10n.Term('.LBL_SEARCH_BUTTON_LABEL') }
 							/>
 							<input
-								type='submit'
+								type='button'
 								key={ 'btnClear_'  + EDIT_NAME }
 								onClick={ this._onClear  }
 								className={ sButtonClass }

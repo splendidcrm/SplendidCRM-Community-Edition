@@ -34,6 +34,8 @@ interface IDynamicSubPanelViewProps extends RouteComponentProps<any>
 	// 04/10/2021 Paul.  Create framework to allow pre-compile of all modules. 
 	isPrecompile?       : boolean;
 	onComponentComplete?: (MODULE_NAME, RELATED_MODULE, LAYOUT_NAME, data) => void;
+	// 03/30/2022 Paul.  Pacific theme needs collapse notification. 
+	onComponentCollapse?: (CONTROL_VIEW_NAME: string, open: boolean) => void;
 }
 
 interface IDynamicSubPanelViewState
@@ -121,8 +123,9 @@ class DynamicSubPanelView extends React.Component<IDynamicSubPanelViewProps, IDy
 		else if ( SplendidCache.IsInitialized && Credentials.bIsAuthenticated )
 		{
 			// 06/26/2019 Paul.  Specify a key so that SplendidGrid will get componentDidMount when changing views. 
+			// 03/30/2022 Paul.  Pacific theme needs collapse notification. 
 			if ( layout.CONTROL_NAME == 'ActivityStream' )
-				return <SubPanelStreamView key={ PARENT_TYPE + '.' + layout.CONTROL_NAME } MODULE_NAME={ PARENT_TYPE } ID={ row.ID } row={ row } CONTROL_VIEW_NAME={ PARENT_TYPE + '.' + layout.CONTROL_NAME } isPrecompile={ this.props.isPrecompile } onComponentComplete={ this.props.onComponentComplete } />;
+				return <SubPanelStreamView key={ PARENT_TYPE + '.' + layout.CONTROL_NAME } MODULE_NAME={ PARENT_TYPE } ID={ row.ID } row={ row } CONTROL_VIEW_NAME={ PARENT_TYPE + '.' + layout.CONTROL_NAME } isPrecompile={ this.props.isPrecompile } onComponentComplete={ this.props.onComponentComplete } onComponentCollapse={ this.props.onComponentCollapse } />;
 			else
 				return <SubPanelView key={ PARENT_TYPE + '.' + layout.CONTROL_NAME } { ...this.props } />;
 		}

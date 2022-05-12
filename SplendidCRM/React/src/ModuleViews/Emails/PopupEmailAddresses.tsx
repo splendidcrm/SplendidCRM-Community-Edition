@@ -41,6 +41,7 @@ interface IPopupViewProps extends RouteComponentProps<any>
 
 interface IPopupViewState
 {
+	TITLE              : string;
 	vwMain?            : any[];
 	selectedItems?     : any;
 	item?              : any;
@@ -56,8 +57,11 @@ class PopupEmailAddresses extends React.Component<IPopupViewProps, IPopupViewSta
 	constructor(props: IPopupViewProps)
 	{
 		super(props);
+		// 04/11/2022 Paul.  Add title to match other PopupViews. 
+		let TITLE: string = L10n.Term('Contacts.LBL_LIST_FORM_TITLE');
 		this.state =
 		{
+			TITLE             ,
 			item              : null,
 			error             : null,
 		};
@@ -262,7 +266,7 @@ class PopupEmailAddresses extends React.Component<IPopupViewProps, IPopupViewSta
 	public render()
 	{
 		const { isOpen, MODULE_NAME, rowDefaultSearch, multiSelect, ClearDisabled } = this.props;
-		const { error } = this.state;
+		const { TITLE, error } = this.state;
 		// 05/04/2019 Paul.  Reference obserable IsInitialized so that terminology update will cause refresh. 
 		let EDIT_NAME: string = MODULE_NAME + '.SearchPopup';
 		if ( SplendidCache.IsInitialized )
@@ -272,6 +276,7 @@ class PopupEmailAddresses extends React.Component<IPopupViewProps, IPopupViewSta
 			<Modal show={isOpen} onHide={ this._onClose }>
 				<Modal.Body style={{ minHeight: '80vh', minWidth: '80vw' }}>
 					<ErrorComponent error={error} />
+					<ListHeader TITLE={ TITLE } />
 					<SearchView
 						key={ EDIT_NAME }
 						EDIT_NAME={ EDIT_NAME }

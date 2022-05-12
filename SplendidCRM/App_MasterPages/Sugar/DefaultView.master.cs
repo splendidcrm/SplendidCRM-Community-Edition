@@ -203,7 +203,7 @@ namespace SplendidCRM.Themes.Sugar
 						}
 						else
 						{
-							imgCompanyLogo.ImageUrl = "~/Include/images/SplendidCRM_Logo.gif";
+							imgCompanyLogo.ImageUrl = "~/App_Themes/Sugar/images/SplendidCRM_Logo.png";
 							imgCompanyLogo.Width    = 207;
 							imgCompanyLogo.Height   =  60;
 							imgCompanyLogo.Attributes.Add("style", "margin-left: 10px");

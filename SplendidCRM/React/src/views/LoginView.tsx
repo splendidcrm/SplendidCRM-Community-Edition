@@ -622,7 +622,8 @@ class LoginView extends React.Component<ILoginViewProps, ILoginViewState>
 			border        : 'none',
 			borderCollapse: 'collapse',
 			width         : '500px',
-			marginTop     : '80px'
+			marginTop     : '80px',
+			marginBottom  : '80px'
 		};
 		let width  = screenWidth();
 		let height = screenHeight();
@@ -643,10 +644,12 @@ class LoginView extends React.Component<ILoginViewProps, ILoginViewState>
 		{
 			cssBorder.width = '95%';
 		}
+		// 04/24/2022 Paul.  Subtract 60 for header with logo and 60 for copyright. 
 		return (
 			<React.Fragment>
 				{ !loading
-				? <div  id="divLoginView" className="loginForm" style={ {display: 'flex', justifyContent: 'center'} }>
+				? <div className="loginForm" style={ {height: (height - 60 - 60) + 'px'} }>
+				<div  id="divLoginView" style={ {display: 'flex', justifyContent: 'center'} }>
 					<table className="LoginActionsShadingTable" cellSpacing="0" cellPadding="0" style={ cssBorder }>
 							<tr>
 								<td className="LoginActionsShadingHorizontal" colSpan={ 3 }></td>
@@ -657,14 +660,14 @@ class LoginView extends React.Component<ILoginViewProps, ILoginViewState>
 									<table className="LoginActionsInnerTable" cellSpacing="0" cellPadding="0" style={ {width: '100%', border: 'none', borderCollapse: 'collapse'} }>
 									<tr>
 										<td style={ {paddingTop: '20px', paddingBottom: '20px', paddingLeft: '40px', paddingRight: '40px'} }>
-											<table cellSpacing="2" cellPadding="0" style={ {border: 'none', width: '100%'} }>
+											<table className='loginAppName' cellSpacing="2" cellPadding="0">
 											<tr>
 												<td>
-													<span style={ {fontFamily: 'Arial', fontSize: '14pt', fontWeight: 'bold', color: '#003564'} }>
+													<span style={ {fontFamily: 'Arial', fontSize: '14pt', fontWeight: 'bold'} }>
 														{ sAppName + (bMOBILE_CLIENT ? ' ' + L10n.Term('.LNK_MOBILE_CLIENT') : '' )}
 													</span>
 													&nbsp;
-													<span style={ {fontFamily: 'Arial', fontSize: '10pt', color: '#003564'} }>
+													<span style={ {fontFamily: 'Arial', fontSize: '10pt'} }>
 														{ AppVersion }
 													</span>
 												</td>
@@ -696,7 +699,7 @@ class LoginView extends React.Component<ILoginViewProps, ILoginViewState>
 														onBlur={ this._onRemoteServerBlur }
 														onKeyDown={ this._onKeyDown }
 														autoFocus={ Sql.IsEmptyString(REMOTE_SERVER) }
-														placeholder={ theme == 'Arctic' ? Sql.ToString(L10n.Term('Offline.LBL_REMOTE_SERVER')).replace(':', '') : null }
+														placeholder={ (theme == 'Arctic' || theme == 'Pacific') ? Sql.ToString(L10n.Term('Offline.LBL_REMOTE_SERVER')).replace(':', '') : null }
 													/> &nbsp;
 												</td>
 											</tr>
@@ -714,7 +717,7 @@ class LoginView extends React.Component<ILoginViewProps, ILoginViewState>
 														onChange={ this._onUserNameChange }
 														onKeyDown={ this._onKeyDown }
 														autoFocus={ !bMOBILE_CLIENT || !Sql.IsEmptyString(REMOTE_SERVER) }
-														placeholder={ theme == 'Arctic' ? Sql.ToString(L10n.Term('Users.LBL_USER_NAME')).replace(':', '') : null }
+														placeholder={ (theme == 'Arctic' || theme == 'Pacific') ? Sql.ToString(L10n.Term('Users.LBL_USER_NAME')).replace(':', '') : null }
 													/> &nbsp;
 												</td>
 											</tr>
@@ -730,7 +733,7 @@ class LoginView extends React.Component<ILoginViewProps, ILoginViewState>
 														onChange={ this._onPasswordChange }
 														onKeyDown={ this._onKeyDown }
 														autoFocus={ (!bMOBILE_CLIENT || !Sql.IsEmptyString(REMOTE_SERVER)) && !Sql.IsEmptyString(USER_NAME) }
-														placeholder={ theme == 'Arctic' ? Sql.ToString(L10n.Term('Users.LBL_PASSWORD')).replace(':', '') : null }
+														placeholder={ (theme == 'Arctic' || theme == 'Pacific') ? Sql.ToString(L10n.Term('Users.LBL_PASSWORD')).replace(':', '') : null }
 													/> &nbsp;
 												</td>
 											</tr>
@@ -794,7 +797,10 @@ class LoginView extends React.Component<ILoginViewProps, ILoginViewState>
 										{ !bActiveDirectory && !bWindowsAuthentication
 										? <table cellSpacing="2" cellPadding="0" style={ {borderWidth: '0px', width: '100%', textAlign: 'center'} }>
 											<tr>
-												<td style={ {} }>&nbsp;</td>
+												{ theme != 'Pacific' && theme != 'Arctic'
+												? <td style={ {} }>&nbsp;</td>
+												: null
+												}
 												<td style={ {width: '70%', whiteSpace: 'nowrap'} }>
 													<table cellSpacing="2" cellPadding="0" style={ {border: 'none', width: '100%'} }>
 														<tr>
@@ -844,7 +850,7 @@ class LoginView extends React.Component<ILoginViewProps, ILoginViewState>
 															value={ FORGOT_USER_NAME }
 															onChange={ this._onForgotUserNameChange }
 															onKeyDown={ this._onForgotKeyDown }
-															placeholder={ theme == 'Arctic' ? Sql.ToString(L10n.Term('Users.LBL_USER_NAME')).replace(':', '') : null }
+															placeholder={ (theme == 'Arctic' || theme == 'Pacific') ? Sql.ToString(L10n.Term('Users.LBL_USER_NAME')).replace(':', '') : null }
 														/>
 													</td>
 												</tr>
@@ -859,14 +865,17 @@ class LoginView extends React.Component<ILoginViewProps, ILoginViewState>
 															value={ FORGOT_EMAIL }
 															onChange={ this._onForgotEmailChange }
 															onKeyDown={ this._onForgotKeyDown }
-															placeholder={ theme == 'Arctic' ? Sql.ToString(L10n.Term('Users.LBL_EMAIL')).replace(':', '') : null }
+															placeholder={ (theme == 'Arctic' || theme == 'Pacific') ? Sql.ToString(L10n.Term('Users.LBL_EMAIL')).replace(':', '') : null }
 														/>
 													</td>
 												</tr>
 											</table>
 												<table cellSpacing="2" cellPadding="0" style={ {border: 'none', width: '100%'} }>
 												<tr>
-													<td style={ {} }>&nbsp;</td>
+													{ theme != 'Pacific' && theme != 'Arctic'
+													? <td style={ {} }>&nbsp;</td>
+													: null
+													}
 													<td style={ {width: '70%'} }>
 														<input
 															id="ctlLoginView_btnForgotPassword"
@@ -892,6 +901,7 @@ class LoginView extends React.Component<ILoginViewProps, ILoginViewState>
 								<td className="LoginActionsShadingHorizontal" colSpan={ 3 }></td>
 							</tr>
 						</table>
+					</div>
 				</div>
 				: null
 				}

@@ -24,13 +24,15 @@ import SplendidDynamic_DetailView                     from '../../scripts/Splend
 import { Crm_Config }                                 from '../../scripts/Crm'                       ;
 import { DeleteModuleItem }                           from '../../scripts/ModuleUpdate'              ;
 import { AuthenticatedMethod, LoginRedirect }         from '../../scripts/Login'                     ;
-import { DetailView_LoadItem, DetailView_LoadLayout } from '../../scripts/DetailView'                ;
+import { DetailView_LoadItem, DetailView_LoadLayout, DetailView_ActivateTab } from '../../scripts/DetailView'                ;
 // 4. Components and Views. 
 import ErrorComponent                                 from '../../components/ErrorComponent'         ;
 import DumpSQL                                        from '../../components/DumpSQL'                ;
 import DetailViewRelationships                        from '../../views/DetailViewRelationships'     ;
 import HeaderButtonsFactory                           from '../../ThemeComponents/HeaderButtonsFactory';
 import ReturnOnInvestment                             from './ReturnOnInvestment'                    ;
+// 04/13/2022 Paul.  Add LayoutTabs to Pacific theme. 
+import LayoutTabs                                     from '../../components/LayoutTabs'             ;
 
 const MODULE_NAME: string = 'Campaigns';
 const LAYOUT_NAME: string = 'RoiDetailView';
@@ -263,6 +265,15 @@ class RoiDetailView extends React.Component<IRoiDetailViewProps, IRoiDetailViewS
 		}
 	}
 
+	// 04/13/2022 Paul.  Add LayoutTabs to Pacific theme. 
+	private _onTabChange = (nActiveTabIndex) =>
+	{
+		let { layout } = this.state;
+		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onTabChange', nActiveTabIndex);
+		DetailView_ActivateTab(layout, nActiveTabIndex);
+		this.setState({ layout });
+	}
+
 	public render()
 	{
 		const { ID } = this.props;
@@ -277,6 +288,7 @@ class RoiDetailView extends React.Component<IRoiDetailViewProps, IRoiDetailViewS
 			// 12/04/2019 Paul.  After authentication, we need to make sure that the app gets updated. 
 			Credentials.sUSER_THEME;
 			let headerButtons = HeaderButtonsFactory(SplendidCache.UserTheme);
+			// 04/13/2022 Paul.  Add LayoutTabs to Pacific theme. 
 			return (
 			<div>
 				{ headerButtons
@@ -284,6 +296,7 @@ class RoiDetailView extends React.Component<IRoiDetailViewProps, IRoiDetailViewS
 				: null
 				}
 				<DumpSQL SQL={ __sql } />
+				<LayoutTabs layout={ layout } onTabChange={ this._onTabChange } />
 				<div id="content">
 					{ SplendidDynamic_DetailView.AppendDetailViewFields(item, layout, this.refMap, 'tabDetailView', null, this.Page_Command) }
 					<br />

@@ -165,11 +165,7 @@ export default class AuditView extends React.Component<IAuditViewProps, IAuditVi
 						}
 					};
 					// 04/05/2021 Paul.  Need to manually override the bootstrap header style. 
-					if ( SplendidCache.UserTheme == 'Arctic' )
-					{
-						objDataColumn.headerStyle.paddingTop    = '10px';
-						objDataColumn.headerStyle.paddingBottom = '10px';
-					}
+					// 04/24/2022 Paul.  Move Arctic style override to style.css. 
 					if ( ITEMSTYLE_HORIZONTAL_ALIGN != null )
 					{
 						objDataColumn.classes += ' gridView' + ITEMSTYLE_HORIZONTAL_ALIGN;
@@ -216,11 +212,7 @@ export default class AuditView extends React.Component<IAuditViewProps, IAuditVi
 						}
 					};
 					// 04/05/2021 Paul.  Need to manually override the bootstrap header style. 
-					if ( SplendidCache.UserTheme == 'Arctic' )
-					{
-						objDataColumn.headerStyle.paddingTop    = '10px';
-						objDataColumn.headerStyle.paddingBottom = '10px';
-					}
+					// 04/24/2022 Paul.  Move Arctic style override to style.css. 
 					if ( ITEMSTYLE_HORIZONTAL_ALIGN != null )
 					{
 						objDataColumn.classes += ' gridView' + ITEMSTYLE_HORIZONTAL_ALIGN;
@@ -340,7 +332,6 @@ export default class AuditView extends React.Component<IAuditViewProps, IAuditVi
 			return (
 			<Modal show={ isOpen } onHide={ this._onClose }>
 				<Modal.Body style={ {minHeight: '80vh', minWidth: '80vw'} }>
-					<DumpSQL SQL={ __sql } />
 					<ErrorComponent error={ error } />
 					<h2>
 						<span>{ L10n.Term('.moduleList.' + MODULE_NAME) }</span>
@@ -356,6 +347,7 @@ export default class AuditView extends React.Component<IAuditViewProps, IAuditVi
 							{ L10n.Term('.LBL_CLOSE_BUTTON_LABEL') }
 						</button>
 					</div>
+					<DumpSQL SQL={ __sql } />
 					<BootstrapTable
 						keyField="ID_key"
 						data={ vwMain }

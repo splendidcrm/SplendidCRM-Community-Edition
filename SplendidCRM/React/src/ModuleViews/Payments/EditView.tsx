@@ -11,30 +11,35 @@
 // 1. React and fabric. 
 import * as React from 'react';
 import * as qs from 'query-string';
-import { RouteComponentProps, withRouter }    from 'react-router-dom'                      ;
-import { observer }                           from 'mobx-react'                            ;
-import { FontAwesomeIcon }                    from '@fortawesome/react-fontawesome'        ;
+import { RouteComponentProps, withRouter }          from 'react-router-dom'                      ;
+import moment                                       from 'moment'                                ;
+import { observer }                                 from 'mobx-react'                            ;
+import { FontAwesomeIcon }                          from '@fortawesome/react-fontawesome'        ;
 // 2. Store and Types. 
-import { EditComponent }                      from '../../types/EditComponent'             ;
-import { HeaderButtons }                      from '../../types/HeaderButtons'             ;
+import { EditComponent }                            from '../../types/EditComponent'             ;
+import { HeaderButtons }                            from '../../types/HeaderButtons'             ;
+import EDITVIEWS_FIELD                              from '../../types/EDITVIEWS_FIELD'           ;
 // 3. Scripts. 
-import Sql                                    from '../../scripts/Sql'                     ;
-import L10n                                   from '../../scripts/L10n'                    ;
-import Security                               from '../../scripts/Security'                ;
-import Credentials                            from '../../scripts/Credentials'             ;
-import SplendidCache                          from '../../scripts/SplendidCache'           ;
-import SplendidDynamic_EditView               from '../../scripts/SplendidDynamic_EditView';
-import { Crm_Config, Crm_Modules }            from '../../scripts/Crm'                     ;
-import { AuthenticatedMethod, LoginRedirect } from '../../scripts/Login'                   ;
-import { sPLATFORM_LAYOUT }                   from '../../scripts/SplendidInitUI'          ;
-import { EditView_LoadItem, EditView_LoadLayout, EditView_ConvertItem } from '../../scripts/EditView';
-import { UpdateModule }                       from '../../scripts/ModuleUpdate'            ;
-import { jsonReactState }                     from '../../scripts/Application'             ;
+import Sql                                          from '../../scripts/Sql'                     ;
+import L10n                                         from '../../scripts/L10n'                    ;
+import Security                                     from '../../scripts/Security'                ;
+import Credentials                                  from '../../scripts/Credentials'             ;
+import SplendidCache                                from '../../scripts/SplendidCache'           ;
+import SplendidDynamic_EditView                     from '../../scripts/SplendidDynamic_EditView';
+import { Crm_Config, Crm_Modules }                  from '../../scripts/Crm'                     ;
+import { formatCurrency, formatNumber }             from '../../scripts/Formatting'              ;
+import { ToJsonDate, FromJsonDate }                 from '../../scripts/Formatting'              ;
+import { AuthenticatedMethod, LoginRedirect }       from '../../scripts/Login'                   ;
+import { sPLATFORM_LAYOUT }                         from '../../scripts/SplendidInitUI'          ;
+import { EditView_LoadItem, EditView_LoadLayout, EditView_ConvertItem, EditView_HideField } from '../../scripts/EditView';
+import { UpdateModule }                             from '../../scripts/ModuleUpdate'            ;
+import { jsonReactState }                           from '../../scripts/Application'             ;
+import { CreateSplendidRequest, GetSplendidResult } from '../../scripts/SplendidRequest'         ;
 // 4. Components and Views. 
-import ErrorComponent                         from '../../components/ErrorComponent'       ;
-import DumpSQL                                from '../../components/DumpSQL'              ;
-import DynamicButtons                         from '../../components/DynamicButtons'       ;
-import HeaderButtonsFactory                   from '../../ThemeComponents/HeaderButtonsFactory';
+import ErrorComponent                               from '../../components/ErrorComponent'       ;
+import DumpSQL                                      from '../../components/DumpSQL'              ;
+import DynamicButtons                               from '../../components/DynamicButtons'       ;
+import HeaderButtonsFactory                         from '../../ThemeComponents/HeaderButtonsFactory';
 
 interface IEditViewProps extends RouteComponentProps<any>
 {
@@ -275,16 +280,26 @@ export default class PaymentsEditView extends React.Component<IEditViewProps, IE
 					rowDefaultSearch['TEAM_SET_NAME'    ] = Security.TEAM_ID()  ;
 				}
 				rowDefaultSearch['BANK_FEE'        ] = '0.00';
+				// 05/06/2022 Paul.  Default Payment Date to today. 
+				let dtNow: Date = new Date();
+				let dtPAYMENT_DATE: moment.Moment = moment(dtNow);
+				rowDefaultSearch['PAYMENT_DATE'    ] = ToJsonDate(dtPAYMENT_DATE.toDate());
 			}
-			const layout = EditView_LoadLayout(EDIT_NAME);
+			let layout = EditView_LoadLayout(EDIT_NAME);
+			// 05/06/2022 Paul.  Hide CREDIT_CARD_ID if not Credit Card payment type. 
+			let PAYMENT_TYPE: string = null;
+			let lstPAYMENT_TYPE: any[] = L10n.GetList('payment_type_dom')
+			if ( lstPAYMENT_TYPE != null && lstPAYMENT_TYPE.length > 0 )
+				PAYMENT_TYPE= lstPAYMENT_TYPE[0];
+			this.PAYMENT_TYPE_Changed(layout, PAYMENT_TYPE);
 			//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.load', layout);
 			// 06/19/2018 Paul.  Always clear the item when setting the layout. 
 			if ( this._isMounted )
 			{
 				this.setState(
 				{
-					layout: layout,
-					item: (rowDefaultSearch ? rowDefaultSearch : null),
+					layout    ,
+					item      : (rowDefaultSearch ? rowDefaultSearch : null),
 					editedItem: null
 				}, () =>
 				{
@@ -330,6 +345,7 @@ export default class PaymentsEditView extends React.Component<IEditViewProps, IE
 				if ( item != null && item['DATE_MODIFIED'] !== undefined )
 				{
 					LAST_DATE_MODIFIED = item['DATE_MODIFIED'];
+					this.PAYMENT_TYPE_Changed(this.state.layout, item['PAYMENT_TYPE']);
 				}
 				if ( this._isMounted )
 				{
@@ -385,6 +401,7 @@ export default class PaymentsEditView extends React.Component<IEditViewProps, IE
 		let rowDefaultSearch: any = null;
 		if ( !Sql.IsEmptyString(sPARENT_TYPE) && !Sql.IsEmptyString(sID) )
 		{
+			let oNumberFormat = Security.NumberFormatInfo();
 			try
 			{
 				// 11/19/2019 Paul.  Change to allow return of SQL. 
@@ -409,7 +426,7 @@ export default class PaymentsEditView extends React.Component<IEditViewProps, IE
 						rowDefaultSearch['ACCOUNT_NAME'     ] = item['BILLING_ACCOUNT_NAME'];
 						rowDefaultSearch['B2C_CONTACT_ID'   ] = item['BILLING_CONTACT_ID'  ];
 						rowDefaultSearch['B2C_CONTACT_NAME' ] = item['BILLING_CONTACT_NAME'];
-						rowDefaultSearch['AMOUNT'           ] = item['AMOUNT_DUE_USDOLLAR' ];
+						rowDefaultSearch['AMOUNT'           ] = formatNumber(item['AMOUNT_DUE_USDOLLAR' ], oNumberFormat);
 					}
 					if ( Crm_Config.ToBoolean('inherit_assigned_user') )
 					{
@@ -525,6 +542,23 @@ export default class PaymentsEditView extends React.Component<IEditViewProps, IE
 				this.UpdateDependancy('CREDIT_CARD_ID', rowDefaultSearch, 'rowDefaultSearch', null);
 			}
 		}
+		else if ( PARENT_FIELD == 'PAYMENT_TYPE' )
+		{
+			this.PAYMENT_TYPE_Changed(this.state.layout, DATA_VALUE);
+		}
+	}
+
+	private PAYMENT_TYPE_Changed = (layout: EDITVIEWS_FIELD[], PAYMENT_TYPE: string) =>
+	{
+		EditView_HideField(layout, 'CREDIT_CARD_ID', !(PAYMENT_TYPE == 'Credit Card'));
+		if ( this.headerButtons.current != null )
+		{
+			this.headerButtons.current.ShowButton('Charge', (PAYMENT_TYPE == 'Credit Card'));
+		}
+		if ( this.dynamicButtonsBottom.current != null )
+		{
+			this.dynamicButtonsBottom.current.ShowButton('Charge', (PAYMENT_TYPE == 'Credit Card'));
+		}
 	}
 
 	// 11/18/2021 Paul.  The Credit Card ChangeButton requires the ACCOUNT_ID. 
@@ -586,6 +620,7 @@ export default class PaymentsEditView extends React.Component<IEditViewProps, IE
 			let row;
 			switch (sCommandName)
 			{
+				case 'Charge':
 				case 'Save':
 				case 'SaveDuplicate':
 				case 'SaveConcurrency':
@@ -594,10 +629,21 @@ export default class PaymentsEditView extends React.Component<IEditViewProps, IE
 					row = {
 						ID: isDuplicate ? null : ID
 					};
+					// 05/06/2022 Paul.  When PARENT_ID is provided, spINVOICES_PAYMENTS_Update gets called. 
+					if ( !Sql.IsEmptyGuid(this.PARENT_ID) )
+					{
+						row.PARENT_ID = this.PARENT_ID;
+					}
 					// 08/27/2019 Paul.  Move build code to shared object. 
 					let nInvalidFields: number = SplendidDynamic_EditView.BuildDataRow(row, this.refMap);
 					if ( nInvalidFields == 0 )
 					{
+						if ( Sql.IsEmptyString(row['PAYMENT_DATE']) || sCommandName == 'Charge' )
+						{
+							let dtNow: Date = new Date();
+							let dtPAYMENT_DATE: moment.Moment = moment(dtNow);
+							row['PAYMENT_DATE'] = ToJsonDate(dtPAYMENT_DATE.toDate());
+						}
 						if ( LAST_DATE_MODIFIED != null )
 						{
 							row['LAST_DATE_MODIFIED'] = LAST_DATE_MODIFIED;
@@ -613,6 +659,12 @@ export default class PaymentsEditView extends React.Component<IEditViewProps, IE
 								this.headerButtons.current.Busy();
 							}
 							row.ID = await UpdateModule(MODULE_NAME, row, isDuplicate ? null : ID);
+							// 05/08/2022 Paul.   Charge after saving. 
+							if ( sCommandName == 'Charge' )
+							{
+								let res = await CreateSplendidRequest('Payments/Rest.svc/Charge?ID=' + ID, 'POST', 'application/octet-stream', null);
+								let json = await GetSplendidResult(res);
+							}
 							// 10/15/2019 Paul.  Redirect to parent if provided. 
 							if ( !Sql.IsEmptyGuid(this.PARENT_ID) )
 							{
@@ -691,6 +743,25 @@ export default class PaymentsEditView extends React.Component<IEditViewProps, IE
 		}
 	}
 
+	private _onButtonsLoaded = async () =>
+	{
+		const currentItem = Object.assign({}, this.state.item, this.state.editedItem);
+		// 05/06/2022 Paul.  PAYMENT_TYPE controls display of Charge Now. 
+		let PAYMENT_TYPE: string = currentItem['PAYMENT_TYPE'];
+		if ( this.headerButtons.current != null )
+		{
+			this.headerButtons.current.ShowButton('Charge', (PAYMENT_TYPE == 'Credit Card'));
+			// 05/06/2022 Paul.  No customers are using multiple payment gateways, so just disable. 
+			this.headerButtons.current.ShowButton('SelectGateway', false);
+		}
+		if ( this.dynamicButtonsBottom.current != null )
+		{
+			this.dynamicButtonsBottom.current.ShowButton('Charge', (PAYMENT_TYPE == 'Credit Card'));
+			// 05/06/2022 Paul.  No customers are using multiple payment gateways, so just disable. 
+			this.dynamicButtonsBottom.current.ShowButton('SelectGateway', false);
+		}
+	}
+
 	public render()
 	{
 		const { MODULE_NAME, ID, DuplicateID, ConvertID, isSearchView, isUpdatePanel, callback } = this.props;
@@ -721,7 +792,7 @@ export default class PaymentsEditView extends React.Component<IEditViewProps, IE
 			return (
 			<div style={ {width: '100%'} }>
 				{ !callback && headerButtons
-				? React.createElement(headerButtons, { MODULE_NAME, ID, SUB_TITLE, error, showRequired: true, enableHelp: true, helpName: 'EditView', ButtonStyle: 'EditHeader', VIEW_NAME: EDIT_NAME, row: item, Page_Command: this.Page_Command, showButtons: !isSearchView && !isUpdatePanel, history: this.props.history, location: this.props.location, match: this.props.match, ref: this.headerButtons })
+				? React.createElement(headerButtons, { MODULE_NAME, ID, SUB_TITLE, error, showRequired: true, enableHelp: true, helpName: 'EditView', ButtonStyle: 'EditHeader', VIEW_NAME: EDIT_NAME, row: item, Page_Command: this.Page_Command, showButtons: !isSearchView && !isUpdatePanel, onLayoutLoaded: this._onButtonsLoaded, history: this.props.history, location: this.props.location, match: this.props.match, ref: this.headerButtons })
 				: null
 				}
 				<DumpSQL SQL={ __sql } />
@@ -731,6 +802,7 @@ export default class PaymentsEditView extends React.Component<IEditViewProps, IE
 					ButtonStyle="EditHeader"
 					VIEW_NAME={ EDIT_NAME }
 					row={ item }
+					onLayoutLoaded={ this._onButtonsLoaded }
 					Page_Command={ this.Page_Command }
 					history={ this.props.history }
 					location={ this.props.location }

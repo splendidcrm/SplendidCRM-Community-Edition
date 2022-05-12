@@ -208,9 +208,43 @@ export default class StorageAccountsEditView extends React.Component<IAdminEditV
 		{
 			const layout = EditView_LoadLayout(EDIT_NAME);
 			// 06/19/2018 Paul.  Always clear the item when setting the layout. 
-			// 06/19/2018 Paul.  Always clear the item when setting the layout. 
 			if ( this._isMounted )
 			{
+				// 04/27/2022 Paul.  Instead of pre-caching AzureVMPriceNames, just fetch every time. 
+				let obj = new Object();
+				obj['TableName'    ] = 'AZURE_REGIONS';
+				obj['$orderby'     ] = 'LIST_ORDER asc';
+				obj['$select'      ] = 'NAME';
+				let sBody = JSON.stringify(obj);
+				let res = await CreateSplendidRequest('Administration/Rest.svc/PostAdminTable', 'POST', 'application/octet-stream', sBody);
+				let json = await GetSplendidResult(res);
+				if ( json.d != null && json.d.results != null )
+				{
+					let arrListValues = [];
+					for ( let i: number = 0; i < json.d.results.length; i++ )
+					{
+						let row: any = json.d.results[i];
+						arrListValues.push(row['NAME']);
+						SplendidCache.SetListTerm('AzureRegions', row['NAME'], row['NAME'] );
+					}
+					SplendidCache.SetTerminologyList('AzureRegions', arrListValues);
+				}
+				let params: string = '?';
+				params += '$orderby=' + encodeURIComponent('Name asc');
+				res = await CreateSplendidRequest('Administration/Azure/Rest.svc/GetResourceGroups' + params, 'GET');
+				json = await GetSplendidResult(res);
+				if ( json.d != null && json.d.results != null )
+				{
+					let arrListValues = [];
+					for ( let i: number = 0; i < json.d.results.length; i++ )
+					{
+						let row: any = json.d.results[i];
+						arrListValues.push(row['Name']);
+						SplendidCache.SetListTerm('AzureResourceGroups', row['Name'], row['Name'] );
+					}
+					SplendidCache.SetTerminologyList('AzureResourceGroups', arrListValues);
+				}
+
 				this.setState(
 				{
 					layout: layout,

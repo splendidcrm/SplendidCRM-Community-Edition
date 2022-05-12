@@ -25,7 +25,7 @@ import { DeleteModuleItem }                           from '../../scripts/Module
 import SplendidDynamic_DetailView                     from '../../scripts/SplendidDynamic_DetailView';
 import { Crm_Config }                                 from '../../scripts/Crm'                       ;
 import { AuthenticatedMethod, LoginRedirect }         from '../../scripts/Login'                     ;
-import { DetailView_LoadItem, DetailView_LoadLayout } from '../../scripts/DetailView'                ;
+import { DetailView_LoadItem, DetailView_LoadLayout, DetailView_ActivateTab } from '../../scripts/DetailView'                ;
 import { CreateSplendidRequest, GetSplendidResult }   from '../../scripts/SplendidRequest'           ;
 // 4. Components and Views. 
 import ErrorComponent                                 from '../../components/ErrorComponent'         ;
@@ -33,6 +33,8 @@ import DumpSQL                                        from '../../components/Dum
 import DetailViewRelationships                        from '../../views/DetailViewRelationships'     ;
 import AuditView                                      from '../../views/AuditView'                   ;
 import HeaderButtonsFactory                           from '../../ThemeComponents/HeaderButtonsFactory';
+// 04/13/2022 Paul.  Add LayoutTabs to Pacific theme. 
+import LayoutTabs                                     from '../../components/LayoutTabs'             ;
 
 const MODULE_NAME: string = 'Campaigns';
 const LAYOUT_NAME: string = 'DetailView';
@@ -368,6 +370,15 @@ class CampaignDetailView extends React.Component<IDetailViewProps, IDetailViewSt
 		}
 	}
 
+	// 04/13/2022 Paul.  Add LayoutTabs to Pacific theme. 
+	private _onTabChange = (nActiveTabIndex) =>
+	{
+		let { layout } = this.state;
+		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onTabChange', nActiveTabIndex);
+		DetailView_ActivateTab(layout, nActiveTabIndex);
+		this.setState({ layout });
+	}
+
 	public render()
 	{
 		const { ID } = this.props;
@@ -382,6 +393,7 @@ class CampaignDetailView extends React.Component<IDetailViewProps, IDetailViewSt
 			// 12/04/2019 Paul.  After authentication, we need to make sure that the app gets updated. 
 			Credentials.sUSER_THEME;
 			let headerButtons = HeaderButtonsFactory(SplendidCache.UserTheme);
+			// 04/13/2022 Paul.  Add LayoutTabs to Pacific theme. 
 			return (
 			<React.Fragment>
 				<AuditView
@@ -397,6 +409,7 @@ class CampaignDetailView extends React.Component<IDetailViewProps, IDetailViewSt
 				: null
 				}
 				<DumpSQL SQL={ __sql } />
+				<LayoutTabs layout={ layout } onTabChange={ this._onTabChange } />
 				<div id='content'>
 					{ SplendidDynamic_DetailView.AppendDetailViewFields(item, layout, this.refMap, 'tabDetailView', null, this.Page_Command) }
 					<br />

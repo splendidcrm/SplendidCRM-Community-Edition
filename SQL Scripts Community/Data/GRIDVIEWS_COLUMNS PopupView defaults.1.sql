@@ -60,13 +60,27 @@ if not exists(select * from GRIDVIEWS_COLUMNS where GRID_NAME = 'Campaigns.Popup
 end -- if;
 GO
 
+-- 02/16/2022 Paul.  Default sort for React client should be RELATED_NAME. 
 -- delete from GRIDVIEWS_COLUMNS where GRID_NAME = 'Campaigns.PreviewView'
 if not exists(select * from GRIDVIEWS_COLUMNS where GRID_NAME = 'Campaigns.PreviewView' and DELETED = 0) begin -- then
 	print 'GRIDVIEWS_COLUMNS Campaigns.PreviewView';
-	exec dbo.spGRIDVIEWS_InsertOnly           'Campaigns.PreviewView', 'Campaigns', 'vwCAMPAIGNS_SendEmail';
+	exec dbo.spGRIDVIEWS_InsertOnly           'Campaigns.PreviewView', 'Campaigns', 'vwCAMPAIGNS_SendEmail', 'RELATED_NAME', 'asc';
 	exec dbo.spGRIDVIEWS_COLUMNS_InsBound     'Campaigns.PreviewView'       , 0, 'ProspectLists.LBL_LIST_LIST_TYPE'         , 'RELATED_TYPE'    , 'RELATED_TYPE'    , '20%';
 	exec dbo.spGRIDVIEWS_COLUMNS_InsBound     'Campaigns.PreviewView'       , 1, 'Contacts.LBL_LIST_CONTACT_NAME'           , 'RELATED_NAME'    , 'RELATED_NAME'    , '40%';
 	exec dbo.spGRIDVIEWS_COLUMNS_InsHyperLink 'Campaigns.PreviewView'       , 2, 'Contacts.LBL_LIST_EMAIL_ADDRESS'          , 'EMAIL1'          , 'EMAIL1'          , '40%', 'listViewTdLinkS1', 'EMAIL1'    , 'mailto:{0}', null, null, null;
+end else begin
+	-- 02/16/2022 Paul.  Default sort for React client should be RELATED_NAME. 
+	if exists(select * from GRIDVIEWS where NAME = 'Campaigns.PreviewView' and SORT_FIELD is null and DELETED = 0) begin -- then
+		update GRIDVIEWS
+		   set SORT_FIELD        = 'RELATED_NAME'
+		     , SORT_DIRECTION    = 'asc'
+		     , DATE_MODIFIED     = getdate()
+		     , DATE_MODIFIED_UTC = getutcdate()
+		     , MODIFIED_USER_ID  = null
+		 where NAME              = 'Campaigns.PreviewView'
+		   and SORT_FIELD        is null
+		   and DELETED           = 0;
+	end -- if;
 end -- if;
 GO
 

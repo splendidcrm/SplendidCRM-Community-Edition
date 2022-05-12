@@ -71,7 +71,7 @@ private void Page_Load(object sender, System.EventArgs e)
 	<script type="text/javascript" src="dist/js/SteviaCRM.js?<%= (bDebug ? (DateTime.Now.ToFileTime().ToString()) : Sql.ToString(Application["SplendidVersion"])) %>"></script>
 
 	<div id="divFooterCopyright" align="center" style="margin-top: 4px" class="copyRight">
-		Copyright &copy; 2005-2021 <a id="lnkSplendidCRM" href="http://www.splendidcrm.com" target="_blank" class="copyRightLink">SplendidCRM Software, Inc.</a> All Rights Reserved.<br />
+		Copyright &copy; 2005-2022 <a id="lnkSplendidCRM" href="http://www.splendidcrm.com" target="_blank" class="copyRightLink">SplendidCRM Software, Inc.</a> All Rights Reserved.<br />
 	</div>
 </body>
 </html>

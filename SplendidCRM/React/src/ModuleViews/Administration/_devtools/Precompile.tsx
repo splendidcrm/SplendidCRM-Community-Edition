@@ -302,7 +302,11 @@ class Precompile extends React.Component<IPrecompileProps, IPrecompileState>
 								obj.lnkAspTest   += 'config.aspx';
 								obj.lnkName      += 'ConfigView';
 								lstModulePages.push(obj);
-
+							}
+							// 04/26/2022 Paul.  ReadOnlyConfigView may not exist. 
+							layout = EditView_LoadLayout(MODULE_NAME + '.ReadOnlyConfigView', true);
+							if ( layout )
+							{
 								obj = {};
 								obj.IS_ADMIN      = true;
 								obj.MODULE_NAME   = module.MODULE_NAME;

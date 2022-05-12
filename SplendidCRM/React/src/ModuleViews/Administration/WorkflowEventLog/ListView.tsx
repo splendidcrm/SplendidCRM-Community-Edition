@@ -58,6 +58,8 @@ interface IAdminReadOnlyListViewState
 	error               : any;
 	detailsOpen         : boolean;
 	WORKFLOW_INSTANCE_ID: string;
+	// 04/09/2022 Paul.  Hide/show SearchView. 
+	showSearchView        : string;
 }
 
 @observer
@@ -109,12 +111,21 @@ class WorkflowEventLogListView extends React.Component<IAdminReadOnlyListViewPro
 			}
 		}
 		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.constructor', MODULE_NAME);
+		// 04/09/2022 Paul.  Hide/show SearchView. 
+		let showSearchView: string = 'show';
+		if ( SplendidCache.UserTheme == 'Pacific' )
+		{
+			showSearchView = localStorage.getItem(this.constructor.name + '.showSearchView');
+			if ( Sql.IsEmptyString(showSearchView) )
+				showSearchView = 'hide';
+		}
 		this.state =
 		{
 			MODULE_NAME         ,
 			error               : null,
 			detailsOpen         : false,
 			WORKFLOW_INSTANCE_ID: null,
+			showSearchView        ,
 		};
 	}
 
@@ -209,6 +220,14 @@ class WorkflowEventLogListView extends React.Component<IAdminReadOnlyListViewPro
 		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.Page_Command ' + sCommandName, sCommandArguments);
 		switch ( sCommandName )
 		{
+			// 04/09/2022 Paul.  Hide/show SearchView. 
+			case 'toggleSearchView':
+			{
+				let showSearchView: string = (this.state.showSearchView == 'show' ? 'hide' : 'show');
+				localStorage.setItem(this.constructor.name + '.showSearchView', showSearchView);
+				this.setState({ showSearchView });
+				break;
+			}
 			default:
 			{
 				if ( this._isMounted )
@@ -409,11 +428,7 @@ class WorkflowEventLogListView extends React.Component<IAdminReadOnlyListViewPro
 						}
 					};
 					// 02/16/2021 Paul.  Need to manually override the bootstrap header style. 
-					if ( SplendidCache.UserTheme == 'Arctic' )
-					{
-						objDataColumn.headerStyle.paddingTop    = '10px';
-						objDataColumn.headerStyle.paddingBottom = '10px';
-					}
+					// 04/24/2022 Paul.  Move Arctic style override to style.css. 
 					if ( ITEMSTYLE_HORIZONTAL_ALIGN != null )
 					{
 						objDataColumn.classes += ' gridView' + ITEMSTYLE_HORIZONTAL_ALIGN;
@@ -463,11 +478,7 @@ class WorkflowEventLogListView extends React.Component<IAdminReadOnlyListViewPro
 						}
 					};
 					// 02/16/2021 Paul.  Need to manually override the bootstrap header style. 
-					if ( SplendidCache.UserTheme == 'Arctic' )
-					{
-						objDataColumn.headerStyle.paddingTop    = '10px';
-						objDataColumn.headerStyle.paddingBottom = '10px';
-					}
+					// 04/24/2022 Paul.  Move Arctic style override to style.css. 
 					if ( ITEMSTYLE_HORIZONTAL_ALIGN != null )
 					{
 						objDataColumn.classes += ' gridView' + ITEMSTYLE_HORIZONTAL_ALIGN;
@@ -518,7 +529,7 @@ class WorkflowEventLogListView extends React.Component<IAdminReadOnlyListViewPro
 	public render()
 	{
 		const { RELATED_MODULE, GRID_NAME, TABLE_NAME, SORT_FIELD, SORT_DIRECTION, PRIMARY_FIELD, PRIMARY_ID } = this.props;
-		const { MODULE_NAME, error, detailsOpen, WORKFLOW_INSTANCE_ID } = this.state;
+		const { MODULE_NAME, error, detailsOpen, WORKFLOW_INSTANCE_ID, showSearchView } = this.state;
 		let EDIT_NAME = MODULE_NAME + '.SearchBasic';
 		if ( SplendidCache.IsInitialized && SplendidCache.AdminMenu )
 		{
@@ -547,14 +558,16 @@ class WorkflowEventLogListView extends React.Component<IAdminReadOnlyListViewPro
 				: null
 				}
 				{ !PRIMARY_ID
-				? <SearchView
-					EDIT_NAME={ EDIT_NAME }
-					cbSearch={ this._onSearchViewCallback }
-					history={ this.props.history }
-					location={ this.props.location }
-					match={ this.props.match }
-					ref={ this.searchView }
-				/>
+				? <div style={ {display: (showSearchView == 'show' ? 'block' : 'none')} }>
+					<SearchView
+						EDIT_NAME={ EDIT_NAME }
+						cbSearch={ this._onSearchViewCallback }
+						history={ this.props.history }
+						location={ this.props.location }
+						match={ this.props.match }
+						ref={ this.searchView }
+					/>
+				</div>
 				: null
 				}
 				<ExportHeader
@@ -577,6 +590,7 @@ class WorkflowEventLogListView extends React.Component<IAdminReadOnlyListViewPro
 					PRIMARY_ID={ PRIMARY_ID }
 					ADMIN_MODE={ true }
 					cbCustomLoad={ this.Load }
+					enableExportHeader={ true }
 					hyperLinkCallback={ this._onHyperLinkCallback }
 					cbCustomColumns={ this.BootstrapColumns }
 					onComponentComplete={ this._onComponentComplete }

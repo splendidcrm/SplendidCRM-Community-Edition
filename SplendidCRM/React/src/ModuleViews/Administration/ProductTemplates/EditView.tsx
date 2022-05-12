@@ -26,7 +26,7 @@ import SplendidDynamic_EditView                   from '../../../scripts/Splendi
 import { Crm_Config }                             from '../../../scripts/Crm'                     ;
 import { Admin_GetReactState }                    from '../../../scripts/Application'             ;
 import { AuthenticatedMethod, LoginRedirect }     from '../../../scripts/Login'                   ;
-import { EditView_LoadItem, EditView_LoadLayout } from '../../../scripts/EditView'                ;
+import { EditView_LoadItem, EditView_LoadLayout, EditView_ActivateTab } from '../../../scripts/EditView';
 import { UpdateModule }                           from '../../../scripts/ModuleUpdate'            ;
 import { formatCurrency, formatNumber }           from '../../../scripts/Formatting'              ;
 import { DiscountPrice, DiscountValue }           from '../../../scripts/OrderUtils'              ;
@@ -35,6 +35,8 @@ import ErrorComponent                             from '../../../components/Erro
 import DumpSQL                                    from '../../../components/DumpSQL'              ;
 import DynamicButtons                             from '../../../components/DynamicButtons'       ;
 import HeaderButtonsFactory                       from '../../../ThemeComponents/HeaderButtonsFactory';
+// 04/16/2022 Paul.  Add LayoutTabs to Pacific theme. 
+import LayoutTabs                                 from '../../../components/LayoutTabs'           ;
 
 interface IAdminEditViewProps extends RouteComponentProps<any>
 {
@@ -508,6 +510,15 @@ export default class ProductTemplatesEditView extends React.Component<IAdminEdit
 		}
 	}
 
+	// 04/16/2022 Paul.  Add LayoutTabs to Pacific theme. 
+	private _onTabChange = (nActiveTabIndex) =>
+	{
+		let { layout } = this.state;
+		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onTabChange', nActiveTabIndex);
+		EditView_ActivateTab(layout, nActiveTabIndex);
+		this.setState({ layout });
+	}
+
 	public render()
 	{
 		const { MODULE_NAME, ID, DuplicateID, callback } = this.props;
@@ -542,6 +553,7 @@ export default class ProductTemplatesEditView extends React.Component<IAdminEdit
 				}
 				<DumpSQL SQL={ __sql } />
 				<div id={!!callback ? null : "content"}>
+					<LayoutTabs layout={ layout } onTabChange={ this._onTabChange } />
 					{ SplendidDynamic_EditView.AppendEditViewFields(item, layout, this.refMap, callback, this._createDependency, null, this._onChange, this._onUpdate, onSubmit, 'tabForm', this.Page_Command) }
 					<br />
 				</div>

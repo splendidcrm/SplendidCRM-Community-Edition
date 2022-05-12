@@ -23,38 +23,51 @@ GO
 -- 05/14/2016 Paul.  Add Tags module. 
 -- 06/07/2017 Paul.  Add NAICSCodes module. 
 -- 10/27/2017 Paul.  Add Accounts as email source. 
+-- 04/15/2022 Paul.  Reorganize layout using Pacific tabs. 
+-- delete from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Accounts.DetailView';
 if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Accounts.DetailView' and DELETED = 0) begin -- then
 	print 'DETAILVIEWS_FIELDS Accounts.DetailView';
-	exec dbo.spDETAILVIEWS_InsertOnly           'Accounts.DetailView'      , 'Accounts'      , 'vwACCOUNTS_Edit'      , '15%', '35%', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Accounts.DetailView',  0, 'Accounts.LBL_ACCOUNT_NAME'       , 'NAME'                             , '{0}'        , null;
---	exec dbo.spDETAILVIEWS_FIELDS_InsJavaScript 'Accounts.DetailView',  1, null                              , 'NAME'                             , 'ID NAME'    , 'if (typeof(LinkedIn) != "undefined") new LinkedIn.CompanyInsiderPopup("spn{0}_NAME","{1}");', 'spn{0}_NAME', -1;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Accounts.DetailView',  1, 'Accounts.LBL_PHONE'              , 'PHONE_OFFICE'                     , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink  'Accounts.DetailView',  2, 'Accounts.LBL_WEBSITE'            , 'WEBSITE'                          , '{0}'        , 'WEBSITE'             , '{0}'                        , '_blank', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Accounts.DetailView',  3, 'Accounts.LBL_FAX'                , 'PHONE_FAX'                        , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Accounts.DetailView',  4, 'Accounts.LBL_TICKER_SYMBOL'      , 'TICKER_SYMBOL'                    , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Accounts.DetailView',  5, 'Accounts.LBL_OTHER_PHONE'        , 'PHONE_ALTERNATE'                  , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink  'Accounts.DetailView',  6, 'Accounts.LBL_MEMBER_OF'          , 'PARENT_NAME'                      , '{0}'        , 'PARENT_ID'           , '~/Accounts/view.aspx?ID={0}', null, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink  'Accounts.DetailView',  7, 'Accounts.LBL_EMAIL'              , 'EMAIL1'                           , '{0}'        , 'EMAIL1'              , 'mailto:{0}'                 , null, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Accounts.DetailView',  8, 'Accounts.LBL_EMPLOYEES'          , 'EMPLOYEES'                        , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink  'Accounts.DetailView',  9, 'Accounts.LBL_OTHER_EMAIL_ADDRESS', 'EMAIL2'                           , '{0}'        , 'EMAIL2'              , 'mailto:{0}'                 , null, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsCheckBox   'Accounts.DetailView', 10, 'Accounts.LBL_DO_NOT_CALL'        , 'DO_NOT_CALL'                      , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsCheckBox   'Accounts.DetailView', 11, 'Accounts.LBL_EMAIL_OPT_OUT'      , 'EMAIL_OPT_OUT'                    , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Accounts.DetailView', 12, 'Accounts.LBL_OWNERSHIP'          , 'OWNERSHIP'                        , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Accounts.DetailView', 13, 'Accounts.LBL_RATING'             , 'RATING'                           , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList  'Accounts.DetailView', 14, 'Accounts.LBL_INDUSTRY'           , 'INDUSTRY'                         , '{0}'        , 'industry_dom'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Accounts.DetailView', 15, 'Accounts.LBL_SIC_CODE'           , 'SIC_CODE'                         , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList  'Accounts.DetailView', 16, 'Accounts.LBL_TYPE'               , 'ACCOUNT_TYPE'                     , '{0}'        , 'account_type_dom'    , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Accounts.DetailView', 17, 'Accounts.LBL_ANNUAL_REVENUE'     , 'ANNUAL_REVENUE'                   , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Accounts.DetailView', 18, 'Teams.LBL_TEAM'                  , 'TEAM_NAME'                        , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Accounts.DetailView', 19, '.LBL_DATE_MODIFIED'              , 'DATE_MODIFIED .LBL_BY MODIFIED_BY_NAME', '{0} {1} {2}', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Accounts.DetailView', 20, '.LBL_ASSIGNED_TO'                , 'ASSIGNED_TO_NAME'                 , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Accounts.DetailView', 21, '.LBL_DATE_ENTERED'               , 'DATE_ENTERED .LBL_BY CREATED_BY_NAME'  , '{0} {1} {2}', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsTags       'Accounts.DetailView', 22, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Accounts.DetailView', 23, 'Accounts.LBL_NAICS_SET_NAME'     , 'NAICS_SET_NAME'                   , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Accounts.DetailView', 24, 'Accounts.LBL_BILLING_ADDRESS'    , 'BILLING_ADDRESS_HTML'             , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Accounts.DetailView', 25, 'Accounts.LBL_SHIPPING_ADDRESS'   , 'SHIPPING_ADDRESS_HTML'            , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsertOnly    'Accounts.DetailView', 26, 'TextBox', 'Accounts.LBL_DESCRIPTION', 'DESCRIPTION', null, null, null, null, null, 3, null;
-end else begin
+	exec dbo.spDETAILVIEWS_InsertOnly           'Accounts.DetailView', 'Accounts'      , 'vwACCOUNTS_Edit'      , '15%', '35%', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHeader     'Accounts.DetailView', -1, '.LBL_LAYOUT_TAB_OVERVIEW'        , 3, 'tab-only';
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Accounts.DetailView', -1, 'Accounts.LBL_ACCOUNT_NAME'       , 'NAME'                             , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Accounts.DetailView', -1, 'Accounts.LBL_PHONE'              , 'PHONE_OFFICE'                     , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink  'Accounts.DetailView', -1, 'Accounts.LBL_WEBSITE'            , 'WEBSITE'                          , '{0}'        , 'WEBSITE'             , '{0}'                        , '_blank', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Accounts.DetailView', -1, 'Accounts.LBL_FAX'                , 'PHONE_FAX'                        , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink  'Accounts.DetailView', -1, 'Accounts.LBL_EMAIL'              , 'EMAIL1'                           , '{0}'        , 'EMAIL1'              , 'mailto:{0}'                 , null, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Accounts.DetailView', -1, 'Accounts.LBL_OTHER_PHONE'        , 'PHONE_ALTERNATE'                  , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink  'Accounts.DetailView', -1, 'Accounts.LBL_OTHER_EMAIL_ADDRESS', 'EMAIL2'                           , '{0}'        , 'EMAIL2'              , 'mailto:{0}'                 , null, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBlank      'Accounts.DetailView', -1, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsCheckBox   'Accounts.DetailView', -1, 'Accounts.LBL_EMAIL_OPT_OUT'      , 'EMAIL_OPT_OUT'                    , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsCheckBox   'Accounts.DetailView', -1, 'Accounts.LBL_DO_NOT_CALL'        , 'DO_NOT_CALL'                      , null;
+
+	exec dbo.spDETAILVIEWS_FIELDS_InsSeparator  'Accounts.DetailView', -1;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Accounts.DetailView', -1, 'Accounts.LBL_BILLING_ADDRESS'    , 'BILLING_ADDRESS_HTML'             , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Accounts.DetailView', -1, 'Accounts.LBL_SHIPPING_ADDRESS'   , 'SHIPPING_ADDRESS_HTML'            , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Accounts.DetailView', -1, '.LBL_ASSIGNED_TO'                , 'ASSIGNED_TO_NAME'                 , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Accounts.DetailView', -1, 'Teams.LBL_TEAM'                  , 'TEAM_NAME'                        , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Accounts.DetailView', -1, '.LBL_LAST_ACTIVITY_DATE'         , 'LAST_ACTIVITY_DATE'               , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsTags       'Accounts.DetailView', -1, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsertOnly    'Accounts.DetailView', -1, 'TextBox', 'Accounts.LBL_DESCRIPTION', 'DESCRIPTION', null, null, null, null, null, 3, null;
+
+	exec dbo.spDETAILVIEWS_FIELDS_InsHeader     'Accounts.DetailView', -1, '.LBL_LAYOUT_TAB_MORE_INFORMATION', 3, 'tab-only';
+	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList  'Accounts.DetailView', -1, 'Accounts.LBL_TYPE'               , 'ACCOUNT_TYPE'                     , '{0}'        , 'account_type_dom'    , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList  'Accounts.DetailView', -1, 'Accounts.LBL_INDUSTRY'           , 'INDUSTRY'                         , '{0}'        , 'industry_dom'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Accounts.DetailView', -1, 'Accounts.LBL_ANNUAL_REVENUE'     , 'ANNUAL_REVENUE'                   , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Accounts.DetailView', -1, 'Accounts.LBL_EMPLOYEES'          , 'EMPLOYEES'                        , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink  'Accounts.DetailView', -1, 'Accounts.LBL_MEMBER_OF'          , 'PARENT_NAME'                      , '{0}'        , 'PARENT_ID'           , '~/Accounts/view.aspx?ID={0}', null, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Accounts.DetailView', -1, 'Accounts.LBL_OWNERSHIP'          , 'OWNERSHIP'                        , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Accounts.DetailView', -1, 'Accounts.LBL_SIC_CODE'           , 'SIC_CODE'                         , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Accounts.DetailView', -1, 'Accounts.LBL_NAICS_SET_NAME'     , 'NAICS_SET_NAME'                   , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Accounts.DetailView', -1, 'Accounts.LBL_TICKER_SYMBOL'      , 'TICKER_SYMBOL'                    , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Accounts.DetailView', -1, 'Accounts.LBL_RATING'             , 'RATING'                           , '{0}'        , null;
+
+	exec dbo.spDETAILVIEWS_FIELDS_InsHeader     'Accounts.DetailView', -1, '.LBL_LAYOUT_TAB_OTHER'           , 3, 'tab-only';
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Accounts.DetailView', -1, '.LBL_DATE_ENTERED'               , 'DATE_ENTERED .LBL_BY CREATED_BY_NAME'  , '{0} {1} {2}', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Accounts.DetailView', -1, '.LBL_DATE_MODIFIED'              , 'DATE_MODIFIED .LBL_BY MODIFIED_BY_NAME', '{0} {1} {2}', null;
+
+end else if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Accounts.DetailView' and FIELD_TYPE = 'Header' and DATA_LABEL = '.LBL_LAYOUT_TAB_OVERVIEW' and DELETED = 0) begin -- then
+	-- 04/20/2022 Paul.  The following maintenance does not apply if this was a new Pacific layout. 
+
 	exec dbo.spDETAILVIEWS_FIELDS_CnvBound     'Accounts.DetailView', 16, 'Teams.LBL_TEAM'                  , 'TEAM_NAME'                        , '{0}'        , null;
 	-- 02/24/2010 Paul.  When upgrading from and old version, the Team ID will not exist. 
 	if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Accounts.DetailView' and DATA_FIELD = 'TEAM_NAME' and DELETED = 0) begin -- then
@@ -109,31 +122,36 @@ GO
 
 -- 09/01/2012 Paul.  Add LAST_ACTIVITY_DATE. 
 -- 05/14/2016 Paul.  Add Tags module. 
+-- 04/15/2022 Paul.  Reorganize layout using Pacific tabs. 
+-- delete from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Bugs.DetailView';
 if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Bugs.DetailView' and DELETED = 0) begin -- then
 	print 'DETAILVIEWS_FIELDS Bugs.DetailView';
-	exec dbo.spDETAILVIEWS_InsertOnly          'Bugs.DetailView'          , 'Bugs'          , 'vwBUGS_Edit'          , '15%', '35%', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Bugs.DetailView'   ,  0, 'Bugs.LBL_BUG_NUMBER'              , 'BUG_NUMBER'                       , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Bugs.DetailView'   ,  1, '.LBL_ASSIGNED_TO'                 , 'ASSIGNED_TO_NAME'                 , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList 'Bugs.DetailView'   ,  2, 'Bugs.LBL_PRIORITY'                , 'PRIORITY'                         , '{0}'        , 'bug_priority_dom'    , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Bugs.DetailView'   ,  3, 'Teams.LBL_TEAM'                   , 'TEAM_NAME'                        , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList 'Bugs.DetailView'   ,  4, 'Bugs.LBL_STATUS'                  , 'STATUS'                           , '{0}'        , 'bug_status_dom'      , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Bugs.DetailView'   ,  5, '.LBL_LAST_ACTIVITY_DATE'          , 'LAST_ACTIVITY_DATE'               , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList 'Bugs.DetailView'   ,  6, 'Bugs.LBL_TYPE'                    , 'TYPE'                             , '{0}'        , 'bug_type_dom'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Bugs.DetailView'   ,  7, '.LBL_DATE_MODIFIED'               , 'DATE_MODIFIED .LBL_BY MODIFIED_BY_NAME', '{0} {1} {2}', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList 'Bugs.DetailView'   ,  8, 'Bugs.LBL_SOURCE'                  , 'SOURCE'                           , '{0}'        , 'source_dom'          , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Bugs.DetailView'   ,  9, '.LBL_DATE_ENTERED'                , 'DATE_ENTERED .LBL_BY CREATED_BY_NAME'  , '{0} {1} {2}', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList 'Bugs.DetailView'   , 10, 'Bugs.LBL_PRODUCT_CATEGORY'        , 'PRODUCT_CATEGORY'                 , '{0}'        , 'product_category_dom', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList 'Bugs.DetailView'   , 11, 'Bugs.LBL_RESOLUTION'              , 'RESOLUTION'                       , '{0}'        , 'bug_resolution_dom'  , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Bugs.DetailView'   , 12, 'Bugs.LBL_FOUND_IN_RELEASE'        , 'FOUND_IN_RELEASE'                 , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Bugs.DetailView'   , 13, 'Bugs.LBL_FIXED_IN_RELEASE'        , 'FIXED_IN_RELEASE'                 , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsTags      'Bugs.DetailView'   , 14, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBlank     'Bugs.DetailView'   , 15, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Bugs.DetailView'   , 16, 'Bugs.LBL_SUBJECT'                 , 'NAME'                             , '{0}'        , 3;
-	exec dbo.spDETAILVIEWS_FIELDS_InsertOnly   'Bugs.DetailView'   , 17, 'TextBox', 'Bugs.LBL_DESCRIPTION', 'DESCRIPTION', null, null, null, null, null, 3, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBlank     'Bugs.DetailView'   , 18, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBlank     'Bugs.DetailView'   , 19, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsertOnly   'Bugs.DetailView'   , 20, 'TextBox', 'Bugs.LBL_WORK_LOG', 'WORK_LOG', null, null, null, null, null, 3, null;
-end else begin
+	exec dbo.spDETAILVIEWS_InsertOnly           'Bugs.DetailView'    , 'Bugs'          , 'vwBUGS_Edit'          , '15%', '35%', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHeader     'Bugs.DetailView'    , -1, '.LBL_LAYOUT_TAB_OVERVIEW'        , 3, 'tab-only';
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Bugs.DetailView'    , -1, 'Bugs.LBL_BUG_NUMBER'              , 'BUG_NUMBER'                       , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList  'Bugs.DetailView'    , -1, 'Bugs.LBL_PRIORITY'                , 'PRIORITY'                         , '{0}'        , 'bug_priority_dom'    , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Bugs.DetailView'    , -1, 'Bugs.LBL_SUBJECT'                 , 'NAME'                             , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList  'Bugs.DetailView'    , -1, 'Bugs.LBL_STATUS'                  , 'STATUS'                           , '{0}'        , 'bug_status_dom'      , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList  'Bugs.DetailView'    , -1, 'Bugs.LBL_TYPE'                    , 'TYPE'                             , '{0}'        , 'bug_type_dom'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList  'Bugs.DetailView'    , -1, 'Bugs.LBL_SOURCE'                  , 'SOURCE'                           , '{0}'        , 'source_dom'          , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList  'Bugs.DetailView'    , -1, 'Bugs.LBL_PRODUCT_CATEGORY'        , 'PRODUCT_CATEGORY'                 , '{0}'        , 'product_category_dom', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList  'Bugs.DetailView'    , -1, 'Bugs.LBL_RESOLUTION'              , 'RESOLUTION'                       , '{0}'        , 'bug_resolution_dom'  , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Bugs.DetailView'    , -1, 'Bugs.LBL_FOUND_IN_RELEASE'        , 'FOUND_IN_RELEASE'                 , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Bugs.DetailView'    , -1, 'Bugs.LBL_FIXED_IN_RELEASE'        , 'FIXED_IN_RELEASE'                 , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Bugs.DetailView'    , -1, '.LBL_ASSIGNED_TO'                 , 'ASSIGNED_TO_NAME'                 , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Bugs.DetailView'    , -1, 'Teams.LBL_TEAM'                   , 'TEAM_NAME'                        , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Bugs.DetailView'    , -1, '.LBL_LAST_ACTIVITY_DATE'          , 'LAST_ACTIVITY_DATE'               , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsTags       'Bugs.DetailView'    , -1, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsertOnly    'Bugs.DetailView'    , -1, 'TextBox', 'Bugs.LBL_DESCRIPTION'  , 'DESCRIPTION', null, null, null, null, null, 3, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsertOnly    'Bugs.DetailView'    , -1, 'TextBox', 'Bugs.LBL_WORK_LOG'     , 'WORK_LOG'   , null, null, null, null, null, 3, null;
+
+	exec dbo.spDETAILVIEWS_FIELDS_InsHeader     'Bugs.DetailView'    , -1, '.LBL_LAYOUT_TAB_OTHER'            , 3, 'tab-only';
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Bugs.DetailView'    , -1, '.LBL_DATE_ENTERED'                , 'DATE_ENTERED .LBL_BY CREATED_BY_NAME'  , '{0} {1} {2}', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Bugs.DetailView'    , -1, '.LBL_DATE_MODIFIED'               , 'DATE_MODIFIED .LBL_BY MODIFIED_BY_NAME', '{0} {1} {2}', null;
+
+end else if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Bugs.DetailView' and FIELD_TYPE = 'Header' and DATA_LABEL = '.LBL_LAYOUT_TAB_OVERVIEW' and DELETED = 0) begin -- then
+	-- 04/20/2022 Paul.  The following maintenance does not apply if this was a new Pacific layout. 
+
 	exec dbo.spDETAILVIEWS_FIELDS_CnvBound     'Bugs.DetailView'   ,  3, 'Teams.LBL_TEAM'                   , 'TEAM_NAME'                        , '{0}'        , null;
 	-- 09/01/2012 Paul.  Add LAST_ACTIVITY_DATE. 
 	exec dbo.spDETAILVIEWS_FIELDS_CnvBound     'Bugs.DetailView'   ,  5, '.LBL_LAST_ACTIVITY_DATE'          , 'LAST_ACTIVITY_DATE'               , '{0}'        , null;
@@ -148,28 +166,36 @@ GO
 
 
 -- 03/22/2013 Paul.  Add Recurrence fields. 
+-- 04/15/2022 Paul.  Reorganize layout using Pacific tabs. 
+-- delete from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Calls.DetailView';
 if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Calls.DetailView' and DELETED = 0) begin -- then
 	print 'DETAILVIEWS_FIELDS Calls.DetailView';
-	exec dbo.spDETAILVIEWS_InsertOnly          'Calls.DetailView'         , 'Calls'         , 'vwCALLS_Edit'         , '15%', '35%', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Calls.DetailView'  ,  0, 'Calls.LBL_SUBJECT'                , 'NAME'                                                                         , '{0}'            , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList 'Calls.DetailView'  ,  1, 'Calls.LBL_STATUS'                 , 'DIRECTION STATUS'                                                             , '{0} {1}'        , 'call_direction_dom call_status_dom', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Calls.DetailView'  ,  2, 'Calls.LBL_DATE_TIME'              , 'DATE_START'                                                                   , '{0}'            , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink 'Calls.DetailView'  ,  3, 'PARENT_TYPE'                      , 'PARENT_NAME'                                                                  , '{0}'            , 'PARENT_ID', '~/Parents/view.aspx?ID={0}', null, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Calls.DetailView'  ,  4, 'Calls.LBL_DURATION'               , 'DURATION_HOURS Calls.LBL_HOURS_ABBREV DURATION_MINUTES Calls.LBL_MINSS_ABBREV', '{0} {1} {2} {3}', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Calls.DetailView'  ,  5, 'Teams.LBL_TEAM'                   , 'TEAM_NAME'                                                                    , '{0}'            , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Calls.DetailView'  ,  6, '.LBL_DATE_MODIFIED'               , 'DATE_MODIFIED .LBL_BY MODIFIED_BY_NAME'                                       , '{0} {1} {2}'    , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Calls.DetailView'  ,  7, '.LBL_ASSIGNED_TO'                 , 'ASSIGNED_TO_NAME'                                                             , '{0}'            , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Calls.DetailView'  ,  8, '.LBL_DATE_ENTERED'                , 'DATE_ENTERED .LBL_BY CREATED_BY_NAME'                                         , '{0} {1} {2}'    , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBlank     'Calls.DetailView'  ,  9, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsertOnly   'Calls.DetailView'  , 10, 'TextBox', 'Calls.LBL_DESCRIPTION' , 'DESCRIPTION', null, null, null, null, null, 3, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBlank     'Calls.DetailView'  , 11, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBlank     'Calls.DetailView'  , 12, null;
-	-- 03/22/2013 Paul.  Add Recurrence fields. 
-	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList 'Calls.DetailView'  , 13, 'Calls.LBL_REPEAT_TYPE'            , 'REPEAT_TYPE'                                                                  , '{0}'            , 'repeat_type_dom', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Calls.DetailView'  , 14, 'Calendar.LBL_REPEAT_END_AFTER'    , 'REPEAT_COUNT Calendar.LBL_REPEAT_OCCURRENCES'                                 , '{0} {1}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Calls.DetailView'  , 15, 'Calendar.LBL_REPEAT_INTERVAL'     , 'REPEAT_INTERVAL'                                                              , '{0}'            , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Calls.DetailView'  , 16, 'Calls.LBL_REPEAT_UNTIL'           , 'REPEAT_UNTIL'                                                                 , '{0}'            , null;
-end else begin
+	exec dbo.spDETAILVIEWS_InsertOnly           'Calls.DetailView'   , 'Calls'         , 'vwCALLS_Edit'         , '15%', '35%', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHeader     'Calls.DetailView'   , -1, '.LBL_LAYOUT_TAB_OVERVIEW'         , 3, 'tab-only';
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Calls.DetailView'   , -1, 'Calls.LBL_SUBJECT'                , 'NAME'                                                                         , '{0}'            , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList  'Calls.DetailView'   , -1, 'Calls.LBL_STATUS'                 , 'DIRECTION STATUS'                                                             , '{0} {1}'        , 'call_direction_dom call_status_dom', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Calls.DetailView'   , -1, 'Calls.LBL_DATE_TIME'              , 'DATE_START'                                                                   , '{0}'            , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink  'Calls.DetailView'   , -1, 'PARENT_TYPE'                      , 'PARENT_NAME'                                                                  , '{0}'            , 'PARENT_ID', '~/Parents/view.aspx?ID={0}', null, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Calls.DetailView'   , -1, 'Calls.LBL_DURATION'               , 'DURATION_HOURS Calls.LBL_HOURS_ABBREV DURATION_MINUTES Calls.LBL_MINSS_ABBREV', '{0} {1} {2} {3}', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBlank      'Calls.DetailView'   , -1, null;
+
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Calls.DetailView'   , -1, '.LBL_ASSIGNED_TO'                 , 'ASSIGNED_TO_NAME'                                                             , '{0}'            , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Calls.DetailView'   , -1, 'Teams.LBL_TEAM'                   , 'TEAM_NAME'                                                                    , '{0}'            , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsertOnly    'Calls.DetailView'   , -1, 'TextBox', 'Calls.LBL_DESCRIPTION' , 'DESCRIPTION', null, null, null, null, null, 3, null;
+
+	exec dbo.spDETAILVIEWS_FIELDS_InsHeader     'Calls.DetailView'   , -1, 'Calls.LBL_LAYOUT_TAB_RECURRENCE'  , 3, 'tab-only';
+	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList  'Calls.DetailView'   , -1, 'Calls.LBL_REPEAT_TYPE'            , 'REPEAT_TYPE'                                                                  , '{0}'            , 'repeat_type_dom', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Calls.DetailView'   , -1, 'Calendar.LBL_REPEAT_END_AFTER'    , 'REPEAT_COUNT Calendar.LBL_REPEAT_OCCURRENCES'                                 , '{0} {1}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Calls.DetailView'   , -1, 'Calendar.LBL_REPEAT_INTERVAL'     , 'REPEAT_INTERVAL'                                                              , '{0}'            , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Calls.DetailView'   , -1, 'Calls.LBL_REPEAT_UNTIL'           , 'REPEAT_UNTIL'                                                                 , '{0}'            , null;
+
+	exec dbo.spDETAILVIEWS_FIELDS_InsHeader     'Calls.DetailView'   , -1, '.LBL_LAYOUT_TAB_OTHER'            , 3, 'tab-only';
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Calls.DetailView'   , -1, '.LBL_DATE_ENTERED'                , 'DATE_ENTERED .LBL_BY CREATED_BY_NAME'  , '{0} {1} {2}', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Calls.DetailView'   , -1, '.LBL_DATE_MODIFIED'               , 'DATE_MODIFIED .LBL_BY MODIFIED_BY_NAME', '{0} {1} {2}', null;
+
+end else if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Calls.DetailView' and FIELD_TYPE = 'Header' and DATA_LABEL = '.LBL_LAYOUT_TAB_OVERVIEW' and DELETED = 0) begin -- then
+	-- 04/20/2022 Paul.  The following maintenance does not apply if this was a new Pacific layout. 
+
 	exec dbo.spDETAILVIEWS_FIELDS_CnvBound     'Calls.DetailView'  ,  5, 'Teams.LBL_TEAM'                   , 'TEAM_NAME'                                                                    , '{0}'            , null;
 	-- 02/24/2010 Paul.  When upgrading from and old version, the Team ID will not exist. 
 	if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Calls.DetailView' and DATA_FIELD = 'TEAM_NAME' and DELETED = 0) begin -- then
@@ -187,39 +213,38 @@ end else begin
 end -- if;
 GO
 
+-- 04/15/2022 Paul.  Reorganize layout using Pacific tabs. 
+-- delete from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Campaigns.DetailView';
 if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Campaigns.DetailView' and DELETED = 0) begin -- then
 	print 'DETAILVIEWS_FIELDS Campaigns.DetailView';
-	exec dbo.spDETAILVIEWS_InsertOnly          'Campaigns.DetailView'     , 'Campaigns'     , 'vwCAMPAIGNS_Edit'     , '20%', '30%', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Campaigns.DetailView',  1, 'Campaigns.LBL_NAME'                     , 'NAME'                             , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Campaigns.DetailView',  2, '.LBL_ASSIGNED_TO'                       , 'ASSIGNED_TO_NAME'                 , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList 'Campaigns.DetailView',  3, 'Campaigns.LBL_CAMPAIGN_STATUS'          , 'STATUS'                           , '{0}'        , 'campaign_status_dom', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Campaigns.DetailView',  4, 'Teams.LBL_TEAM'                         , 'TEAM_NAME'                        , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Campaigns.DetailView',  5, 'Campaigns.LBL_CAMPAIGN_START_DATE'      , 'START_DATE'                       , '{0:d}'      , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Campaigns.DetailView',  6, '.LBL_DATE_MODIFIED'                     , 'DATE_MODIFIED .LBL_BY MODIFIED_BY_NAME', '{0} {1} {2}', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Campaigns.DetailView',  7, 'Campaigns.LBL_CAMPAIGN_END_DATE'        , 'END_DATE'                         , '{0:d}'      , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Campaigns.DetailView',  8, '.LBL_DATE_ENTERED'                      , 'DATE_ENTERED .LBL_BY CREATED_BY_NAME'  , '{0} {1} {2}', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList 'Campaigns.DetailView',  9, 'Campaigns.LBL_CAMPAIGN_TYPE'            , 'CAMPAIGN_TYPE'                    , '{0}'        , 'campaign_type_dom'  , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBlank     'Campaigns.DetailView', 10, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBlank     'Campaigns.DetailView', 11, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBlank     'Campaigns.DetailView', 12, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Campaigns.DetailView', 13, 'Campaigns.LBL_CAMPAIGN_BUDGET'          , 'BUDGET_USDOLLAR'                  , '{0:c}'      , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Campaigns.DetailView', 14, 'Campaigns.LBL_CAMPAIGN_ACTUAL_COST'     , 'ACTUAL_COST_USDOLLAR'             , '{0:c}'      , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Campaigns.DetailView', 15, 'Campaigns.LBL_CAMPAIGN_EXPECTED_REVENUE', 'EXPECTED_REVENUE_USDOLLAR'        , '{0:c}'      , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Campaigns.DetailView', 16, 'Campaigns.LBL_CAMPAIGN_EXPECTED_COST'   , 'EXPECTED_COST_USDOLLAR'           , '{0:c}'      , null;
+	exec dbo.spDETAILVIEWS_InsertOnly           'Campaigns.DetailView', 'Campaigns'     , 'vwCAMPAIGNS_Edit'     , '20%', '30%', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHeader     'Campaigns.DetailView', -1, '.LBL_LAYOUT_TAB_OVERVIEW'               , 3, 'tab-only';
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Campaigns.DetailView', -1, 'Campaigns.LBL_NAME'                     , 'NAME'                             , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList  'Campaigns.DetailView', -1, 'Campaigns.LBL_CAMPAIGN_STATUS'          , 'STATUS'                           , '{0}'        , 'campaign_status_dom', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Campaigns.DetailView', -1, 'Campaigns.LBL_CAMPAIGN_START_DATE'      , 'START_DATE'                       , '{0:d}'      , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList  'Campaigns.DetailView', -1, 'Campaigns.LBL_CAMPAIGN_TYPE'            , 'CAMPAIGN_TYPE'                    , '{0}'        , 'campaign_type_dom'  , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Campaigns.DetailView', -1, 'Campaigns.LBL_CAMPAIGN_END_DATE'        , 'END_DATE'                         , '{0:d}'      , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsTags       'Campaigns.DetailView', -1, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Campaigns.DetailView', -1, '.LBL_ASSIGNED_TO'                       , 'ASSIGNED_TO_NAME'                 , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Campaigns.DetailView', -1, 'Teams.LBL_TEAM'                         , 'TEAM_NAME'                        , '{0}'        , null;
 
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Campaigns.DetailView', 17, 'Campaigns.LBL_CAMPAIGN_IMPRESSIONS'     , 'IMPRESSIONS'                      , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBlank     'Campaigns.DetailView', 18, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsertOnly   'Campaigns.DetailView', 19, 'Line', null, null, null, null, null, null, null, 3, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBlank     'Campaigns.DetailView', 20, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBlank     'Campaigns.DetailView', 21, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Campaigns.DetailView', 22, 'Campaigns.LBL_CAMPAIGN_OBJECTIVE'       , 'OBJECTIVE'                        , '{0}'        , 3;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Campaigns.DetailView', 23, 'Campaigns.LBL_CAMPAIGN_CONTENT'         , 'CONTENT'                          , '{0}'        , 3;
--- 07/11/2007 Paul.  Tracker information has been moved to a relationship panel. 
---	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Campaigns.DetailView', 24, 'Campaigns.LBL_TRACKER_URL'              , null                               , '{0}'        , 3;
---	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Campaigns.DetailView', 25, 'Campaigns.LBL_TRACKER_TEXT'             , 'TRACKER_TEXT'                     , '{0}'        , 3;
---	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Campaigns.DetailView', 26, 'Campaigns.LBL_REFER_URL'                , 'REFER_URL'                        , '{0}'        , 3;
---	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Campaigns.DetailView', 27, 'Campaigns.LBL_TRACKER_COUNT'            , 'TRACKER_COUNT'                    , '{0}'        , 3;
-end else begin
+	exec dbo.spDETAILVIEWS_FIELDS_InsHeader     'Campaigns.DetailView', -1, 'Campaigns.LBL_LAYOUT_TAB_BUDGET'        , 3, 'tab-only';
+	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList  'Campaigns.DetailView', -1, 'Campaigns.LBL_CURRENCY'                 , 'CURRENCY_ID'                      , '{0}'        , 'Currencies', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Campaigns.DetailView', -1, 'Campaigns.LBL_CAMPAIGN_IMPRESSIONS'     , 'IMPRESSIONS'                      , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Campaigns.DetailView', -1, 'Campaigns.LBL_CAMPAIGN_BUDGET'          , 'BUDGET_USDOLLAR'                  , '{0:c}'      , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Campaigns.DetailView', -1, 'Campaigns.LBL_CAMPAIGN_ACTUAL_COST'     , 'ACTUAL_COST_USDOLLAR'             , '{0:c}'      , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Campaigns.DetailView', -1, 'Campaigns.LBL_CAMPAIGN_EXPECTED_REVENUE', 'EXPECTED_REVENUE_USDOLLAR'        , '{0:c}'      , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Campaigns.DetailView', -1, 'Campaigns.LBL_CAMPAIGN_EXPECTED_COST'   , 'EXPECTED_COST_USDOLLAR'           , '{0:c}'      , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Campaigns.DetailView', -1, 'Campaigns.LBL_CAMPAIGN_OBJECTIVE'       , 'OBJECTIVE'                        , '{0}'        , 3;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Campaigns.DetailView', -1, 'Campaigns.LBL_CAMPAIGN_CONTENT'         , 'CONTENT'                          , '{0}'        , 3;
+
+	exec dbo.spDETAILVIEWS_FIELDS_InsHeader     'Campaigns.DetailView', -1, '.LBL_LAYOUT_TAB_OTHER'                  , 3, 'tab-only';
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Campaigns.DetailView', -1, '.LBL_DATE_ENTERED'                      , 'DATE_ENTERED .LBL_BY CREATED_BY_NAME'  , '{0} {1} {2}', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Campaigns.DetailView', -1, '.LBL_DATE_MODIFIED'                     , 'DATE_MODIFIED .LBL_BY MODIFIED_BY_NAME', '{0} {1} {2}', null;
+
+end else if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Campaigns.DetailView' and FIELD_TYPE = 'Header' and DATA_LABEL = '.LBL_LAYOUT_TAB_OVERVIEW' and DELETED = 0) begin -- then
+	-- 04/20/2022 Paul.  The following maintenance does not apply if this was a new Pacific layout. 
+
 	exec dbo.spDETAILVIEWS_FIELDS_CnvBound     'Campaigns.DetailView',  4, 'Teams.LBL_TEAM'                         , 'TEAM_NAME'                        , '{0}'        , null;
 
 	-- 07/24/2008 Paul.  Use the common term. 
@@ -378,24 +403,36 @@ GO
 -- 07/08/2007 Paul.  The CASE_NUMBER field was adde to the edit view a long time ago, but we are just now adding it to the detail view. 
 -- 04/02/2012 Paul.  Add TYPE and WORK_LOG. 
 -- 09/01/2012 Paul.  Add LAST_ACTIVITY_DATE. 
+-- 04/15/2022 Paul.  Reorganize layout using Pacific tabs. 
+-- delete from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Cases.DetailView';
 if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Cases.DetailView' and DELETED = 0) begin -- then
 	print 'DETAILVIEWS_FIELDS Cases.DetailView';
-	exec dbo.spDETAILVIEWS_InsertOnly          'Cases.DetailView'         , 'Cases'         , 'vwCASES_Edit'         , '15%', '35%', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Cases.DetailView'  ,  0, 'Cases.LBL_CASE_NUMBER'            , 'CASE_NUMBER'                      , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Cases.DetailView'  ,  1, '.LBL_ASSIGNED_TO'                 , 'ASSIGNED_TO_NAME'                 , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList 'Cases.DetailView'  ,  2, 'Cases.LBL_PRIORITY'               , 'PRIORITY'                         , '{0}'        , 'case_priority_dom', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Cases.DetailView'  ,  3, 'Teams.LBL_TEAM'                   , 'TEAM_NAME'                        , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList 'Cases.DetailView'  ,  4, 'Cases.LBL_STATUS'                 , 'STATUS'                           , '{0}'        , 'case_status_dom'  , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink 'Cases.DetailView'  ,  5, 'Cases.LBL_ACCOUNT_NAME'           , 'ACCOUNT_NAME'                     , '{0}'        , 'ACCOUNT_ID'       , '~/Accounts/view.aspx?ID={0}', null, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList 'Cases.DetailView'  ,  6, 'Cases.LBL_TYPE'                   , 'TYPE'                             , '{0}'        , 'case_type_dom'    , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Cases.DetailView'  ,  7, '.LBL_DATE_MODIFIED'               , 'DATE_MODIFIED .LBL_BY MODIFIED_BY_NAME', '{0} {1} {2}', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Cases.DetailView'  ,  8, '.LBL_LAST_ACTIVITY_DATE'          , 'LAST_ACTIVITY_DATE'               , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Cases.DetailView'  ,  9, '.LBL_DATE_ENTERED'                , 'DATE_ENTERED .LBL_BY CREATED_BY_NAME'  , '{0} {1} {2}', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Cases.DetailView'  , 10, 'Cases.LBL_SUBJECT'                , 'NAME'                             , '{0}'        , 3;
-	exec dbo.spDETAILVIEWS_FIELDS_InsertOnly   'Cases.DetailView'  , 11, 'TextBox', 'Cases.LBL_DESCRIPTION' , 'DESCRIPTION', null, null, null, null, null, 3, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsertOnly   'Cases.DetailView'  , 12, 'TextBox', 'Cases.LBL_RESOLUTION'  , 'RESOLUTION' , null, null, null, null, null, 3, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsertOnly   'Cases.DetailView'  , 13, 'TextBox', 'Cases.LBL_WORK_LOG'    , 'WORK_LOG'   , null, null, null, null, null, 3, null;
-end else begin
+	exec dbo.spDETAILVIEWS_InsertOnly           'Cases.DetailView'   , 'Cases'         , 'vwCASES_Edit'         , '15%', '35%', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHeader     'Cases.DetailView'   , -1, '.LBL_LAYOUT_TAB_OVERVIEW'        , 3, 'tab-only';
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Cases.DetailView'   , -1, 'Cases.LBL_CASE_NUMBER'           , 'CASE_NUMBER'                      , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList  'Cases.DetailView'   , -1, 'Cases.LBL_PRIORITY'              , 'PRIORITY'                         , '{0}'        , 'case_priority_dom', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBlank      'Cases.DetailView'   , -1, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList  'Cases.DetailView'   , -1, 'Cases.LBL_STATUS'                , 'STATUS'                           , '{0}'        , 'case_status_dom'  , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList  'Cases.DetailView'   , -1, 'Cases.LBL_TYPE'                  , 'TYPE'                             , '{0}'        , 'case_type_dom'    , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink  'Cases.DetailView'   , -1, 'Cases.LBL_ACCOUNT_NAME'          , 'ACCOUNT_NAME'                     , '{0}'        , 'ACCOUNT_ID'       , '~/Accounts/view.aspx?ID={0}', null, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Cases.DetailView'   , -1, '.LBL_ASSIGNED_TO'                , 'ASSIGNED_TO_NAME'                 , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Cases.DetailView'   , -1, 'Teams.LBL_TEAM'                  , 'TEAM_NAME'                        , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Cases.DetailView'   , -1, '.LBL_LAST_ACTIVITY_DATE'         , 'LAST_ACTIVITY_DATE'               , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsTags       'Cases.DetailView'   , -1, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Cases.DetailView'   , -1, 'Cases.LBL_SUBJECT'               , 'NAME'                             , '{0}'        , 3;
+	exec dbo.spDETAILVIEWS_FIELDS_InsertOnly    'Cases.DetailView'   , -1, 'TextBox', 'Cases.LBL_DESCRIPTION', 'DESCRIPTION', null, null, null, null, null, 3, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsertOnly    'Cases.DetailView'   , -1, 'TextBox', 'Cases.LBL_RESOLUTION' , 'RESOLUTION' , null, null, null, null, null, 3, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsertOnly    'Cases.DetailView'   , -1, 'TextBox', 'Cases.LBL_WORK_LOG'   , 'WORK_LOG'   , null, null, null, null, null, 3, null;
+
+	exec dbo.spDETAILVIEWS_FIELDS_InsSeparator  'Cases.DetailView'   , -1;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHeader     'Cases.DetailView'   , -1, '.LBL_LAYOUT_TAB_MORE_INFORMATION', 3, 'tab-only';
+	exec dbo.spDETAILVIEWS_FIELDS_InsHeader     'Cases.DetailView'   , -1, '.LBL_LAYOUT_TAB_OTHER'           , 3, 'tab-only';
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Cases.DetailView'   , -1, '.LBL_DATE_ENTERED'               , 'DATE_ENTERED .LBL_BY CREATED_BY_NAME'  , '{0} {1} {2}', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Cases.DetailView'   , -1, '.LBL_DATE_MODIFIED'              , 'DATE_MODIFIED .LBL_BY MODIFIED_BY_NAME', '{0} {1} {2}', null;
+
+end else if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Cases.DetailView' and FIELD_TYPE = 'Header' and DATA_LABEL = '.LBL_LAYOUT_TAB_OVERVIEW' and DELETED = 0) begin -- then
+	-- 04/20/2022 Paul.  The following maintenance does not apply if this was a new Pacific layout. 
+
 	exec dbo.spDETAILVIEWS_FIELDS_CnvBound     'Cases.DetailView'  ,  3, 'Teams.LBL_TEAM'                   , 'TEAM_NAME'                        , '{0}'        , null;
 	-- 09/01/2012 Paul.  Add LAST_ACTIVITY_DATE. 
 	exec dbo.spDETAILVIEWS_FIELDS_CnvBound     'Cases.DetailView'  ,  8, '.LBL_LAST_ACTIVITY_DATE'          , 'LAST_ACTIVITY_DATE'               , '{0}'        , null;
@@ -408,46 +445,56 @@ end else begin
 end -- if;
 GO
 
+-- 02/09/2006 Paul.  SugarCRM uses the CONTACTS_USERS table to allow each user to choose the contacts they want syncd with Outlook. 
+-- 03/07/2006 Paul.  IBM DB2 is having trouble ignoring single quotes in comments. 
 -- 11/11/2010 Paul.  We are getting a javascript error in the LinkedIn code on IE8. "Error: Invalid argument."
 -- 05/14/2016 Paul.  Add Tags module. 
 -- 06/30/2018 Paul.  Separate NAME into FIRST_NAME LAST_NAME so that either can be erased. 
+-- 04/15/2022 Paul.  Reorganize layout using Pacific tabs. 
+-- delete from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Contacts.DetailView';
 if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Contacts.DetailView' and DELETED = 0) begin -- then
 	print 'DETAILVIEWS_FIELDS Contacts.DetailView';
-	exec dbo.spDETAILVIEWS_InsertOnly           'Contacts.DetailView'      , 'Contacts'      , 'vwCONTACTS_Edit'      , '15%', '35%', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Contacts.DetailView',  0, 'Contacts.LBL_NAME'               , 'FIRST_NAME LAST_NAME'             , '{0} {1}'    , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Contacts.DetailView',  1, 'Contacts.LBL_OFFICE_PHONE'       , 'PHONE_WORK'                       , '{0}'        , null;
---	exec dbo.spDETAILVIEWS_FIELDS_InsButton     'Contacts.DetailView',  2, null                              , '.LBL_VCARD'                       , 'vCard'      , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Contacts.DetailView',  2, '.LBL_LAST_ACTIVITY_DATE'         , 'LAST_ACTIVITY_DATE'               , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Contacts.DetailView',  3, 'Contacts.LBL_MOBILE_PHONE'       , 'PHONE_MOBILE'                     , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink  'Contacts.DetailView',  4, 'Contacts.LBL_ACCOUNT_NAME'       , 'ACCOUNT_NAME'                     , '{0}'        , 'ACCOUNT_ID'       , '~/Accounts/view.aspx?ID={0}', null, null;
---	exec dbo.spDETAILVIEWS_FIELDS_InsJavaScript 'Contacts.DetailView',  5, null                              , 'ACCOUNT_NAME'                     , 'ID ACCOUNT_NAME', 'if (typeof(LinkedIn) != "undefined") new LinkedIn.CompanyInsiderPopup("spn{0}_ACCOUNT_NAME","{1}");', 'spn{0}_ACCOUNT_NAME', -1;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Contacts.DetailView',  5, 'Contacts.LBL_HOME_PHONE'         , 'PHONE_HOME'                       , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList  'Contacts.DetailView',  6, 'Contacts.LBL_LEAD_SOURCE'        , 'LEAD_SOURCE'                      , '{0}'        , 'lead_source_dom', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Contacts.DetailView',  7, 'Contacts.LBL_OTHER_PHONE'        , 'PHONE_OTHER'                      , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Contacts.DetailView',  8, 'Contacts.LBL_TITLE'              , 'TITLE'                            , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Contacts.DetailView',  9, 'Contacts.LBL_FAX_PHONE'          , 'PHONE_FAX'                        , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Contacts.DetailView', 10, 'Contacts.LBL_DEPARTMENT'         , 'DEPARTMENT'                       , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink  'Contacts.DetailView', 11, 'Contacts.LBL_EMAIL_ADDRESS'      , 'EMAIL1'                           , '{0}'        , 'EMAIL1'              , 'mailto:{0}'                 , null, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Contacts.DetailView', 12, 'Contacts.LBL_BIRTHDATE'          , 'BIRTHDATE'                        , '{0:d}'      , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink  'Contacts.DetailView', 13, 'Contacts.LBL_OTHER_EMAIL_ADDRESS', 'EMAIL2'                           , '{0}'        , 'EMAIL2'              , 'mailto:{0}'                 , null, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink  'Contacts.DetailView', 14, 'Contacts.LBL_REPORTS_TO'         , 'REPORTS_TO_NAME'                  , '{0}'        , 'REPORTS_TO_ID'       , '~/Contacts/view.aspx?ID={0}', null, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Contacts.DetailView', 15, 'Contacts.LBL_ASSISTANT'          , 'ASSISTANT'                        , '{0}'        , null;
-	-- 02/09/2006 Paul.  SugarCRM uses the CONTACTS_USERS table to allow each user to choose the contacts they want syncd with Outlook. 
-	-- 03/07/2006 Paul.  IBM DB2 is having trouble ignoring single quotes in comments. 
-	exec dbo.spDETAILVIEWS_FIELDS_InsCheckBox   'Contacts.DetailView', 16, 'Contacts.LBL_SYNC_CONTACT'       , 'SYNC_CONTACT'                     , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Contacts.DetailView', 17, 'Contacts.LBL_ASSISTANT_PHONE'    , 'ASSISTANT_PHONE'                  , '{0}', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsCheckBox   'Contacts.DetailView', 18, 'Contacts.LBL_DO_NOT_CALL'        , 'DO_NOT_CALL'                      , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsCheckBox   'Contacts.DetailView', 19, 'Contacts.LBL_EMAIL_OPT_OUT'      , 'EMAIL_OPT_OUT'                    , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Contacts.DetailView', 20, 'Teams.LBL_TEAM'                  , 'TEAM_NAME'                        , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Contacts.DetailView', 21, '.LBL_DATE_MODIFIED'              , 'DATE_MODIFIED .LBL_BY MODIFIED_BY_NAME', '{0} {1} {2}', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Contacts.DetailView', 22, '.LBL_ASSIGNED_TO'                , 'ASSIGNED_TO_NAME'                 , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Contacts.DetailView', 23, '.LBL_DATE_ENTERED'               , 'DATE_ENTERED .LBL_BY CREATED_BY_NAME'  , '{0} {1} {2}', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsTags       'Contacts.DetailView', 24, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBlank      'Contacts.DetailView', 25, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Contacts.DetailView', 26, 'Contacts.LBL_PRIMARY_ADDRESS'    , 'PRIMARY_ADDRESS_HTML'             , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Contacts.DetailView', 27, 'Contacts.LBL_ALTERNATE_ADDRESS'  , 'ALT_ADDRESS_HTML'                 , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsertOnly    'Contacts.DetailView', 28, 'TextBox', 'Contacts.LBL_DESCRIPTION', 'DESCRIPTION', null, null, null, null, null, 3, null;
-end else begin
+	exec dbo.spDETAILVIEWS_InsertOnly           'Contacts.DetailView', 'Contacts'      , 'vwCONTACTS_Edit'      , '15%', '35%', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHeader     'Contacts.DetailView', -1, '.LBL_LAYOUT_TAB_OVERVIEW'        , 3, 'tab-only';
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Contacts.DetailView', -1, 'Contacts.LBL_NAME'               , 'FIRST_NAME LAST_NAME'             , '{0} {1}'    , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBlank      'Contacts.DetailView', -1, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Contacts.DetailView', -1, 'Contacts.LBL_TITLE'              , 'TITLE'                            , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Contacts.DetailView', -1, 'Contacts.LBL_OFFICE_PHONE'       , 'PHONE_WORK'                       , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Contacts.DetailView', -1, 'Contacts.LBL_DEPARTMENT'         , 'DEPARTMENT'                       , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Contacts.DetailView', -1, 'Contacts.LBL_MOBILE_PHONE'       , 'PHONE_MOBILE'                     , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink  'Contacts.DetailView', -1, 'Contacts.LBL_ACCOUNT_NAME'       , 'ACCOUNT_NAME'                     , '{0}'        , 'ACCOUNT_ID'       , '~/Accounts/view.aspx?ID={0}', null, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Contacts.DetailView', -1, 'Contacts.LBL_FAX_PHONE'          , 'PHONE_FAX'                        , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink  'Contacts.DetailView', -1, 'Contacts.LBL_EMAIL_ADDRESS'      , 'EMAIL1'                           , '{0}'        , 'EMAIL1'              , 'mailto:{0}'                 , null, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Contacts.DetailView', -1, 'Contacts.LBL_HOME_PHONE'         , 'PHONE_HOME'                       , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink  'Contacts.DetailView', -1, 'Contacts.LBL_OTHER_EMAIL_ADDRESS', 'EMAIL2'                           , '{0}'        , 'EMAIL2'              , 'mailto:{0}'                 , null, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Contacts.DetailView', -1, 'Contacts.LBL_OTHER_PHONE'        , 'PHONE_OTHER'                      , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsCheckBox   'Contacts.DetailView', -1, 'Contacts.LBL_EMAIL_OPT_OUT'      , 'EMAIL_OPT_OUT'                    , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsCheckBox   'Contacts.DetailView', -1, 'Contacts.LBL_DO_NOT_CALL'        , 'DO_NOT_CALL'                      , null;
+
+	exec dbo.spDETAILVIEWS_FIELDS_InsSeparator  'Contacts.DetailView', -1;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Contacts.DetailView', -1, 'Contacts.LBL_PRIMARY_ADDRESS'    , 'PRIMARY_ADDRESS_HTML'             , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Contacts.DetailView', -1, 'Contacts.LBL_ALTERNATE_ADDRESS'  , 'ALT_ADDRESS_HTML'                 , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Contacts.DetailView', -1, '.LBL_ASSIGNED_TO'                , 'ASSIGNED_TO_NAME'                 , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Contacts.DetailView', -1, 'Teams.LBL_TEAM'                  , 'TEAM_NAME'                        , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Contacts.DetailView', -1, '.LBL_LAST_ACTIVITY_DATE'         , 'LAST_ACTIVITY_DATE'               , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsTags       'Contacts.DetailView', -1, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsertOnly    'Contacts.DetailView', -1, 'TextBox', 'Contacts.LBL_DESCRIPTION', 'DESCRIPTION', null, null, null, null, null, 3, null;
+
+	exec dbo.spDETAILVIEWS_FIELDS_InsHeader     'Contacts.DetailView', -1, '.LBL_LAYOUT_TAB_MORE_INFORMATION', 3, 'tab-only';
+	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList  'Contacts.DetailView', -1, 'Contacts.LBL_LEAD_SOURCE'        , 'LEAD_SOURCE'                      , '{0}'        , 'lead_source_dom', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink  'Contacts.DetailView', -1, 'Contacts.LBL_REPORTS_TO'         , 'REPORTS_TO_NAME'                  , '{0}'        , 'REPORTS_TO_ID'       , '~/Contacts/view.aspx?ID={0}', null, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Contacts.DetailView', -1, 'Contacts.LBL_ASSISTANT'          , 'ASSISTANT'                        , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Contacts.DetailView', -1, 'Contacts.LBL_ASSISTANT_PHONE'    , 'ASSISTANT_PHONE'                  , '{0}', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Contacts.DetailView', -1, 'Contacts.LBL_BIRTHDATE'          , 'BIRTHDATE'                        , '{0:d}'      , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsCheckBox   'Contacts.DetailView', -1, 'Contacts.LBL_SYNC_CONTACT'       , 'SYNC_CONTACT'                     , null;
+
+	exec dbo.spDETAILVIEWS_FIELDS_InsHeader     'Contacts.DetailView', -1, '.LBL_LAYOUT_TAB_OTHER'           , 3, 'tab-only';
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Contacts.DetailView', -1, '.LBL_DATE_ENTERED'               , 'DATE_ENTERED .LBL_BY CREATED_BY_NAME'  , '{0} {1} {2}', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Contacts.DetailView', -1, '.LBL_DATE_MODIFIED'              , 'DATE_MODIFIED .LBL_BY MODIFIED_BY_NAME', '{0} {1} {2}', null;
+
+end else if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Contacts.DetailView' and FIELD_TYPE = 'Header' and DATA_LABEL = '.LBL_LAYOUT_TAB_OVERVIEW' and DELETED = 0) begin -- then
+	-- 04/20/2022 Paul.  The following maintenance does not apply if this was a new Pacific layout. 
+
 	exec dbo.spDETAILVIEWS_FIELDS_CnvBound      'Contacts.DetailView', 20, 'Teams.LBL_TEAM'                  , 'TEAM_NAME'                        , '{0}'        , null;
 	-- 09/01/2012 Paul.  Add LAST_ACTIVITY_DATE. 
 	exec dbo.spDETAILVIEWS_FIELDS_CnvBound      'Contacts.DetailView',  2, '.LBL_LAST_ACTIVITY_DATE'         , 'LAST_ACTIVITY_DATE'               , '{0}'        , null;
@@ -532,33 +579,41 @@ if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Contacts.Det
 end -- if;
 GO
 
+-- 05/18/2011 Paul.  We need to allow the user to upload a mail-merge template without the Word plug-in. 
 -- 04/02/2012 Paul.  Add ASSIGNED_USER_ID to Notes, Documents. 
 -- 01/22/2013 Paul.  Add PRIMARY_MODULE so that mail merge templates can be uploaded. 
 -- 05/14/2016 Paul.  Add Tags module. 
+-- 04/15/2022 Paul.  Reorganize layout using Pacific tabs. 
+-- delete from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Documents.DetailView';
 if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Documents.DetailView' and DELETED = 0) begin -- then
 	print 'DETAILVIEWS_FIELDS Documents.DetailView';
-	exec dbo.spDETAILVIEWS_InsertOnly          'Documents.DetailView'     , 'Documents'     , 'vwDOCUMENTS_Edit'     , '15%', '35%', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Documents.DetailView',  0, 'Documents.LBL_DOC_NAME'         , 'DOCUMENT_NAME'                    , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Documents.DetailView',  1, 'Documents.LBL_DOC_VERSION'      , 'REVISION'                         , '{0}'        , null;
-	-- 05/18/2011 Paul.  We need to allow the user to upload a mail-merge template without the Word plug-in. 
-	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList 'Documents.DetailView',  2, 'Documents.LBL_TEMPLATE_TYPE'    , 'TEMPLATE_TYPE'                    , '{0}'        , 'document_template_type_dom', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsCheckBox  'Documents.DetailView',  3, 'Documents.LBL_IS_TEMPLATE'      , 'IS_TEMPLATE'                      , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList 'Documents.DetailView',  4, 'Documents.LBL_CATEGORY_VALUE'   , 'CATEGORY_ID'                      , '{0}'        , 'document_category_dom'   , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList 'Documents.DetailView',  5, 'Documents.LBL_SUBCATEGORY_VALUE', 'SUBCATEGORY_ID'                   , '{0}'        , 'document_subcategory_dom', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList 'Documents.DetailView',  6, 'Documents.LBL_DOC_STATUS'       , 'STATUS_ID'                        , '{0}'        , 'document_status_dom'     , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Documents.DetailView',  7, 'Teams.LBL_TEAM'                 , 'TEAM_NAME'                        , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Documents.DetailView',  8, 'Documents.LBL_LAST_REV_CREATOR' , 'REVISION_CREATED_BY_NAME'         , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Documents.DetailView',  9, 'Documents.LBL_LAST_REV_DATE'    , 'REVISION_DATE_ENTERED'            , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Documents.DetailView', 10, 'Documents.LBL_DOC_ACTIVE_DATE'  , 'ACTIVE_DATE'                      , '{0:d}'      , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Documents.DetailView', 11, 'Documents.LBL_DOC_EXP_DATE'     , 'EXP_DATE'                         , '{0:d}'      , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsTags      'Documents.DetailView', 12, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBlank     'Documents.DetailView', 13, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsertOnly   'Documents.DetailView', 14, 'TextBox', 'Documents.LBL_DOC_DESCRIPTION', 'DESCRIPTION', '10,90', null, null, null, null, 3, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBlank     'Documents.DetailView', 15, 3;
-	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink 'Documents.DetailView', 16, 'Documents.LBL_DOWNNLOAD_FILE'    , 'FILENAME'                        , '{0}'        , 'DOCUMENT_REVISION_ID'    , '~/Documents/Document.aspx?ID={0}', '_blank', 3;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Documents.DetailView', 17, '.LBL_ASSIGNED_TO'                , 'ASSIGNED_TO_NAME'                , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList 'Documents.DetailView', 18, 'Documents.LBL_PRIMARY_MODULE'    , 'PRIMARY_MODULE'                  , '{0}'        , 'Modules'                 , null;
-end else begin
+	exec dbo.spDETAILVIEWS_InsertOnly           'Documents.DetailView', 'Documents'     , 'vwDOCUMENTS_Edit'     , '15%', '35%', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHeader     'Documents.DetailView', -1, '.LBL_LAYOUT_TAB_OVERVIEW'        , 3, 'tab-only';
+	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink  'Documents.DetailView', -1, 'Documents.LBL_DOWNNLOAD_FILE'    , 'FILENAME'                         , '{0}'        , 'DOCUMENT_REVISION_ID'    , '~/Documents/Document.aspx?ID={0}', '_blank', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList  'Documents.DetailView', -1, 'Documents.LBL_DOC_STATUS'        , 'STATUS_ID'                        , '{0}'        , 'document_status_dom'     , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Documents.DetailView', -1, 'Documents.LBL_DOC_NAME'          , 'DOCUMENT_NAME'                    , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Documents.DetailView', -1, 'Documents.LBL_DOC_VERSION'       , 'REVISION'                         , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList  'Documents.DetailView', -1, 'Documents.LBL_TEMPLATE_TYPE'     , 'TEMPLATE_TYPE'                    , '{0}'        , 'document_template_type_dom', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsCheckBox   'Documents.DetailView', -1, 'Documents.LBL_IS_TEMPLATE'       , 'IS_TEMPLATE'                      , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Documents.DetailView', -1, 'Documents.LBL_DOC_ACTIVE_DATE'   , 'ACTIVE_DATE'                      , '{0:d}'      , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Documents.DetailView', -1, 'Documents.LBL_DOC_EXP_DATE'      , 'EXP_DATE'                         , '{0:d}'      , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList  'Documents.DetailView', -1, 'Documents.LBL_CATEGORY_VALUE'    , 'CATEGORY_ID'                      , '{0}'        , 'document_category_dom'   , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList  'Documents.DetailView', -1, 'Documents.LBL_SUBCATEGORY_VALUE' , 'SUBCATEGORY_ID'                   , '{0}'        , 'document_subcategory_dom', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Documents.DetailView', -1, 'Documents.LBL_LAST_REV_CREATOR'  , 'REVISION_CREATED_BY_NAME'         , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Documents.DetailView', -1, 'Documents.LBL_LAST_REV_DATE'     , 'REVISION_DATE_ENTERED'            , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Documents.DetailView', -1, '.LBL_ASSIGNED_TO'                , 'ASSIGNED_TO_NAME'                 , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Documents.DetailView', -1, 'Teams.LBL_TEAM'                  , 'TEAM_NAME'                        , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList  'Documents.DetailView', -1, 'Documents.LBL_PRIMARY_MODULE'    , 'PRIMARY_MODULE'                   , '{0}'        , 'Modules'                 , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsTags       'Documents.DetailView', -1, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsertOnly    'Documents.DetailView', -1, 'TextBox', 'Documents.LBL_DOC_DESCRIPTION', 'DESCRIPTION', '10,90', null, null, null, null, 3, null;
+
+	exec dbo.spDETAILVIEWS_FIELDS_InsHeader     'Documents.DetailView', -1, '.LBL_LAYOUT_TAB_OTHER'           , 3, 'tab-only';
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Documents.DetailView', -1, '.LBL_DATE_ENTERED'               , 'DATE_ENTERED .LBL_BY CREATED_BY_NAME'  , '{0} {1} {2}', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Documents.DetailView', -1, '.LBL_DATE_MODIFIED'              , 'DATE_MODIFIED .LBL_BY MODIFIED_BY_NAME', '{0} {1} {2}', null;
+
+end else if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Documents.DetailView' and FIELD_TYPE = 'Header' and DATA_LABEL = '.LBL_LAYOUT_TAB_OVERVIEW' and DELETED = 0) begin -- then
+	-- 04/20/2022 Paul.  The following maintenance does not apply if this was a new Pacific layout. 
+
 	exec dbo.spDETAILVIEWS_FIELDS_CnvBound     'Documents.DetailView',  5, 'Teams.LBL_TEAM'                 , 'TEAM_NAME'                        , '{0}'        , null;
 	-- 02/24/2010 Paul.  When upgrading from and old version, the Team ID will not exist. 
 	if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Documents.DetailView' and DATA_FIELD = 'TEAM_NAME' and DELETED = 0) begin -- then
@@ -597,24 +652,32 @@ end else begin
 end -- if;
 GO
 
+
+-- 01/21/2006 Paul.  Attachments are in a separate table. 
+-- 04/15/2022 Paul.  Reorganize layout using Pacific tabs. 
+-- delete from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Emails.DetailView';
 if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Emails.DetailView' and DELETED = 0) begin -- then
 	print 'DETAILVIEWS_FIELDS Emails.DetailView';
-	exec dbo.spDETAILVIEWS_InsertOnly          'Emails.DetailView'        , 'Emails'        , 'vwEMAILS_Edit'        , '15%', '35%', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Emails.DetailView'  ,  0, 'Emails.LBL_DATE_SENT'            , 'DATE_START'                       , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink 'Emails.DetailView'  ,  1, 'PARENT_TYPE'                     , 'PARENT_NAME'                      , '{0}'        , 'PARENT_ID', '~/Parents/view.aspx?ID={0}', null, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Emails.DetailView'  ,  2, 'Teams.LBL_TEAM'                  , 'TEAM_NAME'                        , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Emails.DetailView'  ,  3, '.LBL_DATE_MODIFIED'              , 'DATE_MODIFIED .LBL_BY MODIFIED_BY_NAME', '{0} {1} {2}', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Emails.DetailView'  ,  4, '.LBL_ASSIGNED_TO'                , 'ASSIGNED_TO_NAME'                 , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Emails.DetailView'  ,  5, '.LBL_DATE_ENTERED'               , 'DATE_ENTERED .LBL_BY CREATED_BY_NAME'  , '{0} {1} {2}', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Emails.DetailView'  ,  6, 'Emails.LBL_FROM'                 , 'FROM_NAME FROM_ADDR'              , '{0} &lt;{1}&gt;', 3;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Emails.DetailView'  ,  7, 'Emails.LBL_TO'                   , 'TO_ADDRS'                         , '{0}'        , 3;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Emails.DetailView'  ,  8, 'Emails.LBL_CC'                   , 'CC_ADDRS'                         , '{0}'        , 3;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Emails.DetailView'  ,  9, 'Emails.LBL_BCC'                  , 'BCC_ADDRS'                        , '{0}'        , 3;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Emails.DetailView'  , 10, 'Emails.LBL_SUBJECT'              , 'NAME'                             , '{0}'        , 3;
-	exec dbo.spDETAILVIEWS_FIELDS_InsertOnly   'Emails.DetailView'  , 11, 'TextBox', 'Emails.LBL_BODY', 'DESCRIPTION', null, null, null, null, null, 3, null;
-	-- 01/21/2006 Paul.  Attachments are in a separate table. 
-	--exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Emails.DetailView'  , 12, 'Emails.LBL_ATTACHMENTS'          , null                               , '{0}'        , 3;
-end else begin
+	exec dbo.spDETAILVIEWS_InsertOnly           'Emails.DetailView'  , 'Emails'        , 'vwEMAILS_Edit'        , '15%', '35%', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHeader     'Emails.DetailView'  , -1, '.LBL_LAYOUT_TAB_OVERVIEW'        , 3, 'tab-only';
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Emails.DetailView'  , -1, 'Emails.LBL_DATE_SENT'            , 'DATE_START'                       , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink  'Emails.DetailView'  , -1, 'PARENT_TYPE'                     , 'PARENT_NAME'                      , '{0}'        , 'PARENT_ID', '~/Parents/view.aspx?ID={0}', null, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Emails.DetailView'  , -1, '.LBL_ASSIGNED_TO'                , 'ASSIGNED_TO_NAME'                 , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Emails.DetailView'  , -1, 'Teams.LBL_TEAM'                  , 'TEAM_NAME'                        , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Emails.DetailView'  , -1, 'Emails.LBL_FROM'                 , 'FROM_NAME FROM_ADDR'              , '{0} &lt;{1}&gt;', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Emails.DetailView'  , -1, 'Emails.LBL_CC'                   , 'CC_ADDRS'                         , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Emails.DetailView'  , -1, 'Emails.LBL_TO'                   , 'TO_ADDRS'                         , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Emails.DetailView'  , -1, 'Emails.LBL_BCC'                  , 'BCC_ADDRS'                        , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Emails.DetailView'  , -1, 'Emails.LBL_SUBJECT'              , 'NAME'                             , '{0}'        , 3;
+	exec dbo.spDETAILVIEWS_FIELDS_InsertOnly    'Emails.DetailView'  , -1, 'TextBox', 'Emails.LBL_BODY'      , 'DESCRIPTION', null, null, null, null, null, 3, null;
+
+	exec dbo.spDETAILVIEWS_FIELDS_InsHeader     'Emails.DetailView'  , -1, '.LBL_LAYOUT_TAB_OTHER'           , 3, 'tab-only';
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Emails.DetailView'  , -1, '.LBL_DATE_ENTERED'               , 'DATE_ENTERED .LBL_BY CREATED_BY_NAME'  , '{0} {1} {2}', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Emails.DetailView'  , -1, '.LBL_DATE_MODIFIED'              , 'DATE_MODIFIED .LBL_BY MODIFIED_BY_NAME', '{0} {1} {2}', null;
+
+end else if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Emails.DetailView' and FIELD_TYPE = 'Header' and DATA_LABEL = '.LBL_LAYOUT_TAB_OVERVIEW' and DELETED = 0) begin -- then
+	-- 04/20/2022 Paul.  The following maintenance does not apply if this was a new Pacific layout. 
+
 	exec dbo.spDETAILVIEWS_FIELDS_CnvBound     'Emails.DetailView'  ,  2, 'Teams.LBL_TEAM'                  , 'TEAM_NAME'                        , '{0}'        , null;
 	-- 02/24/2010 Paul.  When upgrading from and old version, the Team ID will not exist. 
 	if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Emails.DetailView' and DATA_FIELD = 'TEAM_NAME' and DELETED = 0) begin -- then
@@ -651,20 +714,27 @@ GO
 -- 04/21/2006 Paul.  Change BODY to BODY_HTML. 
 -- 04/02/2012 Paul.  Add ASSIGNED_USER_ID to Notes, Documents, EmailTemplates. 
 -- 05/13/2020 Paul.  Convert BODY_HTML to TextBox from String to better support React Client. 
+-- 04/15/2022 Paul.  Reorganize layout using Pacific tabs. 
 -- delete from DETAILVIEWS_FIELDS where DETAIL_NAME = 'EmailTemplates.DetailView';
 if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'EmailTemplates.DetailView' and DELETED = 0) begin -- then
 	print 'DETAILVIEWS_FIELDS EmailTemplates.DetailView';
-	exec dbo.spDETAILVIEWS_InsertOnly          'EmailTemplates.DetailView', 'EmailTemplates', 'vwEMAIL_TEMPLATES_Edit', '15%', '35%', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'EmailTemplates.DetailView',  0, 'EmailTemplates.LBL_NAME'         , 'NAME'                             , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'EmailTemplates.DetailView',  1, '.LBL_DATE_MODIFIED'              , 'DATE_MODIFIED .LBL_BY MODIFIED_BY_NAME', '{0} {1} {2}', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsertOnly   'EmailTemplates.DetailView',  2, 'TextBox', 'EmailTemplates.LBL_DESCRIPTION', 'DESCRIPTION', null, null, null, null, null, null, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'EmailTemplates.DetailView',  3, '.LBL_DATE_ENTERED'               , 'DATE_ENTERED .LBL_BY CREATED_BY_NAME'  , '{0} {1} {2}', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'EmailTemplates.DetailView',  4, 'EmailTemplates.LBL_SUBJECT'      , 'SUBJECT'                          , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'EmailTemplates.DetailView',  5, 'Teams.LBL_TEAM'                  , 'TEAM_NAME'                        , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'EmailTemplates.DetailView',  6, '.LBL_ASSIGNED_TO'                , 'ASSIGNED_TO_NAME'                 , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBlank     'EmailTemplates.DetailView',  7, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsertOnly   'EmailTemplates.DetailView',  8, 'TextBox', 'EmailTemplates.LBL_BODY', 'BODY_HTML', null, null, null, null, null, 3, null;
-end else begin
+	exec dbo.spDETAILVIEWS_InsertOnly           'EmailTemplates.DetailView', 'EmailTemplates', 'vwEMAIL_TEMPLATES_Edit', '15%', '35%', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHeader     'EmailTemplates.DetailView', -1, '.LBL_LAYOUT_TAB_OVERVIEW'        , 3, 'tab-only';
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'EmailTemplates.DetailView', -1, 'EmailTemplates.LBL_NAME'         , 'NAME'                             , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsertOnly    'EmailTemplates.DetailView', -1, 'TextBox', 'EmailTemplates.LBL_DESCRIPTION', 'DESCRIPTION', null, null, null, null, null, null, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'EmailTemplates.DetailView', -1, '.LBL_ASSIGNED_TO'                , 'ASSIGNED_TO_NAME'                 , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'EmailTemplates.DetailView', -1, 'Teams.LBL_TEAM'                  , 'TEAM_NAME'                        , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'EmailTemplates.DetailView', -1, 'EmailTemplates.LBL_SUBJECT'      , 'SUBJECT'                          , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBlank      'EmailTemplates.DetailView', -1, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsertOnly    'EmailTemplates.DetailView', -1, 'TextBox', 'EmailTemplates.LBL_BODY', 'BODY_HTML', null, null, null, null, null, 3, null;
+
+	exec dbo.spDETAILVIEWS_FIELDS_InsHeader     'EmailTemplates.DetailView', -1, '.LBL_LAYOUT_TAB_OTHER'           , 3, 'tab-only';
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'EmailTemplates.DetailView', -1, '.LBL_DATE_ENTERED'               , 'DATE_ENTERED .LBL_BY CREATED_BY_NAME'  , '{0} {1} {2}', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'EmailTemplates.DetailView', -1, '.LBL_DATE_MODIFIED'              , 'DATE_MODIFIED .LBL_BY MODIFIED_BY_NAME', '{0} {1} {2}', null;
+
+end else if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'EmailTemplates.DetailView' and FIELD_TYPE = 'Header' and DATA_LABEL = '.LBL_LAYOUT_TAB_OVERVIEW' and DELETED = 0) begin -- then
+	-- 04/20/2022 Paul.  The following maintenance does not apply if this was a new Pacific layout. 
+
 	exec dbo.spDETAILVIEWS_FIELDS_CnvBound     'EmailTemplates.DetailView',  5, 'Teams.LBL_TEAM'                  , 'TEAM_NAME'                        , '{0}'        , null;
 	-- 02/24/2010 Paul.  When upgrading from and old version, the Team ID will not exist. 
 	if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'EmailTemplates.DetailView' and DATA_FIELD = 'TEAM_NAME' and DELETED = 0) begin -- then
@@ -767,43 +837,55 @@ GO
 -- 09/01/2012 Paul.  Add LAST_ACTIVITY_DATE. 
 -- 05/14/2016 Paul.  Add Tags module. 
 -- 06/30/2018 Paul.  Separate NAME into FIRST_NAME LAST_NAME so that either can be erased. 
+-- 04/15/2022 Paul.  Reorganize layout using Pacific tabs. 
+-- delete from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Leads.DetailView';
 if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Leads.DetailView' and DELETED = 0) begin -- then
 	print 'DETAILVIEWS_FIELDS Leads.DetailView';
-	exec dbo.spDETAILVIEWS_InsertOnly           'Leads.DetailView'         , 'Leads'         , 'vwLEADS_Edit'         , '20%', '30%', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList  'Leads.DetailView'   ,  0, 'Leads.LBL_LEAD_SOURCE'            , 'LEAD_SOURCE'                      , '{0}'        , 'lead_source_dom', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList  'Leads.DetailView'   ,  1, 'Leads.LBL_STATUS'                 , 'STATUS'                           , '{0}'        , 'lead_status_dom', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Leads.DetailView'   ,  2, 'Leads.LBL_LEAD_SOURCE_DESCRIPTION', 'LEAD_SOURCE_DESCRIPTION'          , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Leads.DetailView'   ,  3, 'Leads.LBL_STATUS_DESCRIPTION'     , 'STATUS_DESCRIPTION'               , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Leads.DetailView'   ,  4, 'Leads.LBL_REFERED_BY'             , 'REFERED_BY'                       , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBlank      'Leads.DetailView'   ,  5, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBlank      'Leads.DetailView'   ,  6, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Leads.DetailView'   ,  7, 'Leads.LBL_OFFICE_PHONE'           , 'PHONE_WORK'                       , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Leads.DetailView'   ,  8, 'Leads.LBL_NAME'                   , 'FIRST_NAME LAST_NAME'             , '{0} {1}'    , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Leads.DetailView'   ,  9, 'Leads.LBL_MOBILE_PHONE'           , 'PHONE_MOBILE'                     , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_InsertOnly           'Leads.DetailView'   , 'Leads'         , 'vwLEADS_Edit'         , '20%', '30%', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHeader     'Leads.DetailView'   , -1, '.LBL_LAYOUT_TAB_OVERVIEW'        , 3, 'tab-only';
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Leads.DetailView'   , -1, 'Leads.LBL_NAME'                   , 'FIRST_NAME LAST_NAME'             , '{0} {1}'    , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBlank      'Leads.DetailView'   , -1, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Leads.DetailView'   , -1, 'Leads.LBL_TITLE'                  , 'TITLE'                            , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Leads.DetailView'   , -1, 'Leads.LBL_OFFICE_PHONE'           , 'PHONE_WORK'                       , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Leads.DetailView'   , -1, 'Leads.LBL_DEPARTMENT'             , 'DEPARTMENT'                       , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Leads.DetailView'   , -1, 'Leads.LBL_MOBILE_PHONE'           , 'PHONE_MOBILE'                     , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink  'Leads.DetailView'   , -1, 'Leads.LBL_ACCOUNT_NAME'           , 'ACCOUNT_NAME'                     , '{0}'        , 'ACCOUNT_ID', '~/Accounts/view.aspx?ID={0}', null, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Leads.DetailView'   , -1, 'Leads.LBL_FAX_PHONE'              , 'PHONE_FAX'                        , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink  'Leads.DetailView'   , -1, 'Leads.LBL_EMAIL_ADDRESS'          , 'EMAIL1'                           , '{0}'        , 'EMAIL1', 'mailto:{0}', null, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Leads.DetailView'   , -1, 'Leads.LBL_HOME_PHONE'             , 'PHONE_HOME'                       , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink  'Leads.DetailView'   , -1, 'Leads.LBL_OTHER_EMAIL_ADDRESS'    , 'EMAIL2'                           , '{0}'        , 'EMAIL2', 'mailto:{0}', null, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Leads.DetailView'   , -1, 'Leads.LBL_OTHER_PHONE'            , 'PHONE_OTHER'                      , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsCheckBox   'Leads.DetailView'   , -1, 'Leads.LBL_EMAIL_OPT_OUT'          , 'EMAIL_OPT_OUT'                    , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsCheckBox   'Leads.DetailView'   , -1, 'Leads.LBL_DO_NOT_CALL'            , 'DO_NOT_CALL'                      , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink  'Leads.DetailView'   , -1, 'Accounts.LBL_WEBSITE'             , 'WEBSITE'                          , '{0}'        , 'WEBSITE', '{0}', '_blank', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBlank      'Leads.DetailView'   , -1, null;
+
+	exec dbo.spDETAILVIEWS_FIELDS_InsSeparator  'Leads.DetailView'   , -1;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Leads.DetailView'   , -1, 'Leads.LBL_PRIMARY_ADDRESS'        , 'PRIMARY_ADDRESS_HTML'             , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Leads.DetailView'   , -1, 'Leads.LBL_ALTERNATE_ADDRESS'      , 'ALT_ADDRESS_HTML'                 , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Leads.DetailView'   , -1, '.LBL_ASSIGNED_TO'                 , 'ASSIGNED_TO_NAME'                 , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Leads.DetailView'   , -1, 'Teams.LBL_TEAM'                   , 'TEAM_NAME'                        , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Leads.DetailView'   , -1, '.LBL_LAST_ACTIVITY_DATE'          , 'LAST_ACTIVITY_DATE'               , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsTags       'Leads.DetailView'   , -1, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsertOnly    'Leads.DetailView'   , -1, 'TextBox', 'Leads.LBL_DESCRIPTION' , 'DESCRIPTION', null, null, null, null, null, 3, null;
+
+	exec dbo.spDETAILVIEWS_FIELDS_InsHeader     'Leads.DetailView'   , -1, '.LBL_LAYOUT_TAB_MORE_INFORMATION', 3, 'tab-only';
+	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList  'Leads.DetailView'   , -1, 'Leads.LBL_STATUS'                 , 'STATUS'                           , '{0}'        , 'lead_status_dom', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList  'Leads.DetailView'   , -1, 'Leads.LBL_LEAD_SOURCE'            , 'LEAD_SOURCE'                      , '{0}'        , 'lead_source_dom', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Leads.DetailView'   , -1, 'Leads.LBL_STATUS_DESCRIPTION'     , 'STATUS_DESCRIPTION'               , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Leads.DetailView'   , -1, 'Leads.LBL_LEAD_SOURCE_DESCRIPTION', 'LEAD_SOURCE_DESCRIPTION'          , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Leads.DetailView'   , -1, 'Leads.LBL_REFERED_BY'             , 'REFERED_BY'                       , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBlank      'Leads.DetailView'   , -1, null;
+
+	exec dbo.spDETAILVIEWS_FIELDS_InsHeader     'Leads.DetailView'   , -1, '.LBL_LAYOUT_TAB_OTHER'           , 3, 'tab-only';
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Leads.DetailView'   , -1, '.LBL_DATE_ENTERED'                , 'DATE_ENTERED .LBL_BY CREATED_BY_NAME'  , '{0} {1} {2}', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Leads.DetailView'   , -1, '.LBL_DATE_MODIFIED'               , 'DATE_MODIFIED .LBL_BY MODIFIED_BY_NAME', '{0} {1} {2}', null;
+
 --	exec dbo.spDETAILVIEWS_FIELDS_InsButton     'Leads.DetailView'   , 10, null                               , '.LBL_VCARD'                       , 'vCard'      , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Leads.DetailView'   , 10, '.LBL_LAST_ACTIVITY_DATE'          , 'LAST_ACTIVITY_DATE'               , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Leads.DetailView'   , 11, 'Leads.LBL_HOME_PHONE'             , 'PHONE_HOME'                       , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink  'Leads.DetailView'   , 12, 'Leads.LBL_ACCOUNT_NAME'           , 'ACCOUNT_NAME'                     , '{0}'        , 'ACCOUNT_ID', '~/Accounts/view.aspx?ID={0}', null, null;
---	exec dbo.spDETAILVIEWS_FIELDS_InsJavaScript 'Leads.DetailView'   , 13, null                               , 'ACCOUNT_NAME'                     , 'ID ACCOUNT_NAME', 'if (typeof(LinkedIn) != "undefined") new LinkedIn.CompanyInsiderPopup("spn{0}_ACCOUNT_NAME","{1}");', 'spn{0}_ACCOUNT_NAME', -1;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Leads.DetailView'   , 13, 'Leads.LBL_OTHER_PHONE'            , 'PHONE_OTHER'                      , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink  'Leads.DetailView'   , 14, 'Accounts.LBL_WEBSITE'             , 'WEBSITE'                          , '{0}'        , 'WEBSITE', '{0}', '_blank', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Leads.DetailView'   , 15, 'Leads.LBL_FAX_PHONE'              , 'PHONE_FAX'                        , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Leads.DetailView'   , 16, 'Leads.LBL_TITLE'                  , 'TITLE'                            , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink  'Leads.DetailView'   , 17, 'Leads.LBL_EMAIL_ADDRESS'          , 'EMAIL1'                           , '{0}'        , 'EMAIL1', 'mailto:{0}', null, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Leads.DetailView'   , 18, 'Leads.LBL_DEPARTMENT'             , 'DEPARTMENT'                       , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink  'Leads.DetailView'   , 19, 'Leads.LBL_OTHER_EMAIL_ADDRESS'    , 'EMAIL2'                           , '{0}'        , 'EMAIL2', 'mailto:{0}', null, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsCheckBox   'Leads.DetailView'   , 20, 'Leads.LBL_DO_NOT_CALL'            , 'DO_NOT_CALL'                      , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsCheckBox   'Leads.DetailView'   , 21, 'Leads.LBL_EMAIL_OPT_OUT'          , 'EMAIL_OPT_OUT'                    , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Leads.DetailView'   , 22, 'Teams.LBL_TEAM'                   , 'TEAM_NAME'                        , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Leads.DetailView'   , 23, '.LBL_DATE_MODIFIED'               , 'DATE_MODIFIED .LBL_BY MODIFIED_BY_NAME', '{0} {1} {2}', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Leads.DetailView'   , 24, '.LBL_ASSIGNED_TO'                 , 'ASSIGNED_TO_NAME'                 , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Leads.DetailView'   , 25, '.LBL_DATE_ENTERED'                , 'DATE_ENTERED .LBL_BY CREATED_BY_NAME'  , '{0} {1} {2}', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsTags       'Leads.DetailView'   , 26, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBlank      'Leads.DetailView'   , 27, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Leads.DetailView'   , 28, 'Leads.LBL_PRIMARY_ADDRESS'        , 'PRIMARY_ADDRESS_HTML'             , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Leads.DetailView'   , 29, 'Leads.LBL_ALTERNATE_ADDRESS'      , 'ALT_ADDRESS_HTML'                 , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsertOnly    'Leads.DetailView'   , 30, 'TextBox', 'Leads.LBL_DESCRIPTION' , 'DESCRIPTION', null, null, null, null, null, 3, null;
-end else begin
+
+end else if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Leads.DetailView' and FIELD_TYPE = 'Header' and DATA_LABEL = '.LBL_LAYOUT_TAB_OVERVIEW' and DELETED = 0) begin -- then
+	-- 04/20/2022 Paul.  The following maintenance does not apply if this was a new Pacific layout. 
+
 	exec dbo.spDETAILVIEWS_FIELDS_CnvBound      'Leads.DetailView'   , 22, 'Teams.LBL_TEAM'                   , 'TEAM_NAME'                        , '{0}'        , null;
 	-- 09/01/2012 Paul.  Add LAST_ACTIVITY_DATE. 
 	exec dbo.spDETAILVIEWS_FIELDS_CnvBound      'Leads.DetailView'   , 10, '.LBL_LAST_ACTIVITY_DATE'          , 'LAST_ACTIVITY_DATE'               , '{0}'        , null;
@@ -879,28 +961,35 @@ language sql
 
 
 -- 03/22/2013 Paul.  Add Recurrence fields. 
+-- 04/15/2022 Paul.  Reorganize layout using Pacific tabs. 
+-- delete from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Meetings.DetailView';
 if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Meetings.DetailView' and DELETED = 0) begin -- then
 	print 'DETAILVIEWS_FIELDS Meetings.DetailView';
-	exec dbo.spDETAILVIEWS_InsertOnly          'Meetings.DetailView'      , 'Meetings'      , 'vwMEETINGS_Edit'      , '15%', '35%', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Meetings.DetailView',  0, 'Meetings.LBL_SUBJECT'             , 'NAME'                                                                         , '{0}'            , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList 'Meetings.DetailView',  1, 'Meetings.LBL_STATUS'              , 'STATUS'                                                                       , '{0}'            , 'meeting_status_dom', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Meetings.DetailView',  2, 'Meetings.LBL_LOCATION'            , 'LOCATION'                                                                     , '{0}'            , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink 'Meetings.DetailView',  3, 'PARENT_TYPE'                      , 'PARENT_NAME'                                                                  , '{0}'            , 'PARENT_ID', '~/Parents/view.aspx?ID={0}', null, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Meetings.DetailView',  4, 'Meetings.LBL_DATE_TIME'           , 'DATE_START'                                                                   , '{0}'            , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Meetings.DetailView',  5, 'Meetings.LBL_DURATION'            , 'DURATION_HOURS Calls.LBL_HOURS_ABBREV DURATION_MINUTES Calls.LBL_MINSS_ABBREV', '{0} {1} {2} {3}', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Meetings.DetailView',  6, 'Teams.LBL_TEAM'                   , 'TEAM_NAME'                                                                    , '{0}'            , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Meetings.DetailView',  7, '.LBL_DATE_MODIFIED'               , 'DATE_MODIFIED .LBL_BY MODIFIED_BY_NAME'                                            , '{0} {1} {2}'    , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Meetings.DetailView',  8, '.LBL_ASSIGNED_TO'                 , 'ASSIGNED_TO_NAME'                                                             , '{0}'            , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Meetings.DetailView',  9, '.LBL_DATE_ENTERED'                , 'DATE_ENTERED .LBL_BY CREATED_BY_NAME'                                              , '{0} {1} {2}'    , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsertOnly   'Meetings.DetailView', 10, 'TextBox', 'Meetings.LBL_DESCRIPTION', 'DESCRIPTION', null, null, null, null, null, 3, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBlank     'Meetings.DetailView', 11, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBlank     'Meetings.DetailView', 12, null;
-	-- 03/22/2013 Paul.  Add Recurrence fields. 
-	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList 'Meetings.DetailView', 13, 'Calls.LBL_REPEAT_TYPE'            , 'REPEAT_TYPE'                                                                  , '{0}'            , 'repeat_type_dom', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Meetings.DetailView', 14, 'Calendar.LBL_REPEAT_END_AFTER'    , 'REPEAT_COUNT Calendar.LBL_REPEAT_OCCURRENCES'                                 , '{0} {1}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Meetings.DetailView', 15, 'Calendar.LBL_REPEAT_INTERVAL'     , 'REPEAT_INTERVAL'                                                              , '{0}'            , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Meetings.DetailView', 16, 'Calls.LBL_REPEAT_UNTIL'           , 'REPEAT_UNTIL'                                                                 , '{0}'            , null;
-end else begin
+	exec dbo.spDETAILVIEWS_InsertOnly           'Meetings.DetailView', 'Meetings'      , 'vwMEETINGS_Edit'      , '15%', '35%', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHeader     'Meetings.DetailView', -1, '.LBL_LAYOUT_TAB_OVERVIEW'        , 3, 'tab-only';
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Meetings.DetailView', -1, 'Meetings.LBL_SUBJECT'             , 'NAME'                                                                         , '{0}'            , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList  'Meetings.DetailView', -1, 'Meetings.LBL_STATUS'              , 'STATUS'                                                                       , '{0}'            , 'meeting_status_dom', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Meetings.DetailView', -1, 'Meetings.LBL_DATE_TIME'           , 'DATE_START'                                                                   , '{0}'            , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Meetings.DetailView', -1, 'Meetings.LBL_LOCATION'            , 'LOCATION'                                                                     , '{0}'            , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Meetings.DetailView', -1, 'Meetings.LBL_DURATION'            , 'DURATION_HOURS Calls.LBL_HOURS_ABBREV DURATION_MINUTES Calls.LBL_MINSS_ABBREV', '{0} {1} {2} {3}', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink  'Meetings.DetailView', -1, 'PARENT_TYPE'                      , 'PARENT_NAME'                                                                  , '{0}'            , 'PARENT_ID', '~/Parents/view.aspx?ID={0}', null, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Meetings.DetailView', -1, '.LBL_ASSIGNED_TO'                 , 'ASSIGNED_TO_NAME'                                                             , '{0}'            , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Meetings.DetailView', -1, 'Teams.LBL_TEAM'                   , 'TEAM_NAME'                                                                    , '{0}'            , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsertOnly    'Meetings.DetailView', -1, 'TextBox', 'Meetings.LBL_DESCRIPTION', 'DESCRIPTION', null, null, null, null, null, 3, null;
+
+	exec dbo.spDETAILVIEWS_FIELDS_InsHeader     'Meetings.DetailView', -1, 'Meetings.LBL_LAYOUT_TAB_RECURRENCE', 3, 'tab-only';
+	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList  'Meetings.DetailView', -1, 'Calls.LBL_REPEAT_TYPE'            , 'REPEAT_TYPE'                                                                  , '{0}'            , 'repeat_type_dom', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Meetings.DetailView', -1, 'Calendar.LBL_REPEAT_END_AFTER'    , 'REPEAT_COUNT Calendar.LBL_REPEAT_OCCURRENCES'                                 , '{0} {1}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Meetings.DetailView', -1, 'Calendar.LBL_REPEAT_INTERVAL'     , 'REPEAT_INTERVAL'                                                              , '{0}'            , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Meetings.DetailView', -1, 'Calls.LBL_REPEAT_UNTIL'           , 'REPEAT_UNTIL'                                                                 , '{0}'            , null;
+
+	exec dbo.spDETAILVIEWS_FIELDS_InsHeader     'Meetings.DetailView', -1, '.LBL_LAYOUT_TAB_OTHER'            , 3, 'tab-only';
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Meetings.DetailView', -1, '.LBL_DATE_ENTERED'                , 'DATE_ENTERED .LBL_BY CREATED_BY_NAME'  , '{0} {1} {2}', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Meetings.DetailView', -1, '.LBL_DATE_MODIFIED'               , 'DATE_MODIFIED .LBL_BY MODIFIED_BY_NAME', '{0} {1} {2}', null;
+
+end else if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Meetings.DetailView' and FIELD_TYPE = 'Header' and DATA_LABEL = '.LBL_LAYOUT_TAB_OVERVIEW' and DELETED = 0) begin -- then
+	-- 04/20/2022 Paul.  The following maintenance does not apply if this was a new Pacific layout. 
+
 	exec dbo.spDETAILVIEWS_FIELDS_CnvBound     'Meetings.DetailView',  6, 'Teams.LBL_TEAM'                   , 'TEAM_NAME'                                                                    , '{0}'            , null;
 	-- 02/24/2010 Paul.  When upgrading from and old version, the Team ID will not exist. 
 	if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Meetings.DetailView' and DATA_FIELD = 'TEAM_NAME' and DELETED = 0) begin -- then
@@ -920,21 +1009,29 @@ end -- if;
 GO
 
 -- 04/02/2012 Paul.  Add ASSIGNED_USER_ID to Notes, Documents. 
+-- 04/15/2022 Paul.  Reorganize layout using Pacific tabs. 
+-- delete from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Notes.DetailView';
 if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Notes.DetailView' and DELETED = 0) begin -- then
 	print 'DETAILVIEWS_FIELDS Notes.DetailView';
-	exec dbo.spDETAILVIEWS_InsertOnly          'Notes.DetailView'         , 'Notes'         , 'vwNOTES_Edit'         , '15%', '35%', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink 'Notes.DetailView'   ,  0, 'Notes.LBL_CONTACT_NAME'          , 'CONTACT_NAME'                     , '{0}'        , 'CONTACT_ID'        , '~/Contacts/view.aspx?ID={0}'   , null, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink 'Notes.DetailView'   ,  1, 'PARENT_TYPE'                     , 'PARENT_NAME'                      , '{0}'        , 'PARENT_ID'         , '~/Parents/view.aspx?ID={0}'    , null, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Notes.DetailView'   ,  2, 'Notes.LBL_PHONE'                 , 'CONTACT_PHONE'                    , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Notes.DetailView'   ,  3, '.LBL_DATE_MODIFIED'              , 'DATE_MODIFIED .LBL_BY MODIFIED_BY_NAME', '{0} {1} {2}', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink 'Notes.DetailView'   ,  4, 'Notes.LBL_EMAIL_ADDRESS'         , 'CONTACT_EMAIL'                    , '{0}'        , 'CONTACT_EMAIL'     , 'mailto:{0}'                    , null, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Notes.DetailView'   ,  5, '.LBL_DATE_ENTERED'               , 'DATE_ENTERED .LBL_BY CREATED_BY_NAME'  , '{0} {1} {2}', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Notes.DetailView'   ,  6, 'Teams.LBL_TEAM'                  , 'TEAM_NAME'                        , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Notes.DetailView'   ,  7, '.LBL_ASSIGNED_TO'                , 'ASSIGNED_TO_NAME'                 , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Notes.DetailView'   ,  8, 'Notes.LBL_SUBJECT'               , 'NAME'                             , '{0}'        , 3;
-	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink 'Notes.DetailView'   ,  9, 'Notes.LBL_FILENAME'              , 'FILENAME'                         , '{0}'        , 'NOTE_ATTACHMENT_ID', '~/Notes/Attachment.aspx?ID={0}', null, 3;
-	exec dbo.spDETAILVIEWS_FIELDS_InsertOnly   'Notes.DetailView'   , 10, 'TextBox', 'Notes.LBL_NOTE', 'DESCRIPTION', '30,90', null, null, null, null, 3, null;
-end else begin
+	exec dbo.spDETAILVIEWS_InsertOnly           'Notes.DetailView'         , 'Notes'         , 'vwNOTES_Edit'         , '15%', '35%', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHeader     'Notes.DetailView'   , -1, '.LBL_LAYOUT_TAB_OVERVIEW'        , 3, 'tab-only';
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Notes.DetailView'   , -1, 'Notes.LBL_SUBJECT'               , 'NAME'                             , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink  'Notes.DetailView'   , -1, 'Notes.LBL_FILENAME'              , 'FILENAME'                         , '{0}'        , 'NOTE_ATTACHMENT_ID', '~/Notes/Attachment.aspx?ID={0}', null, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink  'Notes.DetailView'   , -1, 'Notes.LBL_CONTACT_NAME'          , 'CONTACT_NAME'                     , '{0}'        , 'CONTACT_ID'        , '~/Contacts/view.aspx?ID={0}'   , null, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink  'Notes.DetailView'   , -1, 'PARENT_TYPE'                     , 'PARENT_NAME'                      , '{0}'        , 'PARENT_ID'         , '~/Parents/view.aspx?ID={0}'    , null, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Notes.DetailView'   , -1, 'Notes.LBL_PHONE'                 , 'CONTACT_PHONE'                    , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink  'Notes.DetailView'   , -1, 'Notes.LBL_EMAIL_ADDRESS'         , 'CONTACT_EMAIL'                    , '{0}'        , 'CONTACT_EMAIL'     , 'mailto:{0}'                    , null, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Notes.DetailView'   , -1, '.LBL_ASSIGNED_TO'                , 'ASSIGNED_TO_NAME'                 , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Notes.DetailView'   , -1, 'Teams.LBL_TEAM'                  , 'TEAM_NAME'                        , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsertOnly    'Notes.DetailView'   , -1, 'TextBox', 'Notes.LBL_NOTE'       , 'DESCRIPTION', '30,90', null, null, null, null, 3, null;
+
+	exec dbo.spDETAILVIEWS_FIELDS_InsHeader     'Notes.DetailView'   , -1, '.LBL_LAYOUT_TAB_OTHER'           , 3, 'tab-only';
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Notes.DetailView'   , -1, '.LBL_DATE_ENTERED'               , 'DATE_ENTERED .LBL_BY CREATED_BY_NAME'  , '{0} {1} {2}', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Notes.DetailView'   , -1, '.LBL_DATE_MODIFIED'              , 'DATE_MODIFIED .LBL_BY MODIFIED_BY_NAME', '{0} {1} {2}', null;
+
+end else if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Notes.DetailView' and FIELD_TYPE = 'Header' and DATA_LABEL = '.LBL_LAYOUT_TAB_OVERVIEW' and DELETED = 0) begin -- then
+	-- 04/20/2022 Paul.  The following maintenance does not apply if this was a new Pacific layout. 
+
 	-- 04/02/2012 Paul.  Add ASSIGNED_USER_ID. 
 	exec dbo.spDETAILVIEWS_FIELDS_CnvBound     'Notes.DetailView'   ,  7, '.LBL_ASSIGNED_TO'                , 'ASSIGNED_TO_NAME'                 , '{0}'        , null;
 	exec dbo.spDETAILVIEWS_FIELDS_CnvBound     'Notes.DetailView'   ,  6, 'Teams.LBL_TEAM'                  , 'TEAM_NAME'                        , '{0}'        , null;
@@ -949,29 +1046,35 @@ GO
 -- 11/11/2010 Paul.  We are getting a javascript error in the LinkedIn code on IE8. "Error: Invalid argument."
 -- 09/01/2012 Paul.  Add LAST_ACTIVITY_DATE. 
 -- 08/08/2015 Paul.  Separate relationship for Leads/Opportunities. 
+-- 04/15/2022 Paul.  Reorganize layout using Pacific tabs. 
 -- delete from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Opportunities.DetailView';
 if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Opportunities.DetailView' and DELETED = 0) begin -- then
 	print 'DETAILVIEWS_FIELDS Opportunities.DetailView';
-	exec dbo.spDETAILVIEWS_InsertOnly           'Opportunities.DetailView' , 'Opportunities' , 'vwOPPORTUNITIES_Edit' , '20%', '30%', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Opportunities.DetailView',  0, 'Opportunities.LBL_OPPORTUNITY_NAME', 'NAME'                             , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Opportunities.DetailView',  1, 'Opportunities.LBL_AMOUNT'          , 'AMOUNT_USDOLLAR'                  , '{0:c}'      , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink  'Opportunities.DetailView',  2, 'Opportunities.LBL_ACCOUNT_NAME'    , 'ACCOUNT_NAME'                     , '{0}'        , 'ACCOUNT_ID'          , '~/Accounts/view.aspx?ID={0}', null, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink  'Opportunities.DetailView',  3, 'Opportunities.LBL_LEAD_NAME'       , 'LEAD_NAME'                        , '{0}'        , 'LEAD_ID'             , '~/Leads/view.aspx?ID={0}', null, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Opportunities.DetailView',  4, 'Opportunities.LBL_DATE_CLOSED'     , 'DATE_CLOSED'                      , '{0:d}'      , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList  'Opportunities.DetailView',  5, 'Opportunities.LBL_TYPE'            , 'OPPORTUNITY_TYPE'                 , '{0}'        , 'opportunity_type_dom', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Opportunities.DetailView',  6, 'Opportunities.LBL_NEXT_STEP'       , 'NEXT_STEP'                        , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList  'Opportunities.DetailView',  7, 'Opportunities.LBL_LEAD_SOURCE'     , 'LEAD_SOURCE'                      , '{0}'        , 'lead_source_dom'     , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList  'Opportunities.DetailView',  8, 'Opportunities.LBL_SALES_STAGE'     , 'SALES_STAGE'                      , '{0}'        , 'sales_stage_dom'     , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Opportunities.DetailView',  9, 'Teams.LBL_TEAM'                    , 'TEAM_NAME'                        , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Opportunities.DetailView', 10, 'Opportunities.LBL_PROBABILITY'     , 'PROBABILITY'                      , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Opportunities.DetailView', 11, '.LBL_ASSIGNED_TO'                  , 'ASSIGNED_TO_NAME'                 , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Opportunities.DetailView', 12, '.LBL_DATE_MODIFIED'                , 'DATE_MODIFIED .LBL_BY MODIFIED_BY_NAME', '{0} {1} {2}', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Opportunities.DetailView', 13, '.LBL_LAST_ACTIVITY_DATE'           , 'LAST_ACTIVITY_DATE'               , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink  'Opportunities.DetailView', 14, 'Opportunities.LBL_CAMPAIGN_NAME'   , 'CAMPAIGN_NAME'                    , '{0}'        , 'CAMPAIGN_ID'         , '~/Campaigns/view.aspx?ID={0}', null, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Opportunities.DetailView', 15, '.LBL_DATE_ENTERED'                 , 'DATE_ENTERED .LBL_BY CREATED_BY_NAME'  , '{0} {1} {2}', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsTags       'Opportunities.DetailView', 16, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBlank      'Opportunities.DetailView', 17, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsertOnly    'Opportunities.DetailView', 18, 'TextBox', 'Opportunities.LBL_DESCRIPTION', 'DESCRIPTION', null, null, null, null, null, 3, null;
+	exec dbo.spDETAILVIEWS_InsertOnly           'Opportunities.DetailView', 'Opportunities' , 'vwOPPORTUNITIES_Edit' , '20%', '30%', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHeader     'Opportunities.DetailView', -1, '.LBL_LAYOUT_TAB_BASIC'             , 3, 'tab-only';
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Opportunities.DetailView', -1, 'Opportunities.LBL_OPPORTUNITY_NAME', 'NAME'                             , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink  'Opportunities.DetailView', -1, 'Opportunities.LBL_ACCOUNT_NAME'    , 'ACCOUNT_NAME'                     , '{0}'        , 'ACCOUNT_ID'          , '~/Accounts/view.aspx?ID={0}', null, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Opportunities.DetailView', -1, 'Opportunities.LBL_AMOUNT'          , 'AMOUNT_USDOLLAR'                  , '{0:c}'      , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Opportunities.DetailView', -1, 'Opportunities.LBL_DATE_CLOSED'     , 'DATE_CLOSED'                      , '{0:d}'      , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList  'Opportunities.DetailView', -1, 'Opportunities.LBL_SALES_STAGE'     , 'SALES_STAGE'                      , '{0}'        , 'sales_stage_dom'     , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList  'Opportunities.DetailView', -1, 'Opportunities.LBL_TYPE'            , 'OPPORTUNITY_TYPE'                 , '{0}'        , 'opportunity_type_dom', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Opportunities.DetailView', -1, 'Opportunities.LBL_PROBABILITY'     , 'PROBABILITY'                      , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList  'Opportunities.DetailView', -1, 'Opportunities.LBL_LEAD_SOURCE'     , 'LEAD_SOURCE'                      , '{0}'        , 'lead_source_dom'     , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Opportunities.DetailView', -1, 'Opportunities.LBL_NEXT_STEP'       , 'NEXT_STEP'                        , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink  'Opportunities.DetailView', -1, 'Opportunities.LBL_CAMPAIGN_NAME'   , 'CAMPAIGN_NAME'                    , '{0}'        , 'CAMPAIGN_ID'         , '~/Campaigns/view.aspx?ID={0}', null, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBlank      'Opportunities.DetailView', -1, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink  'Opportunities.DetailView', -1, 'Opportunities.LBL_LEAD_NAME'       , 'LEAD_NAME'                        , '{0}'        , 'LEAD_ID'             , '~/Leads/view.aspx?ID={0}', null, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsSeparator  'Opportunities.DetailView', -1;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Opportunities.DetailView', -1, '.LBL_ASSIGNED_TO'                  , 'ASSIGNED_TO_NAME'                 , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Opportunities.DetailView', -1, 'Teams.LBL_TEAM'                    , 'TEAM_NAME'                        , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Opportunities.DetailView', -1, '.LBL_LAST_ACTIVITY_DATE'           , 'LAST_ACTIVITY_DATE'               , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsTags       'Opportunities.DetailView', -1, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsertOnly    'Opportunities.DetailView', -1, 'TextBox', 'Opportunities.LBL_DESCRIPTION', 'DESCRIPTION', null, null, null, null, null, 3, null;
+
+	exec dbo.spDETAILVIEWS_FIELDS_InsHeader     'Opportunities.DetailView', -1, '.LBL_LAYOUT_TAB_OTHER'             , 3, 'tab-only';
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Opportunities.DetailView', -1, '.LBL_DATE_ENTERED'                 , 'DATE_ENTERED .LBL_BY CREATED_BY_NAME'  , '{0} {1} {2}', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Opportunities.DetailView', -1, '.LBL_DATE_MODIFIED'                , 'DATE_MODIFIED .LBL_BY MODIFIED_BY_NAME', '{0} {1} {2}', null;
+
 --	exec dbo.spDETAILVIEWS_FIELDS_InsJavaScript 'Opportunities.DetailView',  3, null                                , 'ACCOUNT_NAME'                     , 'ID ACCOUNT_NAME', 'if (typeof(LinkedIn) != "undefined") new LinkedIn.CompanyInsiderPopup("spn{0}_ACCOUNT_NAME","{1}");', 'spn{0}_ACCOUNT_NAME', -1;
 end else begin
 	exec dbo.spDETAILVIEWS_FIELDS_CnvBound      'Opportunities.DetailView',  8, 'Teams.LBL_TEAM'                    , 'TEAM_NAME'                        , '{0}'        , null;
@@ -1065,27 +1168,35 @@ end -- if;
 GO
 
 -- 01/13/2010 Paul.  New Project fields in SugarCRM. 
+-- 01/13/2010 Paul.  SugarCRM nolonger displayes the effort fields. 
 -- 12/09/2010 Paul.  Need to fix STATUS and PRIORITY. 
 -- 09/01/2012 Paul.  Add LAST_ACTIVITY_DATE. 
 -- 05/14/2016 Paul.  Add Tags module. 
+-- 04/15/2022 Paul.  Reorganize layout using Pacific tabs. 
+-- delete from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Project.DetailView';
 if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Project.DetailView' and DELETED = 0) begin -- then
 	print 'DETAILVIEWS_FIELDS Project.DetailView';
-	exec dbo.spDETAILVIEWS_InsertOnly          'Project.DetailView'       , 'Project'       , 'vwPROJECTS_Edit'      , '20%', '20%', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Project.DetailView',  0, 'Project.LBL_NAME'                    , 'NAME'                             , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Project.DetailView',  1, '.LBL_LAST_ACTIVITY_DATE'             , 'LAST_ACTIVITY_DATE'               , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList 'Project.DetailView',  2, 'ProjectTask.LBL_STATUS'              , 'STATUS'                           , '{0}'        , 'project_status_dom'       , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList 'Project.DetailView',  3, 'ProjectTask.LBL_PRIORITY'            , 'PRIORITY'                         , '{0}'        , 'projects_priority_options', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Project.DetailView',  4, 'ProjectTask.LBL_ESTIMATED_START_DATE', 'ESTIMATED_START_DATE'             , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Project.DetailView',  5, 'ProjectTask.LBL_ESTIMATED_END_DATE'  , 'ESTIMATED_END_DATE'               , '{0}'        , null;
--- 01/13/2010 Paul.  SugarCRM nolonger displayes the effort fields. 
---	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Project.DetailView',  6, 'Project.LBL_TOTAL_ESTIMATED_EFFORT'  , 'TOTAL_ESTIMATED_EFFORT'           , '{0}'        , null;
---	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Project.DetailView',  7, 'Project.LBL_TOTAL_ACTUAL_EFFORT'     , 'TOTAL_ACTUAL_EFFORT'              , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Project.DetailView',  6, '.LBL_ASSIGNED_TO'                    , 'ASSIGNED_TO_NAME'                 , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Project.DetailView',  7, 'Teams.LBL_TEAM'                      , 'TEAM_NAME'                        , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsTags      'Project.DetailView',  8, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBlank     'Project.DetailView',  9, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsertOnly   'Project.DetailView', 10, 'TextBox', 'Project.LBL_DESCRIPTION'  , 'DESCRIPTION', null, null, null, null, null, 3, null;
-end else begin
+	exec dbo.spDETAILVIEWS_InsertOnly           'Project.DetailView' , 'Project'       , 'vwPROJECTS_Edit'      , '20%', '20%', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHeader     'Project.DetailView' , -1, '.LBL_LAYOUT_TAB_OVERVIEW'            , 3, 'tab-only';
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Project.DetailView' , -1, 'Project.LBL_NAME'                    , 'NAME'                             , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList  'Project.DetailView' , -1, 'ProjectTask.LBL_STATUS'              , 'STATUS'                           , '{0}'        , 'project_status_dom'       , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Project.DetailView' , -1, 'ProjectTask.LBL_ESTIMATED_START_DATE', 'ESTIMATED_START_DATE'             , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList  'Project.DetailView' , -1, 'ProjectTask.LBL_PRIORITY'            , 'PRIORITY'                         , '{0}'        , 'projects_priority_options', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Project.DetailView' , -1, 'ProjectTask.LBL_ESTIMATED_END_DATE'  , 'ESTIMATED_END_DATE'               , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBlank      'Project.DetailView' , -1, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Project.DetailView' , -1, '.LBL_ASSIGNED_TO'                    , 'ASSIGNED_TO_NAME'                 , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Project.DetailView' , -1, 'Teams.LBL_TEAM'                      , 'TEAM_NAME'                        , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Project.DetailView' , -1, '.LBL_LAST_ACTIVITY_DATE'             , 'LAST_ACTIVITY_DATE'               , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsTags       'Project.DetailView' , -1, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsertOnly    'Project.DetailView' , -1, 'TextBox', 'Project.LBL_DESCRIPTION'  , 'DESCRIPTION', null, null, null, null, null, 3, null;
+
+	exec dbo.spDETAILVIEWS_FIELDS_InsHeader     'Project.DetailView' , -1, '.LBL_LAYOUT_TAB_OTHER'               , 3, 'tab-only';
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Project.DetailView' , -1, '.LBL_DATE_ENTERED'                   , 'DATE_ENTERED .LBL_BY CREATED_BY_NAME'  , '{0} {1} {2}', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Project.DetailView' , -1, '.LBL_DATE_MODIFIED'                  , 'DATE_MODIFIED .LBL_BY MODIFIED_BY_NAME', '{0} {1} {2}', null;
+
+end else if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Project.DetailView' and FIELD_TYPE = 'Header' and DATA_LABEL = '.LBL_LAYOUT_TAB_OVERVIEW' and DELETED = 0) begin -- then
+	-- 04/20/2022 Paul.  The following maintenance does not apply if this was a new Pacific layout. 
+
 	--exec dbo.spDETAILVIEWS_FIELDS_CnvBound     'Project.DetailView',  1, 'Teams.LBL_TEAM'                    , 'TEAM_NAME'                        , '{0}'        , null;
 	-- 09/01/2012 Paul.  Add LAST_ACTIVITY_DATE. 
 	exec dbo.spDETAILVIEWS_FIELDS_CnvBound     'Project.DetailView',  1, '.LBL_LAST_ACTIVITY_DATE'             , 'LAST_ACTIVITY_DATE'               , '{0}'        , null;
@@ -1148,27 +1259,39 @@ end -- if;
 GO
 
 -- 01/19/2010 Paul.  Now that ESTIMATED_EFFORT is a float, we need to format the value. 
+-- 04/15/2022 Paul.  Reorganize layout using Pacific tabs. 
+-- delete from DETAILVIEWS_FIELDS where DETAIL_NAME = 'ProjectTask.DetailView';
 if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'ProjectTask.DetailView' and DELETED = 0) begin -- then
 	print 'DETAILVIEWS_FIELDS ProjectTask.DetailView';
-	exec dbo.spDETAILVIEWS_InsertOnly          'ProjectTask.DetailView'   , 'ProjectTask'   , 'vwPROJECT_TASKS_Edit' , '15%', '35%', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'ProjectTask.DetailView',  0, 'Project.LBL_NAME'                , 'NAME'                             , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'ProjectTask.DetailView',  1, '.LBL_ASSIGNED_TO'                , 'ASSIGNED_TO_NAME'                 , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList 'ProjectTask.DetailView',  2, 'ProjectTask.LBL_STATUS'          , 'STATUS'                           , '{0}'        , 'project_task_status_options'     , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'ProjectTask.DetailView',  3, 'Teams.LBL_TEAM'                  , 'TEAM_NAME'                        , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'ProjectTask.DetailView',  4, 'ProjectTask.LBL_TASK_NUMBER'     , 'TASK_NUMBER'                      , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink 'ProjectTask.DetailView',  5, 'ProjectTask.LBL_DEPENDS_ON_ID'   , 'DEPENDS_ON_NAME'                  , '{0}'        , 'DEPENDS_ON_ID'                   , '~/ProjectTasks/view.aspx?ID={0}', null, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList 'ProjectTask.DetailView',  6, 'ProjectTask.LBL_PRIORITY'        , 'PRIORITY'                         , '{0}'        , 'project_task_priority_options'   , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsCheckBox  'ProjectTask.DetailView',  7, 'ProjectTask.LBL_MILESTONE_FLAG'  , 'MILESTONE_FLAG'                   , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'ProjectTask.DetailView',  8, 'ProjectTask.LBL_ORDER_NUMBER'    , 'ORDER_NUMBER'                     , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink 'ProjectTask.DetailView',  9, 'ProjectTask.LBL_PARENT_ID'       , 'PROJECT_NAME'                     , '{0}'        , 'PROJECT_ID'                      , '~/Projects/view.aspx?ID={0}'    , null, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'ProjectTask.DetailView', 10, 'ProjectTask.LBL_PERCENT_COMPLETE', 'PERCENT_COMPLETE'                 , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList 'ProjectTask.DetailView', 11, 'ProjectTask.LBL_UTILIZATION'     , 'UTILIZATION'                      , '{0}'        , 'project_task_utilization_options', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'ProjectTask.DetailView', 12, 'ProjectTask.LBL_DATE_START'      , 'DATE_START'                       , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'ProjectTask.DetailView', 13, 'ProjectTask.LBL_ESTIMATED_EFFORT', 'ESTIMATED_EFFORT'                 , '{0:f1}'     , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'ProjectTask.DetailView', 14, 'ProjectTask.LBL_DATE_DUE'        , 'DATE_DUE'                         , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'ProjectTask.DetailView', 15, 'ProjectTask.LBL_ACTUAL_EFFORT'   , 'ACTUAL_EFFORT'                    , '{0:f1}'     , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsertOnly   'ProjectTask.DetailView', 16, 'TextBox', 'ProjectTask.LBL_DESCRIPTION', 'DESCRIPTION', null, null, null, null, null, 3, null;
-end else begin
+	exec dbo.spDETAILVIEWS_InsertOnly           'ProjectTask.DetailView', 'ProjectTask'   , 'vwPROJECT_TASKS_Edit' , '15%', '35%', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHeader     'ProjectTask.DetailView', -1, '.LBL_LAYOUT_TAB_OVERVIEW'        , 3, 'tab-only';
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'ProjectTask.DetailView', -1, 'Project.LBL_NAME'                , 'NAME'                             , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList  'ProjectTask.DetailView', -1, 'ProjectTask.LBL_STATUS'          , 'STATUS'                           , '{0}'        , 'project_task_status_options'     , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'ProjectTask.DetailView', -1, 'ProjectTask.LBL_DATE_START'      , 'DATE_START'                       , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'ProjectTask.DetailView', -1, 'ProjectTask.LBL_DATE_DUE'        , 'DATE_DUE'                         , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList  'ProjectTask.DetailView', -1, 'ProjectTask.LBL_PRIORITY'        , 'PRIORITY'                         , '{0}'        , 'project_task_priority_options'   , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'ProjectTask.DetailView', -1, 'ProjectTask.LBL_PERCENT_COMPLETE', 'PERCENT_COMPLETE'                 , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink  'ProjectTask.DetailView', -1, 'ProjectTask.LBL_PARENT_ID'       , 'PROJECT_NAME'                     , '{0}'        , 'PROJECT_ID'                      , '~/Projects/view.aspx?ID={0}'    , null, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'ProjectTask.DetailView', -1, 'ProjectTask.LBL_TASK_NUMBER'     , 'TASK_NUMBER'                      , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'ProjectTask.DetailView', -1, '.LBL_ASSIGNED_TO'                , 'ASSIGNED_TO_NAME'                 , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'ProjectTask.DetailView', -1, 'Teams.LBL_TEAM'                  , 'TEAM_NAME'                        , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsertOnly    'ProjectTask.DetailView', -1, 'TextBox', 'ProjectTask.LBL_DESCRIPTION', 'DESCRIPTION', null, null, null, null, null, 3, null;
+
+	exec dbo.spDETAILVIEWS_FIELDS_InsHeader     'ProjectTask.DetailView', -1, 'ProjectTask.LBL_LAYOUT_TAB_TIMELINE', 3, 'tab-only';
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'ProjectTask.DetailView', -1, 'ProjectTask.LBL_ESTIMATED_EFFORT', 'ESTIMATED_EFFORT'                 , '{0:f1}'     , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'ProjectTask.DetailView', -1, 'ProjectTask.LBL_ACTUAL_EFFORT'   , 'ACTUAL_EFFORT'                    , '{0:f1}'     , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'ProjectTask.DetailView', -1, 'ProjectTask.LBL_ORDER_NUMBER'    , 'ORDER_NUMBER'                     , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsCheckBox   'ProjectTask.DetailView', -1, 'ProjectTask.LBL_MILESTONE_FLAG'  , 'MILESTONE_FLAG'                   , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList  'ProjectTask.DetailView', -1, 'ProjectTask.LBL_UTILIZATION'     , 'UTILIZATION'                      , '{0}'        , 'project_task_utilization_options', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink  'ProjectTask.DetailView', -1, 'ProjectTask.LBL_DEPENDS_ON_ID'   , 'DEPENDS_ON_NAME'                  , '{0}'        , 'DEPENDS_ON_ID'                   , '~/ProjectTasks/view.aspx?ID={0}', null, null;
+
+	exec dbo.spDETAILVIEWS_FIELDS_InsHeader     'ProjectTask.DetailView', -1, '.LBL_LAYOUT_TAB_OTHER'           , 3, 'tab-only';
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'ProjectTask.DetailView', -1, '.LBL_DATE_ENTERED'               , 'DATE_ENTERED .LBL_BY CREATED_BY_NAME'  , '{0} {1} {2}', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'ProjectTask.DetailView', -1, '.LBL_DATE_MODIFIED'              , 'DATE_MODIFIED .LBL_BY MODIFIED_BY_NAME', '{0} {1} {2}', null;
+
+end else if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'ProjectTask.DetailView' and FIELD_TYPE = 'Header' and DATA_LABEL = '.LBL_LAYOUT_TAB_OVERVIEW' and DELETED = 0) begin -- then
+	-- 04/20/2022 Paul.  The following maintenance does not apply if this was a new Pacific layout. 
+
 	exec dbo.spDETAILVIEWS_FIELDS_CnvBound     'ProjectTask.DetailView',  3, 'Teams.LBL_TEAM'                  , 'TEAM_NAME'                        , '{0}'        , null;
 	if exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'ProjectTask.DetailView' and DATA_FIELD = 'ESTIMATED_EFFORT' and DATA_FORMAT = '{0}' and DELETED = 0) begin -- then
 		print 'DETAILVIEWS_FIELDS ProjectTask.DetailView: ESTIMATED_EFFORT format F1';
@@ -1201,24 +1324,29 @@ GO
 
 -- 08/12/2007 Paul.  Add List Type and Domain Name to support Campaign management.
 -- 05/14/2016 Paul.  Add Tags module. 
--- delete from DETAILVIEWS_FIELDS where DETAIL_NAME = 'ProspectLists.DetailView'
+-- 04/15/2022 Paul.  Reorganize layout using Pacific tabs. 
+-- delete from DETAILVIEWS_FIELDS where DETAIL_NAME = 'ProspectLists.DetailView';
 if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'ProspectLists.DetailView' and DELETED = 0) begin -- then
 	print 'DETAILVIEWS_FIELDS ProspectLists.DetailView';
-	exec dbo.spDETAILVIEWS_InsertOnly          'ProspectLists.DetailView' , 'ProspectLists' , 'vwPROSPECT_LISTS_Edit', '20%', '30%', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'ProspectLists.DetailView',  0, 'ProspectLists.LBL_NAME'              , 'NAME'                             , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsCheckBox  'ProspectLists.DetailView',  1, 'ProspectLists.LBL_DYNAMIC_LIST'      , 'DYNAMIC_LIST'                     , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList 'ProspectLists.DetailView',  2, 'ProspectLists.LBL_LIST_TYPE'         , 'LIST_TYPE'                        , '{0}'        , 'prospect_list_type_dom', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'ProspectLists.DetailView',  3, 'ProspectLists.LBL_DOMAIN_NAME'       , 'DOMAIN_NAME'                      , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'ProspectLists.DetailView',  4, '.LBL_ASSIGNED_TO'                    , 'ASSIGNED_TO_NAME'                 , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'ProspectLists.DetailView',  5, 'Teams.LBL_TEAM'                      , 'TEAM_NAME'                        , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'ProspectLists.DetailView',  6, '.LBL_CREATED_BY'                     , 'CREATED_BY_NAME'                  , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'ProspectLists.DetailView',  7, '.LBL_MODIFIED_BY'                    , 'MODIFIED_BY_NAME'                 , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'ProspectLists.DetailView',  8, '.LBL_DATE_ENTERED'                   , 'DATE_ENTERED'                     , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'ProspectLists.DetailView',  9, '.LBL_DATE_MODIFIED'                  , 'DATE_MODIFIED'                    , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsTags      'ProspectLists.DetailView', 10, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBlank     'ProspectLists.DetailView', 11, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsertOnly   'ProspectLists.DetailView', 12, 'TextBox', 'ProspectLists.LBL_DESCRIPTION', 'DESCRIPTION', null, null, null, null, null, 3, null;
-end else begin
+	exec dbo.spDETAILVIEWS_InsertOnly           'ProspectLists.DetailView', 'ProspectLists' , 'vwPROSPECT_LISTS_Edit', '20%', '30%', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHeader     'ProspectLists.DetailView', -1, '.LBL_LAYOUT_TAB_OVERVIEW'        , 3, 'tab-only';
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'ProspectLists.DetailView', -1, 'ProspectLists.LBL_NAME'          , 'NAME'                             , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsCheckBox   'ProspectLists.DetailView', -1, 'ProspectLists.LBL_DYNAMIC_LIST'  , 'DYNAMIC_LIST'                     , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList  'ProspectLists.DetailView', -1, 'ProspectLists.LBL_LIST_TYPE'     , 'LIST_TYPE'                        , '{0}'        , 'prospect_list_type_dom', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'ProspectLists.DetailView', -1, 'ProspectLists.LBL_DOMAIN_NAME'   , 'DOMAIN_NAME'                      , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'ProspectLists.DetailView', -1, '.LBL_ASSIGNED_TO'                , 'ASSIGNED_TO_NAME'                 , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'ProspectLists.DetailView', -1, 'Teams.LBL_TEAM'                  , 'TEAM_NAME'                        , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBlank      'ProspectLists.DetailView', -1, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsTags       'ProspectLists.DetailView', -1, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsertOnly    'ProspectLists.DetailView', -1, 'TextBox', 'ProspectLists.LBL_DESCRIPTION', 'DESCRIPTION', null, null, null, null, null, 3, null;
+
+	exec dbo.spDETAILVIEWS_FIELDS_InsHeader     'ProspectLists.DetailView', -1, '.LBL_LAYOUT_TAB_OTHER'           , 3, 'tab-only';
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'ProspectLists.DetailView', -1, '.LBL_DATE_ENTERED'               , 'DATE_ENTERED .LBL_BY CREATED_BY_NAME'  , '{0} {1} {2}', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'ProspectLists.DetailView', -1, '.LBL_DATE_MODIFIED'              , 'DATE_MODIFIED .LBL_BY MODIFIED_BY_NAME', '{0} {1} {2}', null;
+
+end else if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'ProspectLists.DetailView' and FIELD_TYPE = 'Header' and DATA_LABEL = '.LBL_LAYOUT_TAB_OVERVIEW' and DELETED = 0) begin -- then
+	-- 04/20/2022 Paul.  The following maintenance does not apply if this was a new Pacific layout. 
+
 	-- 08/12/2007 Paul.  Keep index at 3 as it refers to a value before List Type was added. 
 	exec dbo.spDETAILVIEWS_FIELDS_CnvBound     'ProspectLists.DetailView',  3, 'Teams.LBL_TEAM'                      , 'TEAM_NAME'                        , '{0}'        , null;
 	if exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'ProspectLists.DetailView' and FIELD_TYPE = 'Blank' and FIELD_INDEX = 1 and DELETED = 0) begin -- then
@@ -1268,41 +1396,49 @@ GO
 -- 09/01/2012 Paul.  Add LAST_ACTIVITY_DATE. 
 -- 05/14/2016 Paul.  Add Tags module. 
 -- 06/30/2018 Paul.  Separate NAME into FIRST_NAME LAST_NAME so that either can be erased. 
+-- 04/15/2022 Paul.  Reorganize layout using Pacific tabs. 
+-- delete from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Prospects.DetailView';
 if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Prospects.DetailView' and DELETED = 0) begin -- then
 	print 'DETAILVIEWS_FIELDS Prospects.DetailView';
-	exec dbo.spDETAILVIEWS_InsertOnly          'Prospects.DetailView'     , 'Prospects'     , 'vwPROSPECTS_Edit'     , '15%', '35%', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Prospects.DetailView',  0, 'Prospects.LBL_NAME'               , 'FIRST_NAME LAST_NAME'             , '{0} {1}'    , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Prospects.DetailView',  1, 'Prospects.LBL_OFFICE_PHONE'       , 'PHONE_WORK'                       , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Prospects.DetailView',  2, '.LBL_LAST_ACTIVITY_DATE'          , 'LAST_ACTIVITY_DATE'               , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Prospects.DetailView',  3, 'Prospects.LBL_MOBILE_PHONE'       , 'PHONE_MOBILE'                     , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBlank     'Prospects.DetailView',  4, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Prospects.DetailView',  5, 'Prospects.LBL_HOME_PHONE'         , 'PHONE_HOME'                       , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBlank     'Prospects.DetailView',  6, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Prospects.DetailView',  7, 'Prospects.LBL_OTHER_PHONE'        , 'PHONE_OTHER'                      , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Prospects.DetailView',  8, 'Prospects.LBL_TITLE'              , 'TITLE'                            , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Prospects.DetailView',  9, 'Prospects.LBL_FAX_PHONE'          , 'PHONE_FAX'                        , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Prospects.DetailView', 10, 'Prospects.LBL_DEPARTMENT'         , 'DEPARTMENT'                       , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink 'Prospects.DetailView', 11, 'Prospects.LBL_EMAIL_ADDRESS'      , 'EMAIL1'                           , '{0}'        , 'EMAIL1', 'mailto:{0}', null, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Prospects.DetailView', 12, 'Prospects.LBL_BIRTHDATE'          , 'BIRTHDATE'                        , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink 'Prospects.DetailView', 13, 'Prospects.LBL_OTHER_EMAIL_ADDRESS', 'EMAIL2'                           , '{0}'        , 'EMAIL2', 'mailto:{0}', null, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBlank     'Prospects.DetailView', 14, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Prospects.DetailView', 15, 'Prospects.LBL_ASSISTANT'          , 'ASSISTANT'                        , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBlank     'Prospects.DetailView', 16, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Prospects.DetailView', 17, 'Prospects.LBL_ASSISTANT_PHONE'    , 'ASSISTANT_PHONE'                  , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsCheckBox  'Prospects.DetailView', 18, 'Prospects.LBL_DO_NOT_CALL'        , 'DO_NOT_CALL'                      , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsCheckBox  'Prospects.DetailView', 19, 'Prospects.LBL_EMAIL_OPT_OUT'      , 'EMAIL_OPT_OUT'                    , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBlank     'Prospects.DetailView', 20, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsCheckBox  'Prospects.DetailView', 21, 'Prospects.LBL_INVALID_EMAIL'      , 'INVALID_EMAIL'                    , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Prospects.DetailView', 22, 'Teams.LBL_TEAM'                   , 'TEAM_NAME'                        , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Prospects.DetailView', 23, '.LBL_DATE_MODIFIED'               , 'DATE_MODIFIED .LBL_BY MODIFIED_BY_NAME', '{0} {1} {2}', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Prospects.DetailView', 24, '.LBL_ASSIGNED_TO'                 , 'ASSIGNED_TO_NAME'                 , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Prospects.DetailView', 25, '.LBL_DATE_ENTERED'                , 'DATE_ENTERED .LBL_BY CREATED_BY_NAME'  , '{0} {1} {2}', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Prospects.DetailView', 26, 'Prospects.LBL_PRIMARY_ADDRESS'    , 'PRIMARY_ADDRESS_HTML'             , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Prospects.DetailView', 27, 'Prospects.LBL_ALTERNATE_ADDRESS'  , 'ALT_ADDRESS_HTML'                 , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsTags      'Prospects.DetailView', 28, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBlank     'Prospects.DetailView', 29, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsertOnly   'Prospects.DetailView', 30, 'TextBox', 'Prospects.LBL_DESCRIPTION', 'DESCRIPTION', null, null, null, null, null, 3, null;
-end else begin
+	exec dbo.spDETAILVIEWS_InsertOnly           'Prospects.DetailView', 'Prospects'     , 'vwPROSPECTS_Edit'     , '15%', '35%', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHeader     'Prospects.DetailView', -1, '.LBL_LAYOUT_TAB_OVERVIEW'        , 3, 'tab-only';
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Prospects.DetailView', -1, 'Prospects.LBL_NAME'               , 'FIRST_NAME LAST_NAME'             , '{0} {1}'    , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBlank      'Prospects.DetailView', -1, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Prospects.DetailView', -1, 'Prospects.LBL_TITLE'              , 'TITLE'                            , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Prospects.DetailView', -1, 'Prospects.LBL_OFFICE_PHONE'       , 'PHONE_WORK'                       , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Prospects.DetailView', -1, 'Prospects.LBL_DEPARTMENT'         , 'DEPARTMENT'                       , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Prospects.DetailView', -1, 'Prospects.LBL_MOBILE_PHONE'       , 'PHONE_MOBILE'                     , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBlank      'Prospects.DetailView', -1, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Prospects.DetailView', -1, 'Prospects.LBL_FAX_PHONE'          , 'PHONE_FAX'                        , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink  'Prospects.DetailView', -1, 'Prospects.LBL_EMAIL_ADDRESS'      , 'EMAIL1'                           , '{0}'        , 'EMAIL1', 'mailto:{0}', null, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Prospects.DetailView', -1, 'Prospects.LBL_HOME_PHONE'         , 'PHONE_HOME'                       , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink  'Prospects.DetailView', -1, 'Prospects.LBL_OTHER_EMAIL_ADDRESS', 'EMAIL2'                           , '{0}'        , 'EMAIL2', 'mailto:{0}', null, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Prospects.DetailView', -1, 'Prospects.LBL_OTHER_PHONE'        , 'PHONE_OTHER'                      , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsCheckBox   'Prospects.DetailView', -1, 'Prospects.LBL_EMAIL_OPT_OUT'      , 'EMAIL_OPT_OUT'                    , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsCheckBox   'Prospects.DetailView', -1, 'Prospects.LBL_DO_NOT_CALL'        , 'DO_NOT_CALL'                      , null;
+
+	exec dbo.spDETAILVIEWS_FIELDS_InsSeparator  'Prospects.DetailView', -1;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Prospects.DetailView', -1, 'Prospects.LBL_PRIMARY_ADDRESS'    , 'PRIMARY_ADDRESS_HTML'             , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Prospects.DetailView', -1, 'Prospects.LBL_ALTERNATE_ADDRESS'  , 'ALT_ADDRESS_HTML'                 , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Prospects.DetailView', -1, '.LBL_ASSIGNED_TO'                 , 'ASSIGNED_TO_NAME'                 , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Prospects.DetailView', -1, 'Teams.LBL_TEAM'                   , 'TEAM_NAME'                        , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Prospects.DetailView', -1, '.LBL_LAST_ACTIVITY_DATE'          , 'LAST_ACTIVITY_DATE'               , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsTags       'Prospects.DetailView', -1, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsertOnly    'Prospects.DetailView', -1, 'TextBox', 'Prospects.LBL_DESCRIPTION', 'DESCRIPTION', null, null, null, null, null, 3, null;
+
+	exec dbo.spDETAILVIEWS_FIELDS_InsHeader     'Prospects.DetailView', -1, '.LBL_LAYOUT_TAB_MORE_INFORMATION', 3, 'tab-only';
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Prospects.DetailView', -1, 'Prospects.LBL_ASSISTANT'          , 'ASSISTANT'                        , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Prospects.DetailView', -1, 'Prospects.LBL_ASSISTANT_PHONE'    , 'ASSISTANT_PHONE'                  , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Prospects.DetailView', -1, 'Prospects.LBL_BIRTHDATE'          , 'BIRTHDATE'                        , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBlank      'Prospects.DetailView', -1, null;
+
+	exec dbo.spDETAILVIEWS_FIELDS_InsHeader     'Prospects.DetailView', -1, '.LBL_LAYOUT_TAB_OTHER'           , 3, 'tab-only';
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Prospects.DetailView', -1, '.LBL_DATE_ENTERED'                , 'DATE_ENTERED .LBL_BY CREATED_BY_NAME'  , '{0} {1} {2}', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Prospects.DetailView', -1, '.LBL_DATE_MODIFIED'               , 'DATE_MODIFIED .LBL_BY MODIFIED_BY_NAME', '{0} {1} {2}', null;
+
+end else if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Prospects.DetailView' and FIELD_TYPE = 'Header' and DATA_LABEL = '.LBL_LAYOUT_TAB_OVERVIEW' and DELETED = 0) begin -- then
+	-- 04/20/2022 Paul.  The following maintenance does not apply if this was a new Pacific layout. 
+
 	exec dbo.spDETAILVIEWS_FIELDS_CnvBound     'Prospects.DetailView', 22, 'Teams.LBL_TEAM'                   , 'TEAM_NAME'                        , '{0}'        , null;
 	-- 09/01/2012 Paul.  Add LAST_ACTIVITY_DATE. 
 	exec dbo.spDETAILVIEWS_FIELDS_CnvBound     'Prospects.DetailView',  2, '.LBL_LAST_ACTIVITY_DATE'          , 'LAST_ACTIVITY_DATE'               , '{0}'        , null;
@@ -1337,25 +1473,34 @@ end else begin
 end -- if;
 GO
 
+-- 04/15/2022 Paul.  Reorganize layout using Pacific tabs. 
+-- delete from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Tasks.DetailView';
 if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Tasks.DetailView' and DELETED = 0) begin -- then
 	print 'DETAILVIEWS_FIELDS Tasks.DetailView';
-	exec dbo.spDETAILVIEWS_InsertOnly          'Tasks.DetailView'         , 'Tasks'         , 'vwTASKS_Edit'         , '15%', '35%', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Tasks.DetailView'   ,  0, 'Tasks.LBL_SUBJECT'               , 'NAME'                             , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList 'Tasks.DetailView'   ,  1, 'Tasks.LBL_STATUS'                , 'STATUS'                           , '{0}'        , 'task_status_dom'  , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Tasks.DetailView'   ,  2, 'Tasks.LBL_DUE_DATE_AND_TIME'     , 'DATE_DUE'                         , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink 'Tasks.DetailView'   ,  3, 'PARENT_TYPE'                     , 'PARENT_NAME'                      , '{0}'        , 'PARENT_ID'        , '~/Parents/view.aspx?ID={0}' , null, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Tasks.DetailView'   ,  4, 'Tasks.LBL_START_DATE_AND_TIME'   , 'DATE_START'                       , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink 'Tasks.DetailView'   ,  5, 'Tasks.LBL_CONTACT'               , 'CONTACT_NAME'                     , '{0}'        , 'CONTACT_ID'       , '~/Contacts/view.aspx?ID={0}', null, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList 'Tasks.DetailView'   ,  6, 'Tasks.LBL_PRIORITY'              , 'PRIORITY'                         , '{0}'        , 'task_priority_dom', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Tasks.DetailView'   ,  7, 'Tasks.LBL_EMAIL'                 , 'CONTACT_EMAIL'                    , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Tasks.DetailView'   ,  8, 'Teams.LBL_TEAM'                  , 'TEAM_NAME'                        , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Tasks.DetailView'   ,  9, 'Tasks.LBL_PHONE'                 , 'CONTACT_PHONE'                    , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Tasks.DetailView'   , 10, '.LBL_ASSIGNED_TO'                , 'ASSIGNED_TO_NAME'                 , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Tasks.DetailView'   , 11, '.LBL_DATE_MODIFIED'              , 'DATE_MODIFIED .LBL_BY MODIFIED_BY_NAME', '{0} {1} {2}', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBlank     'Tasks.DetailView'   , 12, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'Tasks.DetailView'   , 13, '.LBL_DATE_ENTERED'               , 'DATE_ENTERED .LBL_BY CREATED_BY_NAME'  , '{0} {1} {2}', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsertOnly   'Tasks.DetailView'   , 14, 'TextBox', 'Tasks.LBL_DESCRIPTION', 'DESCRIPTION', null, null, null, null, null, 3, null;
-end else begin
+	exec dbo.spDETAILVIEWS_InsertOnly           'Tasks.DetailView'         , 'Tasks'         , 'vwTASKS_Edit'         , '15%', '35%', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHeader     'Tasks.DetailView'   , -1, '.LBL_LAYOUT_TAB_OVERVIEW'        , 3, 'tab-only';
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Tasks.DetailView'   , -1, 'Tasks.LBL_SUBJECT'               , 'NAME'                             , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList  'Tasks.DetailView'   , -1, 'Tasks.LBL_STATUS'                , 'STATUS'                           , '{0}'        , 'task_status_dom'  , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Tasks.DetailView'   , -1, 'Tasks.LBL_START_DATE_AND_TIME'   , 'DATE_START'                       , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink  'Tasks.DetailView'   , -1, 'PARENT_TYPE'                     , 'PARENT_NAME'                      , '{0}'        , 'PARENT_ID'        , '~/Parents/view.aspx?ID={0}' , null, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Tasks.DetailView'   , -1, 'Tasks.LBL_DUE_DATE_AND_TIME'     , 'DATE_DUE'                         , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink  'Tasks.DetailView'   , -1, 'Tasks.LBL_CONTACT'               , 'CONTACT_NAME'                     , '{0}'        , 'CONTACT_ID'       , '~/Contacts/view.aspx?ID={0}', null, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList  'Tasks.DetailView'   , -1, 'Tasks.LBL_PRIORITY'              , 'PRIORITY'                         , '{0}'        , 'task_priority_dom', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Tasks.DetailView'   , -1, 'Tasks.LBL_EMAIL'                 , 'CONTACT_EMAIL'                    , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBlank      'Tasks.DetailView'   , -1, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Tasks.DetailView'   , -1, 'Tasks.LBL_PHONE'                 , 'CONTACT_PHONE'                    , '{0}'        , null;
+
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Tasks.DetailView'   , -1, '.LBL_ASSIGNED_TO'                , 'ASSIGNED_TO_NAME'                 , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Tasks.DetailView'   , -1, 'Teams.LBL_TEAM'                  , 'TEAM_NAME'                        , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsertOnly    'Tasks.DetailView'   , -1, 'TextBox', 'Tasks.LBL_DESCRIPTION', 'DESCRIPTION', null, null, null, null, null, 3, null;
+
+	exec dbo.spDETAILVIEWS_FIELDS_InsHeader     'Tasks.DetailView'   , -1, '.LBL_LAYOUT_TAB_OTHER'           , 3, 'tab-only';
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Tasks.DetailView'   , -1, '.LBL_DATE_ENTERED'               , 'DATE_ENTERED .LBL_BY CREATED_BY_NAME'  , '{0} {1} {2}', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'Tasks.DetailView'   , -1, '.LBL_DATE_MODIFIED'              , 'DATE_MODIFIED .LBL_BY MODIFIED_BY_NAME', '{0} {1} {2}', null;
+
+end else if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Tasks.DetailView' and FIELD_TYPE = 'Header' and DATA_LABEL = '.LBL_LAYOUT_TAB_OVERVIEW' and DELETED = 0) begin -- then
+	-- 04/20/2022 Paul.  The following maintenance does not apply if this was a new Pacific layout. 
+
 	exec dbo.spDETAILVIEWS_FIELDS_CnvBound     'Tasks.DetailView'   ,  8, 'Teams.LBL_TEAM'                  , 'TEAM_NAME'                        , '{0}'        , null;
 	-- 02/24/2010 Paul.  When upgrading from and old version, the Team ID will not exist. 
 	if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Tasks.DetailView' and DATA_FIELD = 'TEAM_NAME' and DELETED = 0) begin -- then
@@ -1833,40 +1978,48 @@ end -- if;
 GO
 
 -- 09/25/2013 Paul.  Add SmsMessages module. 
+-- 04/15/2022 Paul.  Reorganize layout using Pacific tabs. 
 -- delete from DETAILVIEWS_FIELDS where DETAIL_NAME = 'SmsMessages.DetailView';
 if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'SmsMessages.DetailView' and DELETED = 0) begin -- then
 	print 'DETAILVIEWS_FIELDS SmsMessages.DetailView';
-	exec dbo.spDETAILVIEWS_InsertOnly          'SmsMessages.DetailView', 'SmsMessages'        , 'vwSMS_MESSAGES_Edit'        , '15%', '35%', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'SmsMessages.DetailView'     ,  0, 'SmsMessages.LBL_DATE_START'          , 'DATE_START'                       , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink 'SmsMessages.DetailView'     ,  1, 'PARENT_TYPE'                         , 'PARENT_NAME'                      , '{0}'        , 'PARENT_ID', '~/Parents/view.aspx?ID={0}', null, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'SmsMessages.DetailView'     ,  2, 'SmsMessages.LBL_FROM_NUMBER'         , 'FROM_NUMBER'                      , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'SmsMessages.DetailView'     ,  3, 'SmsMessages.LBL_FROM_LOCATION'       , 'FROM_LOCATION'                    , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'SmsMessages.DetailView'     ,  4, 'SmsMessages.LBL_TO_NUMBER'           , 'TO_NUMBER'                        , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'SmsMessages.DetailView'     ,  5, 'SmsMessages.LBL_TO_LOCATION'         , 'TO_LOCATION'                      , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'SmsMessages.DetailView'     ,  6, 'SmsMessages.LBL_NAME'                , 'NAME'                             , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList 'SmsMessages.DetailView'     ,  7, 'SmsMessages.LBL_STATUS'              , 'STATUS'                           , '{0}'        , 'dom_sms_status', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'SmsMessages.DetailView'     ,  8, 'Teams.LBL_TEAM'                      , 'TEAM_NAME'                        , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'SmsMessages.DetailView'     ,  9, '.LBL_DATE_MODIFIED'                  , 'DATE_MODIFIED .LBL_BY MODIFIED_BY_NAME', '{0} {1} {2}', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'SmsMessages.DetailView'     , 10, '.LBL_ASSIGNED_TO'                    , 'ASSIGNED_TO_NAME'                 , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'SmsMessages.DetailView'     , 11, '.LBL_DATE_ENTERED'                   , 'DATE_ENTERED .LBL_BY CREATED_BY_NAME'  , '{0} {1} {2}', null;
+	exec dbo.spDETAILVIEWS_InsertOnly           'SmsMessages.DetailView', 'SmsMessages'        , 'vwSMS_MESSAGES_Edit'        , '15%', '35%', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHeader     'SmsMessages.DetailView', -1, '.LBL_LAYOUT_TAB_OVERVIEW'        , 3, 'tab-only';
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'SmsMessages.DetailView', -1, 'SmsMessages.LBL_NAME'            , 'NAME'                             , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink  'SmsMessages.DetailView', -1, 'PARENT_TYPE'                     , 'PARENT_NAME'                      , '{0}'        , 'PARENT_ID', '~/Parents/view.aspx?ID={0}', null, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'SmsMessages.DetailView', -1, 'SmsMessages.LBL_DATE_START'      , 'DATE_START'                       , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList  'SmsMessages.DetailView', -1, 'SmsMessages.LBL_STATUS'          , 'STATUS'                           , '{0}'        , 'dom_sms_status', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'SmsMessages.DetailView', -1, 'SmsMessages.LBL_FROM_NUMBER'     , 'FROM_NUMBER'                      , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'SmsMessages.DetailView', -1, 'SmsMessages.LBL_FROM_LOCATION'   , 'FROM_LOCATION'                    , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'SmsMessages.DetailView', -1, 'SmsMessages.LBL_TO_NUMBER'       , 'TO_NUMBER'                        , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'SmsMessages.DetailView', -1, 'SmsMessages.LBL_TO_LOCATION'     , 'TO_LOCATION'                      , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'SmsMessages.DetailView', -1, '.LBL_ASSIGNED_TO'                , 'ASSIGNED_TO_NAME'                 , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'SmsMessages.DetailView', -1, 'Teams.LBL_TEAM'                  , 'TEAM_NAME'                        , '{0}'        , null;
+
+	exec dbo.spDETAILVIEWS_FIELDS_InsHeader     'SmsMessages.DetailView', -1, '.LBL_LAYOUT_TAB_OTHER'           , 3, 'tab-only';
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'SmsMessages.DetailView', -1, '.LBL_DATE_ENTERED'               , 'DATE_ENTERED .LBL_BY CREATED_BY_NAME'  , '{0} {1} {2}', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'SmsMessages.DetailView', -1, '.LBL_DATE_MODIFIED'              , 'DATE_MODIFIED .LBL_BY MODIFIED_BY_NAME', '{0} {1} {2}', null;
 end -- if;
 GO
 
 -- 10/22/2013 Paul.  Add TwitterMessages module.
+-- 04/15/2022 Paul.  Reorganize layout using Pacific tabs. 
 -- delete from DETAILVIEWS_FIELDS where DETAIL_NAME = 'TwitterMessages.DetailView';
 if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'TwitterMessages.DetailView' and DELETED = 0) begin -- then
 	print 'DETAILVIEWS_FIELDS TwitterMessages.DetailView';
-	exec dbo.spDETAILVIEWS_InsertOnly          'TwitterMessages.DetailView', 'TwitterMessages', 'vwTWITTER_MESSAGES_Edit', '15%', '35%', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'TwitterMessages.DetailView' ,  0, 'TwitterMessages.LBL_NAME'               , 'DESCRIPTION'                           , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink 'TwitterMessages.DetailView' ,  1, 'PARENT_TYPE'                            , 'PARENT_NAME'                           , '{0}'        , 'PARENT_ID', '~/Parents/view.aspx?ID={0}', null, null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'TwitterMessages.DetailView' ,  2, 'TwitterMessages.LBL_DATE_START'         , 'DATE_START'                            , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList 'TwitterMessages.DetailView' ,  3, 'TwitterMessages.LBL_STATUS'             , 'STATUS'                                , '{0}'        , 'dom_twitter_status', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'TwitterMessages.DetailView' ,  4, 'TwitterMessages.LBL_TWITTER_SCREEN_NAME', 'TWITTER_SCREEN_NAME'                   , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'TwitterMessages.DetailView' ,  5, 'TwitterMessages.LBL_TWITTER_FULL_NAME'  , 'TWITTER_FULL_NAME'                     , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'TwitterMessages.DetailView' ,  6, 'Teams.LBL_TEAM'                         , 'TEAM_NAME'                             , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'TwitterMessages.DetailView' ,  7, '.LBL_DATE_MODIFIED'                     , 'DATE_MODIFIED .LBL_BY MODIFIED_BY_NAME', '{0} {1} {2}', null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'TwitterMessages.DetailView' ,  8, '.LBL_ASSIGNED_TO'                       , 'ASSIGNED_TO_NAME'                      , '{0}'        , null;
-	exec dbo.spDETAILVIEWS_FIELDS_InsBound     'TwitterMessages.DetailView' ,  9, '.LBL_DATE_ENTERED'                      , 'DATE_ENTERED .LBL_BY CREATED_BY_NAME'  , '{0} {1} {2}', null;
+	exec dbo.spDETAILVIEWS_InsertOnly           'TwitterMessages.DetailView', 'TwitterMessages', 'vwTWITTER_MESSAGES_Edit', '15%', '35%', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHeader     'TwitterMessages.DetailView', -1, '.LBL_LAYOUT_TAB_OVERVIEW'               , 3, 'tab-only';
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'TwitterMessages.DetailView', -1, 'TwitterMessages.LBL_NAME'               , 'DESCRIPTION'                           , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsHyperLink  'TwitterMessages.DetailView', -1, 'PARENT_TYPE'                            , 'PARENT_NAME'                           , '{0}'        , 'PARENT_ID', '~/Parents/view.aspx?ID={0}', null, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'TwitterMessages.DetailView', -1, 'TwitterMessages.LBL_DATE_START'         , 'DATE_START'                            , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBoundList  'TwitterMessages.DetailView', -1, 'TwitterMessages.LBL_STATUS'             , 'STATUS'                                , '{0}'        , 'dom_twitter_status', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'TwitterMessages.DetailView', -1, 'TwitterMessages.LBL_TWITTER_SCREEN_NAME', 'TWITTER_SCREEN_NAME'                   , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'TwitterMessages.DetailView', -1, 'TwitterMessages.LBL_TWITTER_FULL_NAME'  , 'TWITTER_FULL_NAME'                     , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'TwitterMessages.DetailView', -1, '.LBL_ASSIGNED_TO'                       , 'ASSIGNED_TO_NAME'                      , '{0}'        , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'TwitterMessages.DetailView', -1, 'Teams.LBL_TEAM'                         , 'TEAM_NAME'                             , '{0}'        , null;
+
+	exec dbo.spDETAILVIEWS_FIELDS_InsHeader     'TwitterMessages.DetailView', -1, '.LBL_LAYOUT_TAB_OTHER'                  , 3, 'tab-only';
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'TwitterMessages.DetailView', -1, '.LBL_DATE_ENTERED'                      , 'DATE_ENTERED .LBL_BY CREATED_BY_NAME'  , '{0} {1} {2}', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound      'TwitterMessages.DetailView', -1, '.LBL_DATE_MODIFIED'                     , 'DATE_MODIFIED .LBL_BY MODIFIED_BY_NAME', '{0} {1} {2}', null;
 end -- if;
 GO
 

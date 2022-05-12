@@ -27,6 +27,7 @@ GO
 -- 02/01/2017 Paul.  Add support for Exchange using Username/Password. 
 -- 01/30/2019 Paul.  Ease conversion to Oracle. 
 -- 07/14/2020 Paul.  Create dummy ICLOUD_SECURITY_CODE field just in case it is required. 
+-- 02/12/2022 Paul.  Apple now uses OAuth. 
 Create View dbo.vwUSERS_Edit
 as
 select vwUSERS.*
@@ -40,6 +41,7 @@ select vwUSERS.*
      , (case when OUTBOUND_EMAILS.MAIL_SENDTYPE is null and OUTBOUND_EMAILS.MAIL_SMTPPORT in (25, 465, 587) then N'smtp' else OUTBOUND_EMAILS.MAIL_SENDTYPE end) as MAIL_SENDTYPE
      , (select count(*) from OAUTH_TOKENS where OAUTH_TOKENS.ASSIGNED_USER_ID = vwUSERS.ID and OAUTH_TOKENS.NAME = N'Office365'  and OAUTH_TOKENS.DELETED = 0) as OFFICE365_OAUTH_ENABLED
      , (select count(*) from OAUTH_TOKENS where OAUTH_TOKENS.ASSIGNED_USER_ID = vwUSERS.ID and OAUTH_TOKENS.NAME = N'GoogleApps' and OAUTH_TOKENS.DELETED = 0) as GOOGLEAPPS_OAUTH_ENABLED
+     , (select count(*) from OAUTH_TOKENS where OAUTH_TOKENS.ASSIGNED_USER_ID = vwUSERS.ID and OAUTH_TOKENS.NAME = N'iCloud'     and OAUTH_TOKENS.DELETED = 0) as ICLOUD_OAUTH_ENABLED
      , cast(null as nvarchar(25)) as ICLOUD_SECURITY_CODE
   from            vwUSERS
   left outer join USERS

@@ -66,6 +66,8 @@ interface IAdminListViewState
 	selectedItems?        : any;
 	error?                : any;
 	rowDefaultSearch?     : any;
+	// 04/09/2022 Paul.  Hide/show SearchView. 
+	showSearchView        : string;
 }
 
 @observer
@@ -91,6 +93,14 @@ class PayPalListView extends React.Component<IAdminListViewProps, IAdminListView
 		let rowDefaultSearch: any = {};
 		rowDefaultSearch.END_DATE   = dtTODAY.clone();
 		rowDefaultSearch.START_DATE = dtTODAY.add(-7, 'days');
+		// 04/09/2022 Paul.  Hide/show SearchView. 
+		let showSearchView: string = 'show';
+		if ( SplendidCache.UserTheme == 'Pacific' )
+		{
+			showSearchView = localStorage.getItem(this.constructor.name + '.showSearchView');
+			if ( Sql.IsEmptyString(showSearchView) )
+				showSearchView = 'hide';
+		}
 		this.state =
 		{
 			searchLayout          : null,
@@ -102,6 +112,7 @@ class PayPalListView extends React.Component<IAdminListViewProps, IAdminListView
 			enableMassUpdate      : Crm_Modules.MassUpdate(MODULE_NAME),
 			error                 : null,
 			rowDefaultSearch      ,
+			showSearchView        ,
 		};
 	}
 
@@ -194,14 +205,25 @@ class PayPalListView extends React.Component<IAdminListViewProps, IAdminListView
 
 	private _onSearchTabChange = (key) =>
 	{
-		// 11/03/2020 Paul.  When switching between tabs, re-apply the search as some advanced settings may not have been applied. 
-		this.setState( {searchMode: key}, () =>
+		// 04/09/2022 Paul.  Hide/show SearchView. 
+		if ( key == 'Hide' )
 		{
-			if ( this.searchView.current != null )
+			let { showSearchView } = this.state;
+			showSearchView = 'hide';
+			localStorage.setItem(this.constructor.name + '.showSearchView', showSearchView);
+			this.setState({ showSearchView });
+		}
+		else
+		{
+			// 11/03/2020 Paul.  When switching between tabs, re-apply the search as some advanced settings may not have been applied. 
+			this.setState( {searchMode: key}, () =>
 			{
-				this.searchView.current.SubmitSearch();
-			}
-		});
+				if ( this.searchView.current != null )
+				{
+					this.searchView.current.SubmitSearch();
+				}
+			});
+		}
 	}
 
 	// 09/26/2020 Paul.  The SearchView needs to be able to specify a sort criteria. 
@@ -307,6 +329,14 @@ class PayPalListView extends React.Component<IAdminListViewProps, IAdminListView
 				history.push(`/Reset${admin}/${MODULE_NAME}/Edit`);
 				break;
 			}
+			// 04/09/2022 Paul.  Hide/show SearchView. 
+			case 'toggleSearchView':
+			{
+				let showSearchView: string = (this.state.showSearchView == 'show' ? 'hide' : 'show');
+				localStorage.setItem(this.constructor.name + '.showSearchView', showSearchView);
+				this.setState({ showSearchView });
+				break;
+			}
 			default:
 			{
 				if ( this._isMounted )
@@ -381,7 +411,7 @@ class PayPalListView extends React.Component<IAdminListViewProps, IAdminListView
 	public render()
 	{
 		const { RELATED_MODULE, GRID_NAME, TABLE_NAME, SORT_FIELD, SORT_DIRECTION, rowRequiredSearch } = this.props;
-		const { error, searchLayout, advancedLayout, searchTabsEnabled, duplicateSearchEnabled, searchMode, showUpdatePanel, enableMassUpdate, rowDefaultSearch } = this.state;
+		const { error, searchLayout, advancedLayout, searchTabsEnabled, duplicateSearchEnabled, searchMode, showUpdatePanel, enableMassUpdate, rowDefaultSearch, showSearchView } = this.state;
 		// 05/04/2019 Paul.  Reference obserable IsInitialized so that terminology update will cause refresh. 
 		if ( SplendidCache.IsInitialized && SplendidCache.AdminMenu )
 		{
@@ -401,7 +431,7 @@ class PayPalListView extends React.Component<IAdminListViewProps, IAdminListView
 				: null
 				}
 				{ searchLayout != null || advancedLayout != null
-				? <div>
+				? <div style={ {display: (showSearchView == 'show' ? 'block' : 'none')} }>
 					{ searchTabsEnabled
 					? <SearchTabs
 						searchMode={ searchMode }
@@ -443,6 +473,7 @@ class PayPalListView extends React.Component<IAdminListViewProps, IAdminListView
 					ADMIN_MODE={ true }
 					AutoSaveSearch={ false }
 					deferLoad={ true }
+					enableExportHeader={ true }
 					enableSelection={ enableMassUpdate || SplendidCache.AdminUserAccess(MODULE_NAME, 'export', this.constructor.name + '.render') >= 0 }
 					cbCustomLoad={ this.Load }
 					onLayoutLoaded={ this._onGridLayoutLoaded }

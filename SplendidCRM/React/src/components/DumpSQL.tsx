@@ -53,7 +53,8 @@ export default class DumpSQL extends React.Component<IDumpSQLProps, IDumpSQLStat
 		{
 			cssSql = { cursor: 'pointer', marginBottom: 0 };
 		}
-		if ( show_sql )
+		// 04/14/2022 Paul.  Don't show if SQL is null, such as during new record creation. 
+		if ( show_sql && SQL != null )
 		{
 			return (<pre onClick={ this.onToggleSql } style={ cssSql }>{ SQL }</pre>);
 		}

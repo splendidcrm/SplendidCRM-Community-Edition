@@ -145,6 +145,8 @@ exec dbo.spTERMINOLOGY_InsertOnly N'LBL_CAMPAIGN_NUMBER'                        
 exec dbo.spTERMINOLOGY_InsertOnly N'LBL_LIST_CAMPAIGN_NUMBER'                      , N'en-US', N'Campaigns', null, null, N'Campaign Number';
 -- 09/26/2017 Paul.  Add Archive access right. 
 exec dbo.spTERMINOLOGY_InsertOnly N'LNK_ARCHIVED_CAMPAIGNS'                        , N'en-US', N'Campaigns', null, null, N'Archived Campaigns';
+-- 04/15/2022 Paul.  Reorganize layout using Pacific tabs. 
+exec dbo.spTERMINOLOGY_InsertOnly N'LBL_LAYOUT_TAB_BUDGET'                         , N'en-US', N'Campaigns', null, null, N'Budget';
 GO
 
 exec dbo.spTERMINOLOGY_InsertOnly N'Stop Subscription'                             , N'en-US', null, N'remove_me_reason_dom'              ,   1, N'I wish to stop receiving newsletters';

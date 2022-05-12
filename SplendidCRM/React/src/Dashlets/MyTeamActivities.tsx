@@ -469,11 +469,7 @@ export default class MyTeamActivities extends React.Component<IDashletProps, IMy
 						}
 					};
 					// 02/16/2021 Paul.  Need to manually override the bootstrap header style. 
-					if ( SplendidCache.UserTheme == 'Arctic' )
-					{
-						objDataColumn.headerStyle.paddingTop    = '10px';
-						objDataColumn.headerStyle.paddingBottom = '10px';
-					}
+					// 04/24/2022 Paul.  Move Arctic style override to style.css. 
 					if ( ITEMSTYLE_HORIZONTAL_ALIGN != null )
 					{
 						objDataColumn.classes += ' gridView' + ITEMSTYLE_HORIZONTAL_ALIGN;
@@ -523,11 +519,7 @@ export default class MyTeamActivities extends React.Component<IDashletProps, IMy
 						}
 					};
 					// 02/16/2021 Paul.  Need to manually override the bootstrap header style. 
-					if ( SplendidCache.UserTheme == 'Arctic' )
-					{
-						objDataColumn.headerStyle.paddingTop    = '10px';
-						objDataColumn.headerStyle.paddingBottom = '10px';
-					}
+					// 04/24/2022 Paul.  Move Arctic style override to style.css. 
 					if ( ITEMSTYLE_HORIZONTAL_ALIGN != null )
 					{
 						objDataColumn.classes += ' gridView' + ITEMSTYLE_HORIZONTAL_ALIGN;
@@ -609,7 +601,7 @@ export default class MyTeamActivities extends React.Component<IDashletProps, IMy
 		<div style={ {display: 'flex', flexGrow: 1} }>
 			<div className="card" style={ {flexGrow: 1, margin: '.5em', overflowX: 'auto'} }>
 				<Appear onAppearOnce={ (ioe) => this.setState({ dashletVisible: true }) }>
-					<div className="card-body" style={ {display: 'flex'} }>
+					<div className="card-body DashletHeader" style={ {display: 'flex'} }>
 						<h3 style={ {flexGrow: 1, float: 'left'} }>
 							{ L10n.Term(TITLE) }
 						</h3>

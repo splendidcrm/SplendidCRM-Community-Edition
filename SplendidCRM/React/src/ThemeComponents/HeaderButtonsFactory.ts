@@ -12,7 +12,8 @@
 // 2. Store and Types. 
 // 3. Scripts. 
 // 4. Components and Views. 
-
+// 04/01/2022 Paul.  Add Pacific theme, derived from Arctic.
+import PacificHeaderButtons           from './Pacific/HeaderButtons'          ;
 import ArcticHeaderButtons            from './Arctic/HeaderButtons'           ;
 import AtlanticHeaderButtons          from './Atlantic/HeaderButtons'         ;
 import SevenHeaderButtons             from './Seven/HeaderButtons'            ;
@@ -25,6 +26,8 @@ export default function HeaderButtonsFactory(sTHEME: string)
 	let ctl: any = null;
 	switch ( sTHEME )
 	{
+		// 04/01/2022 Paul.  Add Pacific theme, derived from Arctic.
+		case 'Pacific'  :  ctl = PacificHeaderButtons  ;  break;
 		case 'Arctic'   :  ctl = ArcticHeaderButtons   ;  break;
 		case 'Atlantic' :  ctl = AtlanticHeaderButtons ;  break;
 		case 'Mobile'   :  ctl = null                  ;  break;
@@ -39,7 +42,8 @@ export default function HeaderButtonsFactory(sTHEME: string)
 	}
 	else
 	{
-		ctl = ArcticHeaderButtons;
+		// 04/01/2022 Paul.  Add Pacific theme, derived from Arctic.
+		ctl = PacificHeaderButtons;
 		//console.log((new Date()).toISOString() + ' ' + 'HeaderButtonsFactory not found ' + sTHEME + ', using Arctic');
 	}
 	return ctl;

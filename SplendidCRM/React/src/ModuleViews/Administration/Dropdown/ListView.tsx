@@ -59,6 +59,8 @@ interface IDropdownListViewState
 	editIndex             : number;
 	editNAME              : string;
 	editDISPLAY_NAME      : string;
+	// 04/09/2022 Paul.  Hide/show SearchView. 
+	showSearchView        : string;
 }
 
 @observer
@@ -75,6 +77,14 @@ export default class DropdownListView extends React.Component<IDropdownListViewP
 		this.themeURL = Credentials.RemoteServer + 'App_Themes/' + SplendidCache.UserTheme + '/images/';
 		let rowDefaultSearch: any = {};
 		rowDefaultSearch.LANG = Crm_Config.ToString('default_language');
+		// 04/09/2022 Paul.  Hide/show SearchView. 
+		let showSearchView: string = 'show';
+		if ( SplendidCache.UserTheme == 'Pacific' )
+		{
+			showSearchView = localStorage.getItem(this.constructor.name + '.showSearchView');
+			if ( Sql.IsEmptyString(showSearchView) )
+				showSearchView = 'hide';
+		}
 		this.state =
 		{
 			error                 : null,
@@ -83,6 +93,7 @@ export default class DropdownListView extends React.Component<IDropdownListViewP
 			editIndex             : -1,
 			editNAME              : null,
 			editDISPLAY_NAME      : null,
+			showSearchView        ,
 		};
 	}
 
@@ -206,6 +217,14 @@ export default class DropdownListView extends React.Component<IDropdownListViewP
 					admin = '/Administration';
 				}
 				history.push(`/Reset${admin}/${MODULE_NAME}/Edit`);
+				break;
+			}
+			// 04/09/2022 Paul.  Hide/show SearchView. 
+			case 'toggleSearchView':
+			{
+				let showSearchView: string = (this.state.showSearchView == 'show' ? 'hide' : 'show');
+				localStorage.setItem(this.constructor.name + '.showSearchView', showSearchView);
+				this.setState({ showSearchView });
 				break;
 			}
 			default:
@@ -452,7 +471,7 @@ export default class DropdownListView extends React.Component<IDropdownListViewP
 	public render()
 	{
 		const { MODULE_NAME } = this.props;
-		const { error, rowDefaultSearch, vwMain, editIndex, editNAME, editDISPLAY_NAME, __sql } = this.state;
+		const { error, rowDefaultSearch, vwMain, editIndex, editNAME, editDISPLAY_NAME, __sql, showSearchView } = this.state;
 
 		// 05/04/2019 Paul.  Reference obserable IsInitialized so that terminology update will cause refresh. 
 		if ( SplendidCache.IsInitialized && SplendidCache.AdminMenu )
@@ -472,7 +491,7 @@ export default class DropdownListView extends React.Component<IDropdownListViewP
 				? React.createElement(headerButtons, { MODULE_NAME, MODULE_TITLE, error, enableHelp: true, helpName: 'index', ButtonStyle: 'ModuleHeader', VIEW_NAME: HEADER_BUTTONS, Page_Command: this.Page_Command, showButtons: true, history: this.props.history, location: this.props.location, match: this.props.match, ref: this.headerButtons })
 				: null
 				}
-				<div>
+				<div style={ {display: (showSearchView == 'show' ? 'block' : 'none')} }>
 					<SearchView
 						key={ MODULE_NAME + '.SearchBasic' }
 						EDIT_NAME={ MODULE_NAME + '.SearchBasic' }

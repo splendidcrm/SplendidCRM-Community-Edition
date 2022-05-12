@@ -345,6 +345,29 @@ exec dbo.spTERMINOLOGY_InsertOnly N'LBL_FEATURE_NOT_SUPPORTED'                  
 -- 08/19/2019 Paul.  React Client uses Close in popups. 
 exec dbo.spTERMINOLOGY_InsertOnly N'LBL_CLOSE_BUTTON_LABEL'                        , N'en-US', null, null, null, N'Close';
 exec dbo.spTERMINOLOGY_InsertOnly N'LBL_CLOSE_BUTTON_TITLE'                        , N'en-US', null, null, null, N'Close';
+-- 03/25/2022 Paul.  Allow Available columns to be added to SplendidGrid at runtime. 
+exec dbo.spTERMINOLOGY_InsertOnly N'LBL_AVAILABLE_COLUMNS'                         , N'en-US', null, null, null, N'Columns';
+exec dbo.spTERMINOLOGY_InsertOnly N'LBL_AVAILABLE_CHOOSE_COLUMNS'                  , N'en-US', null, null, null, N'Choose Columns';
+exec dbo.spTERMINOLOGY_InsertOnly N'LBL_AVAILABLE_DISPLAYED'                       , N'en-US', null, null, null, N'Displayed';
+exec dbo.spTERMINOLOGY_InsertOnly N'LBL_AVAILABLE_HIDDEN'                          , N'en-US', null, null, null, N'Hidden';
+-- 03/30/2022 Paul.  Add Insight fields. 
+exec dbo.spTERMINOLOGY_InsertOnly N'LBL_SELECT_SUBPANELS'                          , N'en-US', null, null, null, N'Select which subpanels to view';
+exec dbo.spTERMINOLOGY_InsertOnly N'LBL_INSIGHT_TOTAL'                             , N'en-US', null, null, null, N'Total';
+exec dbo.spTERMINOLOGY_InsertOnly N'LBL_INSIGHT_TOTAL_VALUE'                       , N'en-US', null, null, null, N'Total Value';
+exec dbo.spTERMINOLOGY_InsertOnly N'LBL_INSIGHT_NEXT_EXPIRATION_DATE'              , N'en-US', null, null, null, N'Next Expiration Date';
+exec dbo.spTERMINOLOGY_InsertOnly N'LBL_INSIGHT_NEXT_ACTIVITY_DATE'                , N'en-US', null, null, null, N'Next Activity Date';
+exec dbo.spTERMINOLOGY_InsertOnly N'LBL_INSIGHT_LAST_TOUCHPOINT'                   , N'en-US', null, null, null, N'Last Touchpoint';
+exec dbo.spTERMINOLOGY_InsertOnly N'LBL_INSIGHT_LAST_PARTICIPATED'                 , N'en-US', null, null, null, N'Last Participated';
+exec dbo.spTERMINOLOGY_InsertOnly N'LBL_INSIGHT_OPEN_CASES_TOTAL'                  , N'en-US', null, null, null, N'Open Cases | Total';
+exec dbo.spTERMINOLOGY_InsertOnly N'LBL_INSIGHT_RENEWAL_DATE'                      , N'en-US', null, null, null, N'Renewal Date';
+exec dbo.spTERMINOLOGY_InsertOnly N'LBL_INSIGHT_TOTAL_OVERDUE_TOTAL'               , N'en-US', null, null, null, N'Total Overdue | Total';
+exec dbo.spTERMINOLOGY_InsertOnly N'LBL_INSIGHT_LAST_ACTIVITY_DATE'                , N'en-US', null, null, null, N'Last Activity Date';
+-- 04/06/2022 Paul.  Quick Search dropdown. 
+exec dbo.spTERMINOLOGY_InsertOnly N'LBL_QUICK_SEARCH_NEW_BUTTON'                   , N'en-US', null, null, null, N'New';
+exec dbo.spTERMINOLOGY_InsertOnly N'LBL_QUICK_SEARCH_PLACEHOLDER'                  , N'en-US', null, null, null, N'Search...';
+exec dbo.spTERMINOLOGY_InsertOnly N'LBL_BULK_ACTION'                               , N'en-US', null, null, null, N'Bulk Action';
+exec dbo.spTERMINOLOGY_InsertOnly N'LNK_SEARCH_FILTER'                             , N'en-US', null, null, null, N'Filter';
+
 GO
 /* -- #if Oracle
 	COMMIT WORK;
@@ -438,6 +461,13 @@ exec dbo.spTERMINOLOGY_InsertOnly N'Revenue'                                    
 -- 05/25/2020 Paul.  React Client link on old login page. 
 exec dbo.spTERMINOLOGY_InsertOnly N'LNK_REACT_CLIENT'                              , N'en-US', null, null, null, N'React Client';
 exec dbo.spTERMINOLOGY_InsertOnly N'LBL_INSUFFICIENT_ACCESS'                       , N'en-US', null, null, null, N'Insufficient Access';
+-- 04/13/2022 Paul.  Add LayoutTabs to Pacific theme. 
+exec dbo.spTERMINOLOGY_InsertOnly N'LBL_LAYOUT_TAB_OVERVIEW'                       , N'en-US', null, null, null, N'Overview';
+exec dbo.spTERMINOLOGY_InsertOnly N'LBL_LAYOUT_TAB_MORE_INFORMATION'               , N'en-US', null, null, null, N'More Information';
+exec dbo.spTERMINOLOGY_InsertOnly N'LBL_LAYOUT_TAB_OTHER'                          , N'en-US', null, null, null, N'Other';
+exec dbo.spTERMINOLOGY_InsertOnly N'LBL_LAYOUT_TAB_BASIC'                          , N'en-US', null, null, null, N'Basic';
+-- 04/23/2022 Paul.  Empy grid should indicate no data. 
+exec dbo.spTERMINOLOGY_InsertOnly N'LBL_NO_DATA'                                   , N'en-US', null, null, null, N'No Data';
 GO
 
 set nocount off;

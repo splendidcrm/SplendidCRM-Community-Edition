@@ -38,6 +38,7 @@ interface IUnifiedSearchState
 	items      : any[];
 	activeIndex: any;
 	error?     : any;
+	search     : string;
 }
 
 class UnifiedSearch extends React.Component<IUnifiedSearchProps, IUnifiedSearchState>
@@ -46,11 +47,16 @@ class UnifiedSearch extends React.Component<IUnifiedSearchProps, IUnifiedSearchS
 	{
 		super(props);
 		Credentials.SetViewMode('UnifiedSearch');
+		// 05/09/2022 Paul.  Must decode string, otherwise @ is kept encoded and matches nothing in database. 
+		let search: string = null;
+		if ( !Sql.IsEmptyString(props.search) )
+			search = decodeURIComponent(props.search);
 		this.state =
 		{
 			layout     : [],
 			items      : [],
-			activeIndex: {}
+			activeIndex: {},
+			search     ,
 		};
 	}
 
@@ -71,6 +77,7 @@ class UnifiedSearch extends React.Component<IUnifiedSearchProps, IUnifiedSearchS
 			{
 				LoginRedirect(this.props.history, this.constructor.name + '.componentDidMount');
 			}
+			document.title = L10n.Term('Home.LBL_SEARCH_RESULTS');
 		}
 		catch(error)
 		{
@@ -169,8 +176,7 @@ class UnifiedSearch extends React.Component<IUnifiedSearchProps, IUnifiedSearchS
 
 	public render()
 	{
-		const { search } = this.props;
-		const { error, items } = this.state;
+		const { error, items, search } = this.state;
 		if (error)
 		{
 			return <ErrorComponent error={error} />;

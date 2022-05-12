@@ -142,8 +142,12 @@ export default class Image extends React.Component<IDetailComponentProps, IImage
 		const { DATA_FIELD, DATA_VALUE } = this.state;
 		try
 		{
-			let value = await Crm_Modules.ItemName('Images', DATA_VALUE);
-			this.setState({ DISPLAY_NAME: value });
+			// 03/21/2022 Paul.  No need to get the name if the value is null. 
+			if ( !Sql.IsEmptyString(DATA_VALUE) )
+			{
+				let value = await Crm_Modules.ItemName('Images', DATA_VALUE);
+				this.setState({ DISPLAY_NAME: value });
+			}
 			if ( this.props.fieldDidMount )
 			{
 				this.props.fieldDidMount(DATA_FIELD, this);

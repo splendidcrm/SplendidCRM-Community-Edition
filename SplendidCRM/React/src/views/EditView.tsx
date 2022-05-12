@@ -26,7 +26,7 @@ import SplendidDynamic_EditView               from '../scripts/SplendidDynamic_E
 import { Crm_Config, Crm_Modules }            from '../scripts/Crm'                     ;
 import { AuthenticatedMethod, LoginRedirect } from '../scripts/Login'                   ;
 import { sPLATFORM_LAYOUT }                   from '../scripts/SplendidInitUI'          ;
-import { EditView_LoadItem, EditView_LoadLayout, EditView_ConvertItem } from '../scripts/EditView';
+import { EditView_LoadItem, EditView_LoadLayout, EditView_ActivateTab, EditView_ConvertItem } from '../scripts/EditView';
 import { UpdateModule }                       from '../scripts/ModuleUpdate'            ;
 import { jsonReactState }                     from '../scripts/Application'             ;
 // 4. Components and Views. 
@@ -34,6 +34,8 @@ import ErrorComponent                         from '../components/ErrorComponent
 import DumpSQL                                from '../components/DumpSQL'              ;
 import DynamicButtons                         from '../components/DynamicButtons'       ;
 import HeaderButtonsFactory                   from '../ThemeComponents/HeaderButtonsFactory';
+// 04/13/2022 Paul.  Add LayoutTabs to Pacific theme. 
+import LayoutTabs                             from '../components/LayoutTabs'           ;
 
 interface IEditViewProps extends RouteComponentProps<any>
 {
@@ -534,6 +536,15 @@ export default class EditView extends React.Component<IEditViewProps, IEditViewS
 		}
 	}
 
+	// 04/16/2022 Paul.  Add LayoutTabs to Pacific theme. 
+	private _onTabChange = (nActiveTabIndex) =>
+	{
+		let { layout } = this.state;
+		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onTabChange', nActiveTabIndex);
+		EditView_ActivateTab(layout, nActiveTabIndex);
+		this.setState({ layout });
+	}
+
 	public render()
 	{
 		// 04/04/2021 Paul.  Use CONTROL_VIEW_NAME to create unique keys so that same module/subpanel search multiple times. 
@@ -562,6 +573,7 @@ export default class EditView extends React.Component<IEditViewProps, IEditViewS
 			// 12/04/2019 Paul.  After authentication, we need to make sure that the app gets updated. 
 			Credentials.sUSER_THEME;
 			let headerButtons = HeaderButtonsFactory(SplendidCache.UserTheme);
+			// 04/16/2022 Paul.  Add LayoutTabs to Pacific theme. 
 			return (
 			<React.Fragment>
 				{ !callback && headerButtons
@@ -572,6 +584,7 @@ export default class EditView extends React.Component<IEditViewProps, IEditViewS
 				? <DumpSQL SQL={ __sql } />
 				: null
 				}
+				<LayoutTabs layout={ layout } onTabChange={ this._onTabChange } />
 				{ SplendidDynamic_EditView.AppendEditViewFields(item, layout, this.refMap, callback, this._createDependency, null, this._onChange, this._onUpdate, onSubmit, (isSearchView || isQuickCreate ? null : 'tabForm'), this.Page_Command, isSearchView, CONTROL_VIEW_NAME) }
 				{ !callback && headerButtons
 				? <DynamicButtons

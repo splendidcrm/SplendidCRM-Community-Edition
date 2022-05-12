@@ -9183,6 +9183,18 @@ namespace SplendidCRM
 											objs[L10n.NAME + "." + "." + sLIST_NAME + "." + sID] = sDISPLAY_NAME;
 										}
 									}
+									// 04/18/2022 Paul.  EmailMarketing requires InboundEmailBounce list. 
+									using ( DataTable dt = SplendidCache.InboundEmailBounce() )
+									{
+										string sLIST_NAME = "InboundEmailBounce";
+										for ( int i = 0; i < dt.Rows.Count; i++ )
+										{
+											DataRow row = dt.Rows[i];
+											string sID           = Sql.ToString(row["ID"  ]);
+											string sDISPLAY_NAME = Sql.ToString(row["NAME"]);
+											objs[L10n.NAME + "." + "." + sLIST_NAME + "." + sID] = sDISPLAY_NAME;
+										}
+									}
 									// 01/24/2021 Paul.  Add OutboundSms. 
 									using ( DataTable dt = SplendidCache.OutboundSms() )
 									{
@@ -9842,6 +9854,18 @@ namespace SplendidCRM
 									{
 										List<string> layout = new List<string>();
 										objs.Add(L10n.NAME + ".OutboundMail", layout);
+										for ( int i = 0; i < dt.Rows.Count; i++ )
+										{
+											DataRow row = dt.Rows[i];
+											string sID = Sql.ToString(row["ID"]);
+											layout.Add(sID);
+										}
+									}
+									// 04/18/2022 Paul.  EmailMarketing requires InboundEmailBounce list. 
+									using ( DataTable dt = SplendidCache.InboundEmailBounce() )
+									{
+										List<string> layout = new List<string>();
+										objs.Add(L10n.NAME + ".InboundEmailBounce", layout);
 										for ( int i = 0; i < dt.Rows.Count; i++ )
 										{
 											DataRow row = dt.Rows[i];

@@ -373,7 +373,8 @@ class CredentialsStore
 	// 12/20/2019 Paul.  Observe the sidebar width. 
 	ThemeUpdated()
 	{
-		if ( SplendidCache.UserTheme == 'Arctic' )
+		// 04/24/2022 Paul.  Same should apply to Pacific theme. 
+		if ( SplendidCache.UserTheme == 'Arctic' || SplendidCache.UserTheme == 'Pacific' )
 		{
 			let bEnableTeamManagement: boolean = Crm_Config.enable_team_management();
 			let bEnableTeamHierarchy : boolean = Crm_Config.enable_team_hierarchy();

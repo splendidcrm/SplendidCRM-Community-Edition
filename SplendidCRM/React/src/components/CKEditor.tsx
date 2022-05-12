@@ -57,7 +57,12 @@ export default class CKEditor extends React.Component<ICKEditorProps, ICKEditorS
 		}
 		if ( 'disabled' in nextProps )
 		{
-			this.editor.isReadOnly = nextProps.disabled;
+			// 05/09/2022 Paul.  isReadOnly has changed. 
+			// this.editor.isReadOnly = nextProps.disabled;
+			if ( nextProps.disabled )
+			{
+				this.editor.enableReadOnlyMode('splendid');
+			}
 		}
 		return false;
 	}
@@ -106,7 +111,12 @@ export default class CKEditor extends React.Component<ICKEditorProps, ICKEditorS
 			this.editor = editor;
 			if ( 'disabled' in this.props )
 			{
-				editor.isReadOnly = this.props.disabled;
+				// 05/09/2022 Paul.  isReadOnly has changed. 
+				// editor.isReadOnly = this.props.disabled;
+				if ( this.props.disabled )
+				{
+					editor.enableReadOnlyMode('splendid');
+				}
 			}
 			if ( this.props.onInit )
 			{

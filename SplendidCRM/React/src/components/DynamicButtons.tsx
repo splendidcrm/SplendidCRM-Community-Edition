@@ -30,7 +30,6 @@ import { StartsWith, isMobileDevice, isMobileLandscape } from '../scripts/utilit
 // 4. Components and Views. 
 import ErrorComponent                            from '../components/ErrorComponent'  ;
 import NavItem                                   from '../components/NavItem'         ;
-import { reaction } from 'mobx';
 
 
 interface IDynamicButtonsProps extends RouteComponentProps<any>
@@ -132,117 +131,176 @@ class DynamicButtons extends React.Component<IDynamicButtonsProps, IDynamicButto
 		let themeURL    : string = Credentials.RemoteServer + 'App_Themes/' + SplendidCache.UserTheme + '/';
 		if ( SplendidDynamic.StackedLayout(sTheme) && (ButtonStyle == 'ModuleHeader' || ButtonStyle == 'ListHeader' || ButtonStyle == 'MassUpdateHeader') )
 		{
-			// 10/26/2021 Paul.  Several buttons may be hidden, so loop until we find the first available button. 
-			while ( layout.length > nButtonStart )
+			if ( sTheme == 'Pacific' && ButtonStyle == 'ListHeader' )
 			{
-				// 10/26/2021 Paul.  For the Seven theme, we need to account for the first button possibly being hidden. 
-				let lay: DYNAMIC_BUTTON = layout[nButtonStart];
-				let CONTROL_TYPE       : string  = Sql.ToString (lay.CONTROL_TYPE      );
-				let MODULE_NAME        : string  = Sql.ToString (lay.MODULE_NAME       );
-				let MODULE_ACCESS_TYPE : string  = Sql.ToString (lay.MODULE_ACCESS_TYPE);
-				let TARGET_NAME        : string  = Sql.ToString (lay.TARGET_NAME       );
-				let TARGET_ACCESS_TYPE : string  = Sql.ToString (lay.TARGET_ACCESS_TYPE);
-				let MOBILE_ONLY        : boolean = Sql.ToBoolean(lay.MOBILE_ONLY       );
-				let ADMIN_ONLY         : boolean = Sql.ToBoolean(lay.ADMIN_ONLY        );
-				let CONTROL_TEXT       : string  = Sql.ToString (lay.CONTROL_TEXT      );
-				let HIDDEN             : boolean = Sql.ToBoolean(lay.HIDDEN            );
-				let EXCLUDE_MOBILE     : boolean = Sql.ToBoolean(lay.EXCLUDE_MOBILE    );
-				let COMMAND_NAME       : string = Sql.ToString (lay.COMMAND_NAME);
-				let MODULE_ACLACCESS  = (Sql.IsEmptyString(lay.MODULE_ACLACCESS) ? 0 : Sql.ToInteger(lay.MODULE_ACLACCESS));
-				let nTARGET_ACLACCESS = (Sql.IsEmptyString(lay.TARGET_ACLACCESS) ? 0 : Sql.ToInteger(lay.TARGET_ACLACCESS));
-				if ( MODULE_ACLACCESS < 0 || nTARGET_ACLACCESS < 0 )
+				// 05/06/2022 Paul.  If only one button, then no need for Actions dropdown. 
+				if ( layout.length == 1 )
 				{
-					nButtonStart++;
-					continue;
-				}
-				let bVisible: boolean = true;
-				bVisible = (!EXCLUDE_MOBILE || !bIsMobile) && (MOBILE_ONLY && bIsMobile || !MOBILE_ONLY) && (ADMIN_ONLY && Security.IS_ADMIN() || !ADMIN_ONLY) && (!HIDDEN || Sql.ToInteger(hidden[COMMAND_NAME]) <= 0);
-				if ( bVisible && !Sql.IsEmptyString(MODULE_NAME) && !Sql.IsEmptyString(MODULE_ACCESS_TYPE) )
-				{
-					let nACLACCESS = SplendidCache.GetUserAccess(MODULE_NAME, MODULE_ACCESS_TYPE, this.constructor.name + '.LoadButtons');
-					bVisible = (nACLACCESS > ACL_ACCESS.OWNER) || (nACLACCESS == ACL_ACCESS.OWNER && ((Security.USER_ID() == gASSIGNED_USER_ID) || (!bIsPostBack && row == null) || (row != null && bShowUnassigned && Sql.IsEmptyGuid(gASSIGNED_USER_ID))));
-					if ( bVisible && !Sql.IsEmptyString(TARGET_NAME) && !Sql.IsEmptyString(TARGET_ACCESS_TYPE) )
-					{
-						nACLACCESS = SplendidCache.GetUserAccess(TARGET_NAME, TARGET_ACCESS_TYPE, this.constructor.name + '.LoadButtons');
-						bVisible = (nACLACCESS > ACL_ACCESS.OWNER) || (nACLACCESS == ACL_ACCESS.OWNER && ((Security.USER_ID() == gASSIGNED_USER_ID) || (!bIsPostBack && row == null) || (row != null && bShowUnassigned && Sql.IsEmptyGuid(gASSIGNED_USER_ID))));
-					}
-				}
-				if ( !bVisible || (hidden[COMMAND_NAME] == null && HIDDEN) || Sql.ToInteger(hidden[COMMAND_NAME]) > 0 )
-				{
-					nButtonStart++;
-					continue;
-				}
-				else if ( Sql.IsEmptyString(COMMAND_NAME) && !Sql.IsEmptyString(CONTROL_TEXT) && (!bVisible || (hidden[CONTROL_TEXT] == null && HIDDEN) || Sql.ToInteger(hidden[CONTROL_TEXT]) > 0) )
-				{
-					nButtonStart++;
-					continue;
-				}
-				lay = layout[nButtonStart];
-				let sCONTROL_TEXT: string = '  ' + L10n.Term(lay.CONTROL_TEXT) + '  ';
-				if ( ButtonStyle == 'ListHeader' && (COMMAND_NAME.indexOf('.Create') > 0) )
-				{
-					sCONTROL_TEXT = '  +  ';
-				}
-				let titleChildren = [];
-				let title = React.createElement('span', {style: {verticalAlign: 'bottom'}}, titleChildren);
-				// 12/13/2019 Paul.  Only change search to icon for Seven theme. 
-				// 01/05/2022 Paul.  First button might be a button link. 
-				let onClick = this._onButtonClick;
-				if ( CONTROL_TYPE == 'ButtonLink' )
-				{
-					if ( this.props.onButtonLink )
-						onClick = this.props.onButtonLink;
-					else
-						onClick = this._onButtonLink;
-				}
-
-				if ( ButtonStyle == 'ListHeader' && COMMAND_NAME.indexOf('.Search') > 0 )
-				{
-					let iNavSearch = React.createElement(FontAwesomeIcon, { icon: 'search' });
-					// 01/05/2022 Paul.  First button might be a button link. 
-					let first = React.createElement('input', {type: 'button', className: ButtonStyle + 'FirstButton', style: {}, onClick: (e) => onClick(lay)}, iNavSearch);
-					titleChildren.push(first);
+					pnlDynamicButtons = React.createElement('div', { id: 'pnlDynamicButtons', key: 'pnlDynamicButtons', alignRight: true, style: { paddingRight: '1em'}, children: null}, pnlDynamicButtonsChildren);
 				}
 				else
 				{
-					// 01/05/2022 Paul.  First button might be a button link. 
-					let first = React.createElement('input', {type: 'submit', className: ButtonStyle + 'FirstButton', style: {}, value: sCONTROL_TEXT, onClick: (e) => onClick(lay)});
-					titleChildren.push(first);
-				}
-				if ( layout.length > 1 )
-				{
-					if ( ButtonStyle == 'ListHeader' )
-					{
-						let more = React.createElement('input', {type: 'image', className: ButtonStyle + 'MoreButton', style: {verticalAlign: 'bottom', height: '26px'}, src: themeURL + 'images/subpanel_more.gif', onClick: (e) => { e.preventDefault() }});
-						titleChildren.push(more);
-					}
-					else
-					{
-						let more = React.createElement('input', {type: 'image', className: ButtonStyle + 'MoreButton', style: {verticalAlign: 'bottom'}, src: themeURL + 'images/moreWhite.gif', onClick: (e) => { e.preventDefault() }});
-						titleChildren.push(more);
-					}
-					// 02/25/2022 Paul.  NavDropdownProps requires children parameter, though it does not seem to be used.  This error appeared with bootstrap 5. 
-					let navItem = React.createElement(NavItem, { id: 'pnlDynamicButtons', key: 'pnlDynamicButtons', title: title, alignRight: true, children: null}, pnlDynamicButtonsChildren);
-					//pnlDynamicButtons = React.createElement(Nav, {className: 'ml-auto', navbar: true}, [navItem]);
+					let actionTitleChildren = [];
+					let actionTitle = React.createElement('div', {className: ButtonStyle + 'FirstButton', style: {}}, actionTitleChildren);
+					let actions = React.createElement('span', {style: {}}, L10n.Term('.LBL_ACTIONS'));
+					actionTitleChildren.push(actions);
+					let iDown = React.createElement(FontAwesomeIcon, { icon: 'caret-down' });
+					let more = React.createElement('span', {className: ButtonStyle + 'MoreButton', style: {}}, iDown);
+					actionTitleChildren.push(more);
+					let navItem = React.createElement(NavItem, { id: 'pnlDynamicButtons', key: 'pnlDynamicButtons', title: actionTitle, alignRight: true, style: { paddingRight: '1em'}, children: null}, pnlDynamicButtonsChildren);
 					pnlDynamicButtons = navItem;
 				}
-				else
+			}
+			else
+			{
+				// 10/26/2021 Paul.  Several buttons may be hidden, so loop until we find the first available button. 
+				while ( layout.length > nButtonStart )
 				{
-					pnlDynamicButtons = title;
+					// 10/26/2021 Paul.  For the Seven theme, we need to account for the first button possibly being hidden. 
+					let lay: DYNAMIC_BUTTON = layout[nButtonStart];
+					let CONTROL_TYPE       : string  = Sql.ToString (lay.CONTROL_TYPE      );
+					let MODULE_NAME        : string  = Sql.ToString (lay.MODULE_NAME       );
+					let MODULE_ACCESS_TYPE : string  = Sql.ToString (lay.MODULE_ACCESS_TYPE);
+					let TARGET_NAME        : string  = Sql.ToString (lay.TARGET_NAME       );
+					let TARGET_ACCESS_TYPE : string  = Sql.ToString (lay.TARGET_ACCESS_TYPE);
+					let MOBILE_ONLY        : boolean = Sql.ToBoolean(lay.MOBILE_ONLY       );
+					let ADMIN_ONLY         : boolean = Sql.ToBoolean(lay.ADMIN_ONLY        );
+					let CONTROL_TEXT       : string  = Sql.ToString (lay.CONTROL_TEXT      );
+					let HIDDEN             : boolean = Sql.ToBoolean(lay.HIDDEN            );
+					let EXCLUDE_MOBILE     : boolean = Sql.ToBoolean(lay.EXCLUDE_MOBILE    );
+					let COMMAND_NAME       : string = Sql.ToString (lay.COMMAND_NAME);
+					let MODULE_ACLACCESS  = (Sql.IsEmptyString(lay.MODULE_ACLACCESS) ? 0 : Sql.ToInteger(lay.MODULE_ACLACCESS));
+					let nTARGET_ACLACCESS = (Sql.IsEmptyString(lay.TARGET_ACLACCESS) ? 0 : Sql.ToInteger(lay.TARGET_ACLACCESS));
+					if ( MODULE_ACLACCESS < 0 || nTARGET_ACLACCESS < 0 )
+					{
+						nButtonStart++;
+						continue;
+					}
+					let bVisible: boolean = true;
+					bVisible = (!EXCLUDE_MOBILE || !bIsMobile) && (MOBILE_ONLY && bIsMobile || !MOBILE_ONLY) && (ADMIN_ONLY && Security.IS_ADMIN() || !ADMIN_ONLY) && (!HIDDEN || Sql.ToInteger(hidden[COMMAND_NAME]) <= 0);
+					if ( bVisible && !Sql.IsEmptyString(MODULE_NAME) && !Sql.IsEmptyString(MODULE_ACCESS_TYPE) )
+					{
+						let nACLACCESS = SplendidCache.GetUserAccess(MODULE_NAME, MODULE_ACCESS_TYPE, this.constructor.name + '.LoadButtons');
+						bVisible = (nACLACCESS > ACL_ACCESS.OWNER) || (nACLACCESS == ACL_ACCESS.OWNER && ((Security.USER_ID() == gASSIGNED_USER_ID) || (!bIsPostBack && row == null) || (row != null && bShowUnassigned && Sql.IsEmptyGuid(gASSIGNED_USER_ID))));
+						if ( bVisible && !Sql.IsEmptyString(TARGET_NAME) && !Sql.IsEmptyString(TARGET_ACCESS_TYPE) )
+						{
+							nACLACCESS = SplendidCache.GetUserAccess(TARGET_NAME, TARGET_ACCESS_TYPE, this.constructor.name + '.LoadButtons');
+							bVisible = (nACLACCESS > ACL_ACCESS.OWNER) || (nACLACCESS == ACL_ACCESS.OWNER && ((Security.USER_ID() == gASSIGNED_USER_ID) || (!bIsPostBack && row == null) || (row != null && bShowUnassigned && Sql.IsEmptyGuid(gASSIGNED_USER_ID))));
+						}
+					}
+					if ( !bVisible || (hidden[COMMAND_NAME] == null && HIDDEN) || Sql.ToInteger(hidden[COMMAND_NAME]) > 0 )
+					{
+						nButtonStart++;
+						continue;
+					}
+					else if ( Sql.IsEmptyString(COMMAND_NAME) && !Sql.IsEmptyString(CONTROL_TEXT) && (!bVisible || (hidden[CONTROL_TEXT] == null && HIDDEN) || Sql.ToInteger(hidden[CONTROL_TEXT]) > 0) )
+					{
+						nButtonStart++;
+						continue;
+					}
+					lay = layout[nButtonStart];
+					let sCONTROL_TEXT: string = '  ' + L10n.Term(lay.CONTROL_TEXT) + '  ';
+					if ( ButtonStyle == 'ListHeader' && (COMMAND_NAME.indexOf('.Create') > 0) )
+					{
+						sCONTROL_TEXT = '  +  ';
+					}
+					let titleChildren = [];
+					let title: any = React.createElement('span', {style: {verticalAlign: 'bottom'}}, titleChildren);
+					// 12/13/2019 Paul.  Only change search to icon for Seven theme. 
+					// 01/05/2022 Paul.  First button might be a button link. 
+					let onClick = this._onButtonClick;
+					if ( CONTROL_TYPE == 'ButtonLink' )
+					{
+						if ( this.props.onButtonLink )
+							onClick = this.props.onButtonLink;
+						else
+							onClick = this._onButtonLink;
+					}
+
+					if ( ButtonStyle == 'ListHeader' && COMMAND_NAME.indexOf('.Search') > 0 )
+					{
+						let iNavSearch = React.createElement(FontAwesomeIcon, { icon: 'search' });
+						// 01/05/2022 Paul.  First button might be a button link. 
+						let first = React.createElement('input', {type: 'button', className: ButtonStyle + 'FirstButton', style: {}, onClick: (e) => onClick(lay)}, iNavSearch);
+						titleChildren.push(first);
+					}
+					else
+					{
+						// 01/05/2022 Paul.  First button might be a button link. 
+						let first = React.createElement('input', {type: 'submit', className: ButtonStyle + 'FirstButton', style: {}, value: sCONTROL_TEXT, onClick: (e) => onClick(lay)});
+						titleChildren.push(first);
+					}
+					if ( layout.length > 1 )
+					{
+						if ( sTheme == 'Pacific' && ButtonStyle == 'ModuleHeader' )
+						{
+							// 04/02/2022 Paul.  Create an outer div to include the first button and the action navItem. 
+							let pacificChildren = [];
+							let pacific = React.createElement('div', {style: {display: 'flex', flexDirection: 'row', flexWrap: 'nowrap'}}, pacificChildren);
+							// 04/02/2022 Paul.  Write title in a div to correct spacing alignment issues. 
+							let firstDivChildren = [];
+							let firstDiv = React.createElement('div', {}, firstDivChildren);
+							pacificChildren.push(firstDiv);
+							firstDivChildren.push(title);
+							
+							let actionTitleChildren = [];
+							let actionTitle = React.createElement('div', {className: ButtonStyle + 'FirstButton', style: {}}, actionTitleChildren);
+							let actions = React.createElement('span', {style: {}}, L10n.Term('.LBL_ACTIONS'));
+							actionTitleChildren.push(actions);
+							let iDown = React.createElement(FontAwesomeIcon, { icon: 'caret-down' });
+							let more = React.createElement('span', {className: ButtonStyle + 'MoreButton', style: {}}, iDown);
+							actionTitleChildren.push(more);
+							let navItem = React.createElement(NavItem, { id: 'pnlDynamicButtons', key: 'pnlDynamicButtons', title: actionTitle, alignRight: true, children: null}, pnlDynamicButtonsChildren);
+							pacificChildren.push(navItem);
+							pnlDynamicButtons = pacific;
+						}
+						else
+						{
+							if ( ButtonStyle == 'ListHeader' )
+							{
+								let more = React.createElement('input', {type: 'image', className: ButtonStyle + 'MoreButton', style: {verticalAlign: 'bottom', height: '26px'}, src: themeURL + 'images/subpanel_more.gif', onClick: (e) => { e.preventDefault() }});
+								titleChildren.push(more);
+							}
+							else
+							{
+								let more = React.createElement('input', {type: 'image', className: ButtonStyle + 'MoreButton', style: {verticalAlign: 'bottom'}, src: themeURL + 'images/moreWhite.gif', onClick: (e) => { e.preventDefault() }});
+								titleChildren.push(more);
+							}
+							// 02/25/2022 Paul.  NavDropdownProps requires children parameter, though it does not seem to be used.  This error appeared with bootstrap 5. 
+							let navItem = React.createElement(NavItem, { id: 'pnlDynamicButtons', key: 'pnlDynamicButtons', title: title, alignRight: true, children: null}, pnlDynamicButtonsChildren);
+							//pnlDynamicButtons = React.createElement(Nav, {className: 'ml-auto', navbar: true}, [navItem]);
+							pnlDynamicButtons = navItem;
+						}
+					}
+					else
+					{
+						pnlDynamicButtons = title;
+					}
+					bMoreListItems = true;
+					nButtonStart++;
+					break;
 				}
-				bMoreListItems = true;
-				nButtonStart++;
-				break;
 			}
 		}
 		else if ( SplendidDynamic.StackedLayout(sTheme) && (ButtonStyle == 'DataGrid') )
 		{
 			if ( layout.length > 0 )
 			{
-				let titleChildren = [];
-				let title = React.createElement('span', {style: {verticalAlign: 'top'}}, titleChildren);
-				let more = React.createElement('input', {type: 'image', className: ButtonStyle + 'MoreButton', style: {verticalAlign: 'top', width: '20px', height: '20px'}, src: themeURL + 'images/datagrid_more.gif', onClick: (e) => { e.preventDefault() }});
-				titleChildren.push(more);
+				let more = null
+				if ( sTheme == 'Pacific' )
+				{
+					more = <div className='GridBulkAction'>
+						<span style={ {marginRight: '10px'} }>{ L10n.Term('.LBL_BULK_ACTION') }</span>
+						<FontAwesomeIcon icon='caret-down' size='lg' />
+					</div>;
+				}
+				else
+				{
+					let titleChildren = [];
+					let title = React.createElement('span', {style: {verticalAlign: 'top'}}, titleChildren);
+					more = React.createElement('input', {type: 'image', className: ButtonStyle + 'MoreButton', style: {verticalAlign: 'top', width: '20px', height: '20px'}, src: themeURL + 'images/datagrid_more.gif', onClick: (e) => { e.preventDefault() }});
+					titleChildren.push(more);
+				}
 				// 02/25/2022 Paul.  NavDropdownProps requires children parameter, though it does not seem to be used.  This error appeared with bootstrap 5. 
 				let navItem = React.createElement(NavItem, { id: 'pnlDynamicButtons', key: 'pnlDynamicButtons', title: more, style: {textAlign: 'left', verticalAlign: 'top', padding: 0, margin: 0}, children: null }, pnlDynamicButtonsChildren);
 				//pnlDynamicButtons = React.createElement(Nav, {className: 'ml-auto', navbar: true}, [navItem]);
@@ -326,6 +384,11 @@ class DynamicButtons extends React.Component<IDynamicButtonsProps, IDynamicButto
 				// 10/11/2019 Paul.  Manually add spacing around buttons so that the do not look like one solid botton. 
 				let btnProps   : any = { style: { marginRight: '2px', marginBottom: '2px' }, key: ButtonStyle + MODULE_NAME + iButton };
 				let btn        : JSX.Element = null;
+				// 04/02/2022 Paul.  Bottom margin leaves white line with Pacific theme. 
+				if ( sTheme == 'Pacific' && (ButtonStyle == 'ListHeader' || ButtonStyle == 'DataGrid') )
+				{
+					btnProps.style.marginBottom = '0px';
+				}
 
 				// 11/21/2008 Paul.  On post back, we need to re-create the buttons, but don't change the visiblity flag. 
 				// The problem is that we don't have the record at this early stage, so we cannot properly evaluate gASSIGNED_USER_ID. 
@@ -423,7 +486,10 @@ class DynamicButtons extends React.Component<IDynamicButtonsProps, IDynamicButto
 							btnProps.className = CONTROL_CSSCLASS;
 							if ( SplendidDynamic.StackedLayout(sTheme) )
 							{
-								btnProps.className = ButtonStyle + 'OtherButton';
+								if ( sTheme == 'Pacific' && layout.length == 1 )
+									btnProps.className = ButtonStyle + 'FirstButton';
+								else
+									btnProps.className = ButtonStyle + 'OtherButton';
 							}
 							//btnProps.size = 'tiny';
 							if ( CONTROL_TEXT == '+' )

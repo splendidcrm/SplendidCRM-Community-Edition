@@ -102,6 +102,7 @@ import AdminDynamicLayout             from './DynamicLayoutComponents/DynamicLay
 import GoogleOAuth                    from './views/GoogleOAuth'                                                   ;
 import Office365OAuth                 from './views/Office365OAuth'                                                ;
 import AzureDetailView                from './ModuleViews/Administration/Azure/AzureDetailView'                    ;
+import AzureConfigView                from './ModuleViews/Administration/Azure/AzureConfigView'                    ;
 import FullTextSearchConfigView       from './ModuleViews/Administration/FullTextSearch/ConfigView'                ;
 import BackupsConfigView              from './ModuleViews/Administration/Backups/ConfigView'                       ;
 import UpdaterConfigView              from './ModuleViews/Administration/Updater/ConfigView'                       ;
@@ -151,6 +152,7 @@ v			<Redirect     exact from="/Emails/Drafts"                                   
 			<PrivateRoute exact path="/Dashboard/:ID"                                            component={DashboardView} />
 			<PrivateRoute exact path="/Dashboard"                                                component={DashboardView} />
 			<PrivateRoute exact path="/UnifiedSearch/:search"                                    component={UnifiedSearch} />
+			<PrivateRoute exact path="/UnifiedSearch"                                            component={UnifiedSearch} />
 
 			<PrivateRoute exact path="/ChatDashboard/:ID"                                        component={ChatDashboardView} />
 			<PrivateRoute exact path="/ChatDashboard"                                            component={ChatDashboardView} />
@@ -260,8 +262,9 @@ v			<Redirect     exact from="/Emails/Drafts"                                   
 			<PrivateRoute exact path="/Administration/Azure/:MODULE_NAME/Duplicate/:DuplicateID" component={AdminDynamicEditView} />
 			<PrivateRoute exact path="/Administration/Azure/:MODULE_NAME/Edit/:ID"               component={AdminDynamicEditView} />
 			<PrivateRoute exact path="/Administration/Azure/:MODULE_NAME/Edit"                   component={AdminDynamicEditView} />
-			<PrivateRoute       path="/Administration/Azure"                                     component={AzureDetailView} />
-
+			<PrivateRoute exact path="/Administration/Azure/ConfigView"                          component={AzureConfigView} />
+			<PrivateRoute       path="/Administration/Azure/"                                    component={AzureDetailView} />
+			
 			<PrivateRoute exact path="/Administration/ACLRoles/Edit/:ID/FieldSecurity"           component={ACLRolesFieldSecurity} />
 			<PrivateRoute exact path="/Administration/ACLRoles/ByUser"                           component={ACLRolesByUser} />
 			<PrivateRoute exact path="/Administration/:MODULE_NAME/ReadOnlyListView"             component={AdminReadOnlyListView} />

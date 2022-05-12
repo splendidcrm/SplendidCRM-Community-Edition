@@ -57,6 +57,8 @@ interface ISubPanelStreamViewProps extends RouteComponentProps<any>
 	// 04/10/2021 Paul.  Create framework to allow pre-compile of all modules. 
 	isPrecompile?       : boolean;
 	onComponentComplete?: (MODULE_NAME, RELATED_MODULE, LAYOUT_NAME, data) => void;
+	// 03/30/2022 Paul.  Pacific theme needs collapse notification. 
+	onComponentCollapse?: (CONTROL_VIEW_NAME: string, open: boolean) => void;
 }
 
 interface ISubPanelStreamViewState
@@ -334,7 +336,7 @@ class SubPanelStreamView extends React.Component<ISubPanelStreamViewProps, ISubP
 
 	private onToggleCollapse = (open) =>
 	{
-		const { CONTROL_VIEW_NAME } = this.props;
+		const { CONTROL_VIEW_NAME, onComponentCollapse } = this.props;
 		this.setState({ open }, () =>
 		{
 			if ( open )
@@ -346,6 +348,11 @@ class SubPanelStreamView extends React.Component<ISubPanelStreamViewProps, ISubP
 				// 11/10/2020 Paul.  Save false instead of remove so that config value default_subpanel_open will work properly. 
 				//localStorage.removeItem(CONTROL_VIEW_NAME);
 				localStorage.setItem(CONTROL_VIEW_NAME, 'false');
+			}
+			// 03/30/2022 Paul.  Pacific theme needs collapse notification. 
+			if ( onComponentCollapse )
+			{
+				onComponentCollapse(CONTROL_VIEW_NAME, open);
 			}
 		});
 	}

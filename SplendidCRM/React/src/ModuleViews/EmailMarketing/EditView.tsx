@@ -415,6 +415,8 @@ export default class EmailMarketingEditView extends React.Component<IEditViewPro
 					row = {
 						ID: isDuplicate ? null : ID
 					};
+					// 04/18/2022 Paul.  Must set the CAMPAIGN_ID manually as it is not in the layout. 
+					row.CAMPAIGN_ID = this.CAMPAIGN_ID;
 					// 08/27/2019 Paul.  Move build code to shared object. 
 					let nInvalidFields: number = SplendidDynamic_EditView.BuildDataRow(row, this.refMap);
 					if ( nInvalidFields == 0 )

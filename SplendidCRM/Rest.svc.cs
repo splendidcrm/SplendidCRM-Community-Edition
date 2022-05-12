@@ -4483,6 +4483,247 @@ namespace SplendidCRM
 			return new MemoryStream(byResponse);
 		}
 
+		[OperationContract]
+		[WebInvoke(Method="GET", BodyStyle=WebMessageBodyStyle.WrappedRequest, RequestFormat=WebMessageFormat.Json, ResponseFormat=WebMessageFormat.Json)]
+		public Stream GetRelationshipInsights(string ModuleName, Guid ID)
+		{
+			HttpApplicationState Application = HttpContext.Current.Application;
+			HttpRequest          Request     = HttpContext.Current.Request    ;
+			
+			WebOperationContext.Current.OutgoingResponse.Headers.Add("Cache-Control", "no-cache");
+			WebOperationContext.Current.OutgoingResponse.Headers.Add("Pragma", "no-cache");
+			
+			if ( Sql.IsEmptyString(ModuleName) )
+				throw(new Exception("The module name must be specified."));
+			int nACLACCESS = Security.GetUserAccess(ModuleName, "edit");
+			if ( !Security.IsAuthenticated() || !Sql.ToBoolean(Application["Modules." + ModuleName + ".RestEnabled"]) || nACLACCESS < 0 )
+			{
+				L10N L10n = new L10N(Sql.ToString(HttpContext.Current.Session["USER_SETTINGS/CULTURE"]));
+				throw(new Exception(L10n.Term("ACL.LBL_INSUFFICIENT_ACCESS") + ": " + ModuleName));
+			}
+			Guid gCURRENCY_ID = Sql.ToGuid(HttpContext.Current.Session["USER_SETTINGS/CURRENCY"]);
+			Currency C10n = Currency.CreateCurrency(Application, gCURRENCY_ID);
+			
+			Dictionary<string, object> d = new Dictionary<string, object>();
+			StringBuilder sbDumpSQL = new StringBuilder();
+			DbProviderFactory dbf = DbProviderFactories.GetFactory(Application);
+			DataTable dtRelationships = SplendidCache.DetailViewRelationships(ModuleName + ".DetailView");
+			using ( IDbConnection con = dbf.CreateConnection() )
+			{
+				con.Open();
+				foreach ( DataRow row in dtRelationships.Rows )
+				{
+					string sMODULE_NAME      = Sql.ToString(row["MODULE_NAME"     ]);
+					string sCONTROL_NAME     = Sql.ToString(row["CONTROL_NAME"    ]);
+					string sTABLE_NAME       = Sql.ToString(row["TABLE_NAME"      ]);
+					string sPRIMARY_FIELD    = Sql.ToString(row["PRIMARY_FIELD"   ]);
+					string sINSIGHT_VIEW     = Sql.ToString(row["INSIGHT_VIEW"    ]);
+					string sINSIGHT_LABEL    = Sql.ToString(row["INSIGHT_LABEL"   ]);
+					string sINSIGHT_OPERATOR = Sql.ToString(row["INSIGHT_OPERATOR"]);
+					string sSQL              = String.Empty;
+					if ( Sql.IsEmptyString(sINSIGHT_VIEW) )
+					{
+						sINSIGHT_VIEW = sTABLE_NAME;
+					}
+					if ( Sql.IsEmptyString(sINSIGHT_OPERATOR) )
+					{
+						if ( sCONTROL_NAME == "ActivityStream" )
+							sINSIGHT_OPERATOR = "max(STREAM_DATE)";
+						else
+							sINSIGHT_OPERATOR = "count(*)";
+					}
+					if ( Sql.IsEmptyString(sINSIGHT_LABEL) )
+					{
+						sINSIGHT_LABEL = ".LBL_INSIGHT_TOTAL";
+					}
+					sSQL = "select " + sINSIGHT_OPERATOR + ControlChars.CrLf
+					     + "  from " + sINSIGHT_VIEW     + ControlChars.CrLf;
+					Dictionary<string, object> dictControl = new Dictionary<string, object>();
+					dictControl.Add("INSIGHT_LABEL", sINSIGHT_LABEL);
+					d.Add(sCONTROL_NAME, dictControl);
+					using ( IDbCommand cmd = con.CreateCommand() )
+					{
+						cmd.CommandText = sSQL;
+						// 03/31/2022 Paul.   We need to apply the same relationship filters as used by each relationship panel. 
+						using ( DataTable dtSYNC_TABLES = SplendidCache.RestTables(sTABLE_NAME, false) )
+						{
+							if ( dtSYNC_TABLES != null && dtSYNC_TABLES.Rows.Count > 0 )
+							{
+								DataRow rowSYNC_TABLE = dtSYNC_TABLES.Rows[0];
+								sMODULE_NAME = Sql.ToString (rowSYNC_TABLE["MODULE_NAME"]);
+								string sVIEW_NAME           = Sql.ToString (rowSYNC_TABLE["VIEW_NAME"          ]);
+								bool   bHAS_CUSTOM          = Sql.ToBoolean(rowSYNC_TABLE["HAS_CUSTOM"         ]);
+								int    nMODULE_SPECIFIC     = Sql.ToInteger(rowSYNC_TABLE["MODULE_SPECIFIC"    ]);
+								string sMODULE_FIELD_NAME   = Sql.ToString (rowSYNC_TABLE["MODULE_FIELD_NAME"  ]);
+								bool   bIS_RELATIONSHIP     = Sql.ToBoolean(rowSYNC_TABLE["IS_RELATIONSHIP"    ]);
+								string sMODULE_NAME_RELATED = Sql.ToString (rowSYNC_TABLE["MODULE_NAME_RELATED"]);
+								bool   bIS_ASSIGNED         = Sql.ToBoolean(rowSYNC_TABLE["IS_ASSIGNED"        ]);
+								string sASSIGNED_FIELD_NAME = Sql.ToString (rowSYNC_TABLE["ASSIGNED_FIELD_NAME"]);
+								bool   bIS_SYSTEM           = Sql.ToBoolean(rowSYNC_TABLE["IS_SYSTEM"          ]);
+								//sTABLE_NAME        = r.Replace(sTABLE_NAME       , "");
+								//sVIEW_NAME         = r.Replace(sVIEW_NAME        , "");
+								//sMODULE_FIELD_NAME = r.Replace(sMODULE_FIELD_NAME, "");
+								// 03/31/2022 Paul.  All tables will be relationship tables, including vwACCOUNTS_BALANCE. 
+								if ( bIS_RELATIONSHIP )
+								{
+									// 03/31/2022 Paul.  We don't want to over-ride the Module Name from DetailViewRelationships, unless we are using the RestTable information. 
+									DataView vwRelationships = new DataView(SplendidCache.ReportingRelationships(Application));
+									vwRelationships.RowFilter = "(JOIN_TABLE = '" + sTABLE_NAME + "' and RELATIONSHIP_TYPE = 'many-to-many') or (RHS_TABLE = '" + sTABLE_NAME + "' and RELATIONSHIP_TYPE = 'one-to-many')";
+									if ( vwRelationships.Count > 0 )
+									{
+										foreach ( DataRowView rowRelationship in vwRelationships )
+										{
+											string sJOIN_KEY_LHS             = Sql.ToString(rowRelationship["JOIN_KEY_LHS"            ]).ToUpper();
+											string sJOIN_KEY_RHS             = Sql.ToString(rowRelationship["JOIN_KEY_RHS"            ]).ToUpper();
+											string sLHS_MODULE               = Sql.ToString(rowRelationship["LHS_MODULE"              ]);
+											string sRHS_MODULE               = Sql.ToString(rowRelationship["RHS_MODULE"              ]);
+											string sLHS_TABLE                = Sql.ToString(rowRelationship["LHS_TABLE"               ]).ToUpper();
+											string sRHS_TABLE                = Sql.ToString(rowRelationship["RHS_TABLE"               ]).ToUpper();
+											string sLHS_KEY                  = Sql.ToString(rowRelationship["LHS_KEY"                 ]).ToUpper();
+											string sRHS_KEY                  = Sql.ToString(rowRelationship["RHS_KEY"                 ]).ToUpper();
+											string sRELATIONSHIP_TYPE        = Sql.ToString(rowRelationship["RELATIONSHIP_TYPE"       ]);
+											string sRELATIONSHIP_ROLE_COLUMN = Sql.ToString(rowRelationship["RELATIONSHIP_ROLE_COLUMN"]).ToUpper();
+											//sJOIN_KEY_LHS = r.Replace(sJOIN_KEY_LHS, String.Empty);
+											//sJOIN_KEY_RHS = r.Replace(sJOIN_KEY_RHS, String.Empty);
+											//sLHS_MODULE   = r.Replace(sLHS_MODULE  , String.Empty);
+											//sRHS_MODULE   = r.Replace(sRHS_MODULE  , String.Empty);
+											//sLHS_TABLE    = r.Replace(sLHS_TABLE   , String.Empty);
+											//sRHS_TABLE    = r.Replace(sRHS_TABLE   , String.Empty);
+											//sLHS_KEY      = r.Replace(sLHS_KEY     , String.Empty);
+											//sRHS_KEY      = r.Replace(sRHS_KEY     , String.Empty);
+											if ( sRELATIONSHIP_TYPE == "many-to-many" )
+											{
+												cmd.CommandText += "   and " + sJOIN_KEY_LHS + " in " + ControlChars.CrLf;
+												cmd.CommandText += "(select " + sLHS_KEY + " from " + sLHS_TABLE + ControlChars.CrLf;
+												Security.Filter(cmd, sLHS_MODULE, "list");
+												cmd.CommandText += ")" + ControlChars.CrLf;
+													
+												// 11/12/2009 Paul.  We don't want to deal with relationships to multiple tables, so just ignore for now. 
+												if ( sRELATIONSHIP_ROLE_COLUMN != "RELATED_TYPE" )
+												{
+													cmd.CommandText += "   and " + sJOIN_KEY_RHS + " in " + ControlChars.CrLf;
+													cmd.CommandText += "(select " + sRHS_KEY + " from " + sRHS_TABLE + ControlChars.CrLf;
+													Security.Filter(cmd, sRHS_MODULE, "list");
+													cmd.CommandText += ")" + ControlChars.CrLf;
+												}
+											}
+											else if ( sRELATIONSHIP_TYPE == "one-to-many" )
+											{
+												cmd.CommandText += "   and " + sRHS_KEY + " in " + ControlChars.CrLf;
+												cmd.CommandText += "(select " + sLHS_KEY + " from " + sLHS_TABLE + ControlChars.CrLf;
+												Security.Filter(cmd, sLHS_MODULE, "list");
+												cmd.CommandText += ")" + ControlChars.CrLf;
+											}
+										}
+										cmd.CommandText += "  where 1 = 1" + ControlChars.CrLf;
+									}
+									else
+									{
+										cmd.CommandText += "  where 1 = 1" + ControlChars.CrLf;
+										if ( !Sql.IsEmptyString(sMODULE_NAME))
+										{
+											// 11/05/2009 Paul.  We could query the foreign key tables to perpare the filters, but that is slow. 
+											string sMODULE_TABLE_NAME   = Sql.ToString(Application["Modules." + sMODULE_NAME + ".TableName"]).ToUpper();
+											if ( !Sql.IsEmptyString(sMODULE_TABLE_NAME) )
+											{
+												// 06/04/2011 Paul.  New function to get the singular name. 
+												string sMODULE_FIELD_ID = Crm.Modules.SingularTableName(sMODULE_TABLE_NAME) + "_ID";
+												
+												cmd.CommandText += "   and " + sMODULE_FIELD_ID + " in " + ControlChars.CrLf;
+												// 03/30/2016 Paul.  Corporate database does not provide direct access to tables.  Must use view. 
+												cmd.CommandText += "(select ID from " + (sMODULE_TABLE_NAME.Substring(0, 2).ToUpper() == "VW" ? sMODULE_TABLE_NAME : "vw" + sMODULE_TABLE_NAME) + ControlChars.CrLf;
+												Security.Filter(cmd, sMODULE_NAME, "list");
+												cmd.CommandText += ")" + ControlChars.CrLf;
+											}
+										}
+										// 11/05/2009 Paul.  We cannot use the standard filter on the Teams table. 
+										if ( !Sql.IsEmptyString(sMODULE_NAME_RELATED) && !sMODULE_NAME_RELATED.StartsWith("Team") )
+										{
+											string sMODULE_TABLE_RELATED = Sql.ToString(Application["Modules." + sMODULE_NAME_RELATED + ".TableName"]).ToUpper();
+											if ( !Sql.IsEmptyString(sMODULE_TABLE_RELATED) )
+											{
+												// 06/04/2011 Paul.  New function to get the singular name. 
+												string sMODULE_RELATED_ID = Crm.Modules.SingularTableName(sMODULE_TABLE_RELATED) + "_ID";
+												
+												// 11/05/2009 Paul.  Some tables use ASSIGNED_USER_ID as the relationship ID instead of the USER_ID. 
+												if ( sMODULE_RELATED_ID == "USER_ID" && !Sql.IsEmptyString(sASSIGNED_FIELD_NAME) )
+													sMODULE_RELATED_ID = sASSIGNED_FIELD_NAME;
+												
+												cmd.CommandText += "   and " + sMODULE_RELATED_ID + " in " + ControlChars.CrLf;
+												// 03/30/2016 Paul.  Corporate database does not provide direct access to tables.  Must use view. 
+												cmd.CommandText += "(select ID from " + (sMODULE_TABLE_RELATED.Substring(0, 2).ToUpper() == "VW" ? sMODULE_TABLE_RELATED : "vw" + sMODULE_TABLE_RELATED)  + ControlChars.CrLf;
+												Security.Filter(cmd, sMODULE_NAME_RELATED, "list");
+												cmd.CommandText += ")" + ControlChars.CrLf;
+											}
+										}
+									}
+								}
+								else
+								{
+									Security.Filter(cmd, sMODULE_NAME, "list");
+								}
+							}
+							else
+							{
+								// 03/31/2022 Paul.  STREAM table will not be returned by SplendidCache.RestTables. 
+								Security.Filter(cmd, ModuleName, "list");
+							}
+							Sql.AppendParameter(cmd, ID, sPRIMARY_FIELD);
+							// 04/01/2022 Paul.  Grouping by count returns empty list. 
+							if ( sINSIGHT_OPERATOR != "count(*)" )
+							{
+								cmd.CommandText += " group by " + sPRIMARY_FIELD;
+							}
+							sbDumpSQL.AppendLine(Sql.ExpandParameters(cmd) + ";");
+							try
+							{
+								string sINSIGHT_VALUE = String.Empty;
+								object oINSIGHT_VALUE = cmd.ExecuteScalar();
+								if ( oINSIGHT_VALUE == null )
+								{
+									sINSIGHT_VALUE = "-";
+								}
+								else if ( oINSIGHT_VALUE.GetType() == typeof(System.DateTime) )
+								{
+									if ( oINSIGHT_VALUE == DBNull.Value )
+										sINSIGHT_VALUE = "-";
+									else
+										sINSIGHT_VALUE = Sql.ToDateString(oINSIGHT_VALUE);
+								}
+								else if ( oINSIGHT_VALUE.GetType() == typeof(System.Decimal) )
+								{
+									// 03/31/2022 Paul.  Assume it is money. 
+									Decimal dValue = C10n.ToCurrency(Convert.ToDecimal(oINSIGHT_VALUE));
+									sINSIGHT_VALUE = dValue.ToString("c0");
+								}
+								else if ( oINSIGHT_VALUE != DBNull.Value )
+								{
+									sINSIGHT_VALUE = Sql.ToString(oINSIGHT_VALUE);
+								}
+								dictControl.Add("INSIGHT_VALUE", sINSIGHT_VALUE);
+							}
+							catch(Exception ex)
+							{
+								dictControl.Add("INSIGHT_VALUE", ex.Message);
+							}
+						}
+					}
+				}
+			}
+			
+			Dictionary<string, object> dictResponse = new Dictionary<string, object>();
+			dictResponse.Add("d", d);
+			if ( Sql.ToBoolean(Application["CONFIG.show_sql"]) )
+			{
+				dictResponse.Add("__sql", sbDumpSQL.ToString());
+			}
+			JavaScriptSerializer json = new JavaScriptSerializer();
+			json.MaxJsonLength = int.MaxValue;
+			string sResponse = json.Serialize(dictResponse);
+			byte[] byResponse = Encoding.UTF8.GetBytes(sResponse);
+			return new MemoryStream(byResponse);
+		}
+
 		#endregion
 
 		#region Update

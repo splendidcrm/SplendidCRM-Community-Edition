@@ -20,6 +20,7 @@ import Sql                                    from '../scripts/Sql'          ;
 import L10n                                   from '../scripts/L10n'         ;
 import SplendidCache                          from '../scripts/SplendidCache';
 import { StartsWith }                         from '../scripts/utility'      ;
+import Credentials                            from '../scripts/Credentials'  ;
 // 4. Components and Views. 
 
 interface IListBoxState
@@ -349,6 +350,14 @@ export default class ListBox extends EditComponent<IEditComponentProps, IListBox
 							}
 						}
 					}
+				}
+			}
+			// 05/06/2022 Paul.  Set the default value for Currencies. 
+			if ( LIST_NAME == 'Currencies' )
+			{
+				if ( !(row && row[DATA_FIELD] !== undefined) )
+				{
+					DATA_VALUE = Credentials.sUSER_CURRENCY_ID;
 				}
 			}
 			for ( let i = 0; i < arrLIST.length; i++ )

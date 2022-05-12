@@ -14,7 +14,7 @@ import { RouteComponentProps, withRouter } from 'react-router-dom'              
 import { library }                         from '@fortawesome/fontawesome-svg-core';
 import { faSync, faCog, faSpinner, faAsterisk, faFile, faSave, faEdit, faTimes, faChevronDown, faChevronUp, faChevronLeft, faChevronRight, faAngleRight, faAngleLeft, faAngleDoubleRight, faAngleDoubleLeft, faSearch, faPlus, faMinus, faMinusCircle, faQuestion, faSortDown, faAngleDoubleUp, faAngleDoubleDown, faStar, faArrowAltCircleRight, faArrowCircleRight, faCaretDown, faArrowDown, faArrowRight, faInfo, faTrashAlt, faWindowClose, faSort, faExternalLinkAlt, faCheckSquare, faCheck, faFolder, faCaretSquareUp, faCaretSquareDown, faAngleUp, faAngleDown, faArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { faStar as faStarRegular, faArrowAltCircleRight as faArrowAltCircleRightRegular, faEye as faEyeRegular, faFile as faFileRegular, faFolder as faFolderRegular } from '@fortawesome/free-regular-svg-icons';
-import { faCopy, faPaste, faUndo, faRedo, faAlignLeft, faAlignRight, faAlignCenter, faAlignJustify } from '@fortawesome/free-solid-svg-icons';
+import { faCopy, faPaste, faUndo, faRedo, faAlignLeft, faAlignRight, faAlignCenter, faAlignJustify, faList, faHouse, faUser, faLessThan, faGreaterThan, faFilter, faXmark, faFileExport } from '@fortawesome/free-solid-svg-icons';
 import { observer, inject }                from 'mobx-react'                       ;
 import { DndProvider }                     from 'react-dnd'                        ;
 import { TouchBackend }                    from 'react-dnd-touch-backend'          ;
@@ -53,7 +53,7 @@ class App extends React.Component<IAppProps, IAppState>
 		super(props);
 		library.add(faSync, faCog, faSpinner, faAsterisk, faFile, faSave, faEdit, faTimes, faChevronDown, faChevronUp, faChevronLeft, faChevronRight, faAngleRight, faAngleLeft, faAngleDoubleRight, faAngleDoubleLeft, faSearch, faPlus, faMinus, faMinusCircle, faQuestion, faSortDown, faAngleDoubleUp, faAngleDoubleDown, faStar, faArrowAltCircleRight, faArrowCircleRight, faCaretDown, faArrowDown, faArrowRight, faInfo, faWindowClose, faSort, faExternalLinkAlt, faCheckSquare, faCheck, faFolder, faCaretSquareUp, faCaretSquareDown, faAngleUp, faAngleDown, faArrowUp);
 		library.add(faStarRegular, faArrowAltCircleRightRegular, faEyeRegular, faTrashAlt, faFileRegular, faFolderRegular);
-		library.add(faCopy, faPaste, faUndo, faRedo, faAlignLeft, faAlignRight, faAlignCenter, faAlignJustify);
+		library.add(faCopy, faPaste, faUndo, faRedo, faAlignLeft, faAlignRight, faAlignCenter, faAlignJustify, faList, faHouse, faUser, faLessThan, faGreaterThan, faFilter, faXmark, faFileExport);
 		
 		this.state = 
 		{
@@ -84,13 +84,17 @@ class App extends React.Component<IAppProps, IAppState>
 		let showTopNav  : boolean = Credentials.viewMode != 'AdminWizard' && Credentials.viewMode != 'UserWizard';
 		let showSideBar : boolean = sideBar && SplendidCache.IsInitialized && Credentials.viewMode != 'AdministrationView' && Credentials.viewMode != 'UnifiedSearch' && (Credentials.viewMode != 'DashboardView' || SplendidCache.UserTheme == 'Sugar2006') && Credentials.viewMode != 'DashboardEditView' && Credentials.viewMode != 'AdminWizard' && Credentials.viewMode != 'UserWizard';
 		let showTeamTree: boolean = bEnableTeamManagement && bEnableTeamHierarchy && SplendidCache.IsInitialized && (Credentials.viewMode == 'ListView' || Credentials.viewMode == 'DashboardView' || Credentials.viewMode == 'UnifiedSearch');
+		// 04/03/2022 Paul.  Remove background-color white for Pacific theme. 
+		let style: any = {display: 'flex', flexDirection: 'row', flexWrap: 'nowrap', height: '100%', width: '100%'};
+		if ( userTheme != 'Pacific' )
+			style.backgroundColor = 'white';
 		return (
 			<DndProvider backend = {DnDBackend as any}>
 				{ showTopNav && topNav
 				? React.createElement(topNav, {})
 				: null
 				}
-				<div style={ {display: 'flex', flexDirection: 'row', flexWrap: 'nowrap', height: '100%', width: '100%', backgroundColor: 'white'} }>
+				<div style={ style }>
 					{ userTheme == 'Sugar2006'
 					? <React.Fragment>
 						<div id='divSideBar'>
@@ -115,7 +119,7 @@ class App extends React.Component<IAppProps, IAppState>
 						}
 					</React.Fragment>
 					}
-					<div id='appMainContent' style={ {marginLeft: '5px', marginRight: '5px', width: '100%'} }>
+					<div id='appMainContent'>
 						{ children }
 					</div>
 				</div>

@@ -6,16 +6,16 @@ GO
 set nocount on;
 GO
 
-exec dbo.spCONFIG_InsertOnly null, 'system', 'service_level'   , 'Community';
+exec dbo.spCONFIG_InsertOnly null, 'system', 'service_level'   , 'Builder';
 GO
 
--- 11/30/2008 Paul.  Service level name changed from Basic to Community. 
-if exists(select * from CONFIG where NAME = 'service_level' and cast(VALUE as nvarchar(20)) = 'Basic' and DELETED = 0) begin -- then
-	print 'Service level name has changed from Basic to Community.';
+-- 02/04/2022 Paul.  Service level name changed from Community to Builder. 
+if exists(select * from CONFIG where NAME = 'service_level' and cast(VALUE as nvarchar(20)) = 'Community' and DELETED = 0) begin -- then
+	print 'Service level name has changed from Community to Builder.';
 	update CONFIG
-	   set VALUE  = 'Community'
+	   set VALUE  = 'Builder'
 	 where NAME   = 'service_level'
-	   and cast(VALUE as nvarchar(20)) = 'Basic'
+	   and cast(VALUE as nvarchar(20)) = 'Community'
 	   and DELETED = 0;
 end -- if;
 GO

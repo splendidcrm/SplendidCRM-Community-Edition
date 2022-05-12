@@ -44,7 +44,8 @@ exec dbo.spMODULES_InsertOnly null, 'Bugs'                  , '.moduleList.Bugs'
 exec dbo.spMODULES_InsertOnly null, 'Dashboard'             , '.moduleList.Dashboard'                , '~/Dashboard/html5/'                 , 1, 1,  7, 0, 0, 0, 0, 0, 'DASHBOARDS'     , 0, 0, 0, 0, 0, 0;
 -- 06/02/2017 Paul.  DashboardPanels is required for REST API. 
 exec dbo.spMODULES_InsertOnly null, 'DashboardPanels'       , '.moduleList.DashboardPanels'          , '~/Dashboard/DashboardPanels/'       , 1, 0,  0, 0, 0, 0, 0, 0, 'DASHBOARDS_PANELS', 0, 0, 0, 0, 0, 0;
-if exists (select * from MODULES where MODULE_NAME = 'Dashboard' and TABLE_NAME is null and DELETED = 0) begin -- then
+-- 04/25/2022 Paul.  We found an old database with invalid table name. 
+if exists (select * from MODULES where MODULE_NAME = 'Dashboard' and (TABLE_NAME is null or TABLE_NAME  = 'DASHBOARD') and DELETED = 0) begin -- then
 	print 'MODULES: Dashboard needs a table for the REST API. ';
 	update MODULES
 	   set RELATIVE_PATH     = '~/Dashboard/html5/'
@@ -53,7 +54,7 @@ if exists (select * from MODULES where MODULE_NAME = 'Dashboard' and TABLE_NAME 
 	     , DATE_MODIFIED_UTC = getutcdate()
 	     , MODIFIED_USER_ID  = null
 	 where MODULE_NAME       = 'Dashboard'
-	   and TABLE_NAME        is null
+	   and (TABLE_NAME is null or TABLE_NAME  = 'DASHBOARD')
 	   and DELETED           = 0;
 
 	-- 06/16/2017 Paul.  New home page is rendered using javascript. 
@@ -164,18 +165,75 @@ end -- if;
 -- 04/22/2006 Paul.  Add ACLRoles as a module.  Set the CUSTOM_ENABLED flag. 
 -- 05/26/2007 Paul.  There is no compelling reason to allow ACLRoles to be customized. 
 exec dbo.spMODULES_InsertOnly null, 'ACLRoles'              , '.moduleList.ACLRoles'                 , '~/Administration/ACLRoles/'         , 1, 0,  0, 0, 0, 0, 0, 1, 'ACL_ROLES'      , 0, 0, 0, 0, 0, 0;
+-- 04/10/2022 Paul.  React client relies upon MASS_UPDATE_ENABLED
+if exists(select * from MODULES where MODULE_NAME = 'ACLRoles' and MASS_UPDATE_ENABLED is null) begin -- then
+	update MODULES
+	   set MASS_UPDATE_ENABLED = 1
+	     , DATE_MODIFIED       = getdate()
+	     , DATE_MODIFIED_UTC   = getutcdate()
+	     , MODIFIED_USER_ID    = null
+	 where MODULE_NAME         = 'ACLRoles'
+	   and MASS_UPDATE_ENABLED is null;
+end -- if;
+GO
+-- 04/25/2022 Paul.  We found an old database with an invalid table name. 
+if exists(select * from MODULES where MODULE_NAME = 'ACLRoles' and TABLE_NAME = 'ACLROLES') begin -- then
+	print 'MODULES: Fix ACLRoles table name. ';
+	update MODULES
+	   set TABLE_NAME          = 'ACL_ROLES'
+	     , DATE_MODIFIED       = getdate()
+	     , DATE_MODIFIED_UTC   = getutcdate()
+	     , MODIFIED_USER_ID    = null
+	 where MODULE_NAME         = 'ACLRoles'
+	   and TABLE_NAME          = 'ACLROLES';
+end -- if;
+GO
+
 -- 10/25/2006 Paul.  Create the Help module so that access rights can be defined. 
 exec dbo.spMODULES_InsertOnly null, 'Help'                  , '.moduleList.Help'                     , '~/Help/'                            , 1, 0,  0, 0, 0, 0, 0, 1, null             , 0, 0, 0, 0, 0, 0;
 -- 12/14/2007 Paul.  Need to a a module record for Shortcuts so that its own shortcuts will appear. 
 -- 07/24/2008 Paul.  Admin modules are not typically reported on.
 exec dbo.spMODULES_InsertOnly null, 'Shortcuts'             , '.moduleList.Shortcuts'                , '~/Administration/Shortcuts/'        , 1, 0,  0, 0, 1, 0, 0, 1, 'SHORTCUTS'      , 0, 0, 0, 0, 0, 0;
 exec dbo.spMODULES_InsertOnly null, 'EmailMan'              , '.moduleList.EmailMan'                 , '~/Administration/EmailMan/'         , 1, 0,  0, 0, 1, 0, 0, 1, 'EMAILMAN'       , 0, 0, 0, 0, 0, 0;
+-- 04/10/2022 Paul.  React client relies upon MASS_UPDATE_ENABLED
+if exists(select * from MODULES where MODULE_NAME = 'EmailMan' and MASS_UPDATE_ENABLED is null) begin -- then
+	update MODULES
+	   set MASS_UPDATE_ENABLED = 1
+	     , DATE_MODIFIED       = getdate()
+	     , DATE_MODIFIED_UTC   = getutcdate()
+	     , MODIFIED_USER_ID    = null
+	 where MODULE_NAME         = 'EmailMan'
+	   and MASS_UPDATE_ENABLED is null;
+end -- if;
+GO
 exec dbo.spMODULES_InsertOnly null, 'InboundEmail'          , '.moduleList.InboundEmail'             , '~/Administration/InboundEmail/'     , 1, 0,  0, 0, 1, 0, 0, 1, 'INBOUND_EMAILS' , 0, 0, 0, 0, 0, 0;
+-- 04/10/2022 Paul.  React client relies upon MASS_UPDATE_ENABLED
+if exists(select * from MODULES where MODULE_NAME = 'InboundEmail' and MASS_UPDATE_ENABLED is null) begin -- then
+	update MODULES
+	   set MASS_UPDATE_ENABLED = 1
+	     , DATE_MODIFIED       = getdate()
+	     , DATE_MODIFIED_UTC   = getutcdate()
+	     , MODIFIED_USER_ID    = null
+	 where MODULE_NAME         = 'InboundEmail'
+	   and MASS_UPDATE_ENABLED is null;
+end -- if;
+GO
 exec dbo.spMODULES_InsertOnly null, 'Schedulers'            , '.moduleList.Schedulers'               , '~/Administration/Schedulers/'       , 1, 0,  0, 0, 1, 0, 0, 1, 'SCHEDULERS'     , 0, 0, 0, 0, 0, 0;
 -- 05/13/2008 Paul.  DynamicButtons should be treated as a module. 
 exec dbo.spMODULES_InsertOnly null, 'DynamicButtons'        , '.moduleList.DynamicButtons'           , '~/Administration/DynamicButtons/'   , 1, 0,  0, 0, 0, 0, 0, 1, 'DYNAMIC_BUTTONS', 0, 0, 0, 0, 0, 0;
 -- 05/13/2008 Paul.  Currencies module.
 exec dbo.spMODULES_InsertOnly null, 'Currencies'            , '.moduleList.Currencies'               , '~/Administration/Currencies/'       , 1, 0,  0, 0, 0, 0, 0, 1, 'CURRENCIES'     , 0, 0, 0, 0, 0, 0;
+-- 04/10/2022 Paul.  React client relies upon MASS_UPDATE_ENABLED
+if exists(select * from MODULES where MODULE_NAME = 'Currencies' and MASS_UPDATE_ENABLED is null) begin -- then
+	update MODULES
+	   set MASS_UPDATE_ENABLED = 1
+	     , DATE_MODIFIED       = getdate()
+	     , DATE_MODIFIED_UTC   = getutcdate()
+	     , MODIFIED_USER_ID    = null
+	 where MODULE_NAME         = 'Currencies'
+	   and MASS_UPDATE_ENABLED is null;
+end -- if;
+GO
 -- 05/13/2008 Paul.  System Log.
 exec dbo.spMODULES_InsertOnly null, 'SystemLog'             , '.moduleList.SystemLog'                , '~/Administration/SystemLog/'        , 1, 0,  0, 0, 0, 0, 0, 1, 'SYSTEM_LOG'     , 0, 0, 0, 0, 0, 0;
 -- 05/13/2008 Paul.  User Log.

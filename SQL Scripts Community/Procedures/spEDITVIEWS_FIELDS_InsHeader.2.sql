@@ -19,11 +19,13 @@ GO
  * 
  * You can contact SplendidCRM Software, Inc. at email address support@splendidcrm.com. 
  *********************************************************************************************************************/
+-- 04/15/2022 Paul.  Add support for Pacific layout tabs. 
 Create Procedure dbo.spEDITVIEWS_FIELDS_InsHeader
 	( @EDIT_NAME         nvarchar( 50)
 	, @FIELD_INDEX       int
 	, @DATA_LABEL        nvarchar(150)
 	, @COLSPAN           int
+	, @DATA_FORMAT       nvarchar(max) = null
 	)
 as
   begin
@@ -68,6 +70,7 @@ as
 			, FORMAT_TAB_INDEX 
 			, COLSPAN          
 			, ROWSPAN          
+			, DATA_FORMAT      
 			)
 		values 
 			( @ID               
@@ -86,6 +89,7 @@ as
 			, null              
 			, @COLSPAN          
 			, null              
+			, @DATA_FORMAT      
 			);
 	end -- if;
   end

@@ -55,6 +55,8 @@ interface IAdminReadOnlyListViewState
 {
 	MODULE_NAME    : string;
 	error          : any;
+	// 04/09/2022 Paul.  Hide/show SearchView. 
+	showSearchView        : string;
 }
 
 @observer
@@ -105,10 +107,19 @@ class SystemLogListView extends React.Component<IAdminReadOnlyListViewProps, IAd
 			}
 		}
 		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.constructor', MODULE_NAME);
+		// 04/09/2022 Paul.  Hide/show SearchView. 
+		let showSearchView: string = 'show';
+		if ( SplendidCache.UserTheme == 'Pacific' )
+		{
+			showSearchView = localStorage.getItem(this.constructor.name + '.showSearchView');
+			if ( Sql.IsEmptyString(showSearchView) )
+				showSearchView = 'hide';
+		}
 		this.state =
 		{
 			MODULE_NAME,
-			error: null
+			error: null,
+			showSearchView        ,
 		};
 	}
 
@@ -203,6 +214,14 @@ class SystemLogListView extends React.Component<IAdminReadOnlyListViewProps, IAd
 		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.Page_Command ' + sCommandName, sCommandArguments);
 		switch ( sCommandName )
 		{
+			// 04/09/2022 Paul.  Hide/show SearchView. 
+			case 'toggleSearchView':
+			{
+				let showSearchView: string = (this.state.showSearchView == 'show' ? 'hide' : 'show');
+				localStorage.setItem(this.constructor.name + '.showSearchView', showSearchView);
+				this.setState({ showSearchView });
+				break;
+			}
 			default:
 			{
 				if ( this._isMounted )
@@ -435,11 +454,7 @@ class SystemLogListView extends React.Component<IAdminReadOnlyListViewProps, IAd
 						}
 					};
 					// 02/16/2021 Paul.  Need to manually override the bootstrap header style. 
-					if ( SplendidCache.UserTheme == 'Arctic' )
-					{
-						objDataColumn.headerStyle.paddingTop    = '10px';
-						objDataColumn.headerStyle.paddingBottom = '10px';
-					}
+					// 04/24/2022 Paul.  Move Arctic style override to style.css. 
 					if ( ITEMSTYLE_HORIZONTAL_ALIGN != null )
 					{
 						objDataColumn.classes += ' gridView' + ITEMSTYLE_HORIZONTAL_ALIGN;
@@ -490,11 +505,7 @@ class SystemLogListView extends React.Component<IAdminReadOnlyListViewProps, IAd
 						}
 					};
 					// 02/16/2021 Paul.  Need to manually override the bootstrap header style. 
-					if ( SplendidCache.UserTheme == 'Arctic' )
-					{
-						objDataColumn.headerStyle.paddingTop    = '10px';
-						objDataColumn.headerStyle.paddingBottom = '10px';
-					}
+					// 04/24/2022 Paul.  Move Arctic style override to style.css. 
 					if ( ITEMSTYLE_HORIZONTAL_ALIGN != null )
 					{
 						objDataColumn.classes += ' gridView' + ITEMSTYLE_HORIZONTAL_ALIGN;
@@ -577,7 +588,7 @@ class SystemLogListView extends React.Component<IAdminReadOnlyListViewProps, IAd
 	public render()
 	{
 		const { RELATED_MODULE, GRID_NAME, TABLE_NAME, SORT_FIELD, SORT_DIRECTION, PRIMARY_FIELD, PRIMARY_ID } = this.props;
-		const { MODULE_NAME, error } = this.state;
+		const { MODULE_NAME, error, showSearchView } = this.state;
 		let EDIT_NAME = MODULE_NAME + '.SearchBasic';
 		if ( SplendidCache.IsInitialized && SplendidCache.AdminMenu )
 		{
@@ -596,14 +607,16 @@ class SystemLogListView extends React.Component<IAdminReadOnlyListViewProps, IAd
 				: null
 				}
 				{ !PRIMARY_ID
-				? <SearchView
-					EDIT_NAME={ EDIT_NAME }
-					cbSearch={ this._onSearchViewCallback }
-					history={ this.props.history }
-					location={ this.props.location }
-					match={ this.props.match }
-					ref={ this.searchView }
-				/>
+				? <div style={ {display: (showSearchView == 'show' ? 'block' : 'none')} }>
+					<SearchView
+						EDIT_NAME={ EDIT_NAME }
+						cbSearch={ this._onSearchViewCallback }
+						history={ this.props.history }
+						location={ this.props.location }
+						match={ this.props.match }
+						ref={ this.searchView }
+					/>
+				</div>
 				: null
 				}
 				<ExportHeader
@@ -629,6 +642,7 @@ class SystemLogListView extends React.Component<IAdminReadOnlyListViewProps, IAd
 					cbCustomColumns={ this.BootstrapColumns }
 					onComponentComplete={ this._onComponentComplete }
 					deferLoad={ true }
+					enableExportHeader={ true }
 					enableSelection={ false }
 					scrollable
 					readonly

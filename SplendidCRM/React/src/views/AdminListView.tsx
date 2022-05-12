@@ -62,6 +62,8 @@ interface IAdminListViewState
 	enableMassUpdate      : boolean;
 	selectedItems?        : any;
 	error?                : any;
+	// 04/09/2022 Paul.  Hide/show SearchView. 
+	showSearchView        : string;
 }
 
 @observer
@@ -77,6 +79,14 @@ class AdminListView extends React.Component<IAdminListViewProps, IAdminListViewS
 	{
 		super(props);
 		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.constructor', props.MODULE_NAME);
+		// 04/09/2022 Paul.  Hide/show SearchView. 
+		let showSearchView: string = 'show';
+		if ( SplendidCache.UserTheme == 'Pacific' )
+		{
+			showSearchView = localStorage.getItem(props.GRID_NAME + '.showSearchView');
+			if ( Sql.IsEmptyString(showSearchView) )
+				showSearchView = 'hide';
+		}
 		this.state =
 		{
 			searchLayout          : null,
@@ -87,6 +97,7 @@ class AdminListView extends React.Component<IAdminListViewProps, IAdminListViewS
 			showUpdatePanel       : false,
 			enableMassUpdate      : Crm_Modules.MassUpdate(props.MODULE_NAME),
 			error                 : null
+			showSearchView        ,
 		};
 	}
 
@@ -180,14 +191,26 @@ class AdminListView extends React.Component<IAdminListViewProps, IAdminListViewS
 
 	private _onSearchTabChange = (key) =>
 	{
-		// 11/03/2020 Paul.  When switching between tabs, re-apply the search as some advanced settings may not have been applied. 
-		this.setState( {searchMode: key}, () =>
+		// 04/09/2022 Paul.  Hide/show SearchView. 
+		if ( key == 'Hide' )
 		{
-			if ( this.searchView.current != null )
+			const { GRID_NAME } = this.props;
+			let { showSearchView } = this.state;
+			showSearchView = 'hide';
+			localStorage.setItem(GRID_NAME + '.showSearchView', showSearchView);
+			this.setState({ showSearchView });
+		}
+		else
+		{
+			// 11/03/2020 Paul.  When switching between tabs, re-apply the search as some advanced settings may not have been applied. 
+			this.setState( {searchMode: key}, () =>
 			{
-				this.searchView.current.SubmitSearch();
-			}
-		});
+				if ( this.searchView.current != null )
+				{
+					this.searchView.current.SubmitSearch();
+				}
+			});
+		}
 	}
 
 	// 09/26/2020 Paul.  The SearchView needs to be able to specify a sort criteria. 
@@ -285,6 +308,15 @@ class AdminListView extends React.Component<IAdminListViewProps, IAdminListViewS
 				history.push(`/Reset${admin}/${MODULE_NAME}/Edit`);
 				break;
 			}
+			// 04/09/2022 Paul.  Hide/show SearchView. 
+			case 'toggleSearchView':
+			{
+				const { GRID_NAME } = this.props;
+				let showSearchView: string = (this.state.showSearchView == 'show' ? 'hide' : 'show');
+				localStorage.setItem(GRID_NAME + '.showSearchView', showSearchView);
+				this.setState({ showSearchView });
+				break;
+			}
 			default:
 			{
 				if ( this._isMounted )
@@ -327,7 +359,7 @@ class AdminListView extends React.Component<IAdminListViewProps, IAdminListViewS
 	public render()
 	{
 		const { MODULE_NAME, RELATED_MODULE, GRID_NAME, TABLE_NAME, SORT_FIELD, SORT_DIRECTION, rowRequiredSearch } = this.props;
-		const { error, searchLayout, advancedLayout, searchTabsEnabled, duplicateSearchEnabled, searchMode, showUpdatePanel, enableMassUpdate } = this.state;
+		const { error, searchLayout, advancedLayout, searchTabsEnabled, duplicateSearchEnabled, searchMode, showUpdatePanel, enableMassUpdate, showSearchView } = this.state;
 		// 05/04/2019 Paul.  Reference obserable IsInitialized so that terminology update will cause refresh. 
 		if ( SplendidCache.IsInitialized && SplendidCache.AdminMenu )
 		{
@@ -347,7 +379,7 @@ class AdminListView extends React.Component<IAdminListViewProps, IAdminListViewS
 				: null
 				}
 				{ searchLayout != null || advancedLayout != null
-				? <div>
+				? <div style={ {display: (showSearchView == 'show' ? 'block' : 'none')} }>
 					{ searchTabsEnabled
 					? <SearchTabs
 						searchMode={ searchMode }
@@ -388,6 +420,7 @@ class AdminListView extends React.Component<IAdminListViewProps, IAdminListViewS
 					ADMIN_MODE={ true }
 					AutoSaveSearch={ Credentials.bSAVE_QUERY && Crm_Config.ToBoolean('save_query') }
 					deferLoad={ true }
+					enableExportHeader={ true }
 					enableSelection={ enableMassUpdate || SplendidCache.AdminUserAccess(MODULE_NAME, 'export', this.constructor.name + '.render') >= 0 }
 					selectionChanged={ this._onSelectionChanged }
 					hyperLinkCallback={ this._onHyperLinkCallback }

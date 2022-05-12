@@ -192,7 +192,7 @@ class AzureOrdersDetailView extends React.Component<IDetailViewProps, IAdminDeta
 				{
 					this.dictProcessing = json.d;
 				}
-				res  = await CreateSplendidRequest('Administration/Azure/Rest.svc/GetCloudServices', 'POST', 'application/json; charset=utf-8', sBody);
+				res  = await CreateSplendidRequest('Administration/Azure/Rest.svc/GetCloudServiceNames', 'POST', 'application/json; charset=utf-8', sBody);
 				json = await GetSplendidResult(res);
 				if ( json != null )
 				{

@@ -27,7 +27,7 @@ import SplendidCache                                            from '../../scri
 import SplendidDynamic_DetailView                               from '../../scripts/SplendidDynamic_DetailView';
 import { Crm_Config }                                           from '../../scripts/Crm'                       ;
 import { AuthenticatedMethod, LoginRedirect, GetMyUserProfile } from '../../scripts/Login'                     ;
-import { DetailView_LoadItem, DetailView_LoadLayout }           from '../../scripts/DetailView'                ;
+import { DetailView_LoadItem, DetailView_LoadLayout, DetailView_ActivateTab }           from '../../scripts/DetailView'                ;
 import { DeleteModuleItem }                                     from '../../scripts/ModuleUpdate'              ;
 import { UpdateModule }                                         from '../../scripts/ModuleUpdate'              ;
 import { CreateSplendidRequest, GetSplendidResult }             from '../../scripts/SplendidRequest'           ;
@@ -41,6 +41,8 @@ import DetailViewRelationships                                  from '../../view
 import DynamicSubPanelView                                      from '../../views/DynamicSubPanelView'         ;
 import HeaderButtonsFactory                                     from '../../ThemeComponents/HeaderButtonsFactory';
 import PasswordPopupView                                        from './PasswordPopupView'                       ;
+// 04/13/2022 Paul.  Add LayoutTabs to Pacific theme. 
+import LayoutTabs                                               from '../../components/LayoutTabs'             ;
 
 const MODULE_NAME: string = 'Users';
 
@@ -505,6 +507,15 @@ class MyAccountView extends React.Component<IDetailViewProps, IDetailViewState>
 		this.setState({ passwordOpen: false });
 	}
 
+	// 04/13/2022 Paul.  Add LayoutTabs to Pacific theme. 
+	private _onTabChange = (nActiveTabIndex) =>
+	{
+		let { layout } = this.state;
+		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onTabChange', nActiveTabIndex);
+		DetailView_ActivateTab(layout, nActiveTabIndex);
+		this.setState({ layout });
+	}
+
 	public render()
 	{
 		const { item, layout, layoutMailOptions, layoutGoogleAppsOptions, layoutICloudOptions, layoutSignatures, layoutACLRoles, layoutTeams, layoutLogins, DETAIL_NAME, SUB_TITLE, error } = this.state;
@@ -533,6 +544,7 @@ class MyAccountView extends React.Component<IDetailViewProps, IDetailViewState>
 			// 12/04/2019 Paul.  After authentication, we need to make sure that the app gets updated. 
 			Credentials.sUSER_THEME;
 			let headerButtons = HeaderButtonsFactory(SplendidCache.UserTheme);
+			// 04/13/2022 Paul.  Add LayoutTabs to Pacific theme. 
 			return (
 			<div>
 				{ headerButtons
@@ -680,6 +692,7 @@ class MyAccountView extends React.Component<IDetailViewProps, IDetailViewState>
 						</tbody>
 					</table>
 				</div>
+				<LayoutTabs layout={ layout } onTabChange={ this._onTabChange } />
 				<div id='content'>
 					<h4>{ L10n.Term('Users.LBL_USER_INFORMATION') }</h4>
 					{ SplendidDynamic_DetailView.AppendDetailViewFields(item, layout, this.refMap, 'tabDetailView', null, this.Page_Command) }

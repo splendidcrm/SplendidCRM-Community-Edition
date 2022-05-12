@@ -20,11 +20,13 @@ GO
  * You can contact SplendidCRM Software, Inc. at email address support@splendidcrm.com. 
  *********************************************************************************************************************/
 -- 02/21/2017 Paul.  Allow a field to be added to the end using an index of -1. 
+-- 04/15/2022 Paul.  Add support for Pacific layout tabs. 
 Create Procedure dbo.spDETAILVIEWS_FIELDS_InsHeader
 	( @DETAIL_NAME       nvarchar( 50)
 	, @FIELD_INDEX       int
 	, @DATA_LABEL        nvarchar(150)
 	, @COLSPAN           int
+	, @DATA_FORMAT       nvarchar(max) = null
 	)
 as
   begin
@@ -64,6 +66,7 @@ as
 			, FIELD_TYPE       
 			, DATA_LABEL       
 			, COLSPAN          
+			, DATA_FORMAT      
 			)
 		values 
 			( @ID               
@@ -76,6 +79,7 @@ as
 			, N'Header'         
 			, @DATA_LABEL       
 			, @COLSPAN          
+			, @DATA_FORMAT      
 			);
 	end -- if;
   end

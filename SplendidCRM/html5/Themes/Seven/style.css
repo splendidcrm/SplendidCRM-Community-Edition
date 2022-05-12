@@ -26,6 +26,13 @@ body
 	font-weight: normal;
 	font-family: Arial, Verdana, sans-serif;
 }
+/* 04/03/2022 Paul.  Move from inline style. */
+#appMainContent
+{
+	margin-left: 5px;
+	margin-right: 5px;
+	width: 100%;
+}
 p
 {
 	margin-top: 0px;
@@ -1363,6 +1370,16 @@ h5.listViewSubHeadS1
 	-moz-box-shadow: 0 5px 5px #888;
 	-webkit-box-shadow: 0 5px 5px #888;
 	box-shadow: 0 5px 5px #888;
+}
+/* 04/24/2022 Paul.  Move app name color to stylesheet. */
+.loginAppName
+{
+	width: 100%;
+	border: none;
+}
+.loginAppName > tr> td > span, .loginAppName > tbody > tr> td
+{
+	color: #003564;
 }
 
 .ModuleActionsShadingTable

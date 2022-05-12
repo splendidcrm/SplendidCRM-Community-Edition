@@ -324,6 +324,8 @@ class CampaignsCallMarketing extends React.Component<ISubPanelViewProps, ISubPan
 			{
 				if ( sCommandName == 'Create' || EndsWith(sCommandName, '.Create') )
 				{
+					// 04/18/2022 Paul.  There is no inline editing of EmailMarketing, so jump to full form. 
+					/*
 					let RELATED_MODULE: string = null;
 					if ( sCommandName.indexOf('.') >= 0 )
 					{
@@ -336,6 +338,8 @@ class CampaignsCallMarketing extends React.Component<ISubPanelViewProps, ISubPan
 					}
 					// 11/05/2020 Paul.  Also clear any error. 
 					this.setState({ showSearch: false, showInlineEdit: true, RELATED_MODULE, customView, error: '' });
+					*/
+					this.props.history.push(`/Reset/${RELATED_MODULE}/Edit?CAMPAIGN_ID=${PARENT_ID}`);
 				}
 				else if ( sCommandName == 'Select' || EndsWith(sCommandName, '.Select') )
 				{
@@ -365,7 +369,8 @@ class CampaignsCallMarketing extends React.Component<ISubPanelViewProps, ISubPan
 				{
 					// 06/28/2019 Paul.  Reset to new edit view with parent ID. 
 					// 10/12/2019 Paul.  Support Full Form. 
-					this.props.history.push(`/Reset/${RELATED_MODULE}/Edit?PARENT_ID=${PARENT_ID}`);
+					// 04/18/2022 Paul.  CAMPAIGN_ID instead of PARENT_ID. 
+					this.props.history.push(`/Reset/${RELATED_MODULE}/Edit?CAMPAIGN_ID=${PARENT_ID}`);
 				}
 				// 11/02/2020 Paul.  Emails.Compose is not a standard command. 
 				else if ( sCommandName == 'Emails.Compose' )
@@ -587,49 +592,22 @@ class CampaignsCallMarketing extends React.Component<ISubPanelViewProps, ISubPan
 		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onRemove ' + PARENT_TYPE, row);
 		try
 		{
-			// 10/12/2020 Paul.  Activities must be deleted, not removed. 
-			if ( layout.MODULE_NAME == 'Activities' )
+			// 04/19/2022 Paul.  This is a parent child relationship, so just delete the related record. 
+			if ( window.confirm(L10n.Term('.NTC_DELETE_CONFIRMATION')) )
 			{
-				// 10/12/2020 Paul.  Confirm delete. 
-				if ( window.confirm(L10n.Term('.NTC_DELETE_CONFIRMATION')) )
+				let sRELATED_MODULE = RELATED_MODULE;
+				let sRELATED_ID     = row.ID        ;
+				await DeleteModuleItem(sRELATED_MODULE, sRELATED_ID);
+				if ( this._isMounted )
 				{
-					let sRELATED_MODULE = row.ACTIVITY_TYPE;
-					let sRELATED_ID     = row.ACTIVITY_ID  ;
-					await DeleteModuleItem(sRELATED_MODULE, sRELATED_ID);
-					if ( this._isMounted )
+					this.setState({ popupOpen: false }, () =>
 					{
-						this.setState({ popupOpen: false }, () =>
+						// 07/13/2019 Paul.  Call SubmitSearch directly. 
+						if ( this.searchView.current != null )
 						{
-							// 07/13/2019 Paul.  Call SubmitSearch directly. 
-							if ( this.searchView.current != null )
-							{
-								this.searchView.current.SubmitSearch();
-							}
-						});
-					}
-				}
-			}
-			else
-			{
-				// 10/12/2020 Paul.  Confirm remove. 
-				if ( window.confirm(L10n.Term('.NTC_REMOVE_CONFIRMATION')) )
-				{
-					let sPRIMARY_MODULE = PARENT_TYPE   ;
-					let sPRIMARY_ID     = PARENT_ID     ;
-					let sRELATED_MODULE = RELATED_MODULE;
-					let sRELATED_ID     = row.ID        ;
-					await DeleteRelatedItem(sPRIMARY_MODULE, sPRIMARY_ID, sRELATED_MODULE, sRELATED_ID);
-					if ( this._isMounted )
-					{
-						this.setState({ popupOpen: false }, () =>
-						{
-							// 07/13/2019 Paul.  Call SubmitSearch directly. 
-							if ( this.searchView.current != null )
-							{
-								this.searchView.current.SubmitSearch();
-							}
-						});
-					}
+							this.searchView.current.SubmitSearch();
+						}
+					});
 				}
 			}
 		}

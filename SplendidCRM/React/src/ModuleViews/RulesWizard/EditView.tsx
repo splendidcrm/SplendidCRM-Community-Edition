@@ -787,11 +787,7 @@ export default class RulesWizardEditView extends React.Component<IEditViewProps,
 				}
 			}
 		};
-		if ( SplendidCache.UserTheme == 'Arctic' )
-		{
-			objDataColumn.headerStyle.paddingTop    = '10px';
-			objDataColumn.headerStyle.paddingBottom = '10px';
-		}
+		// 04/24/2022 Paul.  Move Arctic style override to style.css. 
 		arrDataTableColumns.push(objDataColumn);
 		objDataColumn =
 		{
@@ -815,11 +811,7 @@ export default class RulesWizardEditView extends React.Component<IEditViewProps,
 				}
 			}
 		};
-		if ( SplendidCache.UserTheme == 'Arctic' )
-		{
-			objDataColumn.headerStyle.paddingTop    = '10px';
-			objDataColumn.headerStyle.paddingBottom = '10px';
-		}
+		// 04/24/2022 Paul.  Move Arctic style override to style.css. 
 		arrDataTableColumns.push(objDataColumn);
 		objDataColumn =
 		{
@@ -843,11 +835,7 @@ export default class RulesWizardEditView extends React.Component<IEditViewProps,
 				}
 			}
 		};
-		if ( SplendidCache.UserTheme == 'Arctic' )
-		{
-			objDataColumn.headerStyle.paddingTop    = '10px';
-			objDataColumn.headerStyle.paddingBottom = '10px';
-		}
+		// 04/24/2022 Paul.  Move Arctic style override to style.css. 
 		arrDataTableColumns.push(objDataColumn);
 
 		let bEnableTeamManagement = Crm_Config.enable_team_management();
@@ -993,11 +981,7 @@ export default class RulesWizardEditView extends React.Component<IEditViewProps,
 						}
 					};
 					// 02/16/2021 Paul.  Need to manually override the bootstrap header style. 
-					if ( SplendidCache.UserTheme == 'Arctic' )
-					{
-						objDataColumn.headerStyle.paddingTop    = '10px';
-						objDataColumn.headerStyle.paddingBottom = '10px';
-					}
+					// 04/24/2022 Paul.  Move Arctic style override to style.css. 
 					if ( ITEMSTYLE_HORIZONTAL_ALIGN != null )
 					{
 						objDataColumn.classes += ' gridView' + ITEMSTYLE_HORIZONTAL_ALIGN;
@@ -1048,11 +1032,7 @@ export default class RulesWizardEditView extends React.Component<IEditViewProps,
 						}
 					};
 					// 02/16/2021 Paul.  Need to manually override the bootstrap header style. 
-					if ( SplendidCache.UserTheme == 'Arctic' )
-					{
-						objDataColumn.headerStyle.paddingTop    = '10px';
-						objDataColumn.headerStyle.paddingBottom = '10px';
-					}
+					// 04/24/2022 Paul.  Move Arctic style override to style.css. 
 					if ( ITEMSTYLE_HORIZONTAL_ALIGN != null )
 					{
 						objDataColumn.classes += ' gridView' + ITEMSTYLE_HORIZONTAL_ALIGN;

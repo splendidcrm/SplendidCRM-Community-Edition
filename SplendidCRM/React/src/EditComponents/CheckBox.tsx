@@ -249,7 +249,8 @@ export default class CheckBox extends EditComponent<IEditComponentProps, ICheckB
 				//	}, ONCLICK_SCRIPT);
 				//}
 				// 10/21/2020 Paul.  Some themes look too tightly packed with the scaling. 
-				let styCheckbox = { transform: 'scale(1.5)', display: 'inline', marginTop: '2px', marginBottom: '6px' };
+				// 04/04/2022 Paul.  Pacific theme needs more space on top. 
+				let styCheckbox = { transform: 'scale(1.5)', display: 'inline', marginTop: '4px', marginBottom: '6px' };
 				// 10/28/2020 Paul.  A customer preferred the old icons instead of the new fontawesome icons. 
 				if ( Crm_Config.ToBoolean('enable_legacy_icons') )
 				{

@@ -60,7 +60,8 @@ namespace SplendidCRM.Users
 		protected Label           lblForgotError                  ;
 		protected FacebookLogin   ctlFacebookLogin                ;
 		// 12/25/2018 Paul.  Logout should perform Azure or ADFS logout.
-		protected TableRow        trShowForgotPassword            ;
+		protected TableCell       trShowForgotPassword            ;
+		protected string          sTheme                          ;
 		#endregion
 
 		// 02/18/2020 Paul.  Allow React Client to forget password. 
@@ -336,6 +337,7 @@ namespace SplendidCRM.Users
 		{
 			this.Load += new System.EventHandler(this.Page_Load);
 			ctlFacebookLogin.Command += new CommandEventHandler(Page_Command);
+			sTheme = Sql.ToString(Application["CONFIG.default_theme"]);
 		}
 		#endregion
 	}

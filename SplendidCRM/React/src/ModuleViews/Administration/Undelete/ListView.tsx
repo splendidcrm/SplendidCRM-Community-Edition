@@ -65,6 +65,8 @@ interface IAdminListViewState
 	error?                : any;
 	UNDELETE_MODULE_NAME  : string;
 	BACKGROUND_OPERATION  : boolean;
+	// 04/09/2022 Paul.  Hide/show SearchView. 
+	showSearchView        : string;
 }
 
 @observer
@@ -80,6 +82,14 @@ class UndeleteListView extends React.Component<IAdminListViewProps, IAdminListVi
 	{
 		super(props);
 		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.constructor', props.MODULE_NAME);
+		// 04/09/2022 Paul.  Hide/show SearchView. 
+		let showSearchView: string = 'show';
+		if ( SplendidCache.UserTheme == 'Pacific' )
+		{
+			showSearchView = localStorage.getItem(this.constructor.name + '.showSearchView');
+			if ( Sql.IsEmptyString(showSearchView) )
+				showSearchView = 'hide';
+		}
 		this.state =
 		{
 			searchLayout          : null,
@@ -92,6 +102,7 @@ class UndeleteListView extends React.Component<IAdminListViewProps, IAdminListVi
 			error                 : null,
 			UNDELETE_MODULE_NAME  : null,
 			BACKGROUND_OPERATION  : false,
+			showSearchView        ,
 		};
 	}
 
@@ -185,14 +196,25 @@ class UndeleteListView extends React.Component<IAdminListViewProps, IAdminListVi
 
 	private _onSearchTabChange = (key) =>
 	{
-		// 11/03/2020 Paul.  When switching between tabs, re-apply the search as some advanced settings may not have been applied. 
-		this.setState( {searchMode: key}, () =>
+		// 04/09/2022 Paul.  Hide/show SearchView. 
+		if ( key == 'Hide' )
 		{
-			if ( this.searchView.current != null )
+			let { showSearchView } = this.state;
+			showSearchView = 'hide';
+			localStorage.setItem(this.constructor.name + '.showSearchView', showSearchView);
+			this.setState({ showSearchView });
+		}
+		else
+		{
+			// 11/03/2020 Paul.  When switching between tabs, re-apply the search as some advanced settings may not have been applied. 
+			this.setState( {searchMode: key}, () =>
 			{
-				this.searchView.current.SubmitSearch();
-			}
-		});
+				if ( this.searchView.current != null )
+				{
+					this.searchView.current.SubmitSearch();
+				}
+			});
+		}
 	}
 
 	// 09/26/2020 Paul.  The SearchView needs to be able to specify a sort criteria. 
@@ -297,6 +319,14 @@ class UndeleteListView extends React.Component<IAdminListViewProps, IAdminListVi
 		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.Page_Command ' + sCommandName, sCommandArguments);
 		switch ( sCommandName )
 		{
+			// 04/09/2022 Paul.  Hide/show SearchView. 
+			case 'toggleSearchView':
+			{
+				let showSearchView: string = (this.state.showSearchView == 'show' ? 'hide' : 'show');
+				localStorage.setItem(this.constructor.name + '.showSearchView', showSearchView);
+				this.setState({ showSearchView });
+				break;
+			}
 			default:
 			{
 				if ( this._isMounted )
@@ -426,7 +456,7 @@ class UndeleteListView extends React.Component<IAdminListViewProps, IAdminListVi
 	public render()
 	{
 		const { MODULE_NAME, RELATED_MODULE, GRID_NAME, TABLE_NAME, SORT_FIELD, SORT_DIRECTION, rowRequiredSearch } = this.props;
-		const { error, searchLayout, advancedLayout, searchTabsEnabled, duplicateSearchEnabled, searchMode, showUpdatePanel, enableMassUpdate, BACKGROUND_OPERATION } = this.state;
+		const { error, searchLayout, advancedLayout, searchTabsEnabled, duplicateSearchEnabled, searchMode, showUpdatePanel, enableMassUpdate, BACKGROUND_OPERATION, showSearchView } = this.state;
 		// 05/04/2019 Paul.  Reference obserable IsInitialized so that terminology update will cause refresh. 
 		if ( SplendidCache.IsInitialized && SplendidCache.AdminMenu )
 		{
@@ -454,7 +484,7 @@ class UndeleteListView extends React.Component<IAdminListViewProps, IAdminListVi
 				: null
 				}
 				{ searchLayout != null || advancedLayout != null
-				? <div>
+				? <div style={ {display: (showSearchView == 'show' ? 'block' : 'none')} }>
 					{ searchTabsEnabled
 					? <SearchTabs
 						searchMode={ searchMode }

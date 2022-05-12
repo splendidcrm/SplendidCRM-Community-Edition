@@ -872,7 +872,7 @@ class SplendidStream extends React.Component<ISplendidStreamProps, ISplendidStre
 										</span>
 										<span className='paginationButtonNext' style={ {cursor: 'pointer'} } onClick={ () => this._onNextPage(paginationProps) }>
 											<span style={ {margin: '3px'} }>{ paginationProps.nextPageText }</span>
-											<img className='paginationButtonPrevious' src={ themeURL + (paginationProps.page * paginationProps.sizePerPage < paginationProps.totalSize ? 'next.gif' : 'next_off.gif') } />
+											<img className='paginationButtonNext' src={ themeURL + (paginationProps.page * paginationProps.sizePerPage < paginationProps.totalSize ? 'next.gif' : 'next_off.gif') } />
 										</span>
 									</td>
 								</tr>

@@ -29,7 +29,7 @@ import { Crm_Config, Crm_Modules }                  from '../../scripts/Crm'    
 import { ToJsonDate, FromJsonDate }                 from '../../scripts/Formatting'                  ;
 import { AuthenticatedMethod, LoginRedirect }       from '../../scripts/Login'                       ;
 import { sPLATFORM_LAYOUT }                         from '../../scripts/SplendidInitUI'              ;
-import { EditView_LoadItem, EditView_LoadLayout, EditView_ConvertItem, EditView_UpdateREPEAT_TYPE } from '../../scripts/EditView';
+import { EditView_LoadItem, EditView_LoadLayout, EditView_ActivateTab, EditView_ConvertItem, EditView_UpdateREPEAT_TYPE } from '../../scripts/EditView';
 import { UpdateModule }                             from '../../scripts/ModuleUpdate'                ;
 import { GetInviteesActivities }                    from '../../scripts/CalendarView'                ;
 import { CreateSplendidRequest, GetSplendidResult } from '../../scripts/SplendidRequest'             ;
@@ -41,6 +41,8 @@ import DynamicButtons                               from '../../components/Dynam
 import HeaderButtonsFactory                         from '../../ThemeComponents/HeaderButtonsFactory';
 import SchedulingGrid                               from '../../components/SchedulingGrid'           ;
 import InviteesView                                 from '../../views/InviteesView'                  ;
+// 04/16/2022 Paul.  Add LayoutTabs to Pacific theme. 
+import LayoutTabs                                   from '../../components/LayoutTabs'           ;
 
 interface IEditViewProps extends RouteComponentProps<any>
 {
@@ -832,6 +834,15 @@ export default class MeetingsEditView extends React.Component<IEditViewProps, IE
 		});
 	}
 
+	// 04/16/2022 Paul.  Add LayoutTabs to Pacific theme. 
+	private _onTabChange = (nActiveTabIndex) =>
+	{
+		let { layout } = this.state;
+		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onTabChange', nActiveTabIndex);
+		EditView_ActivateTab(layout, nActiveTabIndex);
+		this.setState({ layout });
+	}
+
 	public render()
 	{
 		const { MODULE_NAME, ID, DuplicateID, ConvertID, isSearchView, isUpdatePanel, callback } = this.props;
@@ -867,6 +878,7 @@ export default class MeetingsEditView extends React.Component<IEditViewProps, IE
 				: null
 				}
 				<DumpSQL SQL={ __sql } />
+				<LayoutTabs layout={ layout } onTabChange={ this._onTabChange } />
 				{ SplendidDynamic_EditView.AppendEditViewFields(item, layout, this.refMap, callback, this._createDependency, null, this._onChange, this._onUpdate, onSubmit, 'tabForm', this.Page_Command) }
 				{ !callback && headerButtons
 				? <DynamicButtons

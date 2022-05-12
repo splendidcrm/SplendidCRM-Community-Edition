@@ -75,6 +75,8 @@ exec dbo.spTERMINOLOGY_InsertOnly N'LBL_PROJECT_ID'                             
 exec dbo.spTERMINOLOGY_InsertOnly N'LBL_PROJECT_ASSIGNED_USER_ID'                  , N'en-US', N'ProjectTask', null, null, N'Project Assigned User ID:';
 -- 09/26/2017 Paul.  Add Archive access right. 
 exec dbo.spTERMINOLOGY_InsertOnly N'LNK_ARCHIVED_PROJECT_TASKS'                    , N'en-US', N'ProjectTask', null, null, N'Archived Project Tasks';
+-- 04/15/2022 Paul.  Reorganize layout using Pacific tabs. 
+exec dbo.spTERMINOLOGY_InsertOnly N'LBL_LAYOUT_TAB_TIMELINE'                       , N'en-US', N'ProjectTask', null, null, N'Timeline';
 GO
 /* -- #if Oracle
 	COMMIT WORK;

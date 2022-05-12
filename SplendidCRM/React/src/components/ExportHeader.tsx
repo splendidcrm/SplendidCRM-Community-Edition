@@ -226,11 +226,15 @@ export default class ExportHeader extends React.Component<IExportHeaderProps, IE
 
 		let sMODULE_TITLE = L10n.Term(MODULE_NAME + '.LBL_LIST_FORM_TITLE');
 		let now = new Date();
+		// 04/10/2022 Paul.  Move Pacific Export to pagination header. 
+		// 04/10/2022 Paul.  Nobody is using the PhoneBurner module so it does not make sense to move it to the SplendidGrid. 
+		if ( !(bPhoneBurnerEnabled || SplendidCache.UserTheme != 'Pacific') )
+			return null;
 		return (
 			<table className='h3Row' cellPadding={ 0 } cellSpacing={ 1 } style={ {width: '100%'} }>
 				<tr>
 					<td style={ {whiteSpace: 'nowrap'} }>
-						<h3>
+						<h3 className='h3ExportHeader'>
 							<FontAwesomeIcon icon='arrow-right' size='lg' style={ {marginRight: '.5em'} } transform={ {rotate: 45} } />
 							&nbsp;<span>{ sMODULE_TITLE }</span>
 						</h3>
@@ -247,39 +251,44 @@ export default class ExportHeader extends React.Component<IExportHeaderProps, IE
 								? <button id='btnPhoneBurnerAuthorize'   onClick={ this._onAuthorize } className='button'>{ L10n.Term('PhoneBurner.LBL_AUTHORIZE_BUTTON_LABEL') }</button>
 								: null
 								}
-								{ !hideRange
-								? <select
-									id='lstEXPORT_RANGE'
-									onChange={ this._onEXPORT_RANGE_Change }
-									value={ EXPORT_RANGE }
-									style={ {width: 'auto', margin: 2} }
-									>
-									{
-										EXPORT_RANGE_LIST.map((item, index) => 
+								{ SplendidCache.UserTheme != 'Pacific'
+								? <React.Fragment>
+									{ !hideRange
+									? <select
+										id='lstEXPORT_RANGE'
+										onChange={ this._onEXPORT_RANGE_Change }
+										value={ EXPORT_RANGE }
+										style={ {width: 'auto', margin: 2} }
+										>
 										{
-											return (<option key={ '_ctlEditView_EXPORT_RANGE_' + index.toString() } id={ '_ctlEditView_EXPORT_RANGE' + index.toString() } value={ item.NAME }>{ item.DISPLAY_NAME }</option>);
-										})
+											EXPORT_RANGE_LIST.map((item, index) => 
+											{
+												return (<option key={ '_ctlEditView_EXPORT_RANGE_' + index.toString() } id={ '_ctlEditView_EXPORT_RANGE' + index.toString() } value={ item.NAME }>{ item.DISPLAY_NAME }</option>);
+											})
+										}
+									</select>
+									: null
 									}
-								</select>
+									{ !hideFormat
+									? <select
+										id='lstEXPORT_FORMAT'
+										onChange={ this._onEXPORT_FORMAT_Change }
+										value={ EXPORT_FORMAT }
+										style={ {width: 'auto', margin: 2} }
+										>
+										{
+											EXPORT_FORMAT_LIST.map((item, index) => 
+											{
+												return (<option key={ '_ctlEditView_EXPORT_FORMAT_' + index.toString() } id={ '_ctlEditViewEXPORT_FORMAT' + index.toString() } value={ item.NAME }>{ item.DISPLAY_NAME }</option>);
+											})
+										}
+									</select>
+									: null
+									}
+									<input type='submit' className='button' onClick={ this._onExport } value={ L10n.Term('.LBL_EXPORT_BUTTON_LABEL') } style={ {margin: 2} } />
+								</React.Fragment>
 								: null
 								}
-								{ !hideFormat
-								? <select
-									id='lstEXPORT_FORMAT'
-									onChange={ this._onEXPORT_FORMAT_Change }
-									value={ EXPORT_FORMAT }
-									style={ {width: 'auto', margin: 2} }
-									>
-									{
-										EXPORT_FORMAT_LIST.map((item, index) => 
-										{
-											return (<option key={ '_ctlEditView_EXPORT_FORMAT_' + index.toString() } id={ '_ctlEditViewEXPORT_FORMAT' + index.toString() } value={ item.NAME }>{ item.DISPLAY_NAME }</option>);
-										})
-									}
-								</select>
-								: null
-								}
-								<input type='submit' className='button' onClick={ this._onExport } value={ L10n.Term('.LBL_EXPORT_BUTTON_LABEL') } style={ {margin: 2} } />
 						</div>
 						: null
 						}

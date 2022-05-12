@@ -3805,6 +3805,31 @@ namespace SplendidCRM
 															}
 														}
 													}
+													// 05/06/2022 Paul.  When PARENT_ID is provided, spINVOICES_PAYMENTS_Update gets called. 
+													else if ( sTABLE_NAME == "PAYMENTS" )
+													{
+														if ( dict.ContainsKey("PARENT_ID") && dict.ContainsKey("AMOUNT") )
+														{
+															IDbCommand cmdINVOICES_PAYMENTS_Update = SqlProcs.Factory(con, "spINVOICES_PAYMENTS_Update");
+															cmdINVOICES_PAYMENTS_Update.Transaction = trn;
+															foreach(IDbDataParameter par in cmdINVOICES_PAYMENTS_Update.Parameters)
+															{
+																// 05/22/2017 Paul.  Correct source proce. 
+																string sParameterName = Sql.ExtractDbName(cmdINVOICES_PAYMENTS_Update, par.ParameterName).ToUpper();
+																if ( sParameterName == "MODIFIED_USER_ID" )
+																	par.Value = Sql.ToDBGuid(Security.USER_ID);
+																else if ( sParameterName == "PAYMENT_ID" )
+																	par.Value = gID;
+																else if ( sParameterName == "INVOICE_ID" )
+																	par.Value = Sql.ToGuid(dict["PARENT_ID"]);
+																else if ( sParameterName == "AMOUNT" )
+																	par.Value = Sql.ToDecimal(dict["AMOUNT"]);
+																else
+																	par.Value = DBNull.Value;
+															}
+															cmdINVOICES_PAYMENTS_Update.ExecuteNonQuery();
+														}
+													}
 													// 03/04/2016 Paul.  Line items will be included with Quotes, Orders and Invoices. 
 													else if ( sTABLE_NAME == "QUOTES" || sTABLE_NAME == "ORDERS" || sTABLE_NAME == "INVOICES" || (sTABLE_NAME == "OPPORTUNITIES" && Sql.ToString(Application["CONFIG.OpportunitiesMode"]) == "Revenue" ) )
 													{

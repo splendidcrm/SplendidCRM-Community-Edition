@@ -55,7 +55,7 @@
 				<table ID="tblLoginHeader" class="tabToolbarFrame" cellspacing="0" cellpadding="0" border="0" runat="server">
 					<tr>
 						<td>
-							<asp:Image ID="imgCompanyLogo" ImageUrl='<%# Sql.IsEmptyString(Application["CONFIG.header_home_image"]) ? "~/Include/images/SplendidCRM_Icon.gif" : Sql.ToString(Application["CONFIG.header_home_image"]) %>' runat="server" />
+							<asp:Image ID="imgCompanyLogo" ImageUrl='<%# Sql.IsEmptyString(Application["CONFIG.header_logo_image"]) ? "~/App_Themes/Arctic/images/SplendidCRM_Logo.png" : Sql.ToString(Application["CONFIG.header_logo_image"]) %>' runat="server" />
 						</td>
 					</tr>
 				</table>

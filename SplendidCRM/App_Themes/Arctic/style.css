@@ -26,6 +26,13 @@ body
 	font-weight: normal;
 	font-family: Arial, Verdana, sans-serif;
 }
+/* 04/03/2022 Paul.  Move from inline style. */
+#appMainContent
+{
+	margin-left: 5px;
+	margin-right: 5px;
+	width: 100%;
+}
 p
 {
 	margin-top: 0px;
@@ -1322,6 +1329,24 @@ h5.listViewSubHeadS1
 {
 	width: 90%;
 }
+#ctlLoginView_btnLogin, #ctlLoginView_btnForgotPassword
+{
+	width: 90%;
+	background-color: #EB6657;
+	margin-left: 10px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	height: 46px;
+}
+#ctl00_cntBody_ctlLoginView_btnLogin, #ctl00_cntBody_ctlLoginView_btnForgotPassword
+{
+	width: 100%;
+	background-color: #EB6657;
+	margin-left: 10px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	height: 46px;
+}
 .LoginActionsInnerTable input[type=text], .LoginActionsInnerTable input[type=password]
 {
 	margin: 10px;
@@ -1352,6 +1377,20 @@ h5.listViewSubHeadS1
 .loginInstructions
 {
 	display: none;
+}
+/* 04/24/2022 Paul.  Move app name color to stylesheet. */
+.loginAppName
+{
+	margin-left: 10px;
+	background-color: #64707B;
+	width: 90%;
+	border: none;
+	text-align: center;
+}
+.loginAppName > tr> td > span, .loginAppName > tbody > tr> td
+{
+	line-height: 40px;
+	color: white;
 }
 
 .ModuleActionsShadingTable
@@ -2299,4 +2338,11 @@ tr.oddListRowS1:hover, tr.evenListRowS1:hover
 	margin: 0;
 	height: 30px;
 	line-height: 30px;
+}
+/* 04/24/2022 Paul.  Move tsx hard-coded style defintions for Arctic theme. */
+.table > thead > tr > th,
+.table > tbody > tr > th,
+.table > tfoot > tr > th
+{
+	padding-top: 10px;
 }

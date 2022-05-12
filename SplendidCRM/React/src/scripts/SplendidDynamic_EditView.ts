@@ -21,8 +21,9 @@ import Security                              from '../scripts/Security'         
 import Credentials                           from '../scripts/Credentials'              ;
 import SplendidCache                         from '../scripts/SplendidCache'            ;
 import SplendidDynamic                       from '../scripts/SplendidDynamic'          ;
+import { EditView_GetTabList, EditView_ActivateTab } from '../scripts/EditView'         ;
 import { Crm_Config, Crm_Modules }           from './Crm'                               ;
-import { isMobileDevice, isMobileLandscape, screenWidth, screenHeight } from './utility'                           ;
+import { isMobileDevice, isMobileLandscape, screenWidth, screenHeight } from './utility';
 // 4. Components and Views. 
 import Blank                                 from '../EditComponents/Blank'             ;
 import Header                                from '../EditComponents/Header'            ;
@@ -150,15 +151,44 @@ export default class SplendidDynamic_EditView
 				bStackedLayout       = true;
 			}
 		}
+		// 04/14/2022 Paul.  Add LayoutTabs to Pacific theme. 
+		let objTabs: any = {};
+		let bTabsEnabled: boolean = false;
+		if ( sTheme == 'Pacific' )
+		{
+			let arrTabs: any[] = EditView_GetTabList(layout);
+			if ( arrTabs != null && arrTabs.length > 0 )
+			{
+				let nActiveTabs: number = 0;
+				for ( let i: number = 0; i < arrTabs.length; i++ )
+				{
+					let tab: any = arrTabs[i];
+					objTabs[tab.nLayoutIndex] = tab;
+					// 04/14/2022 Paul.  Make sure at least one tab is active. 
+					if ( layout[tab.nLayoutIndex].ActiveTab )
+					{
+						nActiveTabs++;
+					}
+				}
+				if ( nActiveTabs == 0 )
+				{
+					EditView_ActivateTab(layout, arrTabs[0].nLayoutIndex);
+				}
+				bTabsEnabled = true;
+			}
+		}
 		//console.log('AppendEditViewFields_Desktop (' +  width + ', ' + height + ') ' + (bIsMobile ? 'mobile' : ''));
+		// 04/15/2022 Paul.  We need a separate panel index instead of simply using count of main children. 
+		let nPanelIndex: number = 0;
 		let tabFormChildren = [];
 		let tabForm = React.createElement('div', { style: {width: '100%'}, className: (sPanelClass == 'tabForm' ? sPanelClass : null)}, tabFormChildren);
 		arrPanels.push(tabForm);
 		// 11/13/2019 Paul.  The width is in the skin, so we need to apply manually. 
 		let tblMainChildren: Array<JSX.Element> = [];
-		let tblMainProps: any = { className: (sPanelClass == 'tabForm' ? 'tabEditView' : null), key: baseId + '_tblMain', style: { width: '100%' } };
+		let tblMainProps: any = { className: (sPanelClass == 'tabForm' ? 'tabEditView' : null), id: baseId + '_tblMain' + nPanelIndex.toString(), key: baseId + '_tblMain', style: { width: '100%' } };
 		let tblMain = React.createElement('table', tblMainProps, tblMainChildren);
 		tabFormChildren.push(tblMain);
+		nPanelIndex++;
 		if ( bStackedLayout )
 		{
 			tblMainProps.style.borderSpacing = '0px';
@@ -447,8 +477,45 @@ export default class SplendidDynamic_EditView
 				{
 					UI_REQUIRED = false;
 				}
+				// 04/14/2022 Paul.  Add LayoutTabs to Pacific theme. 
+				if ( !bTabsEnabled && FIELD_TYPE == 'Header' && DATA_FORMAT == 'tab-only' )
+				{
+					// 04/14/2022 Paul.  Ignore the layout field if tabs not enabled (i.e. not Pacific) and this is only to be used as a tab. 
+					continue;
+				}
+				else if ( bTabsEnabled && objTabs[nLayoutIndex] )
+				{
+					// 04/14/2022 Paul.  We don't want an empty panel, so if current panel is empty, then continue to use and correct the display style. 
+					if ( nLayoutIndex == 0 )
+					{
+						let style: any = tabForm.props.style;
+						style.display = (lay.ActiveTab ? 'inherit' : 'none');
+						nPanelIndex++;
+					}
+					else
+					{
+						tabFormChildren = [];
+						tabForm = React.createElement('div', { style: {width: '100%', display: (lay.ActiveTab ? 'inherit' : 'none')}, className: (sPanelClass == 'tabForm' ? sPanelClass : null)}, tabFormChildren);
+						arrPanels.push(tabForm);
+						tblMainChildren = [];
+						tblMainProps = { className: (sPanelClass == 'tabForm' ? 'tabEditView' : null), id: baseId + '_tblMain' + nPanelIndex.toString(), key: baseId + '_tblMain_' + nPanelIndex.toString(), style: {width: '100%', marginTop: '5px'} };
+						tblMain = React.createElement('table', tblMainProps, tblMainChildren);
+						tabFormChildren.push(tblMain);
+						if ( bStackedLayout )
+						{
+							tblMainProps.style.borderSpacing = '0px';
+						}
+						tblBodyChildren = [];
+						tbody = React.createElement('tbody', { key: 'tbody' + nLayoutIndex }, tblBodyChildren);
+						tblMainChildren.push(tbody);
+						nPanelIndex++;
+					}
+					nColIndex = 0;
+					tr = null;
+					continue;
+				}
 				// 09/02/2012 Paul.  A separator will create a new table. We need to match the outer and inner layout. 
-				if ( FIELD_TYPE == 'Separator' )
+				else if ( FIELD_TYPE == 'Separator' )
 				{
 					// 11/12/2019 Paul.  Add remaining cells. 
 					// 04/19/2021 Paul.  This does not apply to desktop mode. 
@@ -463,14 +530,26 @@ export default class SplendidDynamic_EditView
 					
 					tabFormChildren = [];
 					tabForm = React.createElement('div', { style: {width: '100%'}, className: (sPanelClass == 'tabForm' ? sPanelClass : null)}, tabFormChildren);
+					// 04/16/2022 Paul.  Separators usually start a new table or division, so separators after active tab need to be treated as a set. 
+					if ( bTabsEnabled )
+					{
+						let style: any = tabForm.props.style;
+						style.display = (lay.ActiveTab ? 'inherit' : 'none');
+					}
 					arrPanels.push(tabForm);
 					tblMainChildren = [];
-					tblMainProps = { className: (sPanelClass == 'tabForm' ? 'tabEditView' : null), key: baseId + '_tblMain_' + arrPanels.length.toString(), style: {width: '100%', marginTop: '5px'} };
+					tblMainProps = { className: (sPanelClass == 'tabForm' ? 'tabEditView' : null), id: baseId + '_tblMain' + nPanelIndex.toString(), key: baseId + '_tblMain_' + nPanelIndex.toString(), style: {width: '100%', marginTop: '5px'} };
 					tblMain = React.createElement('table', tblMainProps, tblMainChildren);
 					tabFormChildren.push(tblMain);
 					if ( bStackedLayout )
 					{
 						tblMainProps.style.borderSpacing = '0px';
+					}
+					// 04/16/2022 Paul.  Separators usually start a new table or division, so separators after active tab need to be treated as a set. 
+					if ( bTabsEnabled )
+					{
+						tblMainProps.style.display = (lay.ActiveTab ? 'table' : 'none');
+						nPanelIndex++;
 					}
 					tblBodyChildren = [];
 					tbody = React.createElement('tbody', { key: 'tbody' + nLayoutIndex }, tblBodyChildren);
@@ -494,10 +573,11 @@ export default class SplendidDynamic_EditView
 					// row at the bottom.  Add rows just before they are needed. 
 					trChildren = [];
 					// 08/25/2019 Paul.  This is the correct place to handle colspan. 
-					if ( COLSPAN == 3 )
-					{
-						sFlexLabelFieldWidth  = '100%';
-					}
+					// 04/04/2022 Paul.  sFlexLabelFieldWidth is only used for Stacked layout. 
+					//if ( COLSPAN == 3 )
+					//{
+					//	sFlexLabelFieldWidth  = '100%';
+					//}
 					tr = React.createElement('tr', { key: FIELD_TYPE + 'row' + nLayoutIndex }, trChildren);
 					tblBodyChildren.push(tr);
 				}
@@ -526,16 +606,41 @@ export default class SplendidDynamic_EditView
 						let tdStackProps: any = { style: {} };
 						if ( bStackedTheme )
 						{
-							tdStackProps.className = 'tabStackedEditViewDF';
-							tdLabelProps.className = 'tabStackedEditViewDL';
+							// 04/04/2022 Paul.  Columns are not getting equal width. 
+							tdStackProps.style.width = sFlexLabelFieldWidth;
+							tdStackProps.className   = 'tabStackedEditViewDF';
+							tdLabelProps.className   = 'tabStackedEditViewDL';
+							// 04/04/2022 Paul.  Can't seem to select the Serach view with existing css, so add new class. 
+							if ( sTheme == 'Pacific' && isSearchView )
+							{
+								tdStackProps.className = 'tabStackedEditViewDF tabStackedEditViewDFSearch';
+								tdLabelProps.className = 'tabStackedEditViewDL tabStackedEditViewDLSearch';
+							}
+							// 04/04/2022 Paul.  Must support colspan in the normal way. 
+							if ( COLSPAN > 0 )
+							{
+								tdStackProps.colSpan = (COLSPAN + 1) / 2;
+							}
 						}
-						else
+						//else
 						{
-							tdLabelProps.style.width      = '100%';
 							tdLabelProps.style.lineHeight = 'inherit';
 							tdLabelProps.style.textAlign  = 'inherit';
-							tdFieldProps.style.width      = '100%';
 							tdStackProps.style.padding    = '0px';
+						}
+						if ( sTheme == 'Pacific' && !isSearchView )
+						{
+							tdStackProps.style.paddingLeft  = '1em';
+							tdStackProps.style.paddingRight = '1em';
+							// 04/16/2022 Paul.  We seem to need to force the width when multiple panels are displayed. 
+							tdStackProps.style.width        = sFlexLabelFieldWidth;
+							if ( DATA_COLUMNS > 1 && COLSPAN <= 1 )
+							{
+								if ( (nColIndex < DATA_COLUMNS - 1) )
+								{
+									tdStackProps.style.borderRight = '.0625rem solid #93a4b3';
+								}
+							}
 						}
 						// 03/19/2020 Paul.  Center instead of baseline or top. 
 						

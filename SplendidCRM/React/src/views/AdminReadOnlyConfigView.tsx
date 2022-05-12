@@ -25,12 +25,14 @@ import SplendidCache                                  from '../scripts/SplendidC
 import { Admin_GetReactState }                        from '../scripts/Application'               ;
 import { AuthenticatedMethod, LoginRedirect }         from '../scripts/Login'                     ;
 import SplendidDynamic_DetailView                     from '../scripts/SplendidDynamic_DetailView';
-import { DetailView_LoadItem, DetailView_LoadLayout } from '../scripts/DetailView'                ;
+import { DetailView_LoadItem, DetailView_LoadLayout, DetailView_ActivateTab } from '../scripts/DetailView'                ;
 import { ListView_LoadTable }                         from '../scripts/ListView'                  ;
 import { CreateSplendidRequest, GetSplendidResult }   from '../scripts/SplendidRequest'           ;
 // 4. Components and Views. 
 import HeaderButtonsFactory                           from '../ThemeComponents/HeaderButtonsFactory';
 import DetailViewRelationships                        from '../views/DetailViewRelationships'     ;
+// 04/13/2022 Paul.  Add LayoutTabs to Pacific theme. 
+import LayoutTabs                                     from '../components/LayoutTabs'             ;
 
 interface IAdminConfigViewProps extends RouteComponentProps<any>
 {
@@ -480,6 +482,15 @@ class AdminReadOnlyConfigView extends React.Component<IAdminConfigViewProps, IAd
 		}
 	}
 
+	// 04/13/2022 Paul.  Add LayoutTabs to Pacific theme. 
+	private _onTabChange = (nActiveTabIndex) =>
+	{
+		let { layout } = this.state;
+		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onTabChange', nActiveTabIndex);
+		DetailView_ActivateTab(layout, nActiveTabIndex);
+		this.setState({ layout });
+	}
+
 	public render()
 	{
 		const { callback } = this.props;
@@ -498,12 +509,14 @@ class AdminReadOnlyConfigView extends React.Component<IAdminConfigViewProps, IAd
 			Credentials.sUSER_THEME;
 			let headerButtons = HeaderButtonsFactory(SplendidCache.UserTheme);
 			// 03/09/2021 Paul.  this.props.MODULE_NAME was incorrect.  Use state value. 
+			// 04/13/2022 Paul.  Add LayoutTabs to Pacific theme. 
 			return (
 			<div>
 				{ !callback && headerButtons
 				? React.createElement(headerButtons, { MODULE_NAME, MODULE_TITLE, error, showRequired: true, enableHelp: true, helpName: 'DetailView', ButtonStyle: 'EditHeader', VIEW_NAME: BUTTON_NAME, row: item, Page_Command: this.Page_Command, showButtons: true, history: this.props.history, location: this.props.location, match: this.props.match, ref: this.headerButtons })
 				: null
 				}
+				<LayoutTabs layout={ layout } onTabChange={ this._onTabChange } />
 				<div id={!!callback ? null : "content"}>
 					{ SplendidDynamic_DetailView.AppendDetailViewFields(item, layout, this.refMap, 'tabDetailView', null, this.Page_Command) }
 					<br />

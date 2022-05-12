@@ -11,7 +11,8 @@
 // 1. React and fabric. 
 import * as React      from 'react';
 import CKEditor        from '../components/CKEditor';
-import ClassicEditor   from '@ckeditor/ckeditor5-build-classic';
+//import ClassicEditorOld   from '@ckeditor/ckeditor5-build-classic';
+import ClassicEditor   from 'ckeditor5-custom-build';
 // 2. Store and Types. 
 import { IEditComponentProps, EditComponent } from '../types/EditComponent';
 // 3. Scripts. 

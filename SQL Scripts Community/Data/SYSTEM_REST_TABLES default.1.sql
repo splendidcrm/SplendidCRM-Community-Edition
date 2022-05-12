@@ -124,6 +124,8 @@ exec dbo.spSYSTEM_REST_TABLES_InsertOnly null, 'vwCAMPAIGNS_CALL_MARKETING'     
 exec dbo.spSYSTEM_REST_TABLES_InsertOnly null, 'vwCAMPAIGNS_LEADS'               , 'vwCAMPAIGNS_LEADS'               , 'Campaigns'                , 'Leads'                    , 0, null, 0, 0, null, 1, 'CAMPAIGN_ID';
 exec dbo.spSYSTEM_REST_TABLES_InsertOnly null, 'vwCAMPAIGNS_OPPORTUNITIES'       , 'vwCAMPAIGNS_OPPORTUNITIES'       , 'Campaigns'                , 'Opportunities'            , 0, null, 0, 0, null, 1, 'CAMPAIGN_ID';
 exec dbo.spSYSTEM_REST_TABLES_InsertOnly null, 'vwEMAILMAN_List'                 , 'vwEMAILMAN_List'                 , 'Campaigns'                , null                       , 0, null, 0, 0, null, 0, null;
+-- 02/16/2022 Paul.  Enable Campaign Email Marketing preview. 
+exec dbo.spSYSTEM_REST_TABLES_InsertOnly null, 'vwCAMPAIGNS_Send'                , 'vwCAMPAIGNS_Send'                , 'Campaigns'                , null                       , 0, null, 0, 0, null, 0, null;
 exec dbo.spSYSTEM_REST_TABLES_InsertOnly null, 'vwCAMPAIGN_LOG_TrackTargeted'    , 'vwCAMPAIGN_LOG_TrackTargeted'    , 'CampaignLog'              , null                       , 0, null, 0, 0, null, 1, 'CAMPAIGN_ID';
 exec dbo.spSYSTEM_REST_TABLES_InsertOnly null, 'vwCAMPAIGN_LOG_TrackViewed'      , 'vwCAMPAIGN_LOG_TrackViewed'      , 'CampaignLog'              , null                       , 0, null, 0, 0, null, 1, 'CAMPAIGN_ID';
 exec dbo.spSYSTEM_REST_TABLES_InsertOnly null, 'vwCAMPAIGN_LOG_TrackClickThru'   , 'vwCAMPAIGN_LOG_TrackClickThru'   , 'CampaignLog'              , null                       , 0, null, 0, 0, null, 1, 'CAMPAIGN_ID';

@@ -24,6 +24,7 @@ GO
 -- 10/13/2012 Paul.  Add table info for HTML5 Offline Client. 
 -- 03/14/2016 Paul.  The new layout editor needs to update the RELATIONSHIP_ENABLED field. 
 -- 03/20/2016 Paul.  Increase PRIMARY_FIELD size to 255 to support OfficeAddin. 
+-- 03/30/2022 Paul.  Add Insight fields. 
 Create Procedure dbo.spDETAILVIEWS_RELATIONSHIPS_Update
 	( @ID                  uniqueidentifier output
 	, @MODIFIED_USER_ID    uniqueidentifier
@@ -37,6 +38,8 @@ Create Procedure dbo.spDETAILVIEWS_RELATIONSHIPS_Update
 	, @SORT_FIELD          nvarchar(50) = null
 	, @SORT_DIRECTION      nvarchar(10) = null
 	, @RELATIONSHIP_ENABLED bit = null
+	, @INSIGHT_VIEW         nvarchar(50) = null
+	, @INSIGHT_LABEL        nvarchar(100) = null
 	)
 as
   begin
@@ -62,6 +65,8 @@ as
 			, PRIMARY_FIELD      
 			, SORT_FIELD         
 			, SORT_DIRECTION     
+			, INSIGHT_VIEW       
+			, INSIGHT_LABEL      
 			)
 		values 
 			( @ID                 
@@ -79,6 +84,8 @@ as
 			, @PRIMARY_FIELD      
 			, @SORT_FIELD         
 			, @SORT_DIRECTION     
+			, @INSIGHT_VIEW       
+			, @INSIGHT_LABEL      
 			);
 	end else begin
 		update DETAILVIEWS_RELATIONSHIPS
@@ -95,6 +102,8 @@ as
 		     , SORT_FIELD           = @SORT_FIELD         
 		     , SORT_DIRECTION       = @SORT_DIRECTION     
 		     , RELATIONSHIP_ENABLED = isnull(@RELATIONSHIP_ENABLED, RELATIONSHIP_ENABLED)
+		     , INSIGHT_VIEW         = isnull(@INSIGHT_VIEW, INSIGHT_VIEW)
+		     , INSIGHT_LABEL        = isnull(@INSIGHT_LABEL, INSIGHT_LABEL)
 		 where ID                   = @ID                 ;
 	end -- if;
   end

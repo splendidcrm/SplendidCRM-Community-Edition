@@ -24,60 +24,72 @@ GO
 -- 06/07/2017 Paul.  Add NAICSCodes module. 
 -- 10/27/2017 Paul.  Add Accounts as email source. 
 -- 03/19/2020 Paul.  Move header to layout. 
+-- 04/15/2022 Paul.  Reorganize layout using Pacific tabs. 
 -- select * from vwEDITVIEWS_FIELDS where EDIT_NAME = 'Accounts.EditView' order by FIELD_INDEX;
 -- delete from EDITVIEWS_FIELDS where EDIT_NAME = 'Accounts.EditView';
 if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Accounts.EditView' and DELETED = 0) begin -- then
 	print 'EDITVIEWS_FIELDS Accounts.EditView';
 	exec dbo.spEDITVIEWS_InsertOnly            'Accounts.EditView'       , 'Accounts'      , 'vwACCOUNTS_Edit'      , '15%', '35%', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'Accounts.EditView'       ,  0, 'Accounts.LBL_ACCOUNT_INFORMATION', 3;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Accounts.EditView'       ,  1, 'Accounts.LBL_ACCOUNT_NAME'              , 'NAME'                       , 1, 1, 150, 35, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Accounts.EditView'       ,  2, 'Accounts.LBL_PHONE'                     , 'PHONE_OFFICE'               , 0, 2,  25, 20, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Accounts.EditView'       ,  3, 'Accounts.LBL_WEBSITE'                   , 'WEBSITE'                    , 0, 1, 255, 28, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Accounts.EditView'       ,  4, 'Accounts.LBL_FAX'                       , 'PHONE_FAX'                  , 0, 2,  25, 20, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Accounts.EditView'       ,  5, 'Accounts.LBL_TICKER_SYMBOL'             , 'TICKER_SYMBOL'              , 0, 1,  10, 10, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Accounts.EditView'       ,  6, 'Accounts.LBL_OTHER_PHONE'               , 'PHONE_ALTERNATE'            , 0, 2,  25, 20, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Accounts.EditView'       ,  7, 'Accounts.LBL_MEMBER_OF'                 , 'PARENT_ID'                  , 0, 1, 'PARENT_NAME'        , 'Accounts', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Accounts.EditView'       ,  8, 'Accounts.LBL_EMAIL'                     , 'EMAIL1'                     , 0, 2, 100, 35, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Accounts.EditView'       ,  9, 'Accounts.LBL_EMPLOYEES'                 , 'EMPLOYEES'                  , 0, 1,  10, 10, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Accounts.EditView'       , 10, 'Accounts.LBL_OTHER_EMAIL_ADDRESS'       , 'EMAIL2'                     , 0, 2, 100, 35, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Accounts.EditView'       , 11, 'Accounts.LBL_DO_NOT_CALL'               , 'DO_NOT_CALL'                , 0, 1, 'CheckBox'           , null, null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Accounts.EditView'       , 12, 'Accounts.LBL_EMAIL_OPT_OUT'             , 'EMAIL_OPT_OUT'              , 0, 2, 'CheckBox'           , null, null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Accounts.EditView'       , 13, 'Accounts.LBL_INVALID_EMAIL'             , 'INVALID_EMAIL'              , 0, 2, 'CheckBox'           , null, null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'Accounts.EditView'       , 14, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Accounts.EditView'       , 15, 'Accounts.LBL_OWNERSHIP'                 , 'OWNERSHIP'                  , 0, 1, 100, 25, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Accounts.EditView'       , 16, 'Accounts.LBL_RATING'                    , 'RATING'                     , 0, 2,  25, 25, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Accounts.EditView'       , 17, 'Accounts.LBL_INDUSTRY'                  , 'INDUSTRY'                   , 0, 1, 'industry_dom'       , null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Accounts.EditView'       , 18, 'Accounts.LBL_SIC_CODE'                  , 'SIC_CODE'                   , 0, 2,  10, 10, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Accounts.EditView'       , 19, 'Accounts.LBL_TYPE'                      , 'ACCOUNT_TYPE'               , 0, 1, 'account_type_dom'   , null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Accounts.EditView'       , 20, 'Accounts.LBL_ANNUAL_REVENUE'            , 'ANNUAL_REVENUE'             , 0, 2,  25, 15, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Accounts.EditView'       , 21, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'          , 'Teams', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsTagSelect   'Accounts.EditView'       , 22, 2, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Accounts.EditView'       , 23, '.LBL_ASSIGNED_TO'                       , 'ASSIGNED_USER_ID'           , 0, 1, 'ASSIGNED_TO_NAME'   , 'Users', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsNaicsSelect 'Accounts.EditView'       , 24, 0, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'Accounts.EditView'       , 25, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Accounts.EditView'       , 26, '.LBL_EXCHANGE_FOLDER'                   , 'EXCHANGE_FOLDER'            , 0, 1, 'CheckBox'           , null, null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsSeparator   'Accounts.EditView'       , 27;
-	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Accounts.EditView'       , 28, 'Accounts.LBL_BILLING_ADDRESS_STREET'    , 'BILLING_ADDRESS_STREET'     , 0, 3,   2, 30, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Accounts.EditView'       , 29, null                                     , null                         , 0, null, 'AddressButtons', null, null, 5;
-	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Accounts.EditView'       , 30, 'Accounts.LBL_SHIPPING_ADDRESS_STREET'   , 'SHIPPING_ADDRESS_STREET'    , 0, 4,   2, 30, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Accounts.EditView'       , 31, 'Accounts.LBL_CITY'                      , 'BILLING_ADDRESS_CITY'       , 0, 3, 100, 25, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Accounts.EditView'       , 32, 'Accounts.LBL_CITY'                      , 'SHIPPING_ADDRESS_CITY'      , 0, 4, 100, 25, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Accounts.EditView'       , 33, 'Accounts.LBL_STATE'                     , 'BILLING_ADDRESS_STATE'      , 0, 3, 100, 15, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Accounts.EditView'       , 34, 'Accounts.LBL_STATE'                     , 'SHIPPING_ADDRESS_STATE'     , 0, 4, 100, 15, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsZipCode     'Accounts.EditView'       , 35, 'Accounts.LBL_POSTAL_CODE'               , 'BILLING_ADDRESS_POSTALCODE' , 0, 3,  20, 15, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsZipCode     'Accounts.EditView'       , 36, 'Accounts.LBL_POSTAL_CODE'               , 'SHIPPING_ADDRESS_POSTALCODE', 0, 4,  20, 15, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Accounts.EditView'       , 37, 'Accounts.LBL_COUNTRY'                   , 'BILLING_ADDRESS_COUNTRY'    , 0, 3, 100, 10, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Accounts.EditView'       , 38, 'Accounts.LBL_COUNTRY'                   , 'SHIPPING_ADDRESS_COUNTRY'   , 0, 4, 100, 10, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsSeparator   'Accounts.EditView'       , 39;
-	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Accounts.EditView'       , 40, 'Accounts.LBL_DESCRIPTION'               , 'DESCRIPTION'                , 0, 5,   8, 60, 3;
+	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'Accounts.EditView'       , -1, '.LBL_LAYOUT_TAB_OVERVIEW'               , 3, 'tab';
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Accounts.EditView'       , -1, 'Accounts.LBL_ACCOUNT_NAME'              , 'NAME'                       , 1, 1, 150, 35, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Accounts.EditView'       , -1, 'Accounts.LBL_PHONE'                     , 'PHONE_OFFICE'               , 0, 1,  25, 20, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Accounts.EditView'       , -1, 'Accounts.LBL_WEBSITE'                   , 'WEBSITE'                    , 0, 1, 255, 28, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Accounts.EditView'       , -1, 'Accounts.LBL_FAX'                       , 'PHONE_FAX'                  , 0, 1,  25, 20, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Accounts.EditView'       , -1, 'Accounts.LBL_EMAIL'                     , 'EMAIL1'                     , 0, 1, 100, 35, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Accounts.EditView'       , -1, 'Accounts.LBL_OTHER_PHONE'               , 'PHONE_ALTERNATE'            , 0, 1,  25, 20, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Accounts.EditView'       , -1, 'Accounts.LBL_OTHER_EMAIL_ADDRESS'       , 'EMAIL2'                     , 0, 1, 100, 35, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Accounts.EditView'       , -1, 'Accounts.LBL_INVALID_EMAIL'             , 'INVALID_EMAIL'              , 0, 1, 'CheckBox'           , null, null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Accounts.EditView'       , -1, 'Accounts.LBL_EMAIL_OPT_OUT'             , 'EMAIL_OPT_OUT'              , 0, 1, 'CheckBox'           , null, null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Accounts.EditView'       , -1, 'Accounts.LBL_DO_NOT_CALL'               , 'DO_NOT_CALL'                , 0, 1, 'CheckBox'           , null, null, null;
+
+	exec dbo.spEDITVIEWS_FIELDS_InsSeparator   'Accounts.EditView'       , -1;
+	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Accounts.EditView'       , -1, 'Accounts.LBL_BILLING_ADDRESS_STREET'    , 'BILLING_ADDRESS_STREET'     , 0, 1,   2, 30, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Accounts.EditView'       , -1, null                                     , null                         , 0, null, 'AddressButtons', null, null, 5;
+	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Accounts.EditView'       , -1, 'Accounts.LBL_SHIPPING_ADDRESS_STREET'   , 'SHIPPING_ADDRESS_STREET'    , 0, 1,   2, 30, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Accounts.EditView'       , -1, 'Accounts.LBL_CITY'                      , 'BILLING_ADDRESS_CITY'       , 0, 1, 100, 25, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Accounts.EditView'       , -1, 'Accounts.LBL_CITY'                      , 'SHIPPING_ADDRESS_CITY'      , 0, 1, 100, 25, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Accounts.EditView'       , -1, 'Accounts.LBL_STATE'                     , 'BILLING_ADDRESS_STATE'      , 0, 1, 100, 15, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Accounts.EditView'       , -1, 'Accounts.LBL_STATE'                     , 'SHIPPING_ADDRESS_STATE'     , 0, 1, 100, 15, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsZipCode     'Accounts.EditView'       , -1, 'Accounts.LBL_POSTAL_CODE'               , 'BILLING_ADDRESS_POSTALCODE' , 0, 1,  20, 15, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsZipCode     'Accounts.EditView'       , -1, 'Accounts.LBL_POSTAL_CODE'               , 'SHIPPING_ADDRESS_POSTALCODE', 0, 1,  20, 15, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Accounts.EditView'       , -1, 'Accounts.LBL_COUNTRY'                   , 'BILLING_ADDRESS_COUNTRY'    , 0, 1, 100, 10, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Accounts.EditView'       , -1, 'Accounts.LBL_COUNTRY'                   , 'SHIPPING_ADDRESS_COUNTRY'   , 0, 1, 100, 10, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsSeparator   'Accounts.EditView'       , -1;
+	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Accounts.EditView'       , -1, '.LBL_ASSIGNED_TO'                       , 'ASSIGNED_USER_ID'           , 0, 1, 'ASSIGNED_TO_NAME'   , 'Users', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Accounts.EditView'       , -1, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'          , 'Teams', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'Accounts.EditView'       , -1, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsTagSelect   'Accounts.EditView'       , -1, 2, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Accounts.EditView'       , -1, 'Accounts.LBL_DESCRIPTION'               , 'DESCRIPTION'                , 0, 1,   8, 60, 3;
+
+	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'Accounts.EditView'       , -1, '.LBL_LAYOUT_TAB_MORE_INFORMATION'       , 3, 'tab-only';
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Accounts.EditView'       , -1, 'Accounts.LBL_TYPE'                      , 'ACCOUNT_TYPE'               , 0, 1, 'account_type_dom'   , null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Accounts.EditView'       , -1, 'Accounts.LBL_INDUSTRY'                  , 'INDUSTRY'                   , 0, 1, 'industry_dom'       , null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Accounts.EditView'       , -1, 'Accounts.LBL_ANNUAL_REVENUE'            , 'ANNUAL_REVENUE'             , 0, 1,  25, 15, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Accounts.EditView'       , -1, 'Accounts.LBL_EMPLOYEES'                 , 'EMPLOYEES'                  , 0, 1,  10, 10, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Accounts.EditView'       , -1, 'Accounts.LBL_MEMBER_OF'                 , 'PARENT_ID'                  , 0, 1, 'PARENT_NAME'        , 'Accounts', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Accounts.EditView'       , -1, 'Accounts.LBL_OWNERSHIP'                 , 'OWNERSHIP'                  , 0, 1, 100, 25, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Accounts.EditView'       , -1, 'Accounts.LBL_SIC_CODE'                  , 'SIC_CODE'                   , 0, 2,  10, 10, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsNaicsSelect 'Accounts.EditView'       , -1, 0, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Accounts.EditView'       , -1, 'Accounts.LBL_TICKER_SYMBOL'             , 'TICKER_SYMBOL'              , 0, 1,  10, 10, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Accounts.EditView'       , -1, 'Accounts.LBL_RATING'                    , 'RATING'                     , 0, 1,  25, 25, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Accounts.EditView'       , -1, '.LBL_EXCHANGE_FOLDER'                   , 'EXCHANGE_FOLDER'            , 0, 1, 'CheckBox'           , null, null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'Accounts.EditView'       , -1, null;
+
+	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'Accounts.EditView'       , -1, '.LBL_LAYOUT_TAB_OTHER'                  , 3, 'tab-only';
+	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Accounts.EditView'       , -1, '.LBL_DATE_ENTERED'                      , 'DATE_ENTERED'               , null;
+	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Accounts.EditView'       , -1, '.LBL_DATE_MODIFIED'                     , 'DATE_MODIFIED'              , null;
 
 	-- 03/19/2020 Paul.  The FIELD_INDEX is not needed, so remove from update statement. 
+	exec dbo.spEDITVIEWS_FIELDS_InsValidator   'Accounts.EditView'       , -1, 'Email Address'                          , 'EMAIL1'                     , '.ERR_INVALID_EMAIL_ADDRESS';
+	exec dbo.spEDITVIEWS_FIELDS_InsValidator   'Accounts.EditView'       , -1, 'Email Address'                          , 'EMAIL2'                     , '.ERR_INVALID_EMAIL_ADDRESS';
+
 --	exec dbo.spEDITVIEWS_FIELDS_InsValidator   'Accounts.EditView'       , -1, 'Phone Number'                           , 'PHONE_OFFICE'               , '.ERR_INVALID_PHONE_NUMBER';
 --	exec dbo.spEDITVIEWS_FIELDS_InsValidator   'Accounts.EditView'       , -1, 'Phone Number'                           , 'PHONE_FAX'                  , '.ERR_INVALID_PHONE_NUMBER';
 --	exec dbo.spEDITVIEWS_FIELDS_InsValidator   'Accounts.EditView'       , -1, 'Phone Number'                           , 'PHONE_ALTERNATE'            , '.ERR_INVALID_PHONE_NUMBER';
-	exec dbo.spEDITVIEWS_FIELDS_InsValidator   'Accounts.EditView'       , -1, 'Email Address'                          , 'EMAIL1'                     , '.ERR_INVALID_EMAIL_ADDRESS';
-	exec dbo.spEDITVIEWS_FIELDS_InsValidator   'Accounts.EditView'       , -1, 'Email Address'                          , 'EMAIL2'                     , '.ERR_INVALID_EMAIL_ADDRESS';
-end else begin
+
+end else if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Accounts.EditView' and FIELD_TYPE = 'Header' and DATA_LABEL = '.LBL_LAYOUT_TAB_OVERVIEW' and DELETED = 0) begin -- then
+	-- 04/20/2022 Paul.  The following maintenance does not apply if this was a new Pacific layout. 
+
 	if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Accounts.EditView' and FIELD_VALIDATOR_ID is not null and DELETED = 0) begin -- then
 		print 'Accounts.EditView: Update validators';
 --		exec dbo.spEDITVIEWS_FIELDS_InsValidator   'Accounts.EditView'       , -1, 'Phone Number'                           , 'PHONE_OFFICE'               , '.ERR_INVALID_PHONE_NUMBER';
@@ -171,68 +183,42 @@ end else begin
 end -- if;
 GO
 
--- 09/02/2012 Paul.  Merge layout so that there is only one table to render in the HTML5 Client. 
-/*
-if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Accounts.EditAddress' and DELETED = 0) begin -- then
-	print 'EDITVIEWS_FIELDS Accounts.EditAddress';
-	exec dbo.spEDITVIEWS_InsertOnly            'Accounts.EditAddress', 'Accounts', 'vwACCOUNTS_Edit', '15%', '30%', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Accounts.EditAddress'    ,  0, 'Accounts.LBL_BILLING_ADDRESS_STREET'    , 'BILLING_ADDRESS_STREET'     , 0, 3,   2, 30, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Accounts.EditAddress'    ,  1, null                                     , null                         , 0, null, 'AddressButtons', null, null, 5;
-	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Accounts.EditAddress'    ,  2, 'Accounts.LBL_SHIPPING_ADDRESS_STREET'   , 'SHIPPING_ADDRESS_STREET'    , 0, 4,   2, 30, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Accounts.EditAddress'    ,  3, 'Accounts.LBL_CITY'                      , 'BILLING_ADDRESS_CITY'       , 0, 3, 100, 25, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Accounts.EditAddress'    ,  4, 'Accounts.LBL_CITY'                      , 'SHIPPING_ADDRESS_CITY'      , 0, 4, 100, 25, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Accounts.EditAddress'    ,  5, 'Accounts.LBL_STATE'                     , 'BILLING_ADDRESS_STATE'      , 0, 3, 100, 15, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Accounts.EditAddress'    ,  6, 'Accounts.LBL_STATE'                     , 'SHIPPING_ADDRESS_STATE'     , 0, 4, 100, 15, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Accounts.EditAddress'    ,  7, 'Accounts.LBL_POSTAL_CODE'               , 'BILLING_ADDRESS_POSTALCODE' , 0, 3,  20, 15, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Accounts.EditAddress'    ,  8, 'Accounts.LBL_POSTAL_CODE'               , 'SHIPPING_ADDRESS_POSTALCODE', 0, 4,  20, 15, null;
-	-- 06/07/2006 Paul.  Fix max length of country. It should be 100. 
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Accounts.EditAddress'    ,  9, 'Accounts.LBL_COUNTRY'                   , 'BILLING_ADDRESS_COUNTRY'    , 0, 3, 100, 10, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Accounts.EditAddress'    , 10, 'Accounts.LBL_COUNTRY'                   , 'SHIPPING_ADDRESS_COUNTRY'   , 0, 4, 100, 10, null;
-end -- if;
-*/
-GO
-
--- 09/02/2012 Paul.  Merge layout so that there is only one table to render in the HTML5 Client. 
-/*
-if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Accounts.EditDescription' and DELETED = 0) begin -- then
-	print 'EDITVIEWS_FIELDS Accounts.EditDescription';
-	exec dbo.spEDITVIEWS_InsertOnly            'Accounts.EditDescription', 'Accounts', 'vwACCOUNTS_Edit', '15%', '85%', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Accounts.EditDescription',  0, 'Accounts.LBL_DESCRIPTION'               , 'DESCRIPTION'                , 0, 5,   8, 60, null;
-end -- if;
-*/
-GO
-
 -- delete from EDITVIEWS_FIELDS where EDIT_NAME = 'Bugs.EditView';
 -- 07/04/2007 Paul.  The Releases list references the fields as IDs, but we need to use them as text values in the detail and grid views. 
 -- 11/27/2008 Paul.  Remove created by and modified by fields. 
 -- 05/12/2016 Paul.  Add Tags module. 
+-- 04/15/2022 Paul.  Reorganize layout using Pacific tabs. 
 -- delete from EDITVIEWS_FIELDS where EDIT_NAME = 'Bugs.EditView';
 if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Bugs.EditView' and DELETED = 0) begin -- then
 	print 'EDITVIEWS_FIELDS Bugs.EditView';
 	exec dbo.spEDITVIEWS_InsertOnly            'Bugs.EditView'           , 'Bugs'          , 'vwBUGS_Edit'          , '15%', '35%', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Bugs.EditView'           ,  0, 'Bugs.LBL_BUG_NUMBER'                    , 'BUG_NUMBER'                 , null;
-	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Bugs.EditView'           ,  1, '.LBL_ASSIGNED_TO'                       , 'ASSIGNED_USER_ID'           , 0, 1, 'ASSIGNED_TO_NAME'    , 'Users', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Bugs.EditView'           ,  2, 'Bugs.LBL_PRIORITY'                      , 'PRIORITY'                   , 0, 1, 'bug_priority_dom'    , null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Bugs.EditView'           ,  3, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'          , 'Teams', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Bugs.EditView'           ,  4, 'Bugs.LBL_TYPE'                          , 'TYPE'                       , 0, 1, 'bug_type_dom'        , null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Bugs.EditView'           ,  5, '.LBL_EXCHANGE_FOLDER'                   , 'EXCHANGE_FOLDER'            , 0, 1, 'CheckBox'           , null, null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Bugs.EditView'           ,  6, 'Bugs.LBL_SOURCE'                        , 'SOURCE'                     , 0, 1, 'source_dom'          , null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Bugs.EditView'           ,  7, 'Bugs.LBL_STATUS'                        , 'STATUS'                     , 0, 1, 'bug_status_dom'      , null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Bugs.EditView'           ,  8, 'Bugs.LBL_PRODUCT_CATEGORY'              , 'PRODUCT_CATEGORY'           , 0, 1, 'product_category_dom', null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Bugs.EditView'           ,  9, 'Bugs.LBL_RESOLUTION'                    , 'RESOLUTION'                 , 0, 2, 'bug_resolution_dom'  , null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsTagSelect   'Bugs.EditView'           , 10, 1, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'Bugs.EditView'           , 11, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Bugs.EditView'           , 12, 'Bugs.LBL_FOUND_IN_RELEASE'              , 'FOUND_IN_RELEASE_ID'        , 0, 1, 'FOUND_IN_RELEASE'    , 'Releases', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Bugs.EditView'           , 13, 'Bugs.LBL_FIXED_IN_RELEASE'              , 'FIXED_IN_RELEASE_ID'        , 0, 1, 'FIXED_IN_RELEASE'    , 'Releases', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'Bugs.EditView'           , 14, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'Bugs.EditView'           , 15, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsFile        'Bugs.EditView'           , 16, 'Bugs.LBL_FILENAME'                      , 'ATTACHMENT'                 , 0, 2, 255, 60, 3;
-	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Bugs.EditView'           , 17, 'Bugs.LBL_SUBJECT'                       , 'NAME'                       , 1, 3,   1, 70, 3;
-	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Bugs.EditView'           , 18, 'Bugs.LBL_DESCRIPTION'                   , 'DESCRIPTION'                , 0, 3,   8, 80, 3;
-	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'Bugs.EditView'           , 19, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'Bugs.EditView'           , 20, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Bugs.EditView'           , 21, 'Bugs.LBL_WORK_LOG'                      , 'WORK_LOG'                   , 0, 3,   2, 80, 3;
-end else begin
+	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'Bugs.EditView'           , -1, '.LBL_LAYOUT_TAB_OVERVIEW'               , 3, 'tab-only';
+	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Bugs.EditView'           , -1, 'Bugs.LBL_BUG_NUMBER'                    , 'BUG_NUMBER'                 , null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Bugs.EditView'           , -1, 'Bugs.LBL_PRIORITY'                      , 'PRIORITY'                   , 0, 1, 'bug_priority_dom'    , null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Bugs.EditView'           , -1, 'Bugs.LBL_SUBJECT'                       , 'NAME'                       , 1, 1, 255, 70, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Bugs.EditView'           , -1, 'Bugs.LBL_STATUS'                        , 'STATUS'                     , 0, 1, 'bug_status_dom'      , null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Bugs.EditView'           , -1, 'Bugs.LBL_TYPE'                          , 'TYPE'                       , 0, 1, 'bug_type_dom'        , null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Bugs.EditView'           , -1, 'Bugs.LBL_SOURCE'                        , 'SOURCE'                     , 0, 1, 'source_dom'          , null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Bugs.EditView'           , -1, 'Bugs.LBL_PRODUCT_CATEGORY'              , 'PRODUCT_CATEGORY'           , 0, 1, 'product_category_dom', null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Bugs.EditView'           , -1, 'Bugs.LBL_RESOLUTION'                    , 'RESOLUTION'                 , 0, 2, 'bug_resolution_dom'  , null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Bugs.EditView'           , -1, 'Bugs.LBL_FOUND_IN_RELEASE'              , 'FOUND_IN_RELEASE_ID'        , 0, 1, 'FOUND_IN_RELEASE'    , 'Releases', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Bugs.EditView'           , -1, 'Bugs.LBL_FIXED_IN_RELEASE'              , 'FIXED_IN_RELEASE_ID'        , 0, 1, 'FIXED_IN_RELEASE'    , 'Releases', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Bugs.EditView'           , -1, '.LBL_ASSIGNED_TO'                       , 'ASSIGNED_USER_ID'           , 0, 1, 'ASSIGNED_TO_NAME'    , 'Users', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Bugs.EditView'           , -1, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'          , 'Teams', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Bugs.EditView'           , -1, '.LBL_EXCHANGE_FOLDER'                   , 'EXCHANGE_FOLDER'            , 0, 1, 'CheckBox'           , null, null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsTagSelect   'Bugs.EditView'           , -1, 1, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsFile        'Bugs.EditView'           , -1, 'Bugs.LBL_FILENAME'                      , 'ATTACHMENT'                 , 0, 1, 255, 60, 3;
+	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Bugs.EditView'           , -1, 'Bugs.LBL_DESCRIPTION'                   , 'DESCRIPTION'                , 0, 1,   8, 80, 3;
+	exec dbo.spEDITVIEWS_FIELDS_InsSeparator   'Bugs.EditView'           , -1;
+	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Bugs.EditView'           , -1, 'Bugs.LBL_WORK_LOG'                      , 'WORK_LOG'                   , 0, 1,   2, 80, 3;
+
+	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'Bugs.EditView'           , -1, '.LBL_LAYOUT_TAB_OTHER'                  , 3, 'tab-only';
+	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Bugs.EditView'           , -1, '.LBL_DATE_ENTERED'                      , 'DATE_ENTERED'               , null;
+	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Bugs.EditView'           , -1, '.LBL_DATE_MODIFIED'                     , 'DATE_MODIFIED'              , null;
+
+end else if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Bugs.EditView' and FIELD_TYPE = 'Header' and DATA_LABEL = '.LBL_LAYOUT_TAB_OVERVIEW' and DELETED = 0) begin -- then
+	-- 04/20/2022 Paul.  The following maintenance does not apply if this was a new Pacific layout. 
+
 	-- 08/24/2009 Paul.  Keep the old conversion and let the field be fixed during the TEAMS Update. 
 	exec dbo.spEDITVIEWS_FIELDS_CnvChange      'Bugs.EditView'           ,  3, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'          , null, null;
 	exec dbo.spEDITVIEWS_FIELDS_CnvModulePopup 'Bugs.EditView'           ,  3, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'          , 'Teams', null;
@@ -272,39 +258,46 @@ GO
 -- 03/22/2013 Paul.  Add Recurrence fields. 
 -- 12/14/2013 Paul.  Increase size of name to 150. 
 -- 12/23/2013 Paul.  Add SMS_REMINDER_TIME. 
+-- 04/15/2022 Paul.  Reorganize layout using Pacific tabs. 
 -- delete from EDITVIEWS_FIELDS where EDIT_NAME = 'Calls.EditView';
 if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Calls.EditView' and DELETED = 0) begin -- then
 	print 'EDITVIEWS_FIELDS Calls.EditView';
 	exec dbo.spEDITVIEWS_InsertOnly            'Calls.EditView'         , 'Calls'         , 'vwCALLS_Edit'         , '15%', '35%', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Calls.EditView'          ,  0, 'Calls.LBL_NAME'                         , 'NAME'                       , 1, 1, 150, 35, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Calls.EditView'          ,  1, 'Calls.LBL_STATUS'                       , 'DIRECTION'                  , 0, 2, 'call_direction_dom' , null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Calls.EditView'          ,  2, null                                     , 'STATUS'                     , 0, 2, 'call_status_dom'    , -1, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Calls.EditView'          ,  3, 'Calls.LBL_DATE_TIME'                    , 'DATE_START'                 , 1, 1, 'DateTimePicker'     , null, null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Calls.EditView'          ,  4, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'          , 'Teams', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Calls.EditView'          ,  5, '.LBL_ASSIGNED_TO'                       , 'ASSIGNED_USER_ID'           , 0, 1, 'ASSIGNED_TO_NAME'   , 'Users', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'Calls.EditView'          ,  6, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Calls.EditView'          ,  7, 'Calls.LBL_DURATION'                     , 'DURATION_HOURS'             , 1, 1,   2,  2, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Calls.EditView'          ,  8, null                                     , 'DURATION_MINUTES'           , 1, 1, 'call_minutes_dom'   , -1, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Calls.EditView'          ,  9, null                                     , 'Calls.LBL_HOURS_MINUTES'    , -1;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Calls.EditView'          , 10, null                                     , 'ALL_DAY_EVENT'              , 0, 1, 'CheckBox'           , 'ToggleAllDayEvent(this);', -1, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Calls.EditView'          , 11, null                                     , 'Calls.LBL_ALL_DAY'          , -1;
-	exec dbo.spEDITVIEWS_FIELDS_InsChange      'Calls.EditView'          , 12, 'PARENT_TYPE'                            , 'PARENT_ID'                  , 0, 1, 'PARENT_NAME'        , 'return ParentPopup();', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Calls.EditView'          , 13, 'Calls.LBL_REMINDER'                     , 'SHOULD_REMIND'              , 0, 1, 'CheckBox'           , 'toggleDisplay(''REMINDER_TIME'');', null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Calls.EditView'          , 14, null                                     , 'REMINDER_TIME'              , 0, 1, 'reminder_time_dom'  , -1, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Calls.EditView'          , 15, 'Calls.LBL_EMAIL_REMINDER_TIME'          , 'EMAIL_REMINDER_TIME'        , 0, 2, 'reminder_time_dom'  , null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'Calls.EditView'          , 16, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Calls.EditView'          , 17, 'Calls.LBL_SMS_REMINDER_TIME'            , 'SMS_REMINDER_TIME'          , 0, 2, 'reminder_time_dom'  , null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Calls.EditView'          , 18, 'Calls.LBL_DESCRIPTION'                  , 'DESCRIPTION'                , 0, 3,   8, 60, null;
-	-- 03/22/2013 Paul.  Add Recurrence fields. 
-	exec dbo.spEDITVIEWS_FIELDS_InsSeparator   'Calls.EditView'          , 19;
-	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'Calls.EditView'          , 20, 'Calendar.LBL_REPEAT_TAB', 3;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Calls.EditView'          , 21, 'Calls.LBL_REPEAT_TYPE'                  , 'REPEAT_TYPE'                , 0, 4, 'repeat_type_dom'    , null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Calls.EditView'          , 22, 'Calendar.LBL_REPEAT_END_AFTER'          , 'REPEAT_COUNT'               , 0, 4,  25, 10, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Calls.EditView'          , 23, null                                     , 'Calendar.LBL_REPEAT_OCCURRENCES', -1;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Calls.EditView'          , 24, 'Calendar.LBL_REPEAT_INTERVAL'           , 'REPEAT_INTERVAL'            , 0, 4,  25, 10, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Calls.EditView'          , 25, 'Calls.LBL_REPEAT_UNTIL'                 , 'REPEAT_UNTIL'               , 0, 4, 'DatePicker'         , null, null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsCheckLst    'Calls.EditView'          , 26, 'Calls.LBL_REPEAT_DOW'                   , 'REPEAT_DOW'                 , 0, 4, 'scheduler_day_dom', '1', 3, null;
-end else begin
+	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'Calls.EditView'          , -1, '.LBL_LAYOUT_TAB_OVERVIEW'               , 3, 'tab-only';
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Calls.EditView'          , -1, 'Calls.LBL_NAME'                         , 'NAME'                       , 1, 1, 150, 35, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Calls.EditView'          , -1, 'Calls.LBL_STATUS'                       , 'DIRECTION'                  , 0, 2, 'call_direction_dom' , null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Calls.EditView'          , -1, null                                     , 'STATUS'                     , 0, 2, 'call_status_dom'    , -1, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Calls.EditView'          , -1, 'Calls.LBL_DATE_TIME'                    , 'DATE_START'                 , 1, 1, 'DateTimePicker'     , null, null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsChange      'Calls.EditView'          , -1, 'PARENT_TYPE'                            , 'PARENT_ID'                  , 0, 1, 'PARENT_NAME'        , 'return ParentPopup();', null;
+
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Calls.EditView'          , -1, 'Calls.LBL_DURATION'                     , 'DURATION_HOURS'             , 1, 1,  10, 10, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Calls.EditView'          , -1, null                                     , 'DURATION_MINUTES'           , 1, 1, 'call_minutes_dom'   , -1, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Calls.EditView'          , -1, null                                     , 'Calls.LBL_HOURS_MINUTES'    , -1;
+	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Calls.EditView'          , -1, null                                     , 'ALL_DAY_EVENT'              , 0, 1, 'CheckBox'           , 'ToggleAllDayEvent(this);', -1, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Calls.EditView'          , -1, null                                     , 'Calls.LBL_ALL_DAY'          , -1;
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Calls.EditView'          , -1, 'Calls.LBL_EMAIL_REMINDER_TIME'          , 'EMAIL_REMINDER_TIME'        , 0, 2, 'reminder_time_dom'  , null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Calls.EditView'          , -1, 'Calls.LBL_REMINDER'                     , 'SHOULD_REMIND'              , 0, 1, 'CheckBox'           , 'toggleDisplay(''REMINDER_TIME'');', null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Calls.EditView'          , -1, null                                     , 'REMINDER_TIME'              , 0, 1, 'reminder_time_dom'  , -1, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Calls.EditView'          , -1, 'Calls.LBL_SMS_REMINDER_TIME'            , 'SMS_REMINDER_TIME'          , 0, 2, 'reminder_time_dom'  , null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Calls.EditView'          , -1, '.LBL_ASSIGNED_TO'                       , 'ASSIGNED_USER_ID'           , 0, 1, 'ASSIGNED_TO_NAME'   , 'Users', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Calls.EditView'          , -1, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'          , 'Teams', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Calls.EditView'          , -1, 'Calls.LBL_DESCRIPTION'                  , 'DESCRIPTION'                , 0, 3,   8, 60, 3;
+
+	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'Calls.EditView'          , -1, 'Calls.LBL_LAYOUT_TAB_RECURRENCE'        , 3, 'tab';
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Calls.EditView'          , -1, 'Calls.LBL_REPEAT_TYPE'                  , 'REPEAT_TYPE'                , 0, 4, 'repeat_type_dom'    , null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Calls.EditView'          , -1, 'Calendar.LBL_REPEAT_END_AFTER'          , 'REPEAT_COUNT'               , 0, 4,  25, 10, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Calls.EditView'          , -1, null                                     , 'Calendar.LBL_REPEAT_OCCURRENCES', -1;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Calls.EditView'          , -1, 'Calendar.LBL_REPEAT_INTERVAL'           , 'REPEAT_INTERVAL'            , 0, 4,  25, 10, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Calls.EditView'          , -1, 'Calls.LBL_REPEAT_UNTIL'                 , 'REPEAT_UNTIL'               , 0, 4, 'DatePicker'         , null, null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsCheckLst    'Calls.EditView'          , -1, 'Calls.LBL_REPEAT_DOW'                   , 'REPEAT_DOW'                 , 0, 4, 'scheduler_day_dom', '1', 3, null;
+
+	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'Calls.EditView'          , -1, '.LBL_LAYOUT_TAB_OTHER'                  , 3, 'tab-only';
+	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Calls.EditView'          , -1, '.LBL_DATE_ENTERED'                      , 'DATE_ENTERED'               , null;
+	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Calls.EditView'          , -1, '.LBL_DATE_MODIFIED'                     , 'DATE_MODIFIED'              , null;
+
+end else if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Calls.EditView' and FIELD_TYPE = 'Header' and DATA_LABEL = '.LBL_LAYOUT_TAB_OVERVIEW' and DELETED = 0) begin -- then
+	-- 04/20/2022 Paul.  The following maintenance does not apply if this was a new Pacific layout. 
+
 	-- 08/24/2009 Paul.  Keep the old conversion and let the field be fixed during the TEAMS Update. 
 	exec dbo.spEDITVIEWS_FIELDS_CnvChange      'Calls.EditView'          ,  4, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'          , null, null;
 	exec dbo.spEDITVIEWS_FIELDS_CnvModulePopup 'Calls.EditView'          ,  4, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'          , 'Teams', null;
@@ -365,36 +358,38 @@ end else begin
 end -- if;
 GO
 
+-- 04/15/2022 Paul.  Reorganize layout using Pacific tabs. 
+-- delete from EDITVIEWS_FIELDS where EDIT_NAME = 'Campaigns.EditView';
 if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Campaigns.EditView' and DELETED = 0) begin -- then
 	print 'EDITVIEWS_FIELDS Campaigns.EditView';
 	exec dbo.spEDITVIEWS_InsertOnly            'Campaigns.EditView'     , 'Campaigns'     , 'vwCAMPAIGNS_Edit'     , '20%', '30%', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Campaigns.EditView'      ,  0, 'Campaigns.LBL_NAME'                     , 'NAME'                       , 1, 1,  50, 25, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Campaigns.EditView'      ,  1, '.LBL_ASSIGNED_TO'                       , 'ASSIGNED_USER_ID'           , 0, 1, 'ASSIGNED_TO_NAME'   , 'Users', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Campaigns.EditView'      ,  2, 'Campaigns.LBL_CAMPAIGN_STATUS'          , 'STATUS'                     , 1, 1, 'campaign_status_dom', null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Campaigns.EditView'      ,  3, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'          , 'Teams', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Campaigns.EditView'      ,  4, 'Campaigns.LBL_CAMPAIGN_START_DATE'      , 'START_DATE'                 , 0, 1, 'DatePicker'         , null, null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'Campaigns.EditView'      ,  5, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Campaigns.EditView'      ,  6, 'Campaigns.LBL_CAMPAIGN_END_DATE'        , 'END_DATE'                   , 1, 1, 'DatePicker'         , null, null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'Campaigns.EditView'      ,  7, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Campaigns.EditView'      ,  8, 'Campaigns.LBL_CAMPAIGN_TYPE'            , 'CAMPAIGN_TYPE'              , 1, 1, 'campaign_type_dom'  , null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'Campaigns.EditView'      ,  9, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'Campaigns.EditView'      , 10, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'Campaigns.EditView'      , 11, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Campaigns.EditView'      , 12, 'Campaigns.LBL_CURRENCY'                 , 'CURRENCY_ID'                , 1, 1, 'Currencies'          , null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Campaigns.EditView'      , 13, 'Campaigns.LBL_CAMPAIGN_IMPRESSIONS'     , 'IMPRESSIONS'                , 0, 2, 25, 10, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Campaigns.EditView'      , 14, 'Campaigns.LBL_CAMPAIGN_BUDGET'          , 'BUDGET'                     , 0, 1, 25, 10, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Campaigns.EditView'      , 15, 'Campaigns.LBL_CAMPAIGN_ACTUAL_COST'     , 'ACTUAL_COST'                , 0, 2, 25, 10, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Campaigns.EditView'      , 16, 'Campaigns.LBL_CAMPAIGN_EXPECTED_REVENUE', 'EXPECTED_REVENUE'           , 0, 1, 25, 10, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Campaigns.EditView'      , 17, 'Campaigns.LBL_CAMPAIGN_EXPECTED_COST'   , 'EXPECTED_COST'              , 0, 2, 25, 10, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'Campaigns.EditView'      , 18, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'Campaigns.EditView'      , 19, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Campaigns.EditView'      , 20, 'Campaigns.LBL_CAMPAIGN_OBJECTIVE'       , 'OBJECTIVE'                  , 0, 3,   8, 80, 3;
-	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Campaigns.EditView'      , 21, 'Campaigns.LBL_CAMPAIGN_CONTENT'         , 'CONTENT'                    , 0, 4,   8, 80, 3;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Campaigns.EditView'      , 22, 'Campaigns.LBL_TRACKER_TEXT'             , 'TRACKER_TEXT'               , 0, 4, 255, 50, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'Campaigns.EditView'      , 23, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Campaigns.EditView'      , 24, 'Campaigns.LBL_REFER_URL'                , 'REFER_URL'                  , 0, 4, 255, 50, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'Campaigns.EditView'      , 25, null;
-end else begin
+	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'Campaigns.EditView'      , -1, '.LBL_LAYOUT_TAB_OVERVIEW'               , 3, 'tab-only';
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Campaigns.EditView'      , -1, 'Campaigns.LBL_NAME'                     , 'NAME'                       , 1, 1,  50, 25, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Campaigns.EditView'      , -1, 'Campaigns.LBL_CAMPAIGN_STATUS'          , 'STATUS'                     , 1, 1, 'campaign_status_dom', null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Campaigns.EditView'      , -1, 'Campaigns.LBL_CAMPAIGN_START_DATE'      , 'START_DATE'                 , 0, 1, 'DatePicker'         , null, null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Campaigns.EditView'      , -1, 'Campaigns.LBL_CAMPAIGN_TYPE'            , 'CAMPAIGN_TYPE'              , 1, 1, 'campaign_type_dom'  , null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Campaigns.EditView'      , -1, 'Campaigns.LBL_CAMPAIGN_END_DATE'        , 'END_DATE'                   , 1, 1, 'DatePicker'         , null, null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsTagSelect   'Campaigns.EditView'      , -1, 1, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Campaigns.EditView'      , -1, '.LBL_ASSIGNED_TO'                       , 'ASSIGNED_USER_ID'           , 0, 1, 'ASSIGNED_TO_NAME'   , 'Users', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Campaigns.EditView'      , -1, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'          , 'Teams', null;
+
+	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'Campaigns.EditView'      , -1, 'Campaigns.LBL_LAYOUT_TAB_BUDGET'        , 3, 'tab-only';
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Campaigns.EditView'      , -1, 'Campaigns.LBL_CURRENCY'                 , 'CURRENCY_ID'                , 1, 1, 'Currencies'          , null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Campaigns.EditView'      , -1, 'Campaigns.LBL_CAMPAIGN_IMPRESSIONS'     , 'IMPRESSIONS'                , 0, 2, 25, 10, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Campaigns.EditView'      , -1, 'Campaigns.LBL_CAMPAIGN_BUDGET'          , 'BUDGET'                     , 0, 1, 25, 10, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Campaigns.EditView'      , -1, 'Campaigns.LBL_CAMPAIGN_ACTUAL_COST'     , 'ACTUAL_COST'                , 0, 2, 25, 10, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Campaigns.EditView'      , -1, 'Campaigns.LBL_CAMPAIGN_EXPECTED_REVENUE', 'EXPECTED_REVENUE'           , 0, 1, 25, 10, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Campaigns.EditView'      , -1, 'Campaigns.LBL_CAMPAIGN_EXPECTED_COST'   , 'EXPECTED_COST'              , 0, 2, 25, 10, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Campaigns.EditView'      , -1, 'Campaigns.LBL_CAMPAIGN_OBJECTIVE'       , 'OBJECTIVE'                  , 0, 3,   8, 80, 3;
+	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Campaigns.EditView'      , -1, 'Campaigns.LBL_CAMPAIGN_CONTENT'         , 'CONTENT'                    , 0, 4,   8, 80, 3;
+
+	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'Campaigns.EditView'      , -1, '.LBL_LAYOUT_TAB_OTHER'                  , 3, 'tab-only';
+	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Campaigns.EditView'      , -1, '.LBL_DATE_ENTERED'                      , 'DATE_ENTERED'               , null;
+	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Campaigns.EditView'      , -1, '.LBL_DATE_MODIFIED'                     , 'DATE_MODIFIED'              , null;
+
+end else if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Campaigns.EditView' and FIELD_TYPE = 'Header' and DATA_LABEL = '.LBL_LAYOUT_TAB_OVERVIEW' and DELETED = 0) begin -- then
+	-- 04/20/2022 Paul.  The following maintenance does not apply if this was a new Pacific layout. 
+
 	-- 08/24/2009 Paul.  Keep the old conversion and let the field be fixed during the TEAMS Update. 
 	exec dbo.spEDITVIEWS_FIELDS_CnvChange      'Campaigns.EditView'      ,  3, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'          , null, null;
 	exec dbo.spEDITVIEWS_FIELDS_CnvModulePopup 'Campaigns.EditView'      ,  3, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'          , 'Teams', null;
@@ -430,24 +425,34 @@ GO
 
 -- 04/02/2012 Paul.  Add TYPE and WORK_LOG. 
 -- 05/12/2016 Paul.  Add Tags module. 
+-- 04/15/2022 Paul.  Reorganize layout using Pacific tabs. 
+-- delete from EDITVIEWS_FIELDS where EDIT_NAME = 'Cases.EditView';
 if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Cases.EditView' and DELETED = 0) begin -- then
 	print 'EDITVIEWS_FIELDS Cases.EditView';
 	exec dbo.spEDITVIEWS_InsertOnly            'Cases.EditView'          , 'Cases'         , 'vwCASES_Edit'         , '15%', '35%', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Cases.EditView'          ,  0, 'Cases.LBL_CASE_NUMBER'                  , 'CASE_NUMBER'                , null;
-	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Cases.EditView'          ,  1, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'          , 'Teams', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Cases.EditView'          ,  2, 'Cases.LBL_PRIORITY'                     , 'PRIORITY'                   , 0, 1, 'case_priority_dom'  , null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Cases.EditView'          ,  3, '.LBL_ASSIGNED_TO'                       , 'ASSIGNED_USER_ID'           , 0, 1, 'ASSIGNED_TO_NAME'   , 'Users', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Cases.EditView'          ,  4, 'Cases.LBL_STATUS'                       , 'STATUS'                     , 0, 1, 'case_status_dom'    , null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Cases.EditView'          ,  5, 'Cases.LBL_ACCOUNT_NAME'                 , 'ACCOUNT_ID'                 , 1, 1, 'ACCOUNT_NAME'       , 'Accounts', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Cases.EditView'          ,  6, 'Cases.LBL_TYPE'                         , 'TYPE'                       , 0, 1, 'case_type_dom'      , null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Cases.EditView'          ,  7, '.LBL_EXCHANGE_FOLDER'                   , 'EXCHANGE_FOLDER'            , 0, 1, 'CheckBox'           , null, null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Cases.EditView'          ,  8, 'Cases.LBL_SUBJECT'                      , 'NAME'                       , 1, 3, 1, 70, 3;
-	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Cases.EditView'          ,  9, 'Cases.LBL_DESCRIPTION'                  , 'DESCRIPTION'                , 0, 3, 8, 80, 3;
-	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Cases.EditView'          , 10, 'Cases.LBL_RESOLUTION'                   , 'RESOLUTION'                 , 0, 3, 5, 80, 3;
-	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Cases.EditView'          , 11, 'Cases.LBL_WORK_LOG'                     , 'WORK_LOG'                   , 0, 3, 5, 80, 3;
-	exec dbo.spEDITVIEWS_FIELDS_InsTagSelect   'Cases.EditView'          , 12, 1, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'Cases.EditView'          , 13, null;
-end else begin
+	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'Cases.EditView'          , -1, '.LBL_LAYOUT_TAB_OVERVIEW'               , 3, 'tab-only';
+	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Cases.EditView'          , -1, 'Cases.LBL_CASE_NUMBER'                  , 'CASE_NUMBER'                , null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Cases.EditView'          , -1, 'Cases.LBL_PRIORITY'                     , 'PRIORITY'                   , 0, 1, 'case_priority_dom'  , null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'Cases.EditView'          , -1, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Cases.EditView'          , -1, 'Cases.LBL_STATUS'                       , 'STATUS'                     , 0, 1, 'case_status_dom'    , null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Cases.EditView'          , -1, 'Cases.LBL_TYPE'                         , 'TYPE'                       , 0, 1, 'case_type_dom'      , null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Cases.EditView'          , -1, 'Cases.LBL_ACCOUNT_NAME'                 , 'ACCOUNT_ID'                 , 1, 1, 'ACCOUNT_NAME'       , 'Accounts', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Cases.EditView'          , -1, '.LBL_ASSIGNED_TO'                       , 'ASSIGNED_USER_ID'           , 0, 1, 'ASSIGNED_TO_NAME'   , 'Users', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Cases.EditView'          , -1, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'          , 'Teams', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Cases.EditView'          , -1, '.LBL_EXCHANGE_FOLDER'                   , 'EXCHANGE_FOLDER'            , 0, 1, 'CheckBox'           , null, null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsTagSelect   'Cases.EditView'          , -1, 1, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Cases.EditView'          , -1, 'Cases.LBL_SUBJECT'                      , 'NAME'                       , 1, 1, 1, 70, 3;
+	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Cases.EditView'          , -1, 'Cases.LBL_DESCRIPTION'                  , 'DESCRIPTION'                , 0, 1, 8, 80, 3;
+	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Cases.EditView'          , -1, 'Cases.LBL_RESOLUTION'                   , 'RESOLUTION'                 , 0, 1, 5, 80, 3;
+	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Cases.EditView'          , -1, 'Cases.LBL_WORK_LOG'                     , 'WORK_LOG'                   , 0, 1, 5, 80, 3;
+
+	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'Cases.EditView'          , -1, '.LBL_LAYOUT_TAB_OTHER'                  , 3, 'tab-only';
+	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Cases.EditView'          , -1, '.LBL_DATE_ENTERED'                      , 'DATE_ENTERED'               , null;
+	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Cases.EditView'          , -1, '.LBL_DATE_MODIFIED'                     , 'DATE_MODIFIED'              , null;
+
+end else if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Cases.EditView' and FIELD_TYPE = 'Header' and DATA_LABEL = '.LBL_LAYOUT_TAB_OVERVIEW' and DELETED = 0) begin -- then
+	-- 04/20/2022 Paul.  The following maintenance does not apply if this was a new Pacific layout. 
+
 	-- 08/24/2009 Paul.  Keep the old conversion and let the field be fixed during the TEAMS Update. 
 	exec dbo.spEDITVIEWS_FIELDS_CnvChange      'Cases.EditView'          ,  1, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'          , null, null;
 	exec dbo.spEDITVIEWS_FIELDS_CnvModulePopup 'Cases.EditView'          ,  1, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'          , 'Teams', null;
@@ -478,73 +483,87 @@ end -- if;
 GO
 
 -- 12/18/2005 Paul.  Account is not required on Contacts.EditView. 
+-- 02/09/2006 Paul.  SugarCRM uses the CONTACTS_USERS table to allow each user to choose the contacts they want sync'd with Outlook. 
 -- 08/27/2009 Paul.  Convert the ChangeButton to a ModulePopup. 
 -- 09/02/2012 Paul.  Merge layout so that there is only one table to render in the HTML5 Client. 
 -- 09/27/2013 Paul.  SMS messages need to be opt-in. 
+-- 09/18/2015 Paul.  Add SERVICE_NAME to separate Exchange Folders from Contacts Sync. 
 -- 04/13/2016 Paul.  Add ZipCode lookup. 
 -- 05/12/2016 Paul.  Add Tags module. 
 -- 03/19/2020 Paul.  Move header to layout. 
+-- 04/15/2022 Paul.  Reorganize layout using Pacific tabs. 
+-- delete from EDITVIEWS_FIELDS where EDIT_NAME = 'Contacts.EditView';
 if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Contacts.EditView' and DELETED = 0) begin -- then
 	print 'EDITVIEWS_FIELDS Contacts.EditView';
-	exec dbo.spEDITVIEWS_InsertOnly            'Contacts.EditView'      , 'Contacts'      , 'vwCONTACTS_Edit'      , '15%', '35%', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'Contacts.EditView'       ,  0, 'Contacts.LBL_CONTACT_INFORMATION', 3;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Contacts.EditView'       ,  1, 'Contacts.LBL_FIRST_NAME'                , 'SALUTATION'                 , 0, 1, 'salutation_dom'     , null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Contacts.EditView'       ,  2, null                                     , 'FIRST_NAME'                 , 0, 1,  25, 25, -1;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Contacts.EditView'       ,  3, 'Contacts.LBL_OFFICE_PHONE'              , 'PHONE_WORK'                 , 0, 2,  25, 20, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Contacts.EditView'       ,  4, 'Contacts.LBL_LAST_NAME'                 , 'LAST_NAME'                  , 1, 1,  25, 25, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Contacts.EditView'       ,  5, 'Contacts.LBL_MOBILE_PHONE'              , 'PHONE_MOBILE'               , 0, 2,  25, 20, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Contacts.EditView'       ,  6, 'Contacts.LBL_ACCOUNT_NAME'              , 'ACCOUNT_ID'                 , 0, 1, 'ACCOUNT_NAME'       , 'Accounts', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Contacts.EditView'       ,  7, 'Contacts.LBL_HOME_PHONE'                , 'PHONE_HOME'                 , 0, 2,  25, 20, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Contacts.EditView'       ,  8, 'Contacts.LBL_LEAD_SOURCE'               , 'LEAD_SOURCE'                , 0, 1, 'lead_source_dom'    , null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Contacts.EditView'       ,  9, 'Contacts.LBL_OTHER_PHONE'               , 'PHONE_OTHER'                , 0, 2,  25, 30, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Contacts.EditView'       , 10, 'Contacts.LBL_TITLE'                     , 'TITLE'                      , 0, 1,  40, 25, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Contacts.EditView'       , 11, 'Contacts.LBL_FAX_PHONE'                 , 'PHONE_FAX'                  , 0, 2,  25, 30, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Contacts.EditView'       , 12, 'Contacts.LBL_DEPARTMENT'                , 'DEPARTMENT'                 , 0, 1, 100, 25, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Contacts.EditView'       , 13, 'Contacts.LBL_EMAIL_ADDRESS'             , 'EMAIL1'                     , 0, 2, 100, 35, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Contacts.EditView'       , 14, 'Contacts.LBL_BIRTHDATE'                 , 'BIRTHDATE'                  , 0, 1, 'DatePicker'         , null, null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Contacts.EditView'       , 15, 'Contacts.LBL_OTHER_EMAIL_ADDRESS'       , 'EMAIL2'                     , 0, 2, 100, 35, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Contacts.EditView'       , 16, 'Contacts.LBL_REPORTS_TO'                , 'REPORTS_TO_ID'              , 0, 1, 'REPORTS_TO_NAME'    , 'Contacts', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Contacts.EditView'       , 17, 'Contacts.LBL_ASSISTANT'                 , 'ASSISTANT'                  , 0, 2,  75, 25, null;
-	-- 02/09/2006 Paul.  SugarCRM uses the CONTACTS_USERS table to allow each user to choose the contacts they want sync'd with Outlook. 
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Contacts.EditView'       , 18, 'Contacts.LBL_SYNC_CONTACT'              , 'SYNC_CONTACT'               , 0, 1, 'CheckBox'           , null, null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Contacts.EditView'       , 19, 'Contacts.LBL_ASSISTANT_PHONE'           , 'ASSISTANT_PHONE'            , 0, 2,  25, 25, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Contacts.EditView'       , 20, 'Contacts.LBL_DO_NOT_CALL'               , 'DO_NOT_CALL'                , 0, 1, 'CheckBox'           , null, null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Contacts.EditView'       , 21, 'Contacts.LBL_EMAIL_OPT_OUT'             , 'EMAIL_OPT_OUT'              , 0, 2, 'CheckBox'           , null, null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Contacts.EditView'       , 22, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'          , 'Teams', null;
-	-- 09/18/2015 Paul.  Add SERVICE_NAME to separate Exchange Folders from Contacts Sync. 
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Contacts.EditView'       , 23, '.LBL_EXCHANGE_FOLDER'                   , 'EXCHANGE_FOLDER'            , 0, 1, 'CheckBox'           , null, null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Contacts.EditView'       , 24, '.LBL_ASSIGNED_TO'                       , 'ASSIGNED_USER_ID'           , 0, 1, 'ASSIGNED_TO_NAME'   , 'Users', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Contacts.EditView'       , 25, 'Contacts.LBL_INVALID_EMAIL'             , 'INVALID_EMAIL'              , 0, 2, 'CheckBox'           , null, null, null;
-	-- 09/27/2013 Paul.  SMS messages need to be opt-in. 
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Contacts.EditView'       , 26, 'Contacts.LBL_SMS_OPT_IN'                , 'SMS_OPT_IN'                 , 0, 1, 'dom_sms_opt_in'     , null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsTagSelect   'Contacts.EditView'       , 27, 1, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsSeparator   'Contacts.EditView'       , 28;
-	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Contacts.EditView'       , 29, 'Contacts.LBL_PRIMARY_ADDRESS'           , 'PRIMARY_ADDRESS_STREET'     , 0, 3,   2, 30, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Contacts.EditView'       , 30, null                                     , null                         , 0, null, 'AddressButtons', null, null, 5;
-	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Contacts.EditView'       , 31, 'Contacts.LBL_ALTERNATE_ADDRESS'         , 'ALT_ADDRESS_STREET'         , 0, 4,   2, 30, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Contacts.EditView'       , 32, 'Contacts.LBL_CITY'                      , 'PRIMARY_ADDRESS_CITY'       , 0, 3, 100, 25, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Contacts.EditView'       , 33, 'Contacts.LBL_CITY'                      , 'ALT_ADDRESS_CITY'           , 0, 4, 100, 25, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Contacts.EditView'       , 34, 'Contacts.LBL_STATE'                     , 'PRIMARY_ADDRESS_STATE'      , 0, 3, 100, 15, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Contacts.EditView'       , 35, 'Contacts.LBL_STATE'                     , 'ALT_ADDRESS_STATE'          , 0, 4, 100, 15, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsZipCode     'Contacts.EditView'       , 36, 'Contacts.LBL_POSTAL_CODE'               , 'PRIMARY_ADDRESS_POSTALCODE' , 0, 3,  20, 15, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsZipCode     'Contacts.EditView'       , 37, 'Contacts.LBL_POSTAL_CODE'               , 'ALT_ADDRESS_POSTALCODE'     , 0, 4,  20, 15, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Contacts.EditView'       , 38, 'Contacts.LBL_COUNTRY'                   , 'PRIMARY_ADDRESS_COUNTRY'    , 0, 3, 100, 10, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Contacts.EditView'       , 39, 'Contacts.LBL_COUNTRY'                   , 'ALT_ADDRESS_COUNTRY'        , 0, 4, 100, 10, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsSeparator   'Contacts.EditView'       , 40;
-	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Contacts.EditView'       , 41, 'Contacts.LBL_DESCRIPTION'               , 'DESCRIPTION'                , 0, 5,   8, 60, 3;
+	exec dbo.spEDITVIEWS_InsertOnly            'Contacts.EditView'       , 'Contacts'      , 'vwCONTACTS_Edit'      , '15%', '35%', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'Contacts.EditView'       , -1, '.LBL_LAYOUT_TAB_OVERVIEW'               , 3, 'tab';
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Contacts.EditView'       , -1, 'Contacts.LBL_FIRST_NAME'                , 'SALUTATION'                 , 0, 1, 'salutation_dom'     , null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Contacts.EditView'       , -1, null                                     , 'FIRST_NAME'                 , 0, 1,  25, 25, -1;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Contacts.EditView'       , -1, 'Contacts.LBL_LAST_NAME'                 , 'LAST_NAME'                  , 1, 1,  25, 25, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Contacts.EditView'       , -1, 'Contacts.LBL_TITLE'                     , 'TITLE'                      , 0, 1,  40, 25, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Contacts.EditView'       , -1, 'Contacts.LBL_OFFICE_PHONE'              , 'PHONE_WORK'                 , 0, 1,  25, 20, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Contacts.EditView'       , -1, 'Contacts.LBL_DEPARTMENT'                , 'DEPARTMENT'                 , 0, 1, 100, 25, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Contacts.EditView'       , -1, 'Contacts.LBL_MOBILE_PHONE'              , 'PHONE_MOBILE'               , 0, 1,  25, 20, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Contacts.EditView'       , -1, 'Contacts.LBL_ACCOUNT_NAME'              , 'ACCOUNT_ID'                 , 0, 1, 'ACCOUNT_NAME'       , 'Accounts', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Contacts.EditView'       , -1, 'Contacts.LBL_FAX_PHONE'                 , 'PHONE_FAX'                  , 0, 1,  25, 30, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Contacts.EditView'       , -1, 'Contacts.LBL_EMAIL_ADDRESS'             , 'EMAIL1'                     , 0, 1, 100, 35, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Contacts.EditView'       , -1, 'Contacts.LBL_HOME_PHONE'                , 'PHONE_HOME'                 , 0, 1,  25, 20, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Contacts.EditView'       , -1, 'Contacts.LBL_OTHER_EMAIL_ADDRESS'       , 'EMAIL2'                     , 0, 1, 100, 35, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Contacts.EditView'       , -1, 'Contacts.LBL_OTHER_PHONE'               , 'PHONE_OTHER'                , 0, 1,  25, 30, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Contacts.EditView'       , -1, 'Contacts.LBL_EMAIL_OPT_OUT'             , 'EMAIL_OPT_OUT'              , 0, 1, 'CheckBox'           , null, null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Contacts.EditView'       , -1, 'Contacts.LBL_DO_NOT_CALL'               , 'DO_NOT_CALL'                , 0, 1, 'CheckBox'           , null, null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Contacts.EditView'       , -1, 'Contacts.LBL_INVALID_EMAIL'             , 'INVALID_EMAIL'              , 0, 1, 'CheckBox'           , null, null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Contacts.EditView'       , -1, 'Contacts.LBL_SMS_OPT_IN'                , 'SMS_OPT_IN'                 , 0, 1, 'dom_sms_opt_in'     , null, null;
+
+	exec dbo.spEDITVIEWS_FIELDS_InsSeparator   'Contacts.EditView'       , -1;
+	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Contacts.EditView'       , -1, 'Contacts.LBL_PRIMARY_ADDRESS'           , 'PRIMARY_ADDRESS_STREET'     , 0, 1,   2, 30, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Contacts.EditView'       , -1, null                                     , null                         , 0, null, 'AddressButtons', null, null, 5;
+	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Contacts.EditView'       , -1, 'Contacts.LBL_ALTERNATE_ADDRESS'         , 'ALT_ADDRESS_STREET'         , 0, 1,   2, 30, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Contacts.EditView'       , -1, 'Contacts.LBL_CITY'                      , 'PRIMARY_ADDRESS_CITY'       , 0, 1, 100, 25, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Contacts.EditView'       , -1, 'Contacts.LBL_CITY'                      , 'ALT_ADDRESS_CITY'           , 0, 1, 100, 25, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Contacts.EditView'       , -1, 'Contacts.LBL_STATE'                     , 'PRIMARY_ADDRESS_STATE'      , 0, 1, 100, 15, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Contacts.EditView'       , -1, 'Contacts.LBL_STATE'                     , 'ALT_ADDRESS_STATE'          , 0, 1, 100, 15, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsZipCode     'Contacts.EditView'       , -1, 'Contacts.LBL_POSTAL_CODE'               , 'PRIMARY_ADDRESS_POSTALCODE' , 0, 1,  20, 15, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsZipCode     'Contacts.EditView'       , -1, 'Contacts.LBL_POSTAL_CODE'               , 'ALT_ADDRESS_POSTALCODE'     , 0, 1,  20, 15, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Contacts.EditView'       , -1, 'Contacts.LBL_COUNTRY'                   , 'PRIMARY_ADDRESS_COUNTRY'    , 0, 1, 100, 10, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Contacts.EditView'       , -1, 'Contacts.LBL_COUNTRY'                   , 'ALT_ADDRESS_COUNTRY'        , 0, 1, 100, 10, null;
+
+	exec dbo.spEDITVIEWS_FIELDS_InsSeparator   'Contacts.EditView'       , -1;
+	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Contacts.EditView'       , -1, '.LBL_ASSIGNED_TO'                       , 'ASSIGNED_USER_ID'           , 0, 1, 'ASSIGNED_TO_NAME'   , 'Users', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Contacts.EditView'       , -1, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'          , 'Teams', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'Contacts.EditView'       , -1, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsTagSelect   'Contacts.EditView'       , -1, 1, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Contacts.EditView'       , -1, 'Contacts.LBL_DESCRIPTION'               , 'DESCRIPTION'                , 0, 1,   8, 60, 3;
+
+	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'Contacts.EditView'       , -1, '.LBL_LAYOUT_TAB_MORE_INFORMATION'       , 3, 'tab-only';
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Contacts.EditView'       , -1, 'Contacts.LBL_LEAD_SOURCE'               , 'LEAD_SOURCE'                , 0, 1, 'lead_source_dom'    , null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Contacts.EditView'       , -1, 'Contacts.LBL_REPORTS_TO'                , 'REPORTS_TO_ID'              , 0, 1, 'REPORTS_TO_NAME'    , 'Contacts', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Contacts.EditView'       , -1, 'Contacts.LBL_ASSISTANT'                 , 'ASSISTANT'                  , 0, 1,  75, 25, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Contacts.EditView'       , -1, 'Contacts.LBL_ASSISTANT_PHONE'           , 'ASSISTANT_PHONE'            , 0, 1,  25, 25, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Contacts.EditView'       , -1, 'Contacts.LBL_BIRTHDATE'                 , 'BIRTHDATE'                  , 0, 1, 'DatePicker'         , null, null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Contacts.EditView'       , -1, 'Contacts.LBL_SYNC_CONTACT'              , 'SYNC_CONTACT'               , 0, 1, 'CheckBox'           , null, null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Contacts.EditView'       , -1, '.LBL_EXCHANGE_FOLDER'                   , 'EXCHANGE_FOLDER'            , 0, 1, 'CheckBox'           , null, null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'Contacts.EditView'       , -1, null;
+
+	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'Contacts.EditView'       , -1, '.LBL_LAYOUT_TAB_OTHER'                  , 3, 'tab-only';
+	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Contacts.EditView'       , -1, '.LBL_DATE_ENTERED'                      , 'DATE_ENTERED'               , null;
+	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Contacts.EditView'       , -1, '.LBL_DATE_MODIFIED'                     , 'DATE_MODIFIED'              , null;
 
 	-- 08/31/2010 Paul.  Update the Address information if the Account changes. 
 	exec dbo.spEDITVIEWS_FIELDS_UpdateDataFormat null, 'Contacts.EditView', 'ACCOUNT_ID' , '1';
 	-- 03/19/2020 Paul.  The FIELD_INDEX is not needed, so remove from update statement. 
+	exec dbo.spEDITVIEWS_FIELDS_InsValidator   'Contacts.EditView'       , -1, 'Email Address'                          , 'EMAIL1'                     , '.ERR_INVALID_EMAIL_ADDRESS';
+	exec dbo.spEDITVIEWS_FIELDS_InsValidator   'Contacts.EditView'       , -1, 'Email Address'                          , 'EMAIL2'                     , '.ERR_INVALID_EMAIL_ADDRESS';
 --	exec dbo.spEDITVIEWS_FIELDS_InsValidator   'Contacts.EditView'       , -1, 'Phone Number'                           , 'PHONE_WORK'                 , '.ERR_INVALID_PHONE_NUMBER';
 --	exec dbo.spEDITVIEWS_FIELDS_InsValidator   'Contacts.EditView'       , -1, 'Phone Number'                           , 'PHONE_MOBILE'               , '.ERR_INVALID_PHONE_NUMBER';
 --	exec dbo.spEDITVIEWS_FIELDS_InsValidator   'Contacts.EditView'       , -1, 'Phone Number'                           , 'PHONE_HOME'                 , '.ERR_INVALID_PHONE_NUMBER';
 --	exec dbo.spEDITVIEWS_FIELDS_InsValidator   'Contacts.EditView'       , -1, 'Phone Number'                           , 'PHONE_OTHER'                , '.ERR_INVALID_PHONE_NUMBER';
 --	exec dbo.spEDITVIEWS_FIELDS_InsValidator   'Contacts.EditView'       , -1, 'Phone Number'                           , 'PHONE_FAX'                  , '.ERR_INVALID_PHONE_NUMBER';
-	exec dbo.spEDITVIEWS_FIELDS_InsValidator   'Contacts.EditView'       , -1, 'Email Address'                          , 'EMAIL1'                     , '.ERR_INVALID_EMAIL_ADDRESS';
-	exec dbo.spEDITVIEWS_FIELDS_InsValidator   'Contacts.EditView'       , -1, 'Email Address'                          , 'EMAIL2'                     , '.ERR_INVALID_EMAIL_ADDRESS';
 --	exec dbo.spEDITVIEWS_FIELDS_InsValidator   'Contacts.EditView'       , -1, 'Phone Number'                           , 'ASSISTANT_PHONE'            , '.ERR_INVALID_PHONE_NUMBER';
-end else begin
+
+end else if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Contacts.EditView' and FIELD_TYPE = 'Header' and DATA_LABEL = '.LBL_LAYOUT_TAB_OVERVIEW' and DELETED = 0) begin -- then
+	-- 04/20/2022 Paul.  The following maintenance does not apply if this was a new Pacific layout. 
+
 	-- 02/09/2006 Paul.  SugarCRM introduced a Sync Contact checkbox.  For existing systems, replace the blank before Assistant Phone with Sync Contact.
 	if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Contacts.EditView' and DATA_FIELD = 'SYNC_CONTACT' and DELETED = 0) begin -- then
 		if exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Contacts.EditView' and FIELD_TYPE = 'Blank' and FIELD_INDEX = 17 and DELETED = 0) begin -- then
@@ -651,64 +670,42 @@ end else begin
 end -- if;
 GO
 
--- 09/02/2012 Paul.  Merge layout so that there is only one table to render in the HTML5 Client. 
-/*
-if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Contacts.EditAddress' and DELETED = 0) begin -- then
-	print 'EDITVIEWS_FIELDS Contacts.EditAddress';
-	exec dbo.spEDITVIEWS_InsertOnly            'Contacts.EditAddress', 'Contacts', 'vwCONTACTS_Edit', '15%', '30%', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Contacts.EditAddress'    ,  0, 'Contacts.LBL_PRIMARY_ADDRESS'           , 'PRIMARY_ADDRESS_STREET'     , 0, 3,   2, 30, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Contacts.EditAddress'    ,  1, null                                     , null                         , 0, null, 'AddressButtons', null, null, 5;
-	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Contacts.EditAddress'    ,  2, 'Contacts.LBL_ALTERNATE_ADDRESS'         , 'ALT_ADDRESS_STREET'         , 0, 4,   2, 30, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Contacts.EditAddress'    ,  3, 'Contacts.LBL_CITY'                      , 'PRIMARY_ADDRESS_CITY'       , 0, 3, 100, 25, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Contacts.EditAddress'    ,  4, 'Contacts.LBL_CITY'                      , 'ALT_ADDRESS_CITY'           , 0, 4, 100, 25, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Contacts.EditAddress'    ,  5, 'Contacts.LBL_STATE'                     , 'PRIMARY_ADDRESS_STATE'      , 0, 3, 100, 15, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Contacts.EditAddress'    ,  6, 'Contacts.LBL_STATE'                     , 'ALT_ADDRESS_STATE'          , 0, 4, 100, 15, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Contacts.EditAddress'    ,  7, 'Contacts.LBL_POSTAL_CODE'               , 'PRIMARY_ADDRESS_POSTALCODE' , 0, 3,  20, 15, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Contacts.EditAddress'    ,  8, 'Contacts.LBL_POSTAL_CODE'               , 'ALT_ADDRESS_POSTALCODE'     , 0, 4,  20, 15, null;
-	-- 06/07/2006 Paul.  Fix max length of country. It should be 100. 
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Contacts.EditAddress'    ,  9, 'Contacts.LBL_COUNTRY'                   , 'PRIMARY_ADDRESS_COUNTRY'    , 0, 3, 100, 10, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Contacts.EditAddress'    , 10, 'Contacts.LBL_COUNTRY'                   , 'ALT_ADDRESS_COUNTRY'        , 0, 4, 100, 10, null;
-end -- if;
-*/
-GO
-
--- 09/02/2012 Paul.  Merge layout so that there is only one table to render in the HTML5 Client. 
-/*
-if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Contacts.EditDescription' and DELETED = 0) begin -- then
-	print 'EDITVIEWS_FIELDS Contacts.EditDescription';
-	exec dbo.spEDITVIEWS_InsertOnly            'Contacts.EditDescription', 'Contacts', 'vwCONTACTS_Edit', '15%', '85%', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Contacts.EditDescription',  0, 'Contacts.LBL_DESCRIPTION'               , 'DESCRIPTION'                , 0, 5,   8, 60, null;
-end -- if;
-*/
-GO
-
+-- 03/06/2006 Paul.  Filename label should have required flag. 
+-- 03/04/2006 Paul.  Status is a required field in SugarCRM 3.5.1.
+-- 05/18/2011 Paul.  We need to allow the user to upload a mail-merge template without the Word plug-in. 
 -- 04/02/2012 Paul.  Add ASSIGNED_USER_ID to Notes, Documents. 
 -- 01/22/2013 Paul.  Add PRIMARY_MODULE so that mail merge templates can be uploaded. 
 -- 05/12/2016 Paul.  Add Tags module. 
+-- 04/15/2022 Paul.  Reorganize layout using Pacific tabs. 
+-- delete from EDITVIEWS_FIELDS where EDIT_NAME = 'Documents.EditView';
 if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Documents.EditView' and DELETED = 0) begin -- then
 	print 'EDITVIEWS_FIELDS Documents.EditView';
-	exec dbo.spEDITVIEWS_InsertOnly            'Documents.EditView', 'Documents', 'vwDOCUMENTS_Edit', '15%', '35%', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Documents.EditView'      ,  0, 'Documents.LBL_DOC_NAME'                 , 'DOCUMENT_NAME'              , 1, 1, 255, 40, 3;
-	-- 03/06/2006 Paul.  Filename label should have required flag. 
-	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Documents.EditView'      ,  1, 'Documents.LBL_FILENAME'                 , 'FILENAME'                   , null;
-	exec dbo.spEDITVIEWS_FIELDS_InsFile        'Documents.EditView'      ,  2, null                                     , 'CONTENT'                    , 1, 2, 255, 20, -1;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Documents.EditView'      ,  3, 'Documents.LBL_DOC_VERSION'              , 'REVISION'                   , 1, 3,  25, 20, null;
-	-- 05/18/2011 Paul.  We need to allow the user to upload a mail-merge template without the Word plug-in. 
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Documents.EditView'      ,  4, 'Documents.LBL_TEMPLATE_TYPE'            , 'TEMPLATE_TYPE'              , 0, 3, 'document_template_type_dom', null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Documents.EditView'      ,  5, 'Documents.LBL_IS_TEMPLATE'              , 'IS_TEMPLATE'                , 0, 3, 'CheckBox'      , null, null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Documents.EditView'      ,  6, 'Documents.LBL_CATEGORY_VALUE'           , 'CATEGORY_ID'                , 0, 4, 'document_category_dom'   , null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Documents.EditView'      ,  7, 'Documents.LBL_SUBCATEGORY_VALUE'        , 'SUBCATEGORY_ID'             , 0, 5, 'document_subcategory_dom', null, null;
-	-- 03/04/2006 Paul.  Status is a required field in SugarCRM 3.5.1.
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Documents.EditView'      ,  8, 'Documents.LBL_DOC_STATUS'               , 'STATUS_ID'                  , 1, 6, 'document_status_dom'     , null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Documents.EditView'      ,  9, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'               , 'Teams', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Documents.EditView'      , 10, '.LBL_ASSIGNED_TO'                       , 'ASSIGNED_USER_ID'           , 0, 1, 'ASSIGNED_TO_NAME'        , 'Users', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Documents.EditView'      , 11, 'Documents.LBL_PRIMARY_MODULE'           , 'PRIMARY_MODULE'             , 0, 1, 'Modules'                 , null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Documents.EditView'      , 12, 'Documents.LBL_DOC_ACTIVE_DATE'          , 'ACTIVE_DATE'                , 1, 8, 'DatePicker'              , null, null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Documents.EditView'      , 13, 'Documents.LBL_DOC_EXP_DATE'             , 'EXP_DATE'                   , 0, 9, 'DatePicker'              , null, null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsTagSelect   'Documents.EditView'      , 14, 1, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'Documents.EditView'      , 15, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Documents.EditView'      , 16, 'Documents.LBL_DESCRIPTION'              , 'DESCRIPTION'                , 0,10,  10, 90, 3;
-end else begin
+	exec dbo.spEDITVIEWS_InsertOnly            'Documents.EditView'      , 'Documents', 'vwDOCUMENTS_Edit', '15%', '35%', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'Documents.EditView'      , -1, '.LBL_LAYOUT_TAB_OVERVIEW'               , 3, 'tab-only';
+	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Documents.EditView'      , -1, 'Documents.LBL_FILENAME'                 , 'FILENAME'                   , null;
+	exec dbo.spEDITVIEWS_FIELDS_InsFile        'Documents.EditView'      , -1, null                                     , 'CONTENT'                    , 1, 2, 255, 20, -1;
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Documents.EditView'      , -1, 'Documents.LBL_DOC_STATUS'               , 'STATUS_ID'                  , 1, 6, 'document_status_dom'     , null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Documents.EditView'      , -1, 'Documents.LBL_DOC_NAME'                 , 'DOCUMENT_NAME'              , 1, 1, 255, 40, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Documents.EditView'      , -1, 'Documents.LBL_DOC_VERSION'              , 'REVISION'                   , 1, 3,  25, 20, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Documents.EditView'      , -1, 'Documents.LBL_TEMPLATE_TYPE'            , 'TEMPLATE_TYPE'              , 0, 3, 'document_template_type_dom', null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Documents.EditView'      , -1, 'Documents.LBL_IS_TEMPLATE'              , 'IS_TEMPLATE'                , 0, 3, 'CheckBox'      , null, null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Documents.EditView'      , -1, 'Documents.LBL_DOC_ACTIVE_DATE'          , 'ACTIVE_DATE'                , 1, 8, 'DatePicker'              , null, null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Documents.EditView'      , -1, 'Documents.LBL_DOC_EXP_DATE'             , 'EXP_DATE'                   , 0, 9, 'DatePicker'              , null, null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Documents.EditView'      , -1, 'Documents.LBL_CATEGORY_VALUE'           , 'CATEGORY_ID'                , 0, 4, 'document_category_dom'   , null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Documents.EditView'      , -1, 'Documents.LBL_SUBCATEGORY_VALUE'        , 'SUBCATEGORY_ID'             , 0, 5, 'document_subcategory_dom', null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Documents.EditView'      , -1, '.LBL_ASSIGNED_TO'                       , 'ASSIGNED_USER_ID'           , 0, 1, 'ASSIGNED_TO_NAME'        , 'Users', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Documents.EditView'      , -1, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'               , 'Teams', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Documents.EditView'      , -1, 'Documents.LBL_PRIMARY_MODULE'           , 'PRIMARY_MODULE'             , 0, 1, 'Modules'                 , null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsTagSelect   'Documents.EditView'      , -1, 1, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Documents.EditView'      , -1, 'Documents.LBL_DESCRIPTION'              , 'DESCRIPTION'                , 0,10,  10, 90, 3;
+
+	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'Documents.EditView'      , -1, '.LBL_LAYOUT_TAB_OTHER'                  , 3, 'tab-only';
+	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Documents.EditView'      , -1, '.LBL_DATE_ENTERED'                      , 'DATE_ENTERED'               , null;
+	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Documents.EditView'      , -1, '.LBL_DATE_MODIFIED'                     , 'DATE_MODIFIED'              , null;
+
+end else if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Documents.EditView' and FIELD_TYPE = 'Header' and DATA_LABEL = '.LBL_LAYOUT_TAB_OVERVIEW' and DELETED = 0) begin -- then
+	-- 04/20/2022 Paul.  The following maintenance does not apply if this was a new Pacific layout. 
+
 	-- 08/24/2009 Paul.  Keep the old conversion and let the field be fixed during the TEAMS Update. 
 	exec dbo.spEDITVIEWS_FIELDS_CnvChange      'Documents.EditView'      ,  7, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'               , null, null;
 	exec dbo.spEDITVIEWS_FIELDS_CnvModulePopup 'Documents.EditView'      ,  7, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'               , 'Teams', null;
@@ -945,22 +942,6 @@ end else begin
 end -- if;
 GO
 
--- 09/02/2012 Paul.  Merge layout so that there is only one table to render in the HTML5 Client. 
-/*
-if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Employees.EditAddress' and DELETED = 0) begin -- then
-	print 'EDITVIEWS_FIELDS Employees.EditAddress';
-	exec dbo.spEDITVIEWS_InsertOnly            'Employees.EditAddress', 'Employees', 'vwEMPLOYEES_Edit', '15%', '35%', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Employees.EditAddress'   ,  0, 'Employees.LBL_PRIMARY_ADDRESS'          , 'ADDRESS_STREET'             , 0, 8,   2, 30, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Employees.EditAddress'   ,  1, 'Employees.LBL_CITY'                     , 'ADDRESS_CITY'               , 0, 8, 100, 15, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Employees.EditAddress'   ,  2, 'Employees.LBL_STATE'                    , 'ADDRESS_STATE'              , 0, 8, 100, 15, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Employees.EditAddress'   ,  3, 'Employees.LBL_POSTAL_CODE'              , 'ADDRESS_POSTALCODE'         , 0, 8,  20, 10, null;
-	-- 06/07/2006 Paul.  Fix max length of country. It should be 100. 
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Employees.EditAddress'   ,  4, 'Employees.LBL_COUNTRY'                  , 'ADDRESS_COUNTRY'            , 0, 8, 100, 10, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'Employees.EditAddress'   ,  5, null;
-end -- if;
-*/
-GO
-
 if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Employees.EditStatus' and DELETED = 0) begin -- then
 	print 'EDITVIEWS_FIELDS Employees.EditStatus';
 	exec dbo.spEDITVIEWS_InsertOnly            'Employees.EditStatus', 'Employees', 'vwEMPLOYEES_Edit', '15%', '35%', null;
@@ -1014,66 +995,76 @@ end -- if;
 -- 05/12/2016 Paul.  Add Tags module. 
 -- 09/21/2019 Paul.  Add headers to the initial list. 
 -- 03/19/2020 Paul.  Move header to layout. 
+-- 04/15/2022 Paul.  Reorganize layout using Pacific tabs. 
+-- delete from EDITVIEWS_FIELDS where EDIT_NAME = 'Leads.EditView';
 if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Leads.EditView' and DELETED = 0) begin -- then
 	print 'EDITVIEWS_FIELDS Leads.EditView';
-	exec dbo.spEDITVIEWS_InsertOnly            'Leads.EditView'         , 'Leads'         , 'vwLEADS_Edit'         , '20%', '30%', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'Leads.EditView   '       ,  0, 'Leads.LBL_CONTACT_INFORMATION', 3;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Leads.EditView'          ,  1, 'Leads.LBL_LEAD_SOURCE'                  , 'LEAD_SOURCE'                , 0, 1, 'lead_source_dom', null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Leads.EditView'          ,  2, 'Leads.LBL_STATUS'                       , 'STATUS'                     , 0, 2, 'lead_status_dom', null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Leads.EditView'          ,  3, 'Leads.LBL_LEAD_SOURCE_DESCRIPTION'      , 'LEAD_SOURCE_DESCRIPTION'    , 0, 1,   3, 60, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Leads.EditView'          ,  4, 'Leads.LBL_STATUS_DESCRIPTION'           , 'STATUS_DESCRIPTION'         , 0, 2,   3, 60, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Leads.EditView'          ,  5, 'Leads.LBL_REFERED_BY'                   , 'REFERED_BY'                 , 0, 1, 100, 25, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Leads.EditView'          ,  6, '.LBL_EXCHANGE_FOLDER'                   , 'EXCHANGE_FOLDER'            , 0, 1, 'CheckBox'           , null, null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'Leads.EditView'          ,  7, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'Leads.EditView'          ,  8, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Leads.EditView'          ,  9, 'Leads.LBL_FIRST_NAME'                   , 'SALUTATION'                 , 0, 1, 'salutation_dom', null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Leads.EditView'          , 10, null                                     , 'FIRST_NAME'                 , 0, 1,  25, 25, -1;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Leads.EditView'          , 11, 'Leads.LBL_OFFICE_PHONE'                 , 'PHONE_WORK'                 , 0, 2,  25, 20, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Leads.EditView'          , 12, 'Leads.LBL_LAST_NAME'                    , 'LAST_NAME'                  , 1, 1,  25, 25, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Leads.EditView'          , 13, 'Leads.LBL_MOBILE_PHONE'                 , 'PHONE_MOBILE'               , 0, 2,  25, 20, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'Leads.EditView'          , 14, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Leads.EditView'          , 15, 'Leads.LBL_HOME_PHONE'                   , 'PHONE_HOME'                 , 0, 2,  25, 20, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Leads.EditView'          , 16, 'Leads.LBL_ACCOUNT_NAME'                 , 'ACCOUNT_NAME'               , 0, 1, 150, 25, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Leads.EditView'          , 17, 'Leads.LBL_OTHER_PHONE'                  , 'PHONE_OTHER'                , 0, 2,  25, 20, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Leads.EditView'          , 18, 'Leads.LBL_WEBSITE'                      , 'WEBSITE'                    , 0, 1, 255, 28, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Leads.EditView'          , 19, 'Leads.LBL_FAX_PHONE'                    , 'PHONE_FAX'                  , 0, 2,  25, 20, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Leads.EditView'          , 20, 'Leads.LBL_TITLE'                        , 'TITLE'                      , 0, 1,  40, 25, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Leads.EditView'          , 21, 'Leads.LBL_EMAIL_ADDRESS'                , 'EMAIL1'                     , 0, 2, 100, 35, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Leads.EditView'          , 22, 'Leads.LBL_DEPARTMENT'                   , 'DEPARTMENT'                 , 0, 1, 100, 25, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Leads.EditView'          , 23, 'Leads.LBL_OTHER_EMAIL_ADDRESS'          , 'EMAIL2'                     , 0, 2, 100, 35, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Leads.EditView'          , 24, 'Leads.LBL_DO_NOT_CALL'                  , 'DO_NOT_CALL'                , 0, 1, 'CheckBox'           , null, null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Leads.EditView'          , 25, 'Leads.LBL_EMAIL_OPT_OUT'                , 'EMAIL_OPT_OUT'              , 0, 2, 'CheckBox'           , null, null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Leads.EditView'          , 26, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'          , 'Teams', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsTagSelect   'Leads.EditView'          , 27, 1, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Leads.EditView'          , 28, '.LBL_ASSIGNED_TO'                       , 'ASSIGNED_USER_ID'           , 0, 1, 'ASSIGNED_TO_NAME'   , 'Users', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Leads.EditView'          , 29, 'Leads.LBL_INVALID_EMAIL'                , 'INVALID_EMAIL'              , 0, 2, 'CheckBox'           , null, null, null;
-	-- 09/27/2013 Paul.  SMS messages need to be opt-in. 
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Leads.EditView'          , 30, 'Leads.LBL_SMS_OPT_IN'                   , 'SMS_OPT_IN'                 , 0, 1, 'dom_sms_opt_in'     , null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsSeparator   'Leads.EditView'          , 31;
-	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'Leads.EditView'          , 32, 'Leads.LBL_ADDRESS_INFORMATION', 3;
-	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Leads.EditView'          , 33, 'Leads.LBL_PRIMARY_ADDRESS_STREET'       , 'PRIMARY_ADDRESS_STREET'     , 0, 3,   2, 30, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Leads.EditView'          , 34, null                                     , null                         , 0, null, 'AddressButtons', null, null, 5;
-	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Leads.EditView'          , 35, 'Leads.LBL_ALT_ADDRESS_STREET'           , 'ALT_ADDRESS_STREET'         , 0, 4,   2, 30, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Leads.EditView'          , 36, 'Leads.LBL_CITY'                         , 'PRIMARY_ADDRESS_CITY'       , 0, 3, 100, 25, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Leads.EditView'          , 37, 'Leads.LBL_CITY'                         , 'ALT_ADDRESS_CITY'           , 0, 4, 100, 25, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Leads.EditView'          , 38, 'Leads.LBL_STATE'                        , 'PRIMARY_ADDRESS_STATE'      , 0, 3, 100, 15, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Leads.EditView'          , 39, 'Leads.LBL_STATE'                        , 'ALT_ADDRESS_STATE'          , 0, 4, 100, 15, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsZipCode     'Leads.EditView'          , 40, 'Leads.LBL_POSTAL_CODE'                  , 'PRIMARY_ADDRESS_POSTALCODE' , 0, 3,  20, 15, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsZipCode     'Leads.EditView'          , 41, 'Leads.LBL_POSTAL_CODE'                  , 'ALT_ADDRESS_POSTALCODE'     , 0, 4,  20, 15, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Leads.EditView'          , 42, 'Leads.LBL_COUNTRY'                      , 'PRIMARY_ADDRESS_COUNTRY'    , 0, 3, 100, 10, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Leads.EditView'          , 43, 'Leads.LBL_COUNTRY'                      , 'ALT_ADDRESS_COUNTRY'        , 0, 4, 100, 10, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsSeparator   'Leads.EditView'          , 44;
-	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'Leads.EditView'          , 45, 'Leads.LBL_DESCRIPTION_INFORMATION', 3;
-	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Leads.EditView'          , 46, 'Leads.LBL_DESCRIPTION'                  , 'DESCRIPTION'                , 0, 5,   8, 60, 3;
+	exec dbo.spEDITVIEWS_InsertOnly            'Leads.EditView'          , 'Leads'         , 'vwLEADS_Edit'         , '20%', '30%', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'Leads.EditView'          , -1, '.LBL_LAYOUT_TAB_OVERVIEW'               , 3, 'tab';
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Leads.EditView'          , -1, 'Leads.LBL_FIRST_NAME'                   , 'SALUTATION'                 , 0, 1, 'salutation_dom', null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Leads.EditView'          , -1, null                                     , 'FIRST_NAME'                 , 0, 1,  25, 25, -1;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Leads.EditView'          , -1, 'Leads.LBL_LAST_NAME'                    , 'LAST_NAME'                  , 1, 1,  25, 25, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Leads.EditView'          , -1, 'Leads.LBL_TITLE'                        , 'TITLE'                      , 0, 1,  40, 25, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Leads.EditView'          , -1, 'Leads.LBL_OFFICE_PHONE'                 , 'PHONE_WORK'                 , 0, 1,  25, 20, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Leads.EditView'          , -1, 'Leads.LBL_DEPARTMENT'                   , 'DEPARTMENT'                 , 0, 1, 100, 25, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Leads.EditView'          , -1, 'Leads.LBL_MOBILE_PHONE'                 , 'PHONE_MOBILE'               , 0, 1,  25, 20, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Leads.EditView'          , -1, 'Leads.LBL_ACCOUNT_NAME'                 , 'ACCOUNT_NAME'               , 0, 1, 150, 25, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Leads.EditView'          , -1, 'Leads.LBL_FAX_PHONE'                    , 'PHONE_FAX'                  , 0, 1,  25, 20, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Leads.EditView'          , -1, 'Leads.LBL_EMAIL_ADDRESS'                , 'EMAIL1'                     , 0, 1, 100, 35, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Leads.EditView'          , -1, 'Leads.LBL_HOME_PHONE'                   , 'PHONE_HOME'                 , 0, 1,  25, 20, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Leads.EditView'          , -1, 'Leads.LBL_OTHER_EMAIL_ADDRESS'          , 'EMAIL2'                     , 0, 1, 100, 35, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Leads.EditView'          , -1, 'Leads.LBL_OTHER_PHONE'                  , 'PHONE_OTHER'                , 0, 1,  25, 20, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Leads.EditView'          , -1, 'Leads.LBL_EMAIL_OPT_OUT'                , 'EMAIL_OPT_OUT'              , 0, 1, 'CheckBox'           , null, null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Leads.EditView'          , -1, 'Leads.LBL_DO_NOT_CALL'                  , 'DO_NOT_CALL'                , 0, 1, 'CheckBox'           , null, null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Leads.EditView'          , -1, 'Leads.LBL_INVALID_EMAIL'                , 'INVALID_EMAIL'              , 0, 1, 'CheckBox'           , null, null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Leads.EditView'          , -1, 'Leads.LBL_SMS_OPT_IN'                   , 'SMS_OPT_IN'                 , 0, 1, 'dom_sms_opt_in'     , null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Leads.EditView'          , -1, 'Leads.LBL_WEBSITE'                      , 'WEBSITE'                    , 0, 1, 255, 28, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'Leads.EditView'          , -1, null;
+
+	exec dbo.spEDITVIEWS_FIELDS_InsSeparator   'Leads.EditView'          , -1;
+	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Leads.EditView'          , -1, 'Leads.LBL_PRIMARY_ADDRESS_STREET'       , 'PRIMARY_ADDRESS_STREET'     , 0, 1,   2, 30, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Leads.EditView'          , -1, null                                     , null                         , 0, null, 'AddressButtons', null, null, 5;
+	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Leads.EditView'          , -1, 'Leads.LBL_ALT_ADDRESS_STREET'           , 'ALT_ADDRESS_STREET'         , 0, 1,   2, 30, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Leads.EditView'          , -1, 'Leads.LBL_CITY'                         , 'PRIMARY_ADDRESS_CITY'       , 0, 1, 100, 25, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Leads.EditView'          , -1, 'Leads.LBL_CITY'                         , 'ALT_ADDRESS_CITY'           , 0, 1, 100, 25, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Leads.EditView'          , -1, 'Leads.LBL_STATE'                        , 'PRIMARY_ADDRESS_STATE'      , 0, 1, 100, 15, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Leads.EditView'          , -1, 'Leads.LBL_STATE'                        , 'ALT_ADDRESS_STATE'          , 0, 1, 100, 15, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsZipCode     'Leads.EditView'          , -1, 'Leads.LBL_POSTAL_CODE'                  , 'PRIMARY_ADDRESS_POSTALCODE' , 0, 1,  20, 15, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsZipCode     'Leads.EditView'          , -1, 'Leads.LBL_POSTAL_CODE'                  , 'ALT_ADDRESS_POSTALCODE'     , 0, 1,  20, 15, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Leads.EditView'          , -1, 'Leads.LBL_COUNTRY'                      , 'PRIMARY_ADDRESS_COUNTRY'    , 0, 1, 100, 10, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Leads.EditView'          , -1, 'Leads.LBL_COUNTRY'                      , 'ALT_ADDRESS_COUNTRY'        , 0, 1, 100, 10, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsSeparator   'Leads.EditView'          , -1;
+
+	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Leads.EditView'          , -1, '.LBL_ASSIGNED_TO'                       , 'ASSIGNED_USER_ID'           , 0, 1, 'ASSIGNED_TO_NAME'   , 'Users', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Leads.EditView'          , -1, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'          , 'Teams', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'Leads.EditView'          , -1, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsTagSelect   'Leads.EditView'          , -1, 1, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Leads.EditView'          , -1, 'Leads.LBL_DESCRIPTION'                  , 'DESCRIPTION'                , 0, 1,   8, 60, 3;
+
+	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'Leads.EditView'          , -1, '.LBL_LAYOUT_TAB_MORE_INFORMATION'       , 3, 'tab-only';
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Leads.EditView'          , -1, 'Leads.LBL_STATUS'                       , 'STATUS'                     , 0, 1, 'lead_status_dom', null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Leads.EditView'          , -1, 'Leads.LBL_LEAD_SOURCE'                  , 'LEAD_SOURCE'                , 0, 1, 'lead_source_dom', null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Leads.EditView'          , -1, 'Leads.LBL_STATUS_DESCRIPTION'           , 'STATUS_DESCRIPTION'         , 0, 1,   3, 60, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Leads.EditView'          , -1, 'Leads.LBL_LEAD_SOURCE_DESCRIPTION'      , 'LEAD_SOURCE_DESCRIPTION'    , 0, 1,   3, 60, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Leads.EditView'          , -1, 'Leads.LBL_REFERED_BY'                   , 'REFERED_BY'                 , 0, 1, 100, 25, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Leads.EditView'          , -1, '.LBL_EXCHANGE_FOLDER'                   , 'EXCHANGE_FOLDER'            , 0, 1, 'CheckBox'           , null, null, null;
+
+	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'Leads.EditView'          , -1, '.LBL_LAYOUT_TAB_OTHER'                  , 3, 'tab-only';
+	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Leads.EditView'          , -1, '.LBL_DATE_ENTERED'                      , 'DATE_ENTERED'               , null;
+	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Leads.EditView'          , -1, '.LBL_DATE_MODIFIED'                     , 'DATE_MODIFIED'              , null;
+
 	-- 03/19/2020 Paul.  The FIELD_INDEX is not needed, so remove from update statement. 
+	exec dbo.spEDITVIEWS_FIELDS_InsValidator   'Leads.EditView'          , -1, 'Email Address'                          , 'EMAIL1'                     , '.ERR_INVALID_EMAIL_ADDRESS';
+	exec dbo.spEDITVIEWS_FIELDS_InsValidator   'Leads.EditView'          , -1, 'Email Address'                          , 'EMAIL2'                     , '.ERR_INVALID_EMAIL_ADDRESS';
 --	exec dbo.spEDITVIEWS_FIELDS_InsValidator   'Leads.EditView'          , -1, 'Phone Number'                           , 'PHONE_WORK'                 , '.ERR_INVALID_PHONE_NUMBER';
 --	exec dbo.spEDITVIEWS_FIELDS_InsValidator   'Leads.EditView'          , -1, 'Phone Number'                           , 'PHONE_MOBILE'               , '.ERR_INVALID_PHONE_NUMBER';
 --	exec dbo.spEDITVIEWS_FIELDS_InsValidator   'Leads.EditView'          , -1, 'Phone Number'                           , 'PHONE_HOME'                 , '.ERR_INVALID_PHONE_NUMBER';
 --	exec dbo.spEDITVIEWS_FIELDS_InsValidator   'Leads.EditView'          , -1, 'Phone Number'                           , 'PHONE_OTHER'                , '.ERR_INVALID_PHONE_NUMBER';
 --	exec dbo.spEDITVIEWS_FIELDS_InsValidator   'Leads.EditView'          , -1, 'Phone Number'                           , 'PHONE_FAX'                  , '.ERR_INVALID_PHONE_NUMBER';
-	exec dbo.spEDITVIEWS_FIELDS_InsValidator   'Leads.EditView'          , -1, 'Email Address'                          , 'EMAIL1'                     , '.ERR_INVALID_EMAIL_ADDRESS';
-	exec dbo.spEDITVIEWS_FIELDS_InsValidator   'Leads.EditView'          , -1, 'Email Address'                          , 'EMAIL2'                     , '.ERR_INVALID_EMAIL_ADDRESS';
-end else begin
+
+end else if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Leads.EditView' and FIELD_TYPE = 'Header' and DATA_LABEL = '.LBL_LAYOUT_TAB_OVERVIEW' and DELETED = 0) begin -- then
+	-- 04/20/2022 Paul.  The following maintenance does not apply if this was a new Pacific layout. 
+
 	if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Leads.EditView' and FIELD_VALIDATOR_ID is not null and DELETED = 0) begin -- then
 		print 'Leads.EditView: Update validators';
 --		exec dbo.spEDITVIEWS_FIELDS_InsValidator   'Leads.EditView'          , -1, 'Phone Number'                           , 'PHONE_WORK'                 , '.ERR_INVALID_PHONE_NUMBER';
@@ -1167,37 +1158,6 @@ end else begin
 end -- if;
 GO
 
--- 09/02/2012 Paul.  Merge layout so that there is only one table to render in the HTML5 Client. 
-/*
-if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Leads.EditAddress' and DELETED = 0) begin -- then
-	print 'EDITVIEWS_FIELDS Leads.EditAddress';
-	exec dbo.spEDITVIEWS_InsertOnly            'Leads.EditAddress', 'Leads', 'vwLEADS_Edit', '15%', '30%', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Leads.EditAddress'       ,  0, 'Leads.LBL_PRIMARY_ADDRESS_STREET'       , 'PRIMARY_ADDRESS_STREET'     , 0, 3,   2, 30, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Leads.EditAddress'       ,  1, null                                     , null                         , 0, null, 'AddressButtons', null, null, 5;
-	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Leads.EditAddress'       ,  2, 'Leads.LBL_ALT_ADDRESS_STREET'           , 'ALT_ADDRESS_STREET'         , 0, 4,   2, 30, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Leads.EditAddress'       ,  3, 'Leads.LBL_CITY'                         , 'PRIMARY_ADDRESS_CITY'       , 0, 3, 100, 25, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Leads.EditAddress'       ,  4, 'Leads.LBL_CITY'                         , 'ALT_ADDRESS_CITY'           , 0, 4, 100, 25, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Leads.EditAddress'       ,  5, 'Leads.LBL_STATE'                        , 'PRIMARY_ADDRESS_STATE'      , 0, 3, 100, 15, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Leads.EditAddress'       ,  6, 'Leads.LBL_STATE'                        , 'ALT_ADDRESS_STATE'          , 0, 4, 100, 15, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Leads.EditAddress'       ,  7, 'Leads.LBL_POSTAL_CODE'                  , 'PRIMARY_ADDRESS_POSTALCODE' , 0, 3,  20, 15, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Leads.EditAddress'       ,  8, 'Leads.LBL_POSTAL_CODE'                  , 'ALT_ADDRESS_POSTALCODE'     , 0, 4,  20, 15, null;
-	-- 06/07/2006 Paul.  Fix max length of country. It should be 100. 
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Leads.EditAddress'       ,  9, 'Leads.LBL_COUNTRY'                      , 'PRIMARY_ADDRESS_COUNTRY'    , 0, 3, 100, 10, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Leads.EditAddress'       , 10, 'Leads.LBL_COUNTRY'                      , 'ALT_ADDRESS_COUNTRY'        , 0, 4, 100, 10, null;
-end -- if;
-*/
-GO
-
--- 09/02/2012 Paul.  Merge layout so that there is only one table to render in the HTML5 Client. 
-/*
-if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Leads.EditDescription' and DELETED = 0) begin -- then
-	print 'EDITVIEWS_FIELDS Leads.EditDescription';
-	exec dbo.spEDITVIEWS_InsertOnly            'Leads.EditDescription', 'Leads', 'vwLEADS_Edit', '15%', '85%', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Leads.EditDescription'   ,  0, 'Leads.LBL_DESCRIPTION'                  , 'DESCRIPTION'                , 0, 5,   8, 60, null;
-end -- if;
-*/
-GO
-
 -- 12/06/2006 Paul.  DURATION_MINUTES was accidentally replaced with TEAM_ID.
 -- Move TEAM_ID to index 3 and restore the minutes list. 
 -- 03/04/2009 Paul.  Fix SHOULD_REMIND to use REMINDER_TIME.
@@ -1206,38 +1166,46 @@ GO
 -- 03/22/2013 Paul.  Add Recurrence fields. 
 -- 12/14/2013 Paul.  Increase size of name to 150. 
 -- 12/23/2013 Paul.  Add SMS_REMINDER_TIME. 
+-- 04/15/2022 Paul.  Reorganize layout using Pacific tabs. 
 -- delete from EDITVIEWS_FIELDS where EDIT_NAME = 'Meetings.EditView';
 if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Meetings.EditView' and DELETED = 0) begin -- then
 	print 'EDITVIEWS_FIELDS Meetings.EditView';
-	exec dbo.spEDITVIEWS_InsertOnly            'Meetings.EditView'      , 'Meetings'      , 'vwMEETINGS_Edit'      , '15%', '35%', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Meetings.EditView'       ,  0, 'Meetings.LBL_NAME'                      , 'NAME'                       , 1, 1, 150, 35, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Meetings.EditView'       ,  1, 'Meetings.LBL_STATUS'                    , 'STATUS'                     , 1, 2, 'meeting_status_dom' , null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Meetings.EditView'       ,  2, 'Meetings.LBL_LOCATION'                  , 'LOCATION'                   , 0, 1,  50, 35, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Meetings.EditView'       ,  3, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'          , 'Teams', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Meetings.EditView'       ,  4, 'Meetings.LBL_DATE_TIME'                 , 'DATE_START'                 , 1, 1, 'DateTimePicker'     , null, null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Meetings.EditView'       ,  5, '.LBL_ASSIGNED_TO'                       , 'ASSIGNED_USER_ID'           , 0, 1, 'ASSIGNED_TO_NAME'   , 'Users', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Meetings.EditView'       ,  6, 'Meetings.LBL_DURATION'                  , 'DURATION_HOURS'             , 1, 1,   2,  2, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Meetings.EditView'       ,  7, null                                     , 'DURATION_MINUTES'           , 1, 1, 'meeting_minutes_dom', -1, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Meetings.EditView'       ,  8, null                                     , 'Meetings.LBL_HOURS_MINUTES'    , -1;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Meetings.EditView'       ,  9, null                                     , 'ALL_DAY_EVENT'              , 0, 1, 'CheckBox'           , 'ToggleAllDayEvent(this);', -1, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Meetings.EditView'       , 10, null                                     , 'Meetings.LBL_ALL_DAY'       , -1;
-	exec dbo.spEDITVIEWS_FIELDS_InsChange      'Meetings.EditView'       , 11, 'PARENT_TYPE'                            , 'PARENT_ID'                  , 0, 1, 'PARENT_NAME'        , 'return ParentPopup();', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Meetings.EditView'       , 12, 'Meetings.LBL_REMINDER'                  , 'SHOULD_REMIND'              , 0, 1, 'CheckBox'           , 'toggleDisplay(''REMINDER_TIME'');', null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Meetings.EditView'       , 13, null                                     , 'REMINDER_TIME'              , 0, 1, 'reminder_time_dom'  , -1, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Meetings.EditView'       , 14, 'Meetings.LBL_EMAIL_REMINDER_TIME'       , 'EMAIL_REMINDER_TIME'        , 0, 2, 'reminder_time_dom'  , null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'Meetings.EditView'       , 15, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Meetings.EditView'       , 16, 'Meetings.LBL_SMS_REMINDER_TIME'         , 'SMS_REMINDER_TIME'          , 0, 2, 'reminder_time_dom'  , null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Meetings.EditView'       , 17, 'Meetings.LBL_DESCRIPTION'               , 'DESCRIPTION'                , 0, 3,   8, 60, null;
-	-- 03/22/2013 Paul.  Add Recurrence fields. 
-	exec dbo.spEDITVIEWS_FIELDS_InsSeparator   'Meetings.EditView'       , 18;
-	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'Meetings.EditView'       , 19, 'Calendar.LBL_REPEAT_TAB', 3;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Meetings.EditView'       , 20, 'Meetings.LBL_REPEAT_TYPE'               , 'REPEAT_TYPE'                , 0, 4, 'repeat_type_dom'    , null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Meetings.EditView'       , 21, 'Calendar.LBL_REPEAT_END_AFTER'          , 'REPEAT_COUNT'               , 0, 4,  25, 10, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Meetings.EditView'       , 22, null                                     , 'Calendar.LBL_REPEAT_OCCURRENCES', -1;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Meetings.EditView'       , 23, 'Calendar.LBL_REPEAT_INTERVAL'           , 'REPEAT_INTERVAL'            , 0, 4,  25, 10, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Meetings.EditView'       , 24, 'Meetings.LBL_REPEAT_UNTIL'              , 'REPEAT_UNTIL'               , 0, 4, 'DatePicker'         , null, null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsCheckLst    'Meetings.EditView'       , 25, 'Meetings.LBL_REPEAT_DOW'                , 'REPEAT_DOW'                 , 0, 4, 'scheduler_day_dom', '1', 3, null;
-end else begin
+	exec dbo.spEDITVIEWS_InsertOnly            'Meetings.EditView'       , 'Meetings'      , 'vwMEETINGS_Edit'      , '15%', '35%', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'Meetings.EditView'       , -1, '.LBL_LAYOUT_TAB_OVERVIEW'               , 3, 'tab-only';
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Meetings.EditView'       , -1, 'Meetings.LBL_NAME'                      , 'NAME'                       , 1, 1, 150, 35, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Meetings.EditView'       , -1, 'Meetings.LBL_STATUS'                    , 'STATUS'                     , 1, 2, 'meeting_status_dom' , null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Meetings.EditView'       , -1, 'Meetings.LBL_DATE_TIME'                 , 'DATE_START'                 , 1, 1, 'DateTimePicker'     , null, null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Meetings.EditView'       , -1, 'Meetings.LBL_LOCATION'                  , 'LOCATION'                   , 0, 1,  50, 35, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Meetings.EditView'       , -1, 'Meetings.LBL_DURATION'                  , 'DURATION_HOURS'             , 1, 1,  10, 10, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Meetings.EditView'       , -1, null                                     , 'DURATION_MINUTES'           , 1, 1, 'meeting_minutes_dom', -1, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Meetings.EditView'       , -1, null                                     , 'Meetings.LBL_HOURS_MINUTES'    , -1;
+	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Meetings.EditView'       , -1, null                                     , 'ALL_DAY_EVENT'              , 0, 1, 'CheckBox'           , 'ToggleAllDayEvent(this);', -1, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Meetings.EditView'       , -1, null                                     , 'Meetings.LBL_ALL_DAY'       , -1;
+	exec dbo.spEDITVIEWS_FIELDS_InsChange      'Meetings.EditView'       , -1, 'PARENT_TYPE'                            , 'PARENT_ID'                  , 0, 1, 'PARENT_NAME'        , 'return ParentPopup();', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Meetings.EditView'       , -1, 'Meetings.LBL_REMINDER'                  , 'SHOULD_REMIND'              , 0, 1, 'CheckBox'           , 'toggleDisplay(''REMINDER_TIME'');', null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Meetings.EditView'       , -1, 'Meetings.LBL_EMAIL_REMINDER_TIME'       , 'EMAIL_REMINDER_TIME'        , 0, 2, 'reminder_time_dom'  , null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Meetings.EditView'       , -1, null                                     , 'REMINDER_TIME'              , 0, 1, 'reminder_time_dom'  , -1, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'Meetings.EditView'       , -1, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Meetings.EditView'       , -1, 'Meetings.LBL_SMS_REMINDER_TIME'         , 'SMS_REMINDER_TIME'          , 0, 2, 'reminder_time_dom'  , null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Meetings.EditView'       , -1, '.LBL_ASSIGNED_TO'                       , 'ASSIGNED_USER_ID'           , 0, 1, 'ASSIGNED_TO_NAME'   , 'Users', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Meetings.EditView'       , -1, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'          , 'Teams', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Meetings.EditView'       , -1, 'Meetings.LBL_DESCRIPTION'               , 'DESCRIPTION'                , 0, 3,   8, 60, 3;
+
+	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'Meetings.EditView'       , -1, 'Meetings.LBL_LAYOUT_TAB_RECURRENCE'     , 3, 'tab';
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Meetings.EditView'       , -1, 'Meetings.LBL_REPEAT_TYPE'               , 'REPEAT_TYPE'                , 0, 4, 'repeat_type_dom'    , null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Meetings.EditView'       , -1, 'Calendar.LBL_REPEAT_END_AFTER'          , 'REPEAT_COUNT'               , 0, 4,  25, 10, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Meetings.EditView'       , -1, null                                     , 'Calendar.LBL_REPEAT_OCCURRENCES', -1;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Meetings.EditView'       , -1, 'Calendar.LBL_REPEAT_INTERVAL'           , 'REPEAT_INTERVAL'            , 0, 4,  25, 10, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Meetings.EditView'       , -1, 'Meetings.LBL_REPEAT_UNTIL'              , 'REPEAT_UNTIL'               , 0, 4, 'DatePicker'         , null, null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsCheckLst    'Meetings.EditView'       , -1, 'Meetings.LBL_REPEAT_DOW'                , 'REPEAT_DOW'                 , 0, 4, 'scheduler_day_dom', '1', 3, null;
+
+	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'Meetings.EditView'       , -1, '.LBL_LAYOUT_TAB_OTHER'                  , 3, 'tab-only';
+	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Meetings.EditView'       , -1, '.LBL_DATE_ENTERED'                      , 'DATE_ENTERED'               , null;
+	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Meetings.EditView'       , -1, '.LBL_DATE_MODIFIED'                     , 'DATE_MODIFIED'              , null;
+
+end else if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Meetings.EditView' and FIELD_TYPE = 'Header' and DATA_LABEL = '.LBL_LAYOUT_TAB_OVERVIEW' and DELETED = 0) begin -- then
+	-- 04/20/2022 Paul.  The following maintenance does not apply if this was a new Pacific layout. 
+
 	-- 08/24/2009 Paul.  Keep the old conversion and let the field be fixed during the TEAMS Update. 
 	exec dbo.spEDITVIEWS_FIELDS_CnvChange      'Meetings.EditView'       ,  3, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'          , null, null;
 	exec dbo.spEDITVIEWS_FIELDS_CnvModulePopup 'Meetings.EditView'       ,  3, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'          , 'Teams', null;
@@ -1333,18 +1301,28 @@ GO
 -- Not sure when SugarCRM added this, but it is needed to ensure that notes are shown when teams are required. 
 -- 08/27/2009 Paul.  Convert the ChangeButton to a ModulePopup. 
 -- 04/02/2012 Paul.  Add ASSIGNED_USER_ID to Notes, Documents. 
+-- 04/15/2022 Paul.  Reorganize layout using Pacific tabs. 
+-- delete from EDITVIEWS_FIELDS where EDIT_NAME = 'Notes.EditView';
 if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Notes.EditView' and DELETED = 0) begin -- then
 	print 'EDITVIEWS_FIELDS Notes.EditView';
-	exec dbo.spEDITVIEWS_InsertOnly            'Notes.EditView'         , 'Notes'         , 'vwNOTES_Edit'         , '15%', '35%', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Notes.EditView'          ,  0, 'Notes.LBL_CONTACT_NAME'                 , 'CONTACT_ID'                 , 0, 1, 'CONTACT_NAME'       , 'Contacts', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsChange      'Notes.EditView'          ,  1, 'PARENT_TYPE'                            , 'PARENT_ID'                  , 0, 2, 'PARENT_NAME'        , 'return ParentPopup();', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Notes.EditView'          ,  2, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'          , 'Teams', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Notes.EditView'          ,  3, '.LBL_ASSIGNED_TO'                       , 'ASSIGNED_USER_ID'           , 0, 1, 'ASSIGNED_TO_NAME'   , 'Users', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Notes.EditView'          ,  4, 'Notes.LBL_SUBJECT'                      , 'NAME'                       , 1, 1, 255,100, 3;
-	exec dbo.spEDITVIEWS_FIELDS_InsFile        'Notes.EditView'          ,  5, 'Notes.LBL_FILENAME'                     , 'ATTACHMENT'                 , 0, 2, 255, 60, 3;
-	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Notes.EditView'          ,  6, null                                     , 'FILENAME'                   , -1;
-	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Notes.EditView'          ,  7, 'Notes.LBL_DESCRIPTION'                  , 'DESCRIPTION'                , 0, 3,  30, 90, 3;
-end else begin
+	exec dbo.spEDITVIEWS_InsertOnly            'Notes.EditView'          , 'Notes'         , 'vwNOTES_Edit'         , '15%', '35%', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'Notes.EditView'          , -1, '.LBL_LAYOUT_TAB_OVERVIEW'               , 3, 'tab-only';
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Notes.EditView'          , -1, 'Notes.LBL_SUBJECT'                      , 'NAME'                       , 1, 1, 255,100, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsFile        'Notes.EditView'          , -1, 'Notes.LBL_FILENAME'                     , 'ATTACHMENT'                 , 0, 2, 255, 60, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Notes.EditView'          , -1, null                                     , 'FILENAME'                   , -1;
+	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Notes.EditView'          , -1, 'Notes.LBL_CONTACT_NAME'                 , 'CONTACT_ID'                 , 0, 1, 'CONTACT_NAME'       , 'Contacts', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsChange      'Notes.EditView'          , -1, 'PARENT_TYPE'                            , 'PARENT_ID'                  , 0, 2, 'PARENT_NAME'        , 'return ParentPopup();', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Notes.EditView'          , -1, '.LBL_ASSIGNED_TO'                       , 'ASSIGNED_USER_ID'           , 0, 1, 'ASSIGNED_TO_NAME'   , 'Users', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Notes.EditView'          , -1, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'          , 'Teams', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Notes.EditView'          , -1, 'Notes.LBL_DESCRIPTION'                  , 'DESCRIPTION'                , 0, 3,  30, 90, 3;
+
+	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'Notes.EditView'          , -1, '.LBL_LAYOUT_TAB_OTHER'                  , 3, 'tab-only';
+	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Notes.EditView'          , -1, '.LBL_DATE_ENTERED'                      , 'DATE_ENTERED'               , null;
+	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Notes.EditView'          , -1, '.LBL_DATE_MODIFIED'                     , 'DATE_MODIFIED'              , null;
+
+end else if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Notes.EditView' and FIELD_TYPE = 'Header' and DATA_LABEL = '.LBL_LAYOUT_TAB_OVERVIEW' and DELETED = 0) begin -- then
+	-- 04/20/2022 Paul.  The following maintenance does not apply if this was a new Pacific layout. 
+
 	-- 08/24/2009 Paul.  Keep the old conversion and let the field be fixed during the TEAMS Update. 
 	exec dbo.spEDITVIEWS_FIELDS_CnvChange      'Notes.EditView'          ,  2, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'          , null, null;
 	exec dbo.spEDITVIEWS_FIELDS_CnvModulePopup 'Notes.EditView'          ,  2, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'          , 'Teams', null;
@@ -1386,25 +1364,32 @@ GO
 -- delete from EDITVIEWS_FIELDS where EDIT_NAME = 'Opportunities.EditView';
 if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Opportunities.EditView' and DELETED = 0) begin -- then
 	print 'EDITVIEWS_FIELDS Opportunities.EditView';
-	exec dbo.spEDITVIEWS_InsertOnly            'Opportunities.EditView' , 'Opportunities' , 'vwOPPORTUNITIES_Edit' , '20%', '30%', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Opportunities.EditView'  ,  0, 'Opportunities.LBL_OPPORTUNITY_NAME'     , 'NAME'                       , 1, 1, 150, 35, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Opportunities.EditView'  ,  1, 'Opportunities.LBL_CURRENCY'             , 'CURRENCY_ID'                , 0, 2, 'Currencies'          , null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Opportunities.EditView'  ,  2, 'Opportunities.LBL_ACCOUNT_NAME'         , 'ACCOUNT_ID'                 , 1, 1, 'ACCOUNT_NAME'        , 'Accounts', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Opportunities.EditView'  ,  3, 'Opportunities.LBL_LEAD_NAME'            , 'LEAD_ID'                    , 0, 1, 'LEAD_NAME'           , 'Leads', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Opportunities.EditView'  ,  4, 'Opportunities.LBL_AMOUNT'               , 'AMOUNT'                     , 1, 2,  25, 15, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Opportunities.EditView'  ,  5, 'Opportunities.LBL_TYPE'                 , 'OPPORTUNITY_TYPE'           , 0, 1, 'opportunity_type_dom', null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Opportunities.EditView'  ,  6, 'Opportunities.LBL_DATE_CLOSED'          , 'DATE_CLOSED'                , 1, 2, 'DatePicker'          , null, null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Opportunities.EditView'  ,  7, 'Opportunities.LBL_LEAD_SOURCE'          , 'LEAD_SOURCE'                , 0, 1, 'lead_source_dom'     , null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Opportunities.EditView'  ,  8, 'Opportunities.LBL_NEXT_STEP'            , 'NEXT_STEP'                  , 0, 2,  25, 15, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Opportunities.EditView'  ,  9, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'           , 'Teams', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Opportunities.EditView'  , 10, 'Opportunities.LBL_PROBABILITY'          , 'PROBABILITY'                , 0, 2,   3,  4, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Opportunities.EditView'  , 11, '.LBL_ASSIGNED_TO'                       , 'ASSIGNED_USER_ID'           , 0, 1, 'ASSIGNED_TO_NAME'    , 'Users', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Opportunities.EditView'  , 12, 'Opportunities.LBL_SALES_STAGE'          , 'SALES_STAGE'                , 0, 2, 'sales_stage_dom'     , null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Opportunities.EditView'  , 13, '.LBL_EXCHANGE_FOLDER'                   , 'EXCHANGE_FOLDER'            , 0, 1, 'CheckBox'            , null, null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Opportunities.EditView'  , 14, 'Opportunities.LBL_CAMPAIGN_NAME'        , 'CAMPAIGN_ID'                , 0, 2, 'CAMPAIGN_NAME'       , 'Campaigns', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsTagSelect   'Opportunities.EditView'  , 15, 1, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'Opportunities.EditView'  , 16, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Opportunities.EditView'  , 17, 'Opportunities.LBL_DESCRIPTION'          , 'DESCRIPTION'                , 0, 3,   4, 60, 3;
+	exec dbo.spEDITVIEWS_InsertOnly            'Opportunities.EditView', 'Opportunities' , 'vwOPPORTUNITIES_Edit' , '20%', '30%', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'Opportunities.EditView', -1, '.LBL_LAYOUT_TAB_BASIC'                  , 3, 'tab';
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Opportunities.EditView', -1, 'Opportunities.LBL_OPPORTUNITY_NAME'     , 'NAME'                       , 1, 1, 150, 35, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Opportunities.EditView', -1, 'Opportunities.LBL_ACCOUNT_NAME'         , 'ACCOUNT_ID'                 , 1, 1, 'ACCOUNT_NAME'        , 'Accounts', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Opportunities.EditView', -1, 'Opportunities.LBL_CURRENCY'             , 'CURRENCY_ID'                , 0, 1, 'Currencies'          , null, -1;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Opportunities.EditView', -1, 'Opportunities.LBL_AMOUNT'               , 'AMOUNT'                     , 1, 1,  25, 15, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Opportunities.EditView', -1, 'Opportunities.LBL_DATE_CLOSED'          , 'DATE_CLOSED'                , 1, 1, 'DatePicker'          , null, null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Opportunities.EditView', -1, 'Opportunities.LBL_SALES_STAGE'          , 'SALES_STAGE'                , 0, 1, 'sales_stage_dom'     , null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Opportunities.EditView', -1, 'Opportunities.LBL_TYPE'                 , 'OPPORTUNITY_TYPE'           , 0, 1, 'opportunity_type_dom', null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Opportunities.EditView', -1, 'Opportunities.LBL_PROBABILITY'          , 'PROBABILITY'                , 0, 1,   3,  4, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Opportunities.EditView', -1, 'Opportunities.LBL_LEAD_SOURCE'          , 'LEAD_SOURCE'                , 0, 1, 'lead_source_dom'     , null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Opportunities.EditView', -1, 'Opportunities.LBL_NEXT_STEP'            , 'NEXT_STEP'                  , 0, 1,  25, 15, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Opportunities.EditView', -1, 'Opportunities.LBL_CAMPAIGN_NAME'        , 'CAMPAIGN_ID'                , 0, 1, 'CAMPAIGN_NAME'       , 'Campaigns', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Opportunities.EditView', -1, '.LBL_EXCHANGE_FOLDER'                   , 'EXCHANGE_FOLDER'            , 0, 1, 'CheckBox'            , null, null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Opportunities.EditView', -1, 'Opportunities.LBL_LEAD_NAME'            , 'LEAD_ID'                    , 0, 1, 'LEAD_NAME'           , 'Leads', null;
+
+	exec dbo.spEDITVIEWS_FIELDS_InsSeparator   'Opportunities.EditView', -1;
+	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Opportunities.EditView', -1, '.LBL_ASSIGNED_TO'                       , 'ASSIGNED_USER_ID'           , 0, 1, 'ASSIGNED_TO_NAME'    , 'Users', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Opportunities.EditView', -1, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'           , 'Teams', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'Opportunities.EditView', -1, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsTagSelect   'Opportunities.EditView', -1, 1, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Opportunities.EditView', -1, 'Opportunities.LBL_DESCRIPTION'          , 'DESCRIPTION'                , 0, 1,   4, 60, 3;
+
+	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'Opportunities.EditView', -1, '.LBL_LAYOUT_TAB_OTHER'                  , 3, 'tab-only';
+	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Opportunities.EditView', -1, '.LBL_DATE_ENTERED'                      , 'DATE_ENTERED'               , null;
+	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Opportunities.EditView', -1, '.LBL_DATE_MODIFIED'                     , 'DATE_MODIFIED'              , null;
 end else begin
 	-- 08/24/2009 Paul.  Keep the old conversion and let the field be fixed during the TEAMS Update. 
 	exec dbo.spEDITVIEWS_FIELDS_CnvChange      'Opportunities.EditView'  ,  8, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'           , null, null;
@@ -1504,22 +1489,29 @@ GO
 
 -- 01/13/2010 Paul.  New Project fields in SugarCRM. 
 -- 05/12/2016 Paul.  Add Tags module. 
+-- 04/15/2022 Paul.  Reorganize layout using Pacific tabs. 
 -- delete from EDITVIEWS_FIELDS where EDIT_NAME = 'Project.EditView';
 if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Project.EditView' and DELETED = 0) begin -- then
 	print 'EDITVIEWS_FIELDS Project.EditView';
-	exec dbo.spEDITVIEWS_InsertOnly            'Project.EditView'       , 'Project'       , 'vwPROJECTS_Edit'      , '20%', '30%', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Project.EditView'        ,  0, 'Project.LBL_NAME'                       , 'NAME'                       , 1, 1,  50, 35, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Project.EditView'        ,  1, '.LBL_EXCHANGE_FOLDER'                   , 'EXCHANGE_FOLDER'            , 0, 1, 'CheckBox'           , null, null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Project.EditView'        ,  2, 'Project.LBL_ESTIMATED_START_DATE'       , 'ESTIMATED_START_DATE'       , 0, 1, 'DatePicker'               , null, null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Project.EditView'        ,  3, 'Project.LBL_ESTIMATED_END_DATE'         , 'ESTIMATED_END_DATE'         , 0, 1, 'DatePicker'               , null, null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Project.EditView'        ,  4, 'Project.LBL_STATUS'                     , 'STATUS'                     , 0, 1, 'project_status_dom'       , null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Project.EditView'        ,  5, 'Project.LBL_PRIORITY'                   , 'PRIORITY'                   , 0, 1, 'projects_priority_options', null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Project.EditView'        ,  6, '.LBL_ASSIGNED_TO'                       , 'ASSIGNED_USER_ID'           , 0, 1, 'ASSIGNED_TO_NAME'         , 'Users', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Project.EditView'        ,  7, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'                , 'Teams', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsTagSelect   'Project.EditView'        ,  8, 1, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'Project.EditView'        ,  9, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Project.EditView'        , 10, 'Project.LBL_DESCRIPTION'                , 'DESCRIPTION'                , 0, 3,   8, 60, 3;
-end else begin
+	exec dbo.spEDITVIEWS_InsertOnly            'Project.EditView'        , 'Project'       , 'vwPROJECTS_Edit'      , '20%', '30%', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'Project.EditView'        , -1, '.LBL_LAYOUT_TAB_OVERVIEW'               , 3, 'tab-only';
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Project.EditView'        , -1, 'Project.LBL_NAME'                       , 'NAME'                       , 1, 1,  50, 35, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Project.EditView'        , -1, 'Project.LBL_STATUS'                     , 'STATUS'                     , 0, 1, 'project_status_dom'       , null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Project.EditView'        , -1, 'Project.LBL_ESTIMATED_START_DATE'       , 'ESTIMATED_START_DATE'       , 0, 1, 'DatePicker'               , null, null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Project.EditView'        , -1, 'Project.LBL_PRIORITY'                   , 'PRIORITY'                   , 0, 1, 'projects_priority_options', null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Project.EditView'        , -1, 'Project.LBL_ESTIMATED_END_DATE'         , 'ESTIMATED_END_DATE'         , 0, 1, 'DatePicker'               , null, null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'Project.EditView'        , -1, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Project.EditView'        , -1, '.LBL_EXCHANGE_FOLDER'                   , 'EXCHANGE_FOLDER'            , 0, 1, 'CheckBox'           , null, null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsTagSelect   'Project.EditView'        , -1, 1, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Project.EditView'        , -1, 'Project.LBL_DESCRIPTION'                , 'DESCRIPTION'                , 0, 3,   8, 60, 3;
+
+	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'Project.EditView'        , -1, '.LBL_LAYOUT_TAB_OTHER'                  , 3, 'tab-only';
+	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Project.EditView'        , -1, '.LBL_DATE_ENTERED'                      , 'DATE_ENTERED'               , null;
+	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Project.EditView'        , -1, '.LBL_DATE_MODIFIED'                     , 'DATE_MODIFIED'              , null;
+
+end else if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Project.EditView' and FIELD_TYPE = 'Header' and DATA_LABEL = '.LBL_LAYOUT_TAB_OVERVIEW' and DELETED = 0) begin -- then
+	-- 04/20/2022 Paul.  The following maintenance does not apply if this was a new Pacific layout. 
+
 	-- 08/24/2009 Paul.  Keep the old conversion and let the field be fixed during the TEAMS Update. 
 	exec dbo.spEDITVIEWS_FIELDS_CnvChange      'Project.EditView'        ,  3, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'                , null, null;
 	exec dbo.spEDITVIEWS_FIELDS_CnvModulePopup 'Project.EditView'        ,  3, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'                , 'Teams', null;
@@ -1562,29 +1554,42 @@ GO
 
 -- 01/19/2010 Paul.  We need to be able to format a Float field to prevent too many decimal places. 
 -- 11/03/2011 Paul.  Change field name to match stored procedure. 
+-- 04/15/2022 Paul.  Reorganize layout using Pacific tabs. 
+-- delete from EDITVIEWS_FIELDS where EDIT_NAME = 'ProjectTask.EditView';
 if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'ProjectTask.EditView' and DELETED = 0) begin -- then
 	print 'EDITVIEWS_FIELDS ProjectTask.EditView';
-	exec dbo.spEDITVIEWS_InsertOnly            'ProjectTask.EditView'   , 'ProjectTask'   , 'vwPROJECT_TASKS_Edit' , '15%', '35%', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'ProjectTask.EditView'    ,  0, 'Project.LBL_NAME'                       , 'NAME'                       , 1, 1,  50, 35, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'ProjectTask.EditView'    ,  1, '.LBL_ASSIGNED_TO'                       , 'ASSIGNED_USER_ID'           , 0, 1, 'ASSIGNED_TO_NAME'                , 'Users', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'ProjectTask.EditView'    ,  2, 'ProjectTask.LBL_STATUS'                 , 'STATUS'                     , 0, 2, 'project_task_status_options'     , null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'ProjectTask.EditView'    ,  3, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'                       , 'Teams', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'ProjectTask.EditView'    ,  4, 'ProjectTask.LBL_TASK_NUMBER'            , 'TASK_NUMBER'                , 0, 3,   4,  5, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'ProjectTask.EditView'    ,  5, 'ProjectTask.LBL_DEPENDS_ON_ID'          , 'DEPENDS_ON_ID'              , 0,13, 'DEPENDS_ON_NAME'                 , 'ProjectTask', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'ProjectTask.EditView'    ,  6, 'ProjectTask.LBL_PRIORITY'               , 'PRIORITY'                   , 0, 4, 'project_task_priority_options'   , null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'ProjectTask.EditView'    ,  7, 'ProjectTask.LBL_MILESTONE_FLAG'         , 'MILESTONE_FLAG'             , 0,14, 'CheckBox'      , null, null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'ProjectTask.EditView'    ,  8, 'ProjectTask.LBL_ORDER_NUMBER'           , 'ORDER_NUMBER'               , 0, 5,   4,  5, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'ProjectTask.EditView'    ,  9, 'ProjectTask.LBL_PARENT_ID'              , 'PROJECT_ID'                 , 1,15, 'PROJECT_NAME'                    , 'Project', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'ProjectTask.EditView'    , 10, 'ProjectTask.LBL_PERCENT_COMPLETE'       , 'PERCENT_COMPLETE'           , 0, 6,   3,  4, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'ProjectTask.EditView'    , 11, 'ProjectTask.LBL_UTILIZATION'            , 'UTILIZATION'                , 0,18, 'project_task_utilization_options', null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'ProjectTask.EditView'    , 12, 'ProjectTask.LBL_DATE_START'             , 'DATE_TIME_START'            , 0, 7, 'DateTimeEdit'                    , null, null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'ProjectTask.EditView'    , 13, 'ProjectTask.LBL_ESTIMATED_EFFORT'       , 'ESTIMATED_EFFORT'           , 0,19,   4,  5, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'ProjectTask.EditView'    , 14, 'ProjectTask.LBL_DATE_DUE'               , 'DATE_TIME_DUE'              , 0, 8, 'DateTimeEdit'                    , null, null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'ProjectTask.EditView'    , 15, 'ProjectTask.LBL_ACTUAL_EFFORT'          , 'ACTUAL_EFFORT'              , 0,20,   4,  5, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'ProjectTask.EditView'    , 16, 'ProjectTask.LBL_DESCRIPTION'            , 'DESCRIPTION'                , 0,21,   8, 60, 3;
+	exec dbo.spEDITVIEWS_InsertOnly            'ProjectTask.EditView'    , 'ProjectTask'   , 'vwPROJECT_TASKS_Edit' , '15%', '35%', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'ProjectTask.EditView'    , -1, '.LBL_LAYOUT_TAB_OVERVIEW'               , 3, 'tab-only';
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'ProjectTask.EditView'    , -1, 'Project.LBL_NAME'                       , 'NAME'                       , 1, 1,  50, 35, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'ProjectTask.EditView'    , -1, 'ProjectTask.LBL_STATUS'                 , 'STATUS'                     , 0, 2, 'project_task_status_options'     , null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsControl     'ProjectTask.EditView'    , -1, 'ProjectTask.LBL_DATE_START'             , 'DATE_TIME_START'            , 0, 7, 'DateTimeEdit'                    , null, null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsControl     'ProjectTask.EditView'    , -1, 'ProjectTask.LBL_DATE_DUE'               , 'DATE_TIME_DUE'              , 0, 8, 'DateTimeEdit'                    , null, null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'ProjectTask.EditView'    , -1, 'ProjectTask.LBL_PRIORITY'               , 'PRIORITY'                   , 0, 4, 'project_task_priority_options'   , null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'ProjectTask.EditView'    , -1, 'ProjectTask.LBL_PERCENT_COMPLETE'       , 'PERCENT_COMPLETE'           , 0, 6,   3,  4, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'ProjectTask.EditView'    , -1, 'ProjectTask.LBL_PARENT_ID'              , 'PROJECT_ID'                 , 1,15, 'PROJECT_NAME'                    , 'Project', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'ProjectTask.EditView'    , -1, 'ProjectTask.LBL_TASK_NUMBER'            , 'TASK_NUMBER'                , 0, 3,   4,  5, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'ProjectTask.EditView'    , -1, '.LBL_ASSIGNED_TO'                       , 'ASSIGNED_USER_ID'           , 0, 1, 'ASSIGNED_TO_NAME'                , 'Users', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'ProjectTask.EditView'    , -1, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'                       , 'Teams', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'ProjectTask.EditView'    , -1, 'ProjectTask.LBL_DESCRIPTION'            , 'DESCRIPTION'                , 0,21,   8, 60, 3;
+
+	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'ProjectTask.EditView'    , -1, 'ProjectTask.LBL_LAYOUT_TAB_TIMELINE'    , 3, 'tab-only';
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'ProjectTask.EditView'    , -1, 'ProjectTask.LBL_ESTIMATED_EFFORT'       , 'ESTIMATED_EFFORT'           , 0,19,   4,  5, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'ProjectTask.EditView'    , -1, 'ProjectTask.LBL_ACTUAL_EFFORT'          , 'ACTUAL_EFFORT'              , 0,20,   4,  5, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'ProjectTask.EditView'    , -1, 'ProjectTask.LBL_ORDER_NUMBER'           , 'ORDER_NUMBER'               , 0, 5,   4,  5, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsControl     'ProjectTask.EditView'    , -1, 'ProjectTask.LBL_MILESTONE_FLAG'         , 'MILESTONE_FLAG'             , 0,14, 'CheckBox'      , null, null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'ProjectTask.EditView'    , -1, 'ProjectTask.LBL_UTILIZATION'            , 'UTILIZATION'                , 0,18, 'project_task_utilization_options', null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'ProjectTask.EditView'    , -1, 'ProjectTask.LBL_DEPENDS_ON_ID'          , 'DEPENDS_ON_ID'              , 0,13, 'DEPENDS_ON_NAME'                 , 'ProjectTask', null;
+
+	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'ProjectTask.EditView'    , -1, '.LBL_LAYOUT_TAB_OTHER'                  , 3, 'tab-only';
+	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'ProjectTask.EditView'    , -1, '.LBL_DATE_ENTERED'                      , 'DATE_ENTERED'               , null;
+	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'ProjectTask.EditView'    , -1, '.LBL_DATE_MODIFIED'                     , 'DATE_MODIFIED'              , null;
+
 	exec dbo.spEDITVIEWS_FIELDS_UpdateDataFormat null, 'ProjectTask.EditView', 'ESTIMATED_EFFORT', 'f1';
 	exec dbo.spEDITVIEWS_FIELDS_UpdateDataFormat null, 'ProjectTask.EditView', 'ACTUAL_EFFORT'   , 'f1';
-end else begin
+
+end else if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'ProjectTask.EditView' and FIELD_TYPE = 'Header' and DATA_LABEL = '.LBL_LAYOUT_TAB_OVERVIEW' and DELETED = 0) begin -- then
+	-- 04/20/2022 Paul.  The following maintenance does not apply if this was a new Pacific layout. 
+
 	-- 08/24/2009 Paul.  Keep the old conversion and let the field be fixed during the TEAMS Update. 
 	exec dbo.spEDITVIEWS_FIELDS_CnvChange      'ProjectTask.EditView'    ,  3, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'                       , null, null;
 	exec dbo.spEDITVIEWS_FIELDS_CnvModulePopup 'ProjectTask.EditView'    ,  3, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'                       , 'Teams', null;
@@ -1626,20 +1631,29 @@ GO
 -- 08/12/2007 Paul.  Add List Type and Domain Name to support Campaign management.
 -- 01/09/2010 Paul.  A Dynamic List is one that uses SQL to build the prospect list. 
 -- 05/12/2016 Paul.  Add Tags module. 
+-- 04/15/2022 Paul.  Reorganize layout using Pacific tabs. 
 -- delete from EDITVIEWS_FIELDS where EDIT_NAME = 'ProspectLists.EditView';
 if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'ProspectLists.EditView' and DELETED = 0) begin -- then
 	print 'EDITVIEWS_FIELDS ProspectLists.EditView';
-	exec dbo.spEDITVIEWS_InsertOnly            'ProspectLists.EditView' , 'ProspectLists' , 'vwPROSPECT_LISTS_Edit' , '20%', '30%', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'ProspectLists.EditView'  ,  0, 'ProspectLists.LBL_NAME'                 , 'NAME'                       , 1, 1,  50, 35, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'ProspectLists.EditView'  ,  1, '.LBL_ASSIGNED_TO'                       , 'ASSIGNED_USER_ID'           , 0, 1, 'ASSIGNED_TO_NAME'      , 'Users', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'ProspectLists.EditView'  ,  2, 'ProspectLists.LBL_LIST_TYPE'            , 'LIST_TYPE'                  , 1, 1, 'prospect_list_type_dom', null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'ProspectLists.EditView'  ,  3, 'ProspectLists.LBL_DOMAIN_NAME'          , 'DOMAIN_NAME'                , 0, 1, 255, 35, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'ProspectLists.EditView'  ,  4, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'             , 'Teams', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'ProspectLists.EditView'  ,  5, 'ProspectLists.LBL_DYNAMIC_LIST'         , 'DYNAMIC_LIST'               , 0, 1, 'CheckBox'              , null, null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsTagSelect   'ProspectLists.EditView'  ,  6, 1, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'ProspectLists.EditView'  ,  7, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'ProspectLists.EditView'  ,  8, 'ProspectLists.LBL_DESCRIPTION'          , 'DESCRIPTION'                , 0, 3,   8, 80, 3;
-end else begin
+	exec dbo.spEDITVIEWS_InsertOnly            'ProspectLists.EditView', 'ProspectLists' , 'vwPROSPECT_LISTS_Edit' , '20%', '30%', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'ProspectLists.EditView', -1, '.LBL_LAYOUT_TAB_OVERVIEW'               , 3, 'tab-only';
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'ProspectLists.EditView', -1, 'ProspectLists.LBL_NAME'                 , 'NAME'                       , 1, 1,  50, 35, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsCheckBox    'ProspectLists.EditView', -1, 'ProspectLists.LBL_DYNAMIC_LIST'         , 'DYNAMIC_LIST'               , 0, 1, null, null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'ProspectLists.EditView', -1, 'ProspectLists.LBL_LIST_TYPE'            , 'LIST_TYPE'                  , 1, 1, 'prospect_list_type_dom', null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'ProspectLists.EditView', -1, 'ProspectLists.LBL_DOMAIN_NAME'          , 'DOMAIN_NAME'                , 0, 1, 255, 35, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'ProspectLists.EditView', -1, '.LBL_ASSIGNED_TO'                       , 'ASSIGNED_USER_ID'           , 0, 1, 'ASSIGNED_TO_NAME'      , 'Users', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'ProspectLists.EditView', -1, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'             , 'Teams', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'ProspectLists.EditView', -1, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsTagSelect   'ProspectLists.EditView', -1, 1, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'ProspectLists.EditView', -1, 'ProspectLists.LBL_DESCRIPTION'          , 'DESCRIPTION'                , 0, 1,   8, 80, 3;
+
+	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'ProspectLists.EditView', -1, '.LBL_LAYOUT_TAB_OTHER'                  , 3, 'tab-only';
+	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'ProspectLists.EditView', -1, '.LBL_DATE_ENTERED'                      , 'DATE_ENTERED'               , null;
+	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'ProspectLists.EditView', -1, '.LBL_DATE_MODIFIED'                     , 'DATE_MODIFIED'              , null;
+
+end else if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'ProspectLists.EditView' and FIELD_TYPE = 'Header' and DATA_LABEL = '.LBL_LAYOUT_TAB_OVERVIEW' and DELETED = 0) begin -- then
+	-- 04/20/2022 Paul.  The following maintenance does not apply if this was a new Pacific layout. 
+
 	-- 08/12/2007 Paul.  Keep index at 3 as it refers to a value before List Type was added. 
 	-- 08/24/2009 Paul.  Keep the old conversion and let the field be fixed during the TEAMS Update. 
 	exec dbo.spEDITVIEWS_FIELDS_CnvChange      'ProspectLists.EditView'  ,  2, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'             , null, null;
@@ -1705,63 +1719,73 @@ language sql
 -- 04/13/2016 Paul.  Add ZipCode lookup. 
 -- 05/12/2016 Paul.  Add Tags module. 
 -- 03/19/2020 Paul.  Move header to layout. 
+-- 04/15/2022 Paul.  Reorganize layout using Pacific tabs. 
+-- delete from EDITVIEWS_FIELDS where EDIT_NAME = 'Prospects.EditView';
 if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Prospects.EditView' and DELETED = 0) begin -- then
 	print 'EDITVIEWS_FIELDS Prospects.EditView';
-	exec dbo.spEDITVIEWS_InsertOnly            'Prospects.EditView'     , 'Prospects'     , 'vwPROSPECTS_Edit'     , '15%', '35%', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'Prospects.EditView'      ,  0, 'Prospects.LBL_PROSPECT_INFORMATION', 3;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Prospects.EditView'      ,  1, 'Prospects.LBL_FIRST_NAME'               , 'SALUTATION'                 , 0, 1, 'salutation_dom'     , null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.EditView'      ,  2, null                                     , 'FIRST_NAME'                 , 0, 1,  25, 25, -1;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.EditView'      ,  3, 'Prospects.LBL_OFFICE_PHONE'             , 'PHONE_WORK'                 , 0, 2,  25, 20, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.EditView'      ,  4, 'Prospects.LBL_LAST_NAME'                , 'LAST_NAME'                  , 1, 1,  25, 25, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.EditView'      ,  5, 'Prospects.LBL_MOBILE_PHONE'             , 'PHONE_MOBILE'               , 0, 2,  25, 20, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'Prospects.EditView'      ,  6, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.EditView'      ,  7, 'Prospects.LBL_HOME_PHONE'               , 'PHONE_HOME'                 , 0, 2,  25, 20, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'Prospects.EditView'      ,  8, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.EditView'      ,  9, 'Prospects.LBL_OTHER_PHONE'              , 'PHONE_OTHER'                , 0, 2,  25, 20, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.EditView'      , 10, 'Prospects.LBL_TITLE'                    , 'TITLE'                      , 0, 1,  40, 25, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.EditView'      , 11, 'Prospects.LBL_FAX_PHONE'                , 'PHONE_FAX'                  , 0, 2,  25, 20, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.EditView'      , 12, 'Prospects.LBL_DEPARTMENT'               , 'DEPARTMENT'                 , 0, 1, 100, 25, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.EditView'      , 13, 'Prospects.LBL_EMAIL_ADDRESS'            , 'EMAIL1'                     , 0, 2, 100, 35, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Prospects.EditView'      , 14, 'Prospects.LBL_BIRTHDATE'                , 'BIRTHDATE'                  , 0, 1, 'DatePicker'         , null, null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.EditView'      , 15, 'Prospects.LBL_OTHER_EMAIL_ADDRESS'      , 'EMAIL2'                     , 0, 2, 100, 35, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'Prospects.EditView'      , 16, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.EditView'      , 17, 'Prospects.LBL_ASSISTANT'                , 'ASSISTANT'                  , 0, 2,  75, 25, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'Prospects.EditView'      , 18, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.EditView'      , 19, 'Prospects.LBL_ASSISTANT_PHONE'          , 'ASSISTANT_PHONE'            , 0, 2,  25, 25, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Prospects.EditView'      , 20, 'Prospects.LBL_DO_NOT_CALL'              , 'DO_NOT_CALL'                , 0, 1, 'CheckBox'           , null, null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Prospects.EditView'      , 21, 'Prospects.LBL_EMAIL_OPT_OUT'            , 'EMAIL_OPT_OUT'              , 0, 2, 'CheckBox'           , null, null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Prospects.EditView'      , 22, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'          , 'Teams', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsTagSelect   'Prospects.EditView'      , 23, 1, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Prospects.EditView'      , 24, '.LBL_ASSIGNED_TO'                       , 'ASSIGNED_USER_ID'           , 0, 1, 'ASSIGNED_TO_NAME'   , 'Users', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Prospects.EditView'      , 25, 'Prospects.LBL_INVALID_EMAIL'            , 'INVALID_EMAIL'              , 0, 2, 'CheckBox'           , null, null, null;
-	-- 09/27/2013 Paul.  SMS messages need to be opt-in. 
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Prospects.EditView'      , 26, 'Prospects.LBL_SMS_OPT_IN'                , 'SMS_OPT_IN'                 , 0, 1, 'dom_sms_opt_in'     , null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'Prospects.EditView'      , 27, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsSeparator   'Prospects.EditView'      , 28;
-	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Prospects.EditView'      , 29, 'Prospects.LBL_PRIMARY_ADDRESS_STREET'   , 'PRIMARY_ADDRESS_STREET'     , 0, 3,   2, 30, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Prospects.EditView'      , 30, null                                     , null                         , 0, null, 'AddressButtons', null, null, 5;
-	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Prospects.EditView'      , 31, 'Prospects.LBL_ALT_ADDRESS_STREET'       , 'ALT_ADDRESS_STREET'         , 0, 4,   2, 30, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.EditView'      , 32, 'Prospects.LBL_CITY'                     , 'PRIMARY_ADDRESS_CITY'       , 0, 3, 100, 25, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.EditView'      , 33, 'Prospects.LBL_CITY'                     , 'ALT_ADDRESS_CITY'           , 0, 4, 100, 25, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.EditView'      , 34, 'Prospects.LBL_STATE'                    , 'PRIMARY_ADDRESS_STATE'      , 0, 3, 100, 15, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.EditView'      , 35, 'Prospects.LBL_STATE'                    , 'ALT_ADDRESS_STATE'          , 0, 4, 100, 15, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsZipCode     'Prospects.EditView'      , 36, 'Prospects.LBL_POSTAL_CODE'              , 'PRIMARY_ADDRESS_POSTALCODE' , 0, 3,  20, 15, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsZipCode     'Prospects.EditView'      , 37, 'Prospects.LBL_POSTAL_CODE'              , 'ALT_ADDRESS_POSTALCODE'     , 0, 4,  20, 15, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.EditView'      , 38, 'Prospects.LBL_COUNTRY'                  , 'PRIMARY_ADDRESS_COUNTRY'    , 0, 3, 100, 10, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.EditView'      , 39, 'Prospects.LBL_COUNTRY'                  , 'ALT_ADDRESS_COUNTRY'        , 0, 4, 100, 10, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsSeparator   'Prospects.EditView'      , 40;
-	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Prospects.EditView'      , 41, 'Prospects.LBL_DESCRIPTION'              , 'DESCRIPTION'                , 0, 5,   8, 60, 3;
+	exec dbo.spEDITVIEWS_InsertOnly            'Prospects.EditView'      , 'Prospects'     , 'vwPROSPECTS_Edit'     , '15%', '35%', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'Prospects.EditView'      , -1, '.LBL_LAYOUT_TAB_OVERVIEW'               , 3, 'tab';
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Prospects.EditView'      , -1, 'Prospects.LBL_FIRST_NAME'               , 'SALUTATION'                 , 0, 1, 'salutation_dom'     , null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.EditView'      , -1, null                                     , 'FIRST_NAME'                 , 0, 1,  25, 25, -1;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.EditView'      , -1, 'Prospects.LBL_LAST_NAME'                , 'LAST_NAME'                  , 1, 1,  25, 25, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.EditView'      , -1, 'Prospects.LBL_TITLE'                    , 'TITLE'                      , 0, 1,  40, 25, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.EditView'      , -1, 'Prospects.LBL_OFFICE_PHONE'             , 'PHONE_WORK'                 , 0, 1,  25, 20, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.EditView'      , -1, 'Prospects.LBL_DEPARTMENT'               , 'DEPARTMENT'                 , 0, 1, 100, 25, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.EditView'      , -1, 'Prospects.LBL_MOBILE_PHONE'             , 'PHONE_MOBILE'               , 0, 1,  25, 20, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'Prospects.EditView'      , -1, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.EditView'      , -1, 'Prospects.LBL_FAX_PHONE'                , 'PHONE_FAX'                  , 0, 1,  25, 20, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.EditView'      , -1, 'Prospects.LBL_EMAIL_ADDRESS'            , 'EMAIL1'                     , 0, 1, 100, 35, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.EditView'      , -1, 'Prospects.LBL_HOME_PHONE'               , 'PHONE_HOME'                 , 0, 1,  25, 20, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.EditView'      , -1, 'Prospects.LBL_OTHER_EMAIL_ADDRESS'      , 'EMAIL2'                     , 0, 1, 100, 35, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.EditView'      , -1, 'Prospects.LBL_OTHER_PHONE'              , 'PHONE_OTHER'                , 0, 1,  25, 20, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Prospects.EditView'      , -1, 'Prospects.LBL_EMAIL_OPT_OUT'            , 'EMAIL_OPT_OUT'              , 0, 1, 'CheckBox'           , null, null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Prospects.EditView'      , -1, 'Prospects.LBL_DO_NOT_CALL'              , 'DO_NOT_CALL'                , 0, 1, 'CheckBox'           , null, null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Prospects.EditView'      , -1, 'Prospects.LBL_INVALID_EMAIL'            , 'INVALID_EMAIL'              , 0, 1, 'CheckBox'           , null, null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Prospects.EditView'      , -1, 'Prospects.LBL_SMS_OPT_IN'               , 'SMS_OPT_IN'                 , 0, 1, 'dom_sms_opt_in'     , null, null;
+
+	exec dbo.spEDITVIEWS_FIELDS_InsSeparator   'Prospects.EditView'      , -1;
+	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Prospects.EditView'      , -1, 'Prospects.LBL_PRIMARY_ADDRESS_STREET'   , 'PRIMARY_ADDRESS_STREET'     , 0, 1,   2, 30, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Prospects.EditView'      , -1, null                                     , null                         , 0, null, 'AddressButtons', null, null, 5;
+	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Prospects.EditView'      , -1, 'Prospects.LBL_ALT_ADDRESS_STREET'       , 'ALT_ADDRESS_STREET'         , 0, 1,   2, 30, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.EditView'      , -1, 'Prospects.LBL_CITY'                     , 'PRIMARY_ADDRESS_CITY'       , 0, 1, 100, 25, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.EditView'      , -1, 'Prospects.LBL_CITY'                     , 'ALT_ADDRESS_CITY'           , 0, 1, 100, 25, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.EditView'      , -1, 'Prospects.LBL_STATE'                    , 'PRIMARY_ADDRESS_STATE'      , 0, 1, 100, 15, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.EditView'      , -1, 'Prospects.LBL_STATE'                    , 'ALT_ADDRESS_STATE'          , 0, 1, 100, 15, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsZipCode     'Prospects.EditView'      , -1, 'Prospects.LBL_POSTAL_CODE'              , 'PRIMARY_ADDRESS_POSTALCODE' , 0, 1,  20, 15, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsZipCode     'Prospects.EditView'      , -1, 'Prospects.LBL_POSTAL_CODE'              , 'ALT_ADDRESS_POSTALCODE'     , 0, 1,  20, 15, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.EditView'      , -1, 'Prospects.LBL_COUNTRY'                  , 'PRIMARY_ADDRESS_COUNTRY'    , 0, 1, 100, 10, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.EditView'      , -1, 'Prospects.LBL_COUNTRY'                  , 'ALT_ADDRESS_COUNTRY'        , 0, 1, 100, 10, null;
+
+	exec dbo.spEDITVIEWS_FIELDS_InsSeparator   'Prospects.EditView'      , -1;
+	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Prospects.EditView'      , -1, '.LBL_ASSIGNED_TO'                       , 'ASSIGNED_USER_ID'           , 0, 1, 'ASSIGNED_TO_NAME'   , 'Users', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Prospects.EditView'      , -1, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'          , 'Teams', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'Prospects.EditView'      , -1, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsTagSelect   'Prospects.EditView'      , -1, 1, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Prospects.EditView'      , -1, 'Prospects.LBL_DESCRIPTION'              , 'DESCRIPTION'                , 0, 1,   8, 60, 3;
+
+	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'Prospects.EditView'      , -1, '.LBL_LAYOUT_TAB_MORE_INFORMATION'       , 3, 'tab-only';
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.EditView'      , -1, 'Prospects.LBL_ASSISTANT'                , 'ASSISTANT'                  , 0, 1,  75, 25, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.EditView'      , -1, 'Prospects.LBL_ASSISTANT_PHONE'          , 'ASSISTANT_PHONE'            , 0, 1,  25, 25, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Prospects.EditView'      , -1, 'Prospects.LBL_BIRTHDATE'                , 'BIRTHDATE'                  , 0, 1, 'DatePicker'         , null, null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'Prospects.EditView'      , -1, null;
+
+	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'Prospects.EditView'      , -1, '.LBL_LAYOUT_TAB_OTHER'                  , 3, 'tab-only';
+	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Prospects.EditView'      , -1, '.LBL_DATE_ENTERED'                      , 'DATE_ENTERED'               , null;
+	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Prospects.EditView'      , -1, '.LBL_DATE_MODIFIED'                     , 'DATE_MODIFIED'              , null;
 
 	-- 03/19/2020 Paul.  The FIELD_INDEX is not needed, so remove from update statement. 
+	exec dbo.spEDITVIEWS_FIELDS_InsValidator   'Prospects.EditView'      , -1, 'Email Address'                          , 'EMAIL1'                     , '.ERR_INVALID_EMAIL_ADDRESS';
+	exec dbo.spEDITVIEWS_FIELDS_InsValidator   'Prospects.EditView'      , -1, 'Email Address'                          , 'EMAIL2'                     , '.ERR_INVALID_EMAIL_ADDRESS';
 --	exec dbo.spEDITVIEWS_FIELDS_InsValidator   'Prospects.EditView'      , -1, 'Phone Number'                           , 'PHONE_WORK'                 , '.ERR_INVALID_PHONE_NUMBER';
 --	exec dbo.spEDITVIEWS_FIELDS_InsValidator   'Prospects.EditView'      , -1, 'Phone Number'                           , 'PHONE_MOBILE'               , '.ERR_INVALID_PHONE_NUMBER';
 --	exec dbo.spEDITVIEWS_FIELDS_InsValidator   'Prospects.EditView'      , -1, 'Phone Number'                           , 'PHONE_HOME'                 , '.ERR_INVALID_PHONE_NUMBER';
 --	exec dbo.spEDITVIEWS_FIELDS_InsValidator   'Prospects.EditView'      , -1, 'Phone Number'                           , 'PHONE_OTHER'                , '.ERR_INVALID_PHONE_NUMBER';
 --	exec dbo.spEDITVIEWS_FIELDS_InsValidator   'Prospects.EditView'      , -1, 'Phone Number'                           , 'PHONE_FAX'                  , '.ERR_INVALID_PHONE_NUMBER';
-	exec dbo.spEDITVIEWS_FIELDS_InsValidator   'Prospects.EditView'      , -1, 'Email Address'                          , 'EMAIL1'                     , '.ERR_INVALID_EMAIL_ADDRESS';
-	exec dbo.spEDITVIEWS_FIELDS_InsValidator   'Prospects.EditView'      , -1, 'Email Address'                          , 'EMAIL2'                     , '.ERR_INVALID_EMAIL_ADDRESS';
 --	exec dbo.spEDITVIEWS_FIELDS_InsValidator   'Prospects.EditView'      , -1, 'Phone Number'                           , 'ASSISTANT_PHONE'            , '.ERR_INVALID_PHONE_NUMBER';
-end else begin
+
+end else if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Prospects.EditView' and FIELD_TYPE = 'Header' and DATA_LABEL = '.LBL_LAYOUT_TAB_OVERVIEW' and DELETED = 0) begin -- then
+	-- 04/20/2022 Paul.  The following maintenance does not apply if this was a new Pacific layout. 
+
 	if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Prospects.EditView' and FIELD_VALIDATOR_ID is not null and DELETED = 0) begin -- then
 		print 'Prospects.EditView: Update validators';
 --		exec dbo.spEDITVIEWS_FIELDS_InsValidator   'Prospects.EditView'      , -1, 'Phone Number'                           , 'PHONE_WORK'                 , '.ERR_INVALID_PHONE_NUMBER';
@@ -1840,57 +1864,36 @@ end else begin
 end -- if;
 GO
 
--- 09/02/2012 Paul.  Merge layout so that there is only one table to render in the HTML5 Client. 
-/*
-if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Prospects.EditAddress' and DELETED = 0) begin -- then
-	print 'EDITVIEWS_FIELDS Prospects.EditAddress';
-	exec dbo.spEDITVIEWS_InsertOnly            'Prospects.EditAddress', 'Prospects', 'vwPROSPECTS_Edit', '15%', '30%', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Prospects.EditAddress'   ,  0, 'Prospects.LBL_PRIMARY_ADDRESS_STREET'   , 'PRIMARY_ADDRESS_STREET'     , 0, 3,   2, 30, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Prospects.EditAddress'   ,  1, null                                     , null                         , 0, null, 'AddressButtons', null, null, 5;
-	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Prospects.EditAddress'   ,  2, 'Prospects.LBL_ALT_ADDRESS_STREET'       , 'ALT_ADDRESS_STREET'         , 0, 4,   2, 30, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.EditAddress'   ,  3, 'Prospects.LBL_CITY'                     , 'PRIMARY_ADDRESS_CITY'       , 0, 3, 100, 25, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.EditAddress'   ,  4, 'Prospects.LBL_CITY'                     , 'ALT_ADDRESS_CITY'           , 0, 4, 100, 25, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.EditAddress'   ,  5, 'Prospects.LBL_STATE'                    , 'PRIMARY_ADDRESS_STATE'      , 0, 3, 100, 15, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.EditAddress'   ,  6, 'Prospects.LBL_STATE'                    , 'ALT_ADDRESS_STATE'          , 0, 4, 100, 15, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.EditAddress'   ,  7, 'Prospects.LBL_POSTAL_CODE'              , 'PRIMARY_ADDRESS_POSTALCODE' , 0, 3,  20, 15, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.EditAddress'   ,  8, 'Prospects.LBL_POSTAL_CODE'              , 'ALT_ADDRESS_POSTALCODE'     , 0, 4,  20, 15, null;
-	-- 06/07/2006 Paul.  Fix max length of country. It should be 100. 
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.EditAddress'   ,  9, 'Prospects.LBL_COUNTRY'                  , 'PRIMARY_ADDRESS_COUNTRY'    , 0, 3, 100, 10, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.EditAddress'   , 10, 'Prospects.LBL_COUNTRY'                  , 'ALT_ADDRESS_COUNTRY'        , 0, 4, 100, 10, null;
-end -- if;
-*/
-GO
-
--- 09/02/2012 Paul.  Merge layout so that there is only one table to render in the HTML5 Client. 
-/*
-if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Prospects.EditDescription' and DELETED = 0) begin -- then
-	print 'EDITVIEWS_FIELDS Prospects.EditDescription';
-	exec dbo.spEDITVIEWS_InsertOnly            'Prospects.EditDescription', 'Prospects', 'vwPROSPECTS_Edit', '15%', '85%', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Prospects.EditDescription',  0, 'Prospects.LBL_DESCRIPTION'              , 'DESCRIPTION'                , 0, 5,   8, 60, null;
-end -- if;
-*/
-GO
-
 -- 08/27/2009 Paul.  Convert the ChangeButton to a ModulePopup. 
 -- 11/03/2011 Paul.  Change field name to match stored procedure. 
 -- 06/07/2017 Paul.  Add REMINDER_TIME, EMAIL_REMINDER_TIME, SMS_REMINDER_TIME. 
+-- 04/15/2022 Paul.  Reorganize layout using Pacific tabs. 
+-- delete from EDITVIEWS_FIELDS where EDIT_NAME = 'Tasks.EditView';
 if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Tasks.EditView' and DELETED = 0) begin -- then
 	print 'EDITVIEWS_FIELDS Tasks.EditView';
-	exec dbo.spEDITVIEWS_InsertOnly            'Tasks.EditView'         , 'Tasks'         , 'vwTASKS_Edit'         , '15%', '35%', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Tasks.EditView'          ,  0, 'Tasks.LBL_SUBJECT'                      , 'NAME'                       , 1, 1,  50, 35, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Tasks.EditView'          ,  1, 'Tasks.LBL_STATUS'                       , 'STATUS'                     , 1, 2, 'task_status_dom'    , null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Tasks.EditView'          ,  2, 'Tasks.LBL_DUE_DATE_AND_TIME'            , 'DATE_TIME_DUE'              , 0, 1, 'DateTimeEdit'       , null, null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsChange      'Tasks.EditView'          ,  3, 'PARENT_TYPE'                            , 'PARENT_ID'                  , 0, 2, 'PARENT_NAME'        , 'return ParentPopup();', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Tasks.EditView'          ,  4, 'Tasks.LBL_START_DATE_AND_TIME'          , 'DATE_TIME_START'            , 0, 1, 'DateTimeEdit'       , null, null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Tasks.EditView'          ,  5, 'Tasks.LBL_CONTACT'                      , 'CONTACT_ID'                 , 0, 2, 'CONTACT_NAME'       , 'Contacts', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Tasks.EditView'          ,  6, 'Tasks.LBL_PRIORITY'                     , 'PRIORITY'                   , 1, 1, 'task_priority_dom'  , null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Tasks.EditView'          ,  7, 'Tasks.LBL_REMINDER_TIME'                , 'REMINDER_TIME'              , 0, 2, 'reminder_time_dom'  , null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Tasks.EditView'          ,  8, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'          , 'Teams', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Tasks.EditView'          ,  9, 'Tasks.LBL_EMAIL_REMINDER_TIME'          , 'EMAIL_REMINDER_TIME'        , 0, 2, 'reminder_time_dom'  , null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Tasks.EditView'          , 10, '.LBL_ASSIGNED_TO'                       , 'ASSIGNED_USER_ID'           , 0, 1, 'ASSIGNED_TO_NAME'   , 'Users', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Tasks.EditView'          , 11, 'Tasks.LBL_SMS_REMINDER_TIME'            , 'SMS_REMINDER_TIME'          , 0, 2, 'reminder_time_dom'  , null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Tasks.EditView'          , 12, 'Tasks.LBL_DESCRIPTION'                  , 'DESCRIPTION'                , 0, 3,   8, 60, 3;
-end else begin
+	exec dbo.spEDITVIEWS_InsertOnly            'Tasks.EditView'          , 'Tasks'         , 'vwTASKS_Edit'         , '15%', '35%', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'Tasks.EditView'          , -1, '.LBL_LAYOUT_TAB_OVERVIEW'               , 3, 'tab-only';
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Tasks.EditView'          , -1, 'Tasks.LBL_SUBJECT'                      , 'NAME'                       , 1, 1,  50, 35, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Tasks.EditView'          , -1, 'Tasks.LBL_STATUS'                       , 'STATUS'                     , 1, 2, 'task_status_dom'    , null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Tasks.EditView'          , -1, 'Tasks.LBL_START_DATE_AND_TIME'          , 'DATE_TIME_START'            , 0, 1, 'DateTimeEdit'       , null, null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsChange      'Tasks.EditView'          , -1, 'PARENT_TYPE'                            , 'PARENT_ID'                  , 0, 2, 'PARENT_NAME'        , 'return ParentPopup();', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Tasks.EditView'          , -1, 'Tasks.LBL_DUE_DATE_AND_TIME'            , 'DATE_TIME_DUE'              , 0, 1, 'DateTimeEdit'       , null, null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Tasks.EditView'          , -1, 'Tasks.LBL_CONTACT'                      , 'CONTACT_ID'                 , 0, 2, 'CONTACT_NAME'       , 'Contacts', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Tasks.EditView'          , -1, 'Tasks.LBL_PRIORITY'                     , 'PRIORITY'                   , 1, 1, 'task_priority_dom'  , null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Tasks.EditView'          , -1, 'Tasks.LBL_EMAIL_REMINDER_TIME'          , 'EMAIL_REMINDER_TIME'        , 0, 2, 'reminder_time_dom'  , null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Tasks.EditView'          , -1, 'Tasks.LBL_REMINDER_TIME'                , 'REMINDER_TIME'              , 0, 2, 'reminder_time_dom'  , null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Tasks.EditView'          , -1, 'Tasks.LBL_SMS_REMINDER_TIME'            , 'SMS_REMINDER_TIME'          , 0, 2, 'reminder_time_dom'  , null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Tasks.EditView'          , -1, '.LBL_ASSIGNED_TO'                       , 'ASSIGNED_USER_ID'           , 0, 1, 'ASSIGNED_TO_NAME'   , 'Users', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Tasks.EditView'          , -1, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'          , 'Teams', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Tasks.EditView'          , -1, 'Tasks.LBL_DESCRIPTION'                  , 'DESCRIPTION'                , 0, 3,   8, 60, 3;
+
+	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'Tasks.EditView'          , -1, '.LBL_LAYOUT_TAB_OTHER'                  , 3, 'tab-only';
+	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Tasks.EditView'          , -1, '.LBL_DATE_ENTERED'                      , 'DATE_ENTERED'               , null;
+	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Tasks.EditView'          , -1, '.LBL_DATE_MODIFIED'                     , 'DATE_MODIFIED'              , null;
+
+end else if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Tasks.EditView' and FIELD_TYPE = 'Header' and DATA_LABEL = '.LBL_LAYOUT_TAB_OVERVIEW' and DELETED = 0) begin -- then
+	-- 04/20/2022 Paul.  The following maintenance does not apply if this was a new Pacific layout. 
+
 	-- 08/24/2009 Paul.  Keep the old conversion and let the field be fixed during the TEAMS Update. 
 	exec dbo.spEDITVIEWS_FIELDS_CnvChange      'Tasks.EditView'          ,  8, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'          , null, null;
 	exec dbo.spEDITVIEWS_FIELDS_CnvModulePopup 'Tasks.EditView'          ,  8, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'          , 'Teams', null;
@@ -2046,21 +2049,6 @@ end else begin
 	exec dbo.spEDITVIEWS_FIELDS_CnvZipCodePopup 'Users.EditView', 'PRIMARY_ADDRESS_POSTALCODE';
 	exec dbo.spEDITVIEWS_FIELDS_CnvZipCodePopup 'Users.EditView', 'ALT_ADDRESS_POSTALCODE';
 end -- if;
-GO
-
-/*
--- 07/08/2010 Paul.  Move Users.EditAddress fields to Users.EditView
-if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Users.EditAddress' and DELETED = 0) begin -- then
-	print 'EDITVIEWS_FIELDS Users.EditAddress';
-	exec dbo.spEDITVIEWS_InsertOnly            'Users.EditAddress', 'Users', 'vwUSERS_Edit', '15%', '35%', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Users.EditAddress'       ,  0, 'Users.LBL_PRIMARY_ADDRESS'              , 'ADDRESS_STREET'             , 0, 8,   2, 30, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Users.EditAddress'       ,  1, 'Users.LBL_CITY'                         , 'ADDRESS_CITY'               , 0, 8, 100, 15, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Users.EditAddress'       ,  2, 'Users.LBL_STATE'                        , 'ADDRESS_STATE'              , 0, 8, 100, 15, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Users.EditAddress'       ,  3, 'Users.LBL_POSTAL_CODE'                  , 'ADDRESS_POSTALCODE'         , 0, 8,  20, 10, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Users.EditAddress'       ,  4, 'Users.LBL_COUNTRY'                      , 'ADDRESS_COUNTRY'            , 0, 8,  20, 10, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'Users.EditAddress'       ,  5, null;
-end -- if;
-*/
 GO
 
 -- 02/01/2017 Paul.  Add support for Exchange using Username/Password. 
@@ -2342,7 +2330,7 @@ GO
 -- 09/02/2012 Paul.  Merge layout so that there is only one table to render in the HTML5 Client. 
 -- 04/13/2016 Paul.  Add ZipCode lookup. 
 if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Prospects.ConvertView' and DELETED = 0) begin -- then
-	print 'EDITVIEWS_FIELDS Leads.EditView';
+	print 'EDITVIEWS_FIELDS Prospects.EditView';
 	exec dbo.spEDITVIEWS_InsertOnly            'Prospects.ConvertView', 'Prospects', 'vwPROSPECTS_Convert', '15%', '35%', null;
 	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'Prospects.ConvertView'   ,  0, 'Leads.LBL_CONTACT_INFORMATION', 3;
 	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Prospects.ConvertView'   ,  1, 'Leads.LBL_TARGET_OF_CAMPAIGNS'          , 'CAMPAIGN_ID'                , 0, 1, 'CAMPAIGN_NAME'      , 'Campaigns', null;
@@ -2474,37 +2462,6 @@ end else begin
 	end -- if;
 end -- if;
 --GO
-
--- 09/02/2012 Paul.  Merge layout so that there is only one table to render in the HTML5 Client. 
-/*
-if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Prospects.ConvertAddress' and DELETED = 0) begin -- then
-	print 'EDITVIEWS_FIELDS Leads.EditAddress';
-	exec dbo.spEDITVIEWS_InsertOnly            'Prospects.ConvertAddress', 'Prospects', 'vwPROSPECTS_Convert', '15%', '30%', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Prospects.ConvertAddress',  0, 'Leads.LBL_PRIMARY_ADDRESS_STREET'       , 'PRIMARY_ADDRESS_STREET'     , 0, 3,   2, 30, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsControl     'Prospects.ConvertAddress',  1, null                                     , null                         , 0, null, 'AddressButtons', null, null, 5;
-	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Prospects.ConvertAddress',  2, 'Leads.LBL_ALT_ADDRESS_STREET'           , 'ALT_ADDRESS_STREET'         , 0, 4,   2, 30, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.ConvertAddress',  3, 'Leads.LBL_CITY'                         , 'PRIMARY_ADDRESS_CITY'       , 0, 3, 100, 25, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.ConvertAddress',  4, 'Leads.LBL_CITY'                         , 'ALT_ADDRESS_CITY'           , 0, 4, 100, 25, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.ConvertAddress',  5, 'Leads.LBL_STATE'                        , 'PRIMARY_ADDRESS_STATE'      , 0, 3, 100, 15, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.ConvertAddress',  6, 'Leads.LBL_STATE'                        , 'ALT_ADDRESS_STATE'          , 0, 4, 100, 15, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.ConvertAddress',  7, 'Leads.LBL_POSTAL_CODE'                  , 'PRIMARY_ADDRESS_POSTALCODE' , 0, 3,  20, 15, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.ConvertAddress',  8, 'Leads.LBL_POSTAL_CODE'                  , 'ALT_ADDRESS_POSTALCODE'     , 0, 4,  20, 15, null;
-	-- 06/07/2006 Paul.  Fix max length of country. It should be 100. 
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.ConvertAddress',  9, 'Leads.LBL_COUNTRY'                      , 'PRIMARY_ADDRESS_COUNTRY'    , 0, 3, 100, 10, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Prospects.ConvertAddress', 10, 'Leads.LBL_COUNTRY'                      , 'ALT_ADDRESS_COUNTRY'        , 0, 4, 100, 10, null;
-end -- if;
-*/
-GO
-
--- 09/02/2012 Paul.  Merge layout so that there is only one table to render in the HTML5 Client. 
-/*
-if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Prospects.ConvertDescription' and DELETED = 0) begin -- then
-	print 'EDITVIEWS_FIELDS Prospects.ConvertDescription';
-	exec dbo.spEDITVIEWS_InsertOnly            'Prospects.ConvertDescription', 'Prospects', 'vwPROSPECTS_Convert', '15%', '85%', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'Prospects.ConvertDescription',  0, 'Leads.LBL_DESCRIPTION'                  , 'DESCRIPTION'                , 0, 5,   8, 60, null;
-end -- if;
-*/
-GO
 
 if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'ACLRoles.EditView' and DELETED = 0) begin -- then
 	print 'EDITVIEWS_FIELDS ACLRoles.EditView';
@@ -3002,18 +2959,22 @@ end -- if;
 GO
 
 -- 10/22/2013 Paul.  Add TwitterMessages module.
+-- 04/15/2022 Paul.  Reorganize layout using Pacific tabs. 
 -- delete from EDITVIEWS_FIELDS where EDIT_NAME = 'TwitterMessages.EditView';
 if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'TwitterMessages.EditView' and DELETED = 0) begin -- then
 	print 'EDITVIEWS_FIELDS TwitterMessages.EditView';
 	exec dbo.spEDITVIEWS_InsertOnly            'TwitterMessages.EditView', 'TwitterMessages', 'vwTWITTER_MESSAGES_Edit', '15%', '35%', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'TwitterMessages.EditView',  0, 'TwitterMessages.LBL_NAME'               , 'NAME'                       , 1, 1,   2, 100, 3;
-	exec dbo.spEDITVIEWS_FIELDS_InsValidator   'TwitterMessages.EditView',  0, 'Twitter Message'                        , 'NAME'                       , 'TwitterMessages.ERR_INVALID_MESSAGE';
-	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'TwitterMessages.EditView',  1, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'TwitterMessages.EditView',  2, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'TwitterMessages.EditView',  3, '.LBL_ASSIGNED_TO'                       , 'ASSIGNED_USER_ID'           , 0, 1, 'ASSIGNED_TO_NAME'   , 'Users', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsChange      'TwitterMessages.EditView',  4, 'PARENT_TYPE'                            , 'PARENT_ID'                  , 0, 1, 'PARENT_NAME'        , 'return ParentPopup();', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'TwitterMessages.EditView',  5, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'          , 'Teams', null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'TwitterMessages.EditView',  6, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'TwitterMessages.EditView', -1, '.LBL_LAYOUT_TAB_OVERVIEW'               , 3, 'tab-only';
+	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'TwitterMessages.EditView', -1, 'TwitterMessages.LBL_NAME'               , 'NAME'                       , 1, 1,   3, 100, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsChange      'TwitterMessages.EditView', -1, 'PARENT_TYPE'                            , 'PARENT_ID'                  , 0, 1, 'PARENT_NAME'        , 'return ParentPopup();', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'TwitterMessages.EditView', -1, '.LBL_ASSIGNED_TO'                       , 'ASSIGNED_USER_ID'           , 0, 1, 'ASSIGNED_TO_NAME'   , 'Users', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'TwitterMessages.EditView', -1, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'          , 'Teams', null;
+
+	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'TwitterMessages.EditView', -1, '.LBL_LAYOUT_TAB_OTHER'                  , 3, 'tab-only';
+	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'TwitterMessages.EditView', -1, '.LBL_DATE_ENTERED'                      , 'DATE_ENTERED'               , null;
+	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'TwitterMessages.EditView', -1, '.LBL_DATE_MODIFIED'                     , 'DATE_MODIFIED'              , null;
+
+	exec dbo.spEDITVIEWS_FIELDS_InsValidator   'TwitterMessages.EditView', -1, 'Twitter Message'                        , 'NAME'                       , 'TwitterMessages.ERR_INVALID_MESSAGE';
 end -- if;
 GO
 

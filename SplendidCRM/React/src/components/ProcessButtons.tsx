@@ -17,6 +17,7 @@ import { Modal }                           from 'react-bootstrap'             ;
 import Sql                                 from '../scripts/Sql'              ;
 import L10n                                from '../scripts/L10n'             ;
 import Security                            from '../scripts/Security'         ;
+import SplendidCache                       from '../scripts/SplendidCache'    ;
 import { FromJsonDate }                    from '../scripts/Formatting'       ;
 import { ProcessButtons_GetProcessStatus, ProcessButtons_ProcessAction, ProcessButtons_GetProcessHistory, ProcessButtons_GetProcessNotes, ProcessButtons_DeleteProcessNote, ProcessButtons_AddProcessNote } from '../scripts/ProcessButtons';
 // 4. Components and Views. 
@@ -122,9 +123,16 @@ class ProcessButtons extends React.Component<IProcessButtonsProps, IProcessButto
 	{
 		const { MODULE_NAME, ID, } = this.props;
 		const { process } = this.state;
-		let bMoreListItems            = false;
+		let style : any = {};
+		let sCONTROL_CSSCLASS: string = '';
+		let sTheme: string  = SplendidCache.UserTheme;
+		if ( sTheme == 'Pacific' )
+		{
+			style.textAlign = 'right';
+		}
 		let pnlProcessButtonsChildren = [];
-		let pnlProcessButtons         = React.createElement('div', { id: 'pnlProcessButtons', key: 'pnlProcessButtons', className: 'button-panel' }, pnlProcessButtonsChildren);
+		let pnlProcessButtons         = React.createElement('div', { id: 'pnlProcessButtons', key: 'pnlProcessButtons', className: 'button-panel', style }, pnlProcessButtonsChildren);
+
 		try
 		{
 			let PENDING_PROCESS_ID: string  = Sql.ToGuid   (process['PENDING_PROCESS_ID']);

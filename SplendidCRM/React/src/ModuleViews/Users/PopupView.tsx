@@ -56,6 +56,7 @@ interface IPopupViewProps extends RouteComponentProps<any>
 
 interface IPopupViewState
 {
+	TITLE              : string;
 	TABLE_NAME         : string;
 	INLINE_EDIT_BUTTON : string;
 	PROCESS_NOTES      : string;
@@ -65,6 +66,7 @@ interface IPopupViewState
 	item?              : any;
 	error?             : any;
 	customView         : any;
+	open               : any;
 }
 
 export default class UsersPopupView extends React.Component<IPopupViewProps, IPopupViewState>
@@ -79,6 +81,7 @@ export default class UsersPopupView extends React.Component<IPopupViewProps, IPo
 	constructor(props: IPopupViewProps)
 	{
 		super(props);
+		let TITLE             : string = '';
 		let TABLE_NAME        : string = 'vwUSERS_ASSIGNED_TO_List';
 		let PROCESS_NOTES     : string = '';
 		let INLINE_EDIT_BUTTON: string = '';
@@ -90,6 +93,16 @@ export default class UsersPopupView extends React.Component<IPopupViewProps, IPo
 		// 08/24/2019 Paul.  The module name will be null when handling the popup for the parent edit field. 
 		if ( !Sql.IsEmptyString(props.MODULE_NAME) )
 		{
+			// 04/11/2022 Paul.  Add title to Accounts PopupView. 
+			TITLE = L10n.Term(props.MODULE_NAME + '.LBL_SEARCH_FORM_TITLE');
+			if ( TITLE == props.MODULE_NAME + '.LBL_SEARCH_FORM_TITLE' )
+			{
+				TITLE = props.MODULE_NAME + '.LBL_LIST_FORM_TITLE';
+			}
+			else
+			{
+				TITLE = props.MODULE_NAME + '.LBL_SEARCH_FORM_TITLE';
+			}
 			try
 			{
 				INLINE_EDIT_BUTTON = props.MODULE_NAME + ".LNK_NEW_" + Crm_Modules.SingularTableName(Crm_Modules.TableName(props.MODULE_NAME));
@@ -116,8 +129,16 @@ export default class UsersPopupView extends React.Component<IPopupViewProps, IPo
 		{
 			TABLE_NAME = 'vwTEAMS_ASSIGNED_TO_List';
 		}
+		// 04/11/2022 Paul.  Search is collapsed by default. 
+		let rawOpen        : string  = localStorage.getItem(props.MODULE_NAME + '.SearchPopup');
+		let open           : boolean = (rawOpen == 'true' || this.props.isPrecompile);
+		if ( rawOpen == null && Crm_Config.ToBoolean('default_subpanel_open') )
+		{
+			open = true;
+		}
 		this.state =
 		{
+			TITLE             ,
 			TABLE_NAME        ,
 			INLINE_EDIT_BUTTON,
 			PROCESS_NOTES     ,
@@ -126,6 +147,7 @@ export default class UsersPopupView extends React.Component<IPopupViewProps, IPo
 			item              ,
 			customView        : null,
 			error             ,
+			open              ,
 		};
 	}
 
@@ -436,28 +458,52 @@ export default class UsersPopupView extends React.Component<IPopupViewProps, IPo
 		}
 	}
 
+	private _onToggleFilter = () =>
+	{
+		this.setState({ open: !this.state.open });
+	}
+
 	public renderBody = () =>
 	{
 		// 01/22/2021 Paul.  Pass the layout name to the popup so that we know the source. 
 		const { isOpen, MODULE_NAME, rowDefaultSearch, showProcessNotes, multiSelect, ClearDisabled, fromLayoutName } = this.props;
-		const { TABLE_NAME, INLINE_EDIT_BUTTON, PROCESS_NOTES, item, ACLACCESS, showInlineCreate, error, customView } = this.state;
+		const { TITLE, TABLE_NAME, INLINE_EDIT_BUTTON, PROCESS_NOTES, item, ACLACCESS, showInlineCreate, error, customView, open } = this.state;
 		// 05/04/2019 Paul.  Reference obserable IsInitialized so that terminology update will cause refresh. 
-		let EDIT_NAME: string = MODULE_NAME + '.SearchPopup';
-		let GRID_NAME: string = MODULE_NAME + '.PopupView'  ;
+		let EDIT_NAME    : string = MODULE_NAME + '.SearchPopup';
+		let GRID_NAME    : string = MODULE_NAME + '.PopupView'  ;
+		let sMODULE_TITLE: string= L10n.Term('.moduleList.' + MODULE_NAME);
+		let sTheme       : string = SplendidCache.UserTheme;
 		return (<React.Fragment>
-					<ErrorComponent error={error} />
-					<SearchView
-						key={ EDIT_NAME }
-						EDIT_NAME={ EDIT_NAME }
-						IsPopupSearch={ true }
-						fromLayoutName={ fromLayoutName }
-						cbSearch={ this._onSearchViewCallback }
-						rowDefaultSearch={ rowDefaultSearch }
-						history={ this.props.history }
-						location={ this.props.location }
-						match={ this.props.match }
-						ref={ this.searchView }
-					/>
+					{ sTheme == 'Pacific'
+					? <div>
+						<h2>{ sMODULE_TITLE }</h2>
+						<ErrorComponent error={error} />
+						<div className='PopupSearchView'>
+							<button className='PopupViewButton' onClick={ this._onToggleFilter }>
+								<FontAwesomeIcon icon={ open ? 'minus' : 'plus' } size='lg' />
+							</button>
+							<span>{ L10n.Term('.LNK_SEARCH_FILTER') }</span>
+						</div>
+					</div>
+					: <div>
+						<ListHeader TITLE={ TITLE } />
+						<ErrorComponent error={error} />
+					</div>
+					}
+					<div style={ {display: (open ? 'block' : 'none')} }>
+						<SearchView
+							key={ EDIT_NAME }
+							EDIT_NAME={ EDIT_NAME }
+							IsPopupSearch={ true }
+							fromLayoutName={ fromLayoutName }
+							cbSearch={ this._onSearchViewCallback }
+							rowDefaultSearch={ rowDefaultSearch }
+							history={ this.props.history }
+							location={ this.props.location }
+							match={ this.props.match }
+							ref={ this.searchView }
+						/>
+					</div>
 					{ showProcessNotes
 					? <div style={ {display: 'flex', flexWrap: 'wrap', flex: '1 0 50%'} }>
 						<label className="control-label" style={ {width: '15%'} }>{ L10n.Term('Processes.LBL_PROCESS_NOTES') }</label>
@@ -475,35 +521,40 @@ export default class UsersPopupView extends React.Component<IPopupViewProps, IPo
 					</div>
 					: null
 					}
-					<ListHeader MODULE_NAME={ MODULE_NAME } />
-					<div>
-						{ multiSelect
-						? <button
-							key={ 'btnSelect_' + EDIT_NAME }
-							className='button'
-							onClick={ this._onSelectMultiple }
-							style={ {marginBottom: '.2em'} }>
-							{ L10n.Term('.LBL_SELECT_BUTTON_LABEL') }
-						</button>
-						: null
-						}
-						{ !showProcessNotes && !ClearDisabled
-						? <button
-							key={ 'btnClear_'  + EDIT_NAME }
-							className='button'
-							onClick={ this._onClear }
-							style={ {marginBottom: '.2em', marginLeft: '.5em'} }>
-							{ L10n.Term('.LBL_CLEAR_BUTTON_LABEL' ) }
-						</button>
-						: null
-						}
-						<button
-							key={ 'btnCancel_' + EDIT_NAME }
-							className='button'
-							onClick={ this._onClose }
-							style={ {marginBottom: '.2em', marginLeft: '.5em'} }>
-							{ L10n.Term('.LBL_CANCEL_BUTTON_LABEL') }
-						</button>
+					{ sTheme == 'Pacific'
+					? null
+					: <ListHeader MODULE_NAME={ MODULE_NAME } />
+					}
+					<div style={ {display: 'flex', flexDirection: 'row'} }>
+						<div>
+							{ multiSelect
+							? <button
+								key={ 'btnSelect_' + EDIT_NAME }
+								className='button'
+								onClick={ this._onSelectMultiple }
+								style={ {marginBottom: '.2em'} }>
+								{ L10n.Term('.LBL_SELECT_BUTTON_LABEL') }
+							</button>
+							: null
+							}
+							{ !showProcessNotes && !ClearDisabled
+							? <button
+								key={ 'btnClear_'  + EDIT_NAME }
+								className='button'
+								onClick={ this._onClear }
+								style={ {marginBottom: '.2em', marginLeft: '.5em'} }>
+								{ L10n.Term('.LBL_CLEAR_BUTTON_LABEL' ) }
+							</button>
+							: null
+							}
+							<button
+								key={ 'btnCancel_' + EDIT_NAME }
+								className='button'
+								onClick={ this._onClose }
+								style={ {marginBottom: '.2em', marginLeft: '.5em'} }>
+								{ L10n.Term('.LBL_CANCEL_BUTTON_LABEL') }
+							</button>
+						</div>
 					</div>
 					<div>
 						{ ACLACCESS >= 0 && !showInlineCreate

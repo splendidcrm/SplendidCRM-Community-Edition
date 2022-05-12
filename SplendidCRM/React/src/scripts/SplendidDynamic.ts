@@ -20,7 +20,8 @@ export default class SplendidDynamic
 	{
 		if (sViewName === undefined || sViewName == null)
 			sViewName = '';
-		return sTheme === 'Seven' && !EndsWith(sViewName, '.Preview');
+		// 04/02/2022 Paul.  Pacific uses stacked action menus. 
+		return (sTheme === 'Seven' || sTheme === 'Pacific') && !EndsWith(sViewName, '.Preview');
 	}
 
 	// 04/08/2017 Paul.  Use Bootstrap for responsive design.

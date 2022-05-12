@@ -61,9 +61,9 @@ const { sPLATFORM_LAYOUT }                   = require('../scripts/SplendidInitU
 // 11/28/2021 Paul.  UpdateRelatedList is needed to allow customize of popups. 
 const { UpdateModule, DeleteModuleItem, DeleteModuleRecurrences, MassDeleteModule, MassUpdateModule, MassSync, MassUnsync, ArchiveMoveData, ArchiveRecoverData, UpdateSavedSearch, DeleteRelatedItem, UpdateRelatedItem, UpdateRelatedList, AdminProcedure, ExecProcedure } = require('../scripts/ModuleUpdate');
 const { CreateSplendidRequest, GetSplendidResult                                              } = require('../scripts/SplendidRequest');
-const { DetailView_LoadItem, DetailView_LoadLayout, DetailView_LoadPersonalInfo, DetailView_RemoveField, DetailView_HideField, DetailView_FindField} = require('../scripts/DetailView'     );
+const { DetailView_LoadItem, DetailView_LoadLayout, DetailView_LoadPersonalInfo, DetailView_RemoveField, DetailView_HideField, DetailView_FindField, DetailView_GetTabList, DetailView_ActivateTab} = require('../scripts/DetailView'     );
 // 11/25/2020 Paul.  EditView_UpdateREPEAT_TYPE is used in Calls/Meetings EditView. 
-const { EditView_LoadItem, EditView_LoadLayout, EditView_ConvertItem, EditView_RemoveField, EditView_InitItem, EditView_FindField, EditView_HideField, EditView_UpdateREPEAT_TYPE } = require('../scripts/EditView'       );
+const { EditView_LoadItem, EditView_LoadLayout, EditView_ConvertItem, EditView_RemoveField, EditView_InitItem, EditView_FindField, EditView_HideField, EditView_UpdateREPEAT_TYPE, EditView_GetTabList, EditView_ActivateTab } = require('../scripts/EditView'       );
 const { AuthenticatedMethod, IsAuthenticated, LoginRedirect, GetUserProfile, GetMyUserProfile, GetUserID } = require('../scripts/Login'          );
 const { Right, Left, StartsWith, EndsWith, Trim, uuidFast, isEmptyObject, isTouchDevice, base64ArrayBuffer, isMobile, screenWidth, screenHeight } = require('../scripts/utility'        );
 const { NormalizeDescription, XssFilter                                                       } = require('../scripts/EmailUtils'     );
@@ -106,6 +106,8 @@ const EditViewLineItems                      = require('../views/EditViewLineIte
 // 02/10/2022 Paul.  AcocuntsDetailViewJS uses ActivitiesPopupView and PersonalInfoView, so we must export these views. 
 const ActivitiesPopupView                    = require('../views/ActivitiesPopupView'             ).default;
 const PersonalInfoView                       = require('../views/PersonalInfoView'                ).default;
+// 04/13/2022 Paul.  Add LayoutTabs to Pacific theme. 
+const LayoutTabs                             = require('../components/LayoutTabs'                 ).default;
 
 export async function DynamicLayout_Compile(responseText: string)
 {

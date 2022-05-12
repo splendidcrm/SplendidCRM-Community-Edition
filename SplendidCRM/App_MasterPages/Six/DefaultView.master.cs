@@ -123,7 +123,7 @@ namespace SplendidCRM.Themes.Six
 						}
 						else
 						{
-							imgCompanyLogo.ImageUrl = "~/Include/images/SplendidCRM_Logo.gif";
+							imgCompanyLogo.ImageUrl = "~/App_Themes/Six/images/SplendidCRM_Logo.png";
 							imgCompanyLogo.Width    = 207;
 							imgCompanyLogo.Height   =  60;
 							imgCompanyLogo.Attributes.Add("style", "margin-left: 10px");

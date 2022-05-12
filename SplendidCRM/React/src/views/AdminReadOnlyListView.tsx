@@ -268,6 +268,7 @@ class AdminReadOnlyListView extends React.Component<IAdminReadOnlyListViewProps,
 					PRIMARY_ID={ PRIMARY_ID }
 					ADMIN_MODE={ true }
 					deferLoad={ true }
+					enableExportHeader={ true }
 					onComponentComplete={ this._onComponentComplete }
 					scrollable
 					readonly

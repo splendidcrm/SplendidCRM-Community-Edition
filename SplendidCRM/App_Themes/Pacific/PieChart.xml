@@ -1,0 +1,7 @@
+<graphData title="">
+	<chartColors docBorder="0x777777" docBg1="0xfefefe" docBg2="0xe1e1e1" title="0x555555" subtitle="0x666666"
+		misc="0x666666" altBorder="0x666666" altBg="0xFFF9B7" altText="0x666666" graphText="0x444444"
+		graphTextShadow="0xFFFFFF" pieBorder="0x666666" pieBorderHilite="0xFFFFFF" legendBorder="0x777777"
+		legendBg1="0xCCDFFF" legendBg2="0xE0ECFF" legendText="0x444444" legendColorKeyBorder="0x777777"
+		scrollBar="0x999999" scrollBarBorder="0x777777" scrollBarTrack="0xeeeeee" scrollBarTrackBorder="0x777777" />
+</graphData>

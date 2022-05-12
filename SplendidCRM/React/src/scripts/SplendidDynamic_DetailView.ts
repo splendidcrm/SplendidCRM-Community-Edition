@@ -22,7 +22,8 @@ import Credentials                           from '../scripts/Credentials'      
 import SplendidCache                         from '../scripts/SplendidCache'      ;
 import SplendidDynamic                       from '../scripts/SplendidDynamic'    ;
 import { Crm_Config, Crm_Modules }           from '../scripts/Crm'                ;
-import { isMobileDevice, isMobileLandscape, screenWidth, screenHeight } from '../scripts/utility'            ;
+import { DetailView_GetTabList, DetailView_ActivateTab } from '../scripts/DetailView';
+import { isMobileDevice, isMobileLandscape, screenWidth, screenHeight } from '../scripts/utility';
 // 4. Components and Views. 
 import Blank                                 from '../DetailComponents/Blank'     ;
 import SplendidButton                        from '../DetailComponents/Button'    ;
@@ -94,11 +95,40 @@ export default class SplendidDynamic_DetailView
 				bStackedLayout       = true;
 			}
 		}
+		// 04/14/2022 Paul.  Add LayoutTabs to Pacific theme. 
+		let objTabs: any = {};
+		let bTabsEnabled: boolean = false;
+		if ( sTheme == 'Pacific' )
+		{
+			let arrTabs: any[] = DetailView_GetTabList(layout);
+			if ( arrTabs != null && arrTabs.length > 0 )
+			{
+				let nActiveTabs: number = 0;
+				for ( let i: number = 0; i < arrTabs.length; i++ )
+				{
+					let tab: any = arrTabs[i];
+					objTabs[tab.nLayoutIndex] = tab;
+					// 04/14/2022 Paul.  Make sure at least one tab is active. 
+					if ( layout[tab.nLayoutIndex].ActiveTab )
+					{
+						nActiveTabs++;
+					}
+				}
+				if ( nActiveTabs == 0 )
+				{
+					DetailView_ActivateTab(layout, arrTabs[0].nLayoutIndex);
+				}
+				bTabsEnabled = true;
+			}
+		}
 		//console.log('AppendDetailViewFields_Desktop (' +  width + ', ' + height + ') ' + (bIsMobile ? 'mobile' : ''));
+		// 04/15/2022 Paul.  We need a separate panel index instead of simply using count of main children. 
+		let nPanelIndex: number = 0;
 		let tblMainChildren: Array<JSX.Element> = [];
-		let tblMainProps: any = { className: sPanelClass, key: baseId + '_tblMain' + tblMainChildren.length.toString(), style: {} };
+		let tblMainProps: any = { className: sPanelClass, id: baseId + '_tblMain' + nPanelIndex.toString(), key: baseId + '_tblMain' + nPanelIndex.toString(), style: {} };
 		let tblMain = React.createElement('table', tblMainProps, tblMainChildren);
 		fragmentChildren.push(tblMain);
+		nPanelIndex++;
 		if ( bStackedLayout )
 		{
 			tblMainProps.style.borderSpacing = '0px';
@@ -142,7 +172,7 @@ export default class SplendidDynamic_DetailView
 				let FIELD_TYPE  : string = Sql.ToString (lay.FIELD_TYPE  );
 				let DATA_LABEL  : string = Sql.ToString (lay.DATA_LABEL  );
 				let DATA_FIELD  : string = Sql.ToString (lay.DATA_FIELD  );
-				//let DATA_FORMAT : string = Sql.ToString (lay.DATA_FORMAT );
+				let DATA_FORMAT : string = Sql.ToString (lay.DATA_FORMAT );
 				let URL_FIELD   : string = Sql.ToString (lay.URL_FIELD   );
 				//let URL_FORMAT  : string = Sql.ToString (lay.URL_FORMAT  );
 				//let URL_TARGET  : string = Sql.ToString (lay.URL_TARGET  );
@@ -211,9 +241,44 @@ export default class SplendidDynamic_DetailView
 						FIELD_TYPE = 'Blank';
 					}
 				}
+				// 04/14/2022 Paul.  Add LayoutTabs to Pacific theme. 
+				if ( !bTabsEnabled && FIELD_TYPE == 'Header' && DATA_FORMAT == 'tab-only' )
+				{
+					// 04/14/2022 Paul.  Ignore the layout field if tabs not enabled (i.e. not Pacific) and this is only to be used as a tab. 
+					continue;
+				}
+				else if ( bTabsEnabled && objTabs[nLayoutIndex] )
+				{
+					// 04/14/2022 Paul.  We don't want an empty panel, so if current panel is empty, then continue to use and correct the display style. 
+					if ( nLayoutIndex == 0 )
+					{
+						let style: any = tblMain.props.style;
+						style.display = (lay.ActiveTab ? 'table' : 'none');
+						nPanelIndex++;
+					}
+					else
+					{
+						// 04/15/2022 Paul.  Don't need the separator line if using separate tab. 
+						//let divSeparator = React.createElement('div', { style: {flexBasis: '100%', height: 0} });
+						//tblMainChildren.push(divSeparator);
+					
+						tblMainChildren = [];
+						tblMain = React.createElement('table', { className: sPanelClass, id: baseId + '_tblMain' + nPanelIndex.toString(), key: baseId + '_tblMain' + nPanelIndex.toString(), style: {display: (lay.ActiveTab ? 'table' : 'none')} }, tblMainChildren);
+						fragmentChildren.push(tblMain);
+						tblBodyChildren = [];
+						tbody = React.createElement('tbody', { key: 'tbody' + nLayoutIndex }, tblBodyChildren);
+						tblMainChildren.push(tbody);
+						nPanelIndex++;
+					}
+
+					nColumn = 0;
+					trChildren = [];
+					tr = null;
+					continue;
+				}
 				// 09/02/2012 Paul.  A separator will create a new table. We need to match the outer and inner layout. 
 				// 08/04/2019 Paul.  Line works like a Separator. 
-				if ( FIELD_TYPE == 'Separator' || FIELD_TYPE == 'Line' )
+				else if ( FIELD_TYPE == 'Separator' || FIELD_TYPE == 'Line' )
 				{
 					// 11/12/2019 Paul.  Add remaining cells. 
 					// 04/19/2021 Paul.  This does not apply to desktop mode. 
@@ -226,17 +291,29 @@ export default class SplendidDynamic_DetailView
 					}
 					*/
 					
-					// 10/27/2020 Paul.  Need to force a break using flex.  Requires that the container be allowed to wrap. 
-					// https://tobiasahlin.com/blog/flexbox-break-to-new-row/
-					let divSeparator = React.createElement('div', { style: {flexBasis: '100%', height: 0} });
-					tblMainChildren.push(divSeparator);
+					if ( sTheme != 'Pacific' )
+					{
+						// 10/27/2020 Paul.  Need to force a break using flex.  Requires that the container be allowed to wrap. 
+						// https://tobiasahlin.com/blog/flexbox-break-to-new-row/
+						let divSeparator = React.createElement('div', { style: {flexBasis: '100%', height: 0} });
+						// 04/16/20222 Paul.  Separator needs to be added to fragment (same as tblMain), otherwise it goes into the table in an invalid position. 
+						fragmentChildren.push(divSeparator);
+					}
 					
 					tblMainChildren = [];
-					tblMain = React.createElement('table', { className: sPanelClass, key: baseId + '_tblMain' + tblMainChildren.length.toString() }, tblMainChildren);
+					tblMain = React.createElement('table', { className: sPanelClass, id: baseId + '_tblMain' + nPanelIndex.toString(), key: baseId + '_tblMain' + nPanelIndex.toString(), style: {} }, tblMainChildren);
+					// 04/16/2022 Paul.  Separators usually start a new table or division, so separators after active tab need to be treated as a set. 
+					if ( bTabsEnabled )
+					{
+						let style: any = tblMain.props.style;
+						style.display = (lay.ActiveTab ? 'table' : 'none');
+						nPanelIndex++;
+					}
 					fragmentChildren.push(tblMain);
 					tblBodyChildren = [];
 					tbody = React.createElement('tbody', { key: 'tbody' + nLayoutIndex }, tblBodyChildren);
 					tblMainChildren.push(tbody);
+					nPanelIndex++;
 					nColumn = 0;
 					trChildren = [];
 					tr = null;
@@ -293,10 +370,14 @@ export default class SplendidDynamic_DetailView
 				//if ( FIELD_TYPE == 'Header' )
 				//	sGridLabel = null;
 				let tdLabelProps: any = { id: sLabelID, className: sGridLabel, style: { width: LABEL_WIDTH } };
-				let tdFieldProps: any = { className: sGridInput, id: sFieldID, key: sFieldID, style: { width: FIELD_WIDTH }, colSpan: COLSPAN };
+				// 04/16/2022 Paul.  need to move colSpan to prevent it from being attached to div tag. 
+				let tdFieldProps: any = { className: sGridInput, id: sFieldID, key: sFieldID, style: { width: FIELD_WIDTH } };
 				// 04/19/2021 Paul.  Manually calculate responsive features. 
 				if ( bStackedLayout )
 				{
+					// 04/16/2022 Paul.  Remove width if using stacked. 
+					tdLabelProps.style = {};
+					tdFieldProps.style = {};
 					let tdStackChildren = [];
 					let tdStackProps: any = { style: {} };
 					if ( bStackedTheme )
@@ -304,12 +385,32 @@ export default class SplendidDynamic_DetailView
 						tdStackProps.className = 'tabStackedDetailViewDF';
 						tdLabelProps.className = 'tabStackedDetailViewDL';
 					}
-					else
+					//else
 					{
-						tdLabelProps.style.width      = '100%';
 						tdLabelProps.style.textAlign  = 'inherit';
-						tdFieldProps.style.width      = '100%';
 						tdStackProps.style.padding    = '0px';
+					}
+					if ( sTheme == 'Pacific' )
+					{
+						// 04/04/2022 Paul.  Change to css selector: .tabStackedDetailViewDF > .tabDetailViewDF
+						//tdFieldProps.style.minHeight    = '2.1em';
+						//tdFieldProps.style.borderBottom = '.0625rem dotted #d9d9d9';
+						tdStackProps.style.paddingLeft  = '1em';
+						tdStackProps.style.paddingRight = '1em';
+						// 04/16/2022 Paul.  We seem to need to force the width when multiple panels are displayed. 
+						tdStackProps.style.width        = sFlexLabelFieldWidth;
+						if ( DATA_COLUMNS > 1 && COLSPAN <= 1 )
+						{
+							if ( (nColumn < DATA_COLUMNS - 1) )
+							{
+								tdStackProps.style.borderRight = '.0625rem solid #93a4b3';
+							}
+						}
+					}
+					if ( COLSPAN > 1 )
+					{
+						// 04/16/2022 Paul.  colspan is typically 3 for 2 column layout, so we need to reduce by 1 when stacked. 
+						tdStackProps.colSpan = COLSPAN - 1;
 					}
 					let tdStack = React.createElement('td', tdStackProps, tdStackChildren);
 					trChildren.push(tdStack);
@@ -320,6 +421,10 @@ export default class SplendidDynamic_DetailView
 				}
 				else
 				{
+					if ( COLSPAN > 0 )
+					{
+						tdFieldProps.colSpan = COLSPAN;
+					}
 					// 11/12/2019 Paul.  Default top align looks terrible. 
 					// 12/17/2019 Paul.  Baseline looks better than center, especially for multi-line controls such as Teams and Tags. 
 					// 03/19/2020 Paul.  Remove inner span around label so that it will follow the right alignment of the style. 
@@ -388,6 +493,12 @@ export default class SplendidDynamic_DetailView
 								let tip  = React.createElement('span', {className: 'reactTooltip'    }, [icon, text]);
 								tdLabelChildren.push(tip);
 							}
+						}
+						// 04/15/2022 Paul.  Stacked layout needs nbsp for label. 
+						else if ( bStackedLayout )
+						{
+							let nbsp = React.createElement('span', {}, ['\u00a0']);
+							tdLabelChildren.push(nbsp);
 						}
 					}
 				}
