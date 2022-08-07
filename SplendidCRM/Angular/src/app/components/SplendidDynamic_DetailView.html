@@ -1,0 +1,38 @@
+<ng-container *ngIf="layout && fragmentChildren">
+	<ng-container *ngFor="let table of fragmentChildren">
+		<ng-container [ngSwitch]="table.tag">
+<table *ngSwitchCase="'table'" [id]="table.props.id" [class]="table.props.class" [ngStyle]="table.props.style">
+				<ng-container *ngFor="let tbody of table.children">
+					<ng-container [ngSwitch]="tbody.tag">
+	<tbody *ngSwitchCase="'tbody'">
+						<ng-container *ngFor="let tr of tbody.children">
+							<ng-container [ngSwitch]="tr.tag">
+		<tr *ngSwitchCase="'tr'">
+								<ng-container *ngFor="let td of tr.children">
+									<ng-container [ngSwitch]="td.tag">
+			<td *ngSwitchCase="'td'" [class]="td.props.class" [ngStyle]="td.props.style" [attr.colspan]="td.props.colSpan">
+									<ng-container *ngFor="let template of td.children;" [ngSwitch]="TypeOf(template)">
+										<ng-container *ngSwitchCase="'string'">
+											{{ template }}
+										</ng-container>
+										<ng-container *ngSwitchCase="'object'" [ngSwitch]="template.tag">
+											<DetailViewDynamicField
+												[template]="template"
+												(fieldDidMount)="_onFieldDidMount($event)"
+												(Page_Command)="_onPage_Command($event)"
+											></DetailViewDynamicField>
+										</ng-container>
+									</ng-container>
+			</td>
+									</ng-container>
+								</ng-container>
+		</tr>
+							</ng-container>
+						</ng-container>
+	</tbody>
+					</ng-container>
+				</ng-container>
+</table>
+		</ng-container>
+	</ng-container>
+</ng-container>

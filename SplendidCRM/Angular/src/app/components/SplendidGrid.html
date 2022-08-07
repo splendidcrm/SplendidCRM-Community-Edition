@@ -1,0 +1,172 @@
+<ng-container *ngIf="IsReady()">
+	<ng-container *ngIf="loading || exporting">
+		<div style="text-align: center">
+			<fa-icon [icon]="spinner" size='5x' [spin]="true"></fa-icon>
+		</div>
+	</ng-container>
+	<div>
+		<DumpSQL [SQL]="__sql"></DumpSQL>
+		<ng-container *ngIf="IsError()">
+			<ErrorComponent [error]="error"></ErrorComponent>
+		</ng-container>
+		<ng-container *ngIf="layoutAvailable">
+			ListViewFieldChooser
+				ViewName={{ GRID_NAME }}
+				LayoutType='ListView'
+				isOpen={{ isOpenFieldChooser }}
+				callback={{ this._onFieldChooserCallback }}
+				layoutDisplay={{ layout }}
+				layoutHidden={{ layoutAvailable }}
+		</ng-container>
+		<ng-container *ngIf="!disablePagination">
+			<table class="listView" cellspacing="1" cellpadding="3" style="width: 100%;">
+				<tr class="listViewPaginationTdS1">
+					<td>
+						<ng-container *ngIf="sTheme == 'Pacific' && (enableSelection || (enableMassUpdate && Page_Command.observed))">
+							<div style="display: flex; flex-direction: row; flex-wrap: nowrap; justify-content: left">
+								<ng-container *ngIf="enableSelection">
+									NavItem title= titleSelection 
+										<input type='submit' (click)="_onSelectPage($event)" class='ListHeaderOtherButton' style="margin-right: 2px; margin-bottom: 0px" [value]="L10n.Term('.LBL_SELECT_PAGE' )" />
+										<input type='submit' (click)="_onSelectAll($event)"  class='ListHeaderOtherButton' style="margin-right: 2px; margin-bottom: 0px" [value]="L10n.Term('.LBL_SELECT_ALL'  )" />
+										<input type='submit' (click)="onDeselectAll($event)" class='ListHeaderOtherButton' style="margin-right: 2px; margin-bottom: 0px" [value]="L10n.Term('.LBL_DESELECT_ALL')" />
+									/NavItem
+								</ng-container>
+								<ng-container *ngIf="enableMassUpdate && Page_Command.observed">
+									<DynamicButtons
+										ButtonStyle='DataGrid'
+										[VIEW_NAME]="MODULE_NAME + '.MassUpdate' + (archiveView ? '.ArchiveView' : '')"
+										[row]="null"
+										(Page_Command)="_onPage_Command($event)"
+										(onLayoutLoaded)="_onButtonsLoaded()"
+										#dynamicButtons
+									></DynamicButtons>
+								</ng-container>
+							</div>
+						</ng-container>
+					</td>
+					<td class="react-bootstrap-table-pagination-total pageNumbers" style="text-align: right;">
+						<ng-container *ngIf="enableExportHeader && sTheme == 'Pacific'">
+							<select
+								id='lstEXPORT_RANGE'
+								(change)="_onEXPORT_RANGE_Change($event)"
+								[value]="EXPORT_RANGE"
+								style="width: auto; margin: 2px"
+								>
+								<ng-container *ngFor="let item of EXPORT_RANGE_LIST; let i = index">
+									<option [id]="'_ctlEditView_EXPORT_RANGE' + i.toString()" [value]="item.NAME">{{ item.DISPLAY_NAME }}</option>
+								</ng-container>
+							</select>
+							<select
+								id='lstEXPORT_FORMAT'
+								(change)="_onEXPORT_FORMAT_Change($event)"
+								[value]="EXPORT_FORMAT"
+								style="width: auto; margin: 2px"
+								>
+								<ng-container *ngFor="let item of EXPORT_FORMAT_LIST; let i = index">
+									<option [id]="'_ctlEditViewEXPORT_FORMAT' + i.toString()" [value]="item.NAME">{{ item.DISPLAY_NAME }}</option>
+								</ng-container>
+							</select>
+							<button class='button' (click)="_onExport($event)" style="margin-right: 8px">
+								<fa-icon [icon]="fileExport" size="lg" style="padding-right: 4px"></fa-icon>
+								{{ L10n.Term('.LBL_EXPORT_BUTTON_LABEL') }}
+							</button>
+						</ng-container>
+						<ng-container *ngIf="layoutAvailable">
+							<button class='button' style="margin-right: 8px" (click)="_onChooseColumns()">
+								<fa-icon [icon]="list" size="lg"></fa-icon>
+								&nbsp;{{ L10n.Term('.LBL_AVAILABLE_COLUMNS') }}
+							</button>
+						</ng-container>
+						<span class="paginationButtonPrevious" style="cursor: pointer;" (click)="_onPrevPage()">
+							<img class="paginationButtonPrevious" [src]="themeURL + (activePage > 1 ? 'previous.gif' : 'previous_off.gif')" />
+							<span style="margin: 3px;">{{ L10n.Term('.LNK_LIST_PREVIOUS') }}</span>
+						</span>
+						<span style="margin: 3px;">
+							(<span class="react-bootstrap-table-pagination-total">
+							{{ 1 + (activePage - 1) * TOP }}
+							-
+							{{ min(activePage * TOP, __total) }}
+							{{ L10n.Term('.LBL_LIST_OF') }} {{ __total }}
+							</span>)
+						</span>
+						<span class="paginationButtonNext" style="cursor: pointer;" (click)="_onNextPage()">
+							<span style="margin: 3px;">{{ L10n.Term('.LNK_LIST_NEXT'    ) }}</span>
+							<img class="paginationButtonNext" [src]="themeURL + (activePage * TOP < __total ? 'next.gif' : 'next_off.gif')" />
+						</span>
+					</td>
+				</tr>
+			</table>
+
+			<div class="react-bootstrap-table bg-white">
+				<table class="table table-hover listView" cellSpacing="1" cellPadding="3" style="width: 100%">
+					<thead>
+						<tr class="listViewThS1">
+							<ng-container *ngIf="columns">
+								<ng-container *ngFor="let column of columns; let colIndex = index;">
+									<th [class]="column.headerClasses" [ngStyle]="column.headerStyle" width="column.attrs && column.attrs.width ? column.attrs : null">
+										<SplendidGridDefaultHeader
+											[MODULE_NAME]="MODULE_NAME"
+											[archiveView]="archiveView"
+											[enableMassUpdate]="enableMassUpdate"
+											[enableSelection]="enableSelection"
+											[isPopupView]="isPopupView"
+											[colIndex]="colIndex"
+											[column]="column"
+											[SORT_FIELD]="SORT_FIELD"
+											[SORT_DIRECTION]="SORT_DIRECTION"
+											(onLayoutLoaded)="_onButtonsLoaded()"
+											(onChangeSort)="_onChangeSort($event)"
+											[hasPageCommand]="Page_Command.observed"
+											(Page_Command)="_onPage_Command($event)"
+										></SplendidGridDefaultHeader>
+									</th>
+								</ng-container>
+							</ng-container>
+						</tr>
+					</thead>
+					<tbody>
+						<ng-container *ngIf="vwMain">
+							<ng-container *ngFor="let row of vwMain; let rowIndex = index;">
+						<tr [class]="rowIndex % 2 ? 'evenListRowS1' : 'oddListRowS1'">
+								<ng-container *ngFor="let column of columns; let colIndex = index;">
+									<td [class]="column.classes" [ngStyle]="column.style" width="column.attrs && column.attrs.width ? column.attrs : null">
+										<SplendidGridDynamicColumn
+											[MODULE_NAME]="MODULE_NAME"
+											[isPopupView]="isPopupView"
+											[colIndex]="colIndex"
+											[column]="column"
+											[rowIndex]="rowIndex"
+											[row]="row"
+											[template]="column.formatter(null, row, rowIndex, column.formatExtraData)"
+											(Page_Command)="_onPage_Command($event)"
+											[hasHyperLinkCallback]="hyperLinkCallback.observed"
+											(hyperLinkCallback)="_onHyperLinkCallback($event)"
+										></SplendidGridDynamicColumn>
+									</td>
+								</ng-container>
+						</tr>
+							</ng-container>
+						</ng-container>
+					</tbody>
+				</table>
+			</div>
+
+			<ng-container *ngIf="enableSelection && sTheme != 'Pacific'">
+				<div>
+					<a href='#' (click)="_onSelectPage($event)" class="listViewCheckLink">{{ L10n.Term('.LBL_SELECT_PAGE' ) }}</a>
+					&nbsp;-&nbsp;
+					<a href='#' (click)="_onSelectAll($event)"  class="listViewCheckLink">{{ L10n.Term('.LBL_SELECT_ALL'  ) }}</a>
+					&nbsp;-&nbsp;
+					<a href='#' (click)="onDeselectAll($event)" class="listViewCheckLink">{{ L10n.Term('.LBL_DESELECT_ALL') }}</a>
+					&nbsp;&nbsp;
+					{{ L10n.Term('.LBL_SELECTED').replace('{0}', this.checkedCount) }}
+				</div>
+			</ng-container>
+		</ng-container>
+	</div>
+</ng-container>
+<ng-container *ngIf="IsLoading()">
+	<div style="text-align: center">
+		<fa-icon [icon]="spinner" size='5x' [spin]="true"></fa-icon>
+	</div>
+</ng-container>

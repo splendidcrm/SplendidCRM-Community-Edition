@@ -67,5 +67,6 @@ using System.Reflection;
 // 12/27/2019 Paul.  Version 13.0 introduces the React Client.
 // 08/29/2021 Paul.  Version 14.0 adds machine learning to Enterprise. 
 // 04/10/2022 Paul.  Version 14.5 add Pacific theme. 
-[assembly: AssemblyVersion("14.5.*")]
+// 07/31/2022 Paul.  Version 14.6 includes experimental Angular code. 
+[assembly: AssemblyVersion("14.6.*")]
 

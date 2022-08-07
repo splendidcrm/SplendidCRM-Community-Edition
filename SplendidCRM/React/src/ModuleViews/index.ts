@@ -191,6 +191,7 @@ import WorkflowsSequenceView             from './Administration/Workflows/Sequen
 import MachineLearningModelsDetailView   from './Administration/MachineLearningModels/DetailView'  ;
 import BusinessProcessesEditView         from './Administration/BusinessProcesses/EditView'        ;
 import BusinessProcessesDetailView       from './Administration/BusinessProcesses/DetailView'      ;
+import BusinessProcessesListView         from './Administration/BusinessProcesses/ListView'        ;
 // Azure
 import AzureSystemLogListView            from './Administration/Azure/AzureSystemLog/ListView'     ;
 import AzureOrdersListView               from './Administration/Azure/AzureOrders/ListView'        ;
@@ -454,6 +455,7 @@ export default function ModuleViewFactory(sLAYOUT_NAME: string)
 		case 'MachineLearningModels.DetailView' :  view = MachineLearningModelsDetailView ;  break;
 		case 'BusinessProcesses.EditView'       :  view = BusinessProcessesEditView       ;  break;
 		case 'BusinessProcesses.DetailView'     :  view = BusinessProcessesDetailView     ;  break;
+		case 'BusinessProcesses.ListView'       :  view = BusinessProcessesListView       ;  break;
 		// Azure
 		case 'AzureSystemLog.ListView'          :  view = AzureSystemLogListView          ;  break;
 		case 'AzureOrders.ListView'             :  view = AzureOrdersListView             ;  break;

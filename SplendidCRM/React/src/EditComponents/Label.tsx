@@ -454,10 +454,10 @@ export default class Label extends React.PureComponent<IEditComponentProps, ILab
 	public _onClick = () =>
 	{
 		const { URL } = this.state;
-		let sFullURL: string = URL;
 		if ( StartsWith(URL, '/Reset/') )
 		{
-			sFullURL = URL.replace('/Reset/', Credentials.RemoteServer + 'React/');
+			// 06/10/2022 Paul.  We don't have the history, so just navigate directly. 
+			window.location.href = URL.replace('/Reset/', Credentials.RemoteServer + 'React/');
 		}
 		else
 		{

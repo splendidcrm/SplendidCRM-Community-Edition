@@ -1,0 +1,46 @@
+<ng-container *ngIf="layout && arrPanels">
+	<ng-container *ngFor="let panel of arrPanels">
+<div [class]="panel.props.class" [ngStyle]="panel.props.style">
+		<ng-container *ngFor="let table of panel.children">
+			<ng-container [ngSwitch]="table.tag">
+	<table *ngSwitchCase="'table'" [id]="table.props.id" [class]="table.props.class" [ngStyle]="table.props.style">
+					<ng-container *ngFor="let tbody of table.children">
+						<ng-container [ngSwitch]="tbody.tag">
+		<tbody *ngSwitchCase="'tbody'">
+							<ng-container *ngFor="let tr of tbody.children">
+								<ng-container [ngSwitch]="tr.tag">
+			<tr *ngSwitchCase="'tr'">
+									<ng-container *ngFor="let td of tr.children">
+										<ng-container [ngSwitch]="td.tag">
+				<td *ngSwitchCase="'td'" [class]="td.props.class" [ngStyle]="td.props.style" [attr.colspan]="td.props.colSpan">
+										<ng-container *ngFor="let template of td.children" [ngSwitch]="TypeOf(template)" #cell>
+											<ng-container *ngSwitchCase="'string'">
+												{{ template }}
+											</ng-container>
+											<ng-container *ngSwitchCase="'object'">
+												<EditViewDynamicField
+													[template]="template"
+													(onChanged)="_onChanged($event)"
+													(onSubmit)="_onSubmit()"
+													(onUpdate)="_onUpdate($event)"
+													(createDependency)="_onCreateDependency($event)"
+													(Page_Command)="_onPage_Command($event)"
+													(fieldDidMount)="_onFieldDidMount($event)"
+												></EditViewDynamicField>
+											</ng-container>
+										</ng-container>
+				</td>
+										</ng-container>
+									</ng-container>
+			</tr>
+								</ng-container>
+							</ng-container>
+		</tbody>
+						</ng-container>
+					</ng-container>
+	</table>
+			</ng-container>
+		</ng-container>
+</div>
+	</ng-container>
+</ng-container>

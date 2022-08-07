@@ -475,11 +475,11 @@ class AccountsPopupViewJS extends React.Component<IPopupViewProps, IPopupViewSta
 						</div>
 					</div>
 					: <div>
-						<ListHeader TITLE={ TITLE } />
+						<h2>{ sMODULE_TITLE }</h2>
 						<ErrorComponent error={error} />
 					</div>
 					}
-					<div style={ {display: (open ? 'block' : 'none')} }>
+					<div style={ {display: (open || sTheme != 'Pacific' ? 'block' : 'none')} }>
 						<SearchView
 							key={ EDIT_NAME }
 							EDIT_NAME={ EDIT_NAME }
@@ -510,10 +510,7 @@ class AccountsPopupViewJS extends React.Component<IPopupViewProps, IPopupViewSta
 					</div>
 					: null
 					}
-					{ sTheme == 'Pacific'
-					? null
-					: <ListHeader MODULE_NAME={ MODULE_NAME } />
-					}
+					<ListHeader MODULE_NAME={ MODULE_NAME } />
 					<div style={ {display: 'flex', flexDirection: 'row'} }>
 						<div>
 							{ multiSelect

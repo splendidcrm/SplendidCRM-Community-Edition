@@ -39,6 +39,8 @@ export default class OrdersLineItems extends OrdersLineItemsEditor<IOrdersLineIt
 			obj.EXCHANGE_RATE = this.state.EXCHANGE_RATE;
 			obj.TAXRATE_ID    = this.state.TAXRATE_ID   ;
 			obj.SHIPPER_ID    = this.state.SHIPPER_ID   ;
+			// 06/21/2022 Paul.  Must manually include the shipping fees. 
+			obj.SHIPPING      = this.state.SHIPPING     ;
 		}
 		return obj;
 	}

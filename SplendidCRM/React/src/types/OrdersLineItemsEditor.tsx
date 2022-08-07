@@ -652,6 +652,7 @@ export default abstract class OrdersLineItemsEditor<P extends IOrdersLineItemsEd
 		const { onChanged } = this.props;
 		const { bEnableTaxShipping, bEnableSalesTax, bEnableTaxLineItems } = this.state;
 		const { SHIPPING, TAXRATE_ID } = this.state;
+		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.UpdateTotals');
 
 		let LineItems: any[] = [];
 		if ( this.lineItems.current )
@@ -784,13 +785,18 @@ export default abstract class OrdersLineItemsEditor<P extends IOrdersLineItemsEd
 		const { onChanged } = this.props;
 		let SHIPPING: number = Sql.ToDecimal(e.target.value).toString();
 		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onSHIPPING_Change', SHIPPING);
-		this.setState({ SHIPPING });
-		onChanged('SHIPPING', SHIPPING);
-		this.UpdateTotals();
+		// 05/20/2022 Paul.  Must wait to send change until after state has changed. 
+		this.setState({ SHIPPING }, () =>
+		{
+			onChanged('SHIPPING', SHIPPING);
+			// 07/03/2022 Paul.  Don't update totals while editing as it resets the shipping value as well. 
+			//this.UpdateTotals();
+		});
 	}
 
 	private _onSHIPPING_Blur = (e) =>
 	{
+		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onSHIPPING_Blur');
 		this.UpdateTotals();
 	}
 

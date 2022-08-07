@@ -1,0 +1,62 @@
+<ng-container *ngIf="bIsInitialized && bIsAuthenticated">
+	<ng-container *ngIf="IsStackedLayout()">
+		<ng-container *ngIf="initialOpen">
+			<table class="MassUpdateHeaderFrame" cellSpacing="1" cellPadding="0" style="width: 100%; border: none">
+				<tbody><tr>
+					<td style="width: 99%; white-space: nowrap">
+						<span class="MassUpdateHeaderName">{{ L10n.Term('.LBL_MASS_UPDATE_TITLE') }}</span>
+					</td>
+					<td>
+						<input type="submit" class="MassUpdateHeaderFirstButton" [value]="'  ' + L10n.Term('.LBL_UPDATE') + '  '" [title]="L10n.Term('.LBL_UPDATE')" (click)="_onMassUpdate('MassUpdate')" />
+					</td>
+					<td style="vertical-align: center">
+						<span style="cursor: pointer; margin: 6px" (click)="ToggleMassUpdate()">
+							<fa-icon [icon]="times" size='2x'></fa-icon>
+						</span>
+					</td>
+				</tr></tbody>
+			</table>
+			<ErrorComponent [error]="error"></ErrorComponent>
+			<ng-container *ngIf="layout && !archiveView">
+				<SplendidDynamic_EditView
+					[row]="item"
+					[layout]="layout"
+					sPanelClass="tabForm tabMassUpdate"
+					(callback)="editViewCallback($event)"
+					(createDependency)="_createDependency($event)"
+					(onChange)="_onChange($event)"
+					(onUpdate)="_onUpdate($event)"
+					(onSubmit)="_onSubmit()"
+					(Page_Command)="Page_Command($event)"
+					[isSearchView]="false"
+					style="width: 100%"
+				></SplendidDynamic_EditView>
+			</ng-container>
+		</ng-container>
+	</ng-container>
+	<ng-container *ngIf="!IsStackedLayout()">
+		<DynamicButtons
+			ButtonStyle="MassUpdateHeader"
+			[VIEW_NAME]="MODULE_NAME + '.MassUpdate' + (archiveView ? '.ArchiveView' : '')"
+			[row]="null"
+			(Page_Command)="Page_Command($event)"
+			#dynamicButtons
+		></DynamicButtons>
+		<ErrorComponent [error]="error"></ErrorComponent>
+		<ng-container *ngIf="layout && !archiveView">
+			<SplendidDynamic_EditView
+				[row]="item"
+				[layout]="layout"
+				sPanelClass="tabForm tabMassUpdate"
+				(callback)="editViewCallback($event)"
+				(createDependency)="_createDependency($event)"
+				(onChange)="_onChange($event)"
+				(onUpdate)="_onUpdate($event)"
+				(onSubmit)="_onSubmit()"
+				(Page_Command)="Page_Command($event)"
+				[isSearchView]="false"
+				style="width: 100%"
+			></SplendidDynamic_EditView>
+		</ng-container>
+	</ng-container>
+</ng-container>

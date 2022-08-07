@@ -1,0 +1,139 @@
+<HelpView
+	[isOpen]="helpOpen"
+	(callback)="_onHelpClose()"
+	[MODULE_NAME]="MODULE_NAME"
+	[helpName]="helpName"
+></HelpView>
+<div [id]="'divModuleHeader' + MODULE_NAME">
+	<table class='moduleTitle' cellPadding="0" cellSpacing="1" style="width: 100%">
+		<tr>
+			<td style="width: 99%">
+				<h2>
+					<ng-container *ngIf="!hideTitle">
+						<a [href]="sModuleUrl" (click)="_onClickModule($event)">{{ sMODULE_TITLE }}</a>
+					</ng-container>
+					<ng-container *ngIf="!IsEmptyString(ID)">
+						<span>
+							<span style="padding-left: 10px; padding-right: 10px"><fa-icon [icon]="angleDoubleRight"></fa-icon></span>
+							<ng-container *ngIf="Security.IS_ADMIN() || MODULE_NAME != 'Users'">
+								<a [href]="sItemUrl" (click)="_onClickItem($event)">
+									{{ SUB_TITLE }}
+								</a>
+							</ng-container>
+							<ng-container *ngIf="!(Security.IS_ADMIN() || MODULE_NAME != 'Users')">
+								<span>{{ SUB_TITLE }}</span>
+							</ng-container>
+						</span>
+					</ng-container>
+					<ng-container *ngIf="!bIsMobile && enableFavorites && !archiveView && !Crm_Config.ToBoolean('disable_favorites') && !IsEmptyGuid(ID)">
+						<ng-container *ngIf="IsEmptyGuid(row['FAVORITE_RECORD_ID'])">
+							<a href='#' class='utilsLink' (click)="_onChangeFavorites($event)">
+								<fa-icon [icon]="farStar" size='2x' [title]="L10n.Term('.LBL_ADD_TO_FAVORITES')"></fa-icon>
+							</a>
+						</ng-container>
+						<ng-container *ngIf="!IsEmptyGuid(row['FAVORITE_RECORD_ID'])">
+							<a href='#' class='utilsLink' (click)="_onChangeFavorites($event)">
+								<fa-icon [icon]="fasStar" size='2x' [title]="L10n.Term('.LBL_REMOVE_FROM_FAVORITES')"></fa-icon>
+							</a>
+						</ng-container>
+					</ng-container>
+					<ng-container *ngIf="!bIsMobile && streamEnabled && enableFavorites && !archiveView && !Crm_Config.ToBoolean('disable_following') && Crm_Config.ToBoolean('enable_activity_streams') && !IsEmptyGuid(ID)">
+						<ng-container *ngIf="IsEmptyGuid(row['SUBSCRIPTION_PARENT_ID'])">
+							<a href='#' class='utilsLink' (click)="_onChangeFollowing($event)">
+								<fa-icon [icon]="farArrowAltCircleRight" size='2x' [title]="L10n.Term('.LBL_FOLLOW')"></fa-icon>
+							</a>
+						</ng-container>
+						<ng-container *ngIf="!IsEmptyGuid(row['SUBSCRIPTION_PARENT_ID'])">
+							<a href='#' class='utilsLink' (click)="_onChangeFollowing($event)">
+								<fa-icon [icon]="fasArrowAltCircleRight" size='2x' [title]="L10n.Term('.LBL_FOLLOWING')"></fa-icon>
+							</a>
+						</ng-container>
+					</ng-container>
+				</h2>
+			</td>
+			<td style="vertical-align: top; text-align: right; padding-top: 3px; padding-left: 5px; white-space: nowrap">
+				<ng-container *ngIf="enableHelp && !Crm_Config.ToBoolean('hide_help') && !IsEmptyString(helpName)">
+					<a href='#' class='utilsLink' (click)="_onClickHelp($event)">
+						<img [src]="themeURL + 'images/help.gif'" [alt]="helpText" />
+						{{ helpText }}
+					</a>
+				</ng-container>
+			</td>
+		</tr>
+	</table>
+</div>
+<ng-container *ngIf="bResponsive">
+	<ng-container *ngIf="showButtons && !!showProcess && row != null && row['PENDING_PROCESS_ID']">
+		<ProcessButtons [MODULE_NAME]="MODULE_NAME" [ID]="ID" [PENDING_PROCESS_ID]="row ? row['PENDING_PROCESS_ID'] : null"></ProcessButtons>
+	</ng-container>
+	<ng-container *ngIf="!(showButtons && !!showProcess && row != null && row['PENDING_PROCESS_ID']) && showButtons">
+		<DynamicButtons
+			[ButtonStyle]="ButtonStyle"
+			[FrameStyle]="FrameStyle"
+			[ContentStyle]="ContentStyle"
+			[VIEW_NAME]="VIEW_NAME"
+			[row]="row"
+			(Page_Command)="_onPage_Command($event)"
+			(onButtonLink)="_onButtonLink($event)"
+			[buttonLinkObserved]="buttonLinkObserved"
+		></DynamicButtons>
+	</ng-container>
+	<ng-container *ngIf="!IsEmptyString(sError)">
+		<div class='error'>{{ sError }}</div>
+	</ng-container>
+	<ng-container *ngIf="showButtons && !IsEmptyString(LINK_NAME)">
+		<DynamicButtons
+			[ButtonStyle]="ButtonStyle"
+			[FrameStyle]="FrameStyle"
+			[ContentStyle]="ContentStyle"
+			[VIEW_NAME]="LINK_NAME"
+			[row]="row"
+			(Page_Command)="_onPage_Command($event)"
+		></DynamicButtons>
+	</ng-container>
+</ng-container>
+<ng-container *ngIf="!bResponsive">
+	<table cellPadding="0" cellSpacing="1" style="width: 100%; padding-bottom: 2px">
+		<tr>
+			<td style="width: 10%; white-space: nowrap">
+				<ng-container *ngIf="showButtons && !!showProcess && row != null && row['PENDING_PROCESS_ID']">
+					<ProcessButtons [MODULE_NAME]="MODULE_NAME" [ID]="ID" [PENDING_PROCESS_ID]="row ? row['PENDING_PROCESS_ID'] : null"></ProcessButtons>
+				</ng-container>
+				<ng-container *ngIf="!(showButtons && !!showProcess && row != null && row['PENDING_PROCESS_ID']) && showButtons">
+					<DynamicButtons
+						[ButtonStyle]="ButtonStyle"
+						[FrameStyle]="FrameStyle"
+						[ContentStyle]="ContentStyle"
+						[VIEW_NAME]="VIEW_NAME"
+						[row]="row"
+						(Page_Command)="_onPage_Command($event)"
+						(onButtonLink)="_onButtonLink($event)"
+						[buttonLinkObserved]="buttonLinkObserved"
+					></DynamicButtons>
+				</ng-container>
+			</td>
+			<td style="width: 79%">
+				<ng-container *ngIf="!IsEmptyString(sError)">
+					<span class='error'>{{ sError }}</span>
+				</ng-container>
+			</td>
+			<td style="width: 10%; text-align: right; white-space: nowrap">
+				<ng-container *ngIf="showButtons && !IsEmptyString(LINK_NAME)">
+					<DynamicButtons
+						[ButtonStyle]="ButtonStyle"
+						[FrameStyle]="FrameStyle"
+						[ContentStyle]="ContentStyle"
+						[VIEW_NAME]="LINK_NAME"
+						[row]="row"
+						(Page_Command)="_onPage_Command($event)"
+					></DynamicButtons>
+				</ng-container>
+			</td>
+			<td [ngStyle]="{textAlign: 'right', display: (showRequired ? 'inline' : 'none'), whiteSpace: 'nowrap'}">
+				<span class='required'>{{ L10n.Term('.LBL_REQUIRED_SYMBOL') }}</span>
+				&nbsp;
+				<span style="white-space: nowrap">{{ L10n.Term('.NTC_REQUIRED') }}</span>
+			</td>
+		</tr>
+	</table>
+</ng-container>

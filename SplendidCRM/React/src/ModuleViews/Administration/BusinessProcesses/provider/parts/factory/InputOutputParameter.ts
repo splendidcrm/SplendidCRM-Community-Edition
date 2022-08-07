@@ -190,7 +190,8 @@ export default function(element, bpmnFactory, options)
 	*/
 
 	// parameter value (type = text) ///////////////////////////////////////////////////////
-	entries.push(entryFactory.textArea(
+	// 05/10/2022 Paul.  Changed to textBox. 
+	entries.push(entryFactory.textBox(
 	{
 		id            : idPrefix + 'parameterType-text',
 		label         : L10n.Term('BusinessProcesses.LBL_BPMN_PARAMETER_VALUE'),

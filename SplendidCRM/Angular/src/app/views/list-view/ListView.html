@@ -1,0 +1,80 @@
+<ng-container *ngIf="IsReady()">
+	<div style="display: flex; flex-direction: row; flex-wrap: nowrap; width: 100%">
+		<div id='divListView' style="width: 100%">
+			<HeaderButtonsFactory
+				[MODULE_NAME]="MODULE_NAME"
+				[MODULE_TITLE]="MODULE_TITLE"
+				[enableFavorites]="true"
+				[error]="error"
+				[enableHelp]="true"
+				helpName='DetailView'
+				ButtonStyle='ModuleHeader'
+				[VIEW_NAME]="GRID_NAME"
+				(Page_Command)="Page_Command($event)"
+				[showButtons]="true"
+				[showProcess]="true"
+				#headerButtons
+			></HeaderButtonsFactory>
+			<div [ngStyle]="{display: (showSearchView == 'show' ? 'block' : 'none')}">
+				<ng-container *ngIf="searchTabsEnabled">
+					<SearchTabs
+						[searchMode]="searchMode"
+						[duplicateSearchEnabled]="duplicateSearchEnabled"
+						(onTabChange)="_onSearchTabChange($event)"
+					></SearchTabs>
+				</ng-container>
+					<SearchView
+						[EDIT_NAME]="MODULE_NAME + '.Search' + searchMode"
+						[AutoSaveSearch]="IsAutoSaveSearch()"
+						[ShowSearchViews]="true"
+						[ShowDuplicateFilter]="searchMode == 'Duplicates'"
+						(cbSearch)="_onSearchViewCallback($event)"
+						#searchView
+					></SearchView>
+			</div>
+			<ExportHeader
+				[MODULE_NAME]="MODULE_NAME"
+				(onExport)="_onExport($event)"
+			></ExportHeader>
+			<SplendidGrid
+				(onLayoutLoaded)="_onGridLayoutLoaded()"
+				[MODULE_NAME]="MODULE_NAME"
+				[RELATED_MODULE]="RELATED_MODULE"
+				[GRID_NAME]="GRID_NAME"
+				[TABLE_NAME]="TABLE_NAME"
+				[SORT_FIELD]="SORT_FIELD"
+				[SORT_DIRECTION]="SORT_DIRECTION"
+				[ADMIN_MODE]="false"
+				[AutoSaveSearch]="IsAutoSaveSearch()"
+				[archiveView]="ArchiveViewEnabled()"
+				[deferLoad]="true"
+				[enableExportHeader]="true"
+				[enableSelection]="IsSelectionEnabled()"
+				[enableFavorites]="true"
+				[enableFollowing]="true"
+				(selectionChanged)="_onSelectionChanged($event)"
+				(hyperLinkCallback)="_onHyperLinkCallback($event)"
+				[enableMassUpdate]="enableMassUpdate"
+				[rowRequiredSearch]="rowRequiredSearch"
+				(onComponentComplete)="_onComponentComplete($event)"
+				(Page_Command)="Grid_Command($event)"
+				[scrollable]="true"
+				#splendidGrid
+			></SplendidGrid>
+			<ng-container *ngIf="showUpdatePanel">
+				<DynamicMassUpdate
+					[MODULE_NAME]="MODULE_NAME"
+					(onUpdateComplete)="_onUpdateComplete($event)"
+					[archiveView]="ArchiveViewEnabled()"
+					#updatePanel
+				></DynamicMassUpdate>
+			</ng-container>
+		</div>
+		<PreviewDashboard [MODULE_NAME]="MODULE_NAME" [ID]="PREVIEW_ID"></PreviewDashboard>
+	</div>
+</ng-container>
+<ng-container *ngIf="IsNotReady()">
+	<div style="text-align: center">
+		<fa-icon [icon]="spinner" size='5x' [spin]="true"></fa-icon>
+	</div>
+</ng-container>

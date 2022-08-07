@@ -1212,7 +1212,7 @@ class ArcticTopNav extends React.Component<ITopNavProps, ITopNavState>
 								>
 									<tr>
 										<td className='otherTab' style={ {whiteSpace: 'nowrap'} }>
-											<span id='ctlSixToolbar_ctlTabMenu_labTabMenuMore' className='otherTabMoreArrow' style={ {paddingRight: '6px'} }>More</span><img id='ctlSixToolbar_ctlTabMenu_imgTabMenuMore' src={ this.themeURL + 'images/more.gif' } style={ {borderWidth: '0px', height: '20px', width: '16px'} } /><br />
+											<span id='ctlSixToolbar_ctlTabMenu_labTabMenuMore' className='otherTabMoreArrow' style={ {paddingRight: '6px'} }>{ L10n.Term('.LBL_MORE') }</span><img id='ctlSixToolbar_ctlTabMenu_imgTabMenuMore' src={ this.themeURL + 'images/more.gif' } style={ {borderWidth: '0px', height: '20px', width: '16px'} } /><br />
 											<a href='#' onClick={ (e) => { e.preventDefault(); this.moduleTabClick('more'); } } style={ cssTouchTab }><img src={ Credentials.RemoteServer + 'Include/images/blank.gif' } style={ cssTouchImage } /></a>
 										</td>
 									</tr>

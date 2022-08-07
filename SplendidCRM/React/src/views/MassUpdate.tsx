@@ -216,7 +216,8 @@ export default class MassUpdate extends React.Component<IMassUpdateProps, IMassU
 	{
 		const { MODULE_NAME } = this.props;
 		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onRulesWizard', MODULE_NAME);
-		//this.props.history.push('/RulesWizard/' + MODULE_NAME);
+		// 07/30/2022 Paul.  This code is not used as the buttons typically use ButtonLink. 
+		this.props.history.push('/RulesWizard/Edit?Module=' + MODULE_NAME);
 		if ( this._isMounted )
 		{
 			this.setState({ error: L10n.Term('.LBL_FEATURE_NOT_SUPPORTED') });

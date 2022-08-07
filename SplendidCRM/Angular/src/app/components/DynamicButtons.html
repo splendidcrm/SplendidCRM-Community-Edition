@@ -1,0 +1,19 @@
+<ng-container *ngIf="layout">
+	<div [style]="FrameStyle">
+		<ng-container *ngIf="!(layout == null || layout.length == 0) && pnlDynamicButtons && pnlDynamicButtonsChildren">
+			<div [id]="pnlDynamicButtons.props.id" [class]="pnlDynamicButtons.props.class" [ngStyle]="pnlDynamicButtons.props.style">
+			<ng-container *ngFor="let button of pnlDynamicButtonsChildren">
+				<ng-container [ngSwitch]="button.tag">
+					<input *ngSwitchCase="'input'" [id]="button.props.id" [type]="button.props.type" [class]="button.props.class" [ngStyle]="button.props.style" [value]="button.props.value" (click)="button.props.onClick($event)" />
+				</ng-container>
+			</ng-container>
+			</div>
+		</ng-container>
+		<ErrorComponent [error]="error"></ErrorComponent>
+		<ng-container *ngIf="busy">
+			<div style="text-align: center">
+				<fa-icon [icon]="spinner" size='5x' [spin]="true"></fa-icon>
+			</div>
+		</ng-container>
+	</div>
+</ng-container>

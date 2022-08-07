@@ -436,7 +436,8 @@ export default function(group, element, bpmnFactory, elementRegistry, eventBus)
 			}
 		}));
 
-		group.entries.push(entryFactory.textArea(
+		// 05/10/2022 Paul.  Changed to textBox. 
+		group.entries.push(entryFactory.textBox(
 		{
 			id            : 'module-field-expression',
 			label         : L10n.Term('BusinessProcesses.LBL_BPMN_EXPRESSION'),

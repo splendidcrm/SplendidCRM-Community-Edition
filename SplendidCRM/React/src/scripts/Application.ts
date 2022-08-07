@@ -251,9 +251,10 @@ export async function Application_GetReactState(source): Promise<any>
 	//let dtEnd = new Date();
 	//let nSeconds = Math.round((dtEnd.getTime() - dtStart.getTime()) / 1000);
 	//console.log((new Date()).toISOString() + ' ' + 'Application_GetReactState took ' + nSeconds.toString() + ' seconds');
-	if ( json.d == null )
+	// 07/30/2022 Paul.  Rare case, but needs to be accounted for. 
+	if ( json == null || json.d == null )
 	{
-		console.error((new Date()).toISOString() + ' ' + 'Application_GetReactState missing data', json.d.TERMINOLOGY);
+		console.error((new Date()).toISOString() + ' ' + 'Application_GetReactState missing data');
 		return;
 	}
 	else if ( json.d.TERMINOLOGY == null || json.d.TERMINOLOGY.length == 0 )
@@ -502,9 +503,10 @@ export async function Admin_GetReactState(sCaller?: string): Promise<any>
 	var dtEnd = new Date();
 	var nSeconds = Math.round((dtEnd.getTime() - dtStart.getTime()) / 1000);
 	//console.log((new Date()).toISOString() + ' ' + 'Admin_GetReactState took ' + nSeconds.toString() + ' seconds');
-	if ( json.d == null )
+	// 07/30/2022 Paul.  Rare case, but needs to be accounted for. 
+	if ( json == null || json.d == null )
 	{
-		console.error((new Date()).toISOString() + ' ' + 'Admin_GetReactState missing data', json.d.TERMINOLOGY);
+		console.error((new Date()).toISOString() + ' ' + 'Admin_GetReactState missing data', json);
 		return;
 	}
 	else if ( json.d.TERMINOLOGY == null || json.d.TERMINOLOGY.length == 0 )

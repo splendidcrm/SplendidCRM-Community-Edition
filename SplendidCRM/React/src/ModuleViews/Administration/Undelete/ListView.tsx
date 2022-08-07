@@ -395,7 +395,8 @@ class UndeleteListView extends React.Component<IAdminListViewProps, IAdminListVi
 
 	private _onCheckboxClick = (ev) =>
 	{
-		this.setState({ BACKGROUND_OPERATION: ev.target.checkedy });
+		// 06/20/2022 Paul.  Correct issue with miss-spelled checked. 
+		this.setState({ BACKGROUND_OPERATION: ev.target.checked });
 	}
 
 	private _onUndelete = async (e) =>

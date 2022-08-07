@@ -1,0 +1,115 @@
+<ng-container *ngIf="process">
+	<div>
+		<ng-container *ngIf="pnlProcessButtons && pnlProcessButtons.children">
+			<div [id]="pnlProcessButtons.props.id" [class]="pnlProcessButtons.props.class" [ngStyle]="pnlProcessButtons.props.style">
+				<ng-container *ngFor="let button of pnlProcessButtons.children">
+					<ng-container [ngSwitch]="button.tag">
+						<button *ngSwitchCase="'button'" [id]="button.props.id" [class]="button.props.class" [ngStyle]="button.props.style" (click)="button.props.onClick($event)">{{ button.text }}</button>
+						<div *ngSwitchCase="'div'"  [class]="button.props.class" [ngStyle]="button.props.style" [innerHTML]="button.text"></div>
+					</ng-container>
+				</ng-container>
+			</div>
+		</ng-container>
+		<ErrorComponent [error]="error"></ErrorComponent>
+		<PopupView
+			[isOpen]="popupOpen"
+			(callback)="_onSelect($event)"
+			MODULE_NAME='Users'
+			[showProcessNotes]="true"
+		></PopupView>
+		<ng-container *ngIf="showHistory">
+			<div [class]="'fade modal-backdrop ' + (showHistory ? 'show' : 'hide')"></div>
+			<div role="dialog" aria-modal="true" [class]="'fade modal ' + (showHistory ? 'show' : 'hide')" tabindex="-1" style="display: block; z-index: 2000;">
+				<div class="modal-dialog" style="min-height: 80vh; min-width: 80vw">
+					<div class="modal-content">
+						<div class="modal-body">
+							<ng-container *ngIf="showHistory && history">
+								<div>
+									<h3>{{ historyTitle }}</h3>
+									<ng-container *ngFor="let item of history">
+										<div style="display: table-row">
+											<div style="display: table-cell; width: 1%; vertical-align: top; padding-top: 6px; padding-right: 4px">
+												<ng-container *ngIf="!IsEmptyString(item['PICTURE']) && !IsEmptyGuid(item['CREATED_BY_ID'])">
+													<img [src]="item['PICTURE']" style="width: 36px; height: 36px; border-radius: 4px" />
+												</ng-container>
+												<ng-container *ngIf="IsEmptyString(item['PICTURE']) && !IsEmptyGuid(item['CREATED_BY_ID'])">
+													<img [src]="icon" style="width: 36px; height: 36px; border-radius: 4px" />
+												</ng-container>
+												<ng-container *ngIf="IsEmptyGuid(item['CREATED_BY_ID'])">
+													<div class='ModuleHeaderModule ModuleHeaderModuleBusinessProcesses ListHeaderModule'>BP</div>
+												</ng-container>
+											</div>
+											<div style="display: table-cell; width: 85%; vertical-align: top; padding-top: 6px; padding-right: 4px">
+												<div [innerHTML]="item['DESCRIPTION']"></div>
+												<div style="color: #777; padding-top: 4px">{{ Formatting.FromJsonDate(item['DATE_ENTERED'], Security.USER_DATE_FORMAT() + ' ' + Security.USER_TIME_FORMAT()) }}</div>
+											</div>
+											<div style="display: table-cell; width: 14%; vertical-align: top; padding-top: 6px">
+												<div>{{ item['TIME_FROM_NOW'] }}</div>
+											</div>
+										</div>
+									</ng-container>
+								</div>
+							</ng-container>
+						</div>
+						<div class="modal-footer">
+							<button class='button' (click)="_onCloseHistory()">{{ L10n.Term('.LBL_CLOSE_BUTTON_LABEL') }}</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</ng-container>
+		<ng-container *ngIf="showNotes">
+			<div [class]="'fade modal-backdrop ' + (showNotes ? 'show' : 'hide')"></div>
+			<div role="dialog" aria-modal="true" [class]="'fade modal ' + (showNotes ? 'show' : 'hide')" tabindex="-1" style="display: block; z-index: 2000;">
+				<div class="modal-dialog" style="min-height: 80vh; min-width: 80vw">
+					<div class="modal-content">
+						<div class="modal-body">
+							<ng-container *ngIf="showNotes && notes">
+								<div>
+									<h3>{{ notesTitle }}</h3>
+									<div style="display: table; width: 100%">
+										<div style="display: table-row">
+											<div style="display: table-cell; width: 85%">
+												<textarea [value]="NOTE" (change)="_onChangeNote($event)" [rows]="2" style="width: 98%" autoComplete='off'></textarea>
+											</div>
+											<div style="display: table-cell; width: 15%; text-align: left; vertical-align: middle">
+												<input (click)="_onAddNote()" type='submit' [value]="L10n.Term('Processes.LBL_ADD_NOTES')" class='ProcessAddNotes' />
+											</div>
+										</div>
+									</div>
+									<ErrorComponent [error]="notesError"></ErrorComponent>
+									<br />
+									<ng-container *ngFor="let item of notes">
+										<div style="display: table-row">
+											<div style="display: table-cell; width: 1%; vertical-align: top; padding-top: 6px; padding-right: 4px">
+												<ng-container *ngIf="!IsEmptyString(item['PICTURE'])">
+													<img [src]="item['PICTURE']" style="width: 36px; height: 36px; border-radius: 4px" />
+												</ng-container>
+												<ng-container *ngIf="IsEmptyString(item['PICTURE'])">
+													<img [src]="icon" style="width: 36px; height: 36px; border-radius: 4px" />
+												</ng-container>
+											</div>
+											<div style="display: table-cell; width: 85%; vertical-align: top; padding-top: 6px; padding-right: 4px">
+												<div><b>{{ item['CREATED_BY_NAME'] }}</b> -<span [innerHTML]="item['DESCRIPTION']"></span></div>
+												<div style="color: #777; padding-top: 4px">{{ Formatting.FromJsonDate(item['DATE_ENTERED'], Security.USER_DATE_FORMAT() + ' ' + Security.USER_TIME_FORMAT()) }}</div>
+											</div>
+											<div style="display: table-cell; width: 14%; vertical-align: top; padding-top: 6px">
+												<div>{{ item['TIME_FROM_NOW'] }}</div>
+												<div>
+													<a href='#' (click)="_onDeleteNote($event, item['ID'])" type='button' class='listViewTdToolsS1'>{{ L10n.Term('.LBL_DELETE_BUTTON_LABEL') }}</a>
+												</div>
+											</div>
+										</div>
+									</ng-container>
+								</div>
+							</ng-container>
+						</div>
+						<div class="modal-footer">
+							<button class='button' (click)="_onCloseNotes()">{{ L10n.Term('.LBL_CLOSE_BUTTON_LABEL') }}</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</ng-container>
+	</div>
+</ng-container>

@@ -40,7 +40,8 @@ class Hidden extends React.PureComponent<IHiddenProps>
 		else
 		{
 			var sVALUE = (row ? Sql.ToString(row[DATA_FIELD]) : '');
-			return (<div id={sKEY} key={sKEY}>{sVALUE}</div>);
+			// 06/16/2022 Paul.  This code is never reached, but correct to hide the data. 
+			return (<div id={sKEY} key={sKEY} style={ {display: 'none'} }>{sVALUE}</div>);
 		}
 	}
 }

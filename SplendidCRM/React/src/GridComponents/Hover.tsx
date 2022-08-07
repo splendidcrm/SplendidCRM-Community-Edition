@@ -55,21 +55,25 @@ class Hover extends React.PureComponent<IHoverProps, IHoverState>
 			let DATA_FIELD      : string   = Sql.ToString(layout.URL_FIELD );
 			let DATA_FORMAT     : string   = Sql.ToString(layout.URL_FORMAT);
 			let arrERASED_FIELDS: string[] = row['arrERASED_FIELDS'];
-			if ( SplendidCache.bEnableACLFieldSecurity && !Sql.IsEmptyString(DATA_FIELD) && !Sql.IsEmptyString(DATA_FORMAT) )
+			if ( !Sql.IsEmptyString(DATA_FIELD) && !Sql.IsEmptyString(DATA_FORMAT) )
 			{
 				let oNumberFormat = Security.NumberFormatInfo();
 				let gASSIGNED_USER_ID: string = null;
 				let bPARTIAL_ERASED: boolean = false;
 				let arrDATA_FIELD = DATA_FIELD.split(' ');
-				for ( let i = 0; i < arrDATA_FIELD.length; i++ )
+				// 06/19/2022 Paul.  Move Field Security lower. 
+				if ( SplendidCache.bEnableACLFieldSecurity )
 				{
-					// 02/11/2016 Paul.  Exclude terminology. 
-					if ( arrDATA_FIELD[i].indexOf('.') < 0 )
+					for ( let i = 0; i < arrDATA_FIELD.length; i++ )
 					{
-						// 02/11/2016 Paul.  Fix cut-and-paste error.  We were testing sDATA_FIELD and not arrURL_FIELD[i]. 
-						let acl: ACL_FIELD_ACCESS = ACL_FIELD_ACCESS.GetUserFieldSecurity(MODULE_NAME, DATA_FIELD, gASSIGNED_USER_ID);
-						if ( !acl.IsReadable() )
-							arrDATA_FIELD[i] = '.';
+						// 02/11/2016 Paul.  Exclude terminology. 
+						if ( arrDATA_FIELD[i].indexOf('.') < 0 )
+						{
+							// 02/11/2016 Paul.  Fix cut-and-paste error.  We were testing sDATA_FIELD and not arrURL_FIELD[i]. 
+							let acl: ACL_FIELD_ACCESS = ACL_FIELD_ACCESS.GetUserFieldSecurity(MODULE_NAME, DATA_FIELD, gASSIGNED_USER_ID);
+							if ( !acl.IsReadable() )
+								arrDATA_FIELD[i] = '.';
+						}
 					}
 				}
 				//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.constructor ' + DATA_FIELD, row);

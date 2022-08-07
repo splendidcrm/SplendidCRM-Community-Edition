@@ -1,0 +1,198 @@
+<ng-container>
+<div id='divHeader' style='margin-top: 48px'>
+	<div id='ctlSixToolbar' class='divSixToolbar'>
+		<table cellSpacing='0' cellPadding='0' style='border-collapse: collapse' class='SixToolbar'>
+			<tr>
+				<td>
+					<div id='divTabMenu'>
+						<table id='ctlSixToolbar_ctlTabMenu_tblSixMenu' class='tabToolbarFrame' cellSpacing='0' cellPadding='0' style='border-collapse: collapse' >
+							<tr>
+								<td id='ctlSixToolbar_tabToolbar_Home'
+									class='otherHome'
+									[ngStyle]="{ 'background-image': 'url(' + sCompanyHomeImage + ')' }"
+									(mouseover)="moduleTabMouseOver($event, 'Home')"
+									(mouseout)="moduleTabMouseOut($event, 'Home')"
+								>
+									<a href='{{ Credentials.RemoteServer + "Home" }}' title='{{ L10n.Term(".moduleList.Home") }}'
+									   (click)='_onModuleClick($event, "Home")'><img src='{{ Credentials.RemoteServer + "Include/images/blank.gif" }}' style='border-width: 0px; height: 42px; width: 42px' /></a>
+								</td>
+							<ng-container *ngFor="let tabMenu of tabsPrimary">
+								<td valign='bottom'>
+									<table id='{{ "ctlSixToolbar_tabToolbar_" + tabMenu.MODULE_NAME }}' class='tabToolbarFrame' cellSpacing='0' cellPadding=0
+										(click)='moduleTabClick(tabMenu.MODULE_NAME)'
+										(mouseover)="moduleTabMouseOver($event, tabMenu.MODULE_NAME)"
+										(mouseout)="moduleTabMouseOut($event, tabMenu.MODULE_NAME)"
+									>
+										<tr>
+											<td class='{{ (tabMenu.MODULE_NAME == activeModule ? "current" : "other") + "Tab" }}' style='white-space: nowrap'>
+												<a href='{{ Credentials.RemoteServer + tabMenu.MODULE_NAME }}' (click)='_onModuleClick($event, tabMenu.MODULE_NAME)' class='{{ (tabMenu.MODULE_NAME == activeModule ? "current" : "other") + "TabLink" }}'>
+													{{ L10n.Term(tabMenu.DISPLAY_NAME) }}
+												</a>
+											</td>
+										</tr>
+									</table>
+								</td>
+							</ng-container>
+							<ng-container *ngIf="tabsSecondary.length > 0">
+								<td style='display: inline; vertical-align: bottom'>
+									<table id='ctlSixToolbar_tabToolbar_more' class='tabToolbarFrame' cellSpacing='0' cellPadding=0
+										(click)='moduleTabClick("more")'
+										(mouseover)="moduleTabMouseOver($event, 'more')"
+										(mouseout)="moduleTabMouseOut($event, 'more')"
+									>
+										<tr>
+											<td class='otherTab' style='white-space: nowrap'>
+												<span id='ctlSixToolbar_ctlTabMenu_labTabMenuMore' class='otherTabMoreArrow' style='padding-right: 6px'>{{ L10n.Term(".LBL_MORE") }}</span><img id='ctlSixToolbar_ctlTabMenu_imgTabMenuMore' src='{{ themeURL + "images/more.gif" }}' style='border-width: 0px; height: 20px; width: 16px' /><br />
+												<a href='#' (click)='moduleTabClick("more")' [ngStyle]="cssTouchTab"><img src='{{ Credentials.RemoteServer + "Include/images/blank.gif" }}' [ngStyle]="cssTouchImage" /></a>
+											</td>
+										</tr>
+									</table>
+								</td>
+							</ng-container>
+							</tr>
+						</table>
+					</div>
+				</td>
+				<ng-container *ngIf="showUnifiedSearch && unifiedSearchItems > 0">
+					<td align='right' valign='middle'>
+						<div id='ctlSixToolbar_cntUnifiedSearch'
+							(mouseover)="moduleTabMouseOver($event, 'unifiedSearch')"
+							(mouseout)="moduleTabMouseOut($event, 'unifiedSearch')"
+						>
+							<div id='divUnifiedSearch'>
+								<span style='white-space: nowrap'>
+								&nbsp;
+								<input id='ctlSixToolbar_txtUnifiedSearch'
+									type='text'
+									class='searchField'
+									size='30'
+									(keydown)='_onKeyDown'
+									[value]='txtQuickSearch'
+									(change)='_onQuickSearchChange'
+								/>
+								<input id='ctlSixToolbar_btnUnifiedSearch'
+									type='image'
+									class='searchButton'
+									src='{{ themeURL + "images/searchButton.gif" }}'
+									alt='{{ L10n.Term(".LBL_SEARCH") }}'
+									(click)='_onUnifiedSearch()'
+									style='border-width: 0px; height: 20px; width: 25px; vertical-align: middle'
+								/>
+								&nbsp;
+								</span>
+							</div>
+						</div>
+					</td>
+				</ng-container>
+				<td width='100%' class='tabRow'
+					(mouseover)="moduleTabMouseOver($event, 'trailingblank')"
+					(mouseout)="moduleTabMouseOut($event, 'trailingblank')"
+				>
+					<img src='{{ themeURL + "images/blank.gif" }}' style='border-width: 0px; height: 1px; width: 1px' />
+				</td>
+			</tr>
+		</table>
+		<table cellSpacing='0' cellPadding='0' class='SixToolbarUser' style='border-collapse: collapse'>
+			<tr>
+				<td valign='bottom' class='otherUserLeftBorder'>
+					<table id='ctlSixToolbar_tabToolbar_userContextMenu' class='tabToolbarFrame' cellSpacing='0' cellPadding='0' style='height: 100%'
+						(click)='moduleTabClick("userContextMenu")'
+						(mouseover)="moduleTabMouseOver($event, 'userContextMenu')"
+						(mouseout)="moduleTabMouseOut($event, 'userContextMenu')"
+					>
+						<tr>
+							<td class='otherUser' style='white-space: nowrap'>
+								<ng-container *ngIf="Security.IsImpersonating()">
+									<span class='otherTabLink'>{{ L10n.Term('Users.LBL_IMPERSONATING') }}<br /></span>
+								</ng-container>
+								<span class='otherTabLink' style='padding-right: 6px'>{{ Security.FULL_NAME() }}</span>
+								<img class='otherTabMoreArrow' src='{{ themeURL + "images/more.gif" }}' style='border-width: 0px; height: 20px; width: 16px' /><br />
+								<a href='#' (click)='moduleTabClick("userContextMenu")' [ngStyle]="cssTouchTab"><img src='{{ themeURL + "images/blank.gif" }}' [ngStyle]="cssTouchImage" /></a>
+							</td>
+						</tr>
+					</table>
+				</td>
+				<ng-container *ngIf="showQuickCreate">
+					<td valign='bottom' class='otherUserLeftBorder' width='32'>
+						<table id='ctlSixToolbar_tabToolbar_quickCreate' class='tabToolbarFrame' cellSpacing='0' cellPadding='0' style='height: 100%'
+							(click)='moduleTabClick("quickCreate")'
+							(mouseover)="moduleTabMouseOver($event, 'quickCreate')"
+							(mouseout)="moduleTabMouseOut($event, 'quickCreate')"
+						>
+							<tr>
+								<td class='otherQuickCreate'>
+									<img class='otherTabMoreArrow' src='{{ themeURL + "images/ToolbarQuickCreate.gif" }}' style='border-width: 0px; height: 20px; width: 32px' /><br />
+									<a href='#' (click)='moduleTabClick("quickCreate")' [ngStyle]="cssTouchTab"><img src='{{ themeURL + "images/blank.gif" }}' [ngStyle]="cssTouchImage" /></a>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</ng-container>
+			</tr>
+		</table>
+	</div>
+</div>
+	<ng-container *ngIf="showInlineEdit && QUICK_CREATE_MODULE">
+		<div style='padding: .5em'>
+			<div style='margin-bottom: .2em'>
+				<!--DynamicButtons
+					ButtonStyle='EditHeader'
+					VIEW_NAME='NewRecord.WithCancel'
+					[row]='null'
+					(Page_Command)='Page_Command'
+				></DynamicButtons -->
+				<!--ErrorComponent [error]='error'></ErrorComponent -->
+			</div>
+			<div class='tabForm' style='width: 100%; margin-bottom: 4px'>
+				<h4>{{ L10n.Term(QUICK_CREATE_MODULE + ".LBL_NEW_FORM_TITLE") }}</h4>
+				<DynamicEditView
+					MODULE_NAME='{{ QUICK_CREATE_MODULE }}'
+					LAYOUT_NAME='{{ QUICK_CREATE_MODULE + ".EditView.Inline" }}'
+					[rowDefaultSearch]='item'
+					[isQuickCreate]='true'
+					(callback)='editViewCallback($event)'
+				></DynamicEditView>
+			</div>
+		</div>
+	</ng-container>
+	<div id='ctlReminders'>
+		<input type='submit' name='btnREMINDER_UPDATE' value='Update' id='ctlReminders_btnREMINDER_UPDATE' class='button' style='display: none' />
+		<span id='ctlReminders_lblScripts'></span>
+	</div>
+	<ng-container>
+		<ArcticModuleDropdown
+			[MODULE_NAME]="actionsModule"
+			[tabsSecondary]="tabsSecondary"
+			[quickCreate]="quickCreate"
+			(onModuleTabMouseLeave)="_onModuleTabMouseLeave($event)"
+			(onModuleTabClick)="_onModuleTabClick($event)"
+			(onQuickCreate)="_onQuickCreate($event)"
+			(onAction)="_onAction($event)"
+			(onFavorite)="_onFavorite($event)"
+			(onLastViewed)="_onLastViewed($event)"
+			(onUserProfile)="_onUserProfile()"
+			(onAdminPage)="_onAdminPage()"
+			(onAbout)="_onAbout()"
+			(onLogout)="_onLogout()"
+		></ArcticModuleDropdown>
+	</ng-container>
+</ng-container>
+
+<div id='divHeader' *ngIf="!bIsInitialized">
+	<table class='SixToolbarLogin' cellSpacing='0' cellPadding='0' style='border: none'>
+		<tr>
+			<td style='white-space: nowrap'>
+				<table id='tblLoginHeader' class='tabToolbarFrame' cellSpacing='0' cellPadding='0' style='border: none'>
+					<tr>
+						<td>
+							<img id='imgCompanyLogo' [title]='logoTitle' [src]='logoUrl' [ngStyle]="{ height: logoHeight , width: logoWidth , 'border-width': '0px' }" />
+						</td>
+					</tr>
+				</table>
+			</td>
+			<td class='tabRow' style='width: 99%'>
+				&nbsp;
+			</td>
+		</tr>
+	</table>
+</div>

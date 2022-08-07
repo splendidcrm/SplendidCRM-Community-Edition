@@ -1,0 +1,91 @@
+<ng-container *ngIf="IsReady()">
+	<AuditView
+		[isOpen]="auditOpen"
+		(callback)="_onAuditClose()"
+		[MODULE_NAME]="MODULE_NAME"
+		[NAME]="item.NAME"
+		[ID]="ID"
+	></AuditView>
+	<ActivitiesPopupView
+		[isOpen]="activitiesOpen"
+		(callback)="_onActivitiesClose()"
+		[PARENT_TYPE]="MODULE_NAME"
+		[PARENT_ID]="ID"
+	></ActivitiesPopupView>
+	<HeaderButtonsFactory
+		[MODULE_NAME]="MODULE_NAME"
+		[ID]="ID"
+		[SUB_TITLE]="SUB_TITLE"
+		[enableFavorites]="true"
+		[error]="error"
+		[enableHelp]="true"
+		helpName='DetailView'
+		ButtonStyle='ModuleHeader'
+		[VIEW_NAME]="DETAIL_NAME"
+		[row]="item"
+		(Page_Command)="Page_Command($event)"
+		[showButtons]="true"
+		[showProcess]="true"
+		#headerButtons
+	></HeaderButtonsFactory>
+	<DumpSQL [SQL]="__sql"></DumpSQL>
+	<LayoutTabs
+		[layout]="layout"
+		(onTabChange)="_onTabChange($event)"
+	></LayoutTabs>
+	<div id="content">
+		<SplendidDynamic_DetailView
+			[row]="item"
+			[layout]="layout"
+			sPanelClass="tabDetailView"
+			(Page_Command)="Page_Command($event)"
+		></SplendidDynamic_DetailView>
+		<ng-container *ngIf="MODULE_NAME == 'Quotes' || MODULE_NAME == 'Orders' || MODULE_NAME == 'Invoices' || (MODULE_NAME == 'Opportunities' && Crm_Config.ToString('OpportunitiesMode') == 'Revenue')">
+			<DetailViewLineItems
+				[MODULE_NAME]="MODULE_NAME"
+				[ID]="ID"
+			></DetailViewLineItems>
+		</ng-container>
+		<ng-container *ngIf="MODULE_NAME == 'Quotes' || MODULE_NAME == 'Orders' || MODULE_NAME == 'Invoices'">
+			<SplendidDynamic_DetailView
+				[row]="item"
+				[layout]="summaryLayout"
+				sPanelClass="tabDetailView"
+				(Page_Command)="Page_Command($event)"
+			></SplendidDynamic_DetailView>
+		</ng-container>
+		<br />
+		<DetailViewRelationships
+			[PARENT_TYPE]="MODULE_NAME"
+			[DETAIL_NAME]="DETAIL_NAME"
+			[row]="item"
+			[isPrecompile]="isPrecompile"
+			(onComponentComplete)="onRelationshipsComplete($event)"
+		></DetailViewRelationships>
+	</div>
+</ng-container>
+<ng-container *ngIf="ArchiveExists()">
+	<HeaderButtonsFactory
+		[MODULE_NAME]="MODULE_NAME"
+		[ID]="ID"
+		[SUB_TITLE]="SUB_TITLE"
+		[enableFavorites]="false"
+		[error]="error"
+		[enableHelp]="false"
+		ButtonStyle='ModuleHeader'
+		VIEW_NAME=".ArchiveExists"
+		[row]="item"
+		(Page_Command)="Page_Command($event)"
+		[showButtons]="true"
+		[showProcess]="false"
+		#headerButtons
+	></HeaderButtonsFactory>
+</ng-container>
+<ng-container *ngIf="IsError()">
+	<ErrorComponent [error]="error"></ErrorComponent>
+</ng-container>
+<ng-container *ngIf="IsNotReady()">
+	<div style="text-align: center">
+		<fa-icon [icon]="spinner" size='5x' [spin]="true"></fa-icon>
+	</div>
+</ng-container>

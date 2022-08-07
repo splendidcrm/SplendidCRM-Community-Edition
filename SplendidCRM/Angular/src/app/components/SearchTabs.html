@@ -1,0 +1,35 @@
+<ng-container *ngIf="SplendidCache.UserTheme == 'Pacific'">
+	<div style="display: flex; flex-direction: row; margin-bottom: 4px">
+		<div class='SearchTabButton'>
+			<button (click)="_onSearchTabChange($event, 'Hide')">
+				<fa-icon [icon]='xmark' size='lg'></fa-icon>
+			</button>
+		</div>
+		<div [class]="'SearchTabButton' + (searchMode == 'Basic' ? ' SearchTabButtonActive' : '')">
+			<button onClick="_onSearchTabChange($event, 'Basic')">{{ L10n.Term('.LNK_BASIC_SEARCH') }}</button>
+		</div>
+		<div [class]="'SearchTabButton' + (searchMode == 'Advanced' ? ' SearchTabButtonActive' : '')">
+			<button onClick="_onSearchTabChange($event, 'Advanced')">{{ L10n.Term('.LNK_ADVANCED_SEARCH') }}</button>
+		</div>
+		<ng-container *ngIf="duplicateSearchEnabled">
+			<div [class]="'SearchTabButton' + (searchMode == 'Duplicates' ? ' SearchTabButtonActive' : '')">
+				<button (click)="_onSearchTabChange($event, 'Duplicates')">{{ L10n.Term('.LNK_DUPLICATE_SEARCH') }}</button>
+			</div>
+		</ng-container>
+	</div>
+</ng-container>
+<ng-container *ngIf="SplendidCache.UserTheme != 'Pacific'">
+	<ul id='pnlSearchTabs' class='tablist'>
+		<li>
+			<a id='lnkBasicSearch' (click)="_onSearchTabChange($event, 'Basic')" href='#' [class]="searchMode == 'Basic' ? 'current' : null">{{ L10n.Term('.LNK_BASIC_SEARCH') }}</a>
+		</li>
+		<li>
+			<a id='lnkAdvancedSearch' (click)="_onSearchTabChange($event, 'Advanced')" href='#' [class]="searchMode == 'Advanced' ? 'current' : null">{{ L10n.Term('.LNK_ADVANCED_SEARCH') }}</a>
+		</li>
+		<ng-container *ngIf="duplicateSearchEnabled">
+			<li>
+				<a id='lnkDuplicateSearch' (click)="_onSearchTabChange($event, 'Duplicates')" href='#' [class]="searchMode == 'Duplicates' ? 'current' : null">{{ L10n.Term('.LNK_DUPLICATE_SEARCH') }}</a>
+			</li>
+		</ng-container>
+	</ul>
+</ng-container>

@@ -35,7 +35,8 @@ export default function(group, element, bpmnFactory)
 	if ( is(element, 'bpmn:SequenceFlow') && isConditionalSource(element.source) )
 	{
 		//console.log('bpmn:SequenceFlow');
-		group.entries.push(entryFactory.textArea(
+		// 05/10/2022 Paul.  Changed to textBox. 
+		group.entries.push(entryFactory.textBox(
 		{
 			id            : 'condition',
 			label         : L10n.Term('BusinessProcesses.LBL_BPMN_EXPRESSION'),

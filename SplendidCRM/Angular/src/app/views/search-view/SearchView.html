@@ -1,0 +1,152 @@
+<ng-container *ngIf="bIsInitialized && bIsAuthenticated">
+	<div class="tabSearchForm" style="width: 100%">
+		<div class="tabSearchView" style="display: flex; flex-wrap: wrap; width: 100%">
+			<ng-container *ngIf="!IsPopupSearch && ShowDuplicateFilter">
+				<div>
+					<div style="font-weight: bold">{{ L10n.Term('Import.LBL_IMPORT_STEP_DUPLICATE_FILTER') }}</div>
+					<select
+						[multiple]="true"
+						size="10"
+						(change)="_onDuplicateChange($event)"
+						[value]="DUPLICATE_FILTER"
+						style="display: inline; width: auto; margin-left: .5em; margin-right: .5em"
+						>
+						<ng-container *ngFor="let item in MODULE_COLUMNS_LIST; let i = index">
+							<option [id]="'lstDuplicateColumns_' + EDIT_NAME + '_' + i.toString()" value="item.NAME">{{ item.DISPLAY_NAME }}</option>
+						</ng-container>
+					</select>
+				</div>
+			</ng-container>
+			<DynamicEditView
+				[MODULE_NAME]="sMODULE_NAME"
+				[LAYOUT_NAME]="EDIT_NAME"
+				[CONTROL_VIEW_NAME]="CONTROL_VIEW_NAME"
+				[rowDefaultSearch]="item"
+				[hasCallback]="true"
+				(callback)="editViewCallback($event)"
+				(onLayoutLoaded)="_onLayoutLoaded()"
+				(onSubmit)="_onSubmit(null)"
+				[isSearchView]="true"
+				[fromLayoutName]="fromLayoutName"
+				style="width: 100%"
+				#editView
+			></DynamicEditView>
+		</div>
+		<div>
+			<div class="tabSavedSearch" style="display: flex; flex-wrap: wrap; width: 100%">
+				<input
+					type='submit'
+					(click)="_onSubmit($event)"
+					[class]="sButtonClass"
+					style="margin-bottom: .2em"
+					[value]="L10n.Term('.LBL_SEARCH_BUTTON_LABEL')"
+				/>
+				<ng-container *ngIf="!disableClear">
+					<input
+						type='button'
+						(click)="_onClear($event)"
+						[class]="sButtonClass"
+						style="margin-bottom: .2em; margin-left: .5em"
+						[value]="L10n.Term('.LBL_CLEAR_BUTTON_LABEL')"
+					/>
+				</ng-container>
+				<ng-container *ngIf="ShowSearchViews && !IsPopupSearch">
+					<span>
+						<span class="white-space">&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;</span>
+						<label style="font-weight: bold">{{ L10n.Term(".LBL_SAVED_SEARCH_SHORTCUT") }}</label>
+						<select
+							(change)="_onSelectChange($event)"
+							[value]="SAVED_SEARCH_ID"
+							style="display: inline; width: auto; margin-left: .5em; margin-right: .5em"
+							>
+							<ng-container *ngFor="let item of SAVED_SEARCH_LIST; let i = index">
+								<option [id]="'optSavedSearches_' + EDIT_NAME + '_' + item.key" [value]="item.key">{{ item.text }}</option>
+							</ng-container>
+						</select>
+						<span (click)="_onShowPanel()" style="cursor: pointer">
+							<fa-icon [icon]="(SAVED_PANEL ? angleDoubleUp : angleDoubleDown)" style="margin-right: .5em"></fa-icon>
+							{{ L10n.Term('.LNK_SAVED_VIEWS') }}
+						</span>
+					</span>
+				</ng-container>
+				<div style="flex: 1 0 30%; margin-left: 1em">
+					<ErrorComponent [error]="error"></ErrorComponent>
+				</div>
+			</div>
+			<ng-container *ngIf="ShowSearchViews && !IsPopupSearch && SAVED_PANEL">
+				<div class="tabSavedSearch" style="display: flex; flex-wrap: wrap; width: 100%">
+					<div style="display: flex; flex-wrap: wrap; flex: 1 0 50%; padding-top: 4px">
+						<label class="control-label" style="width: 33%">{{ L10n.Term('SavedSearch.LBL_ORDER_BY_COLUMNS') }}</label>
+						<span>
+							<select
+								(change)="_onSearchColumnChange($event)"
+								[value]="SAVED_SEARCH_COLUMN"
+								style="width: auto"
+								>
+								<ng-container *ngFor="let item in MODULE_COLUMNS_LIST; let i = index">
+									<option [id]="'lstSearchColumns_' + EDIT_NAME + '_' + i.toString()" [value]="item.NAME">{{ item.DISPLAY_NAME }}</option>
+								</ng-container>
+							</select>
+						</span>
+					</div>
+					<div style="display: flex; flex-wrap: wrap; flex: 1 0 50%">
+						<label class="control-label" style="width: 33%">{{ L10n.Term('SavedSearch.LBL_DIRECTION') }}</label>
+						<div style="display: block; width: 66%; margin-bottom: .2em">
+							<div>
+								<input [id]="'radSavedSearchDirection' + EDIT_NAME + '_desc'" type="radio" style="vertical-align: top" class="radio" value="asc" [checked]="SAVED_SEARCH_DIRECTION == 'desc'" (change)="_onDirectionChange('desc')" />
+								&nbsp;<label [htmlFor]="'radSavedSearchDirection' + EDIT_NAME + '_desc'" style="vertical-align: top">{{ L10n.Term("SavedSearch.LBL_DESCENDING") }}</label>
+							</div>
+							<div>
+								<input [id]="'radSavedSearchDirection' + EDIT_NAME + '_asc'" type="radio" style="vertical-align: top" class="radio" value="asc" [checked]="SAVED_SEARCH_DIRECTION == 'asc'" (change)="_onDirectionChange('asc')" />
+								&nbsp;<label [htmlFor]="'radSavedSearchDirection' + EDIT_NAME + '_asc'" style="vertical-align: top">{{ L10n.Term("SavedSearch.LBL_ASCENDING") }}</label>
+							</div>
+						</div>
+					</div>
+					<div style="display: flex; flex-wrap: wrap; flex: 1 0 50%">
+						<label class="control-label" style="width: 33%">{{ L10n.Term('SavedSearch.LBL_SAVE_SEARCH_AS') }}</label>
+						<input
+							[id]="'txtSavedSearchName_' + EDIT_NAME"
+							[value]="SAVED_SEARCH_NEW_NAME"
+							type="text"
+							autoComplete='off'
+							style="width: 50%"
+							(change)="_onNameChange($event)"
+						/>
+						<input
+							type='submit'
+							(click)="_onSave($event)"
+							[class]="sButtonClass"
+							style="margin-bottom: .2em; margin-left: .5em"
+							[disabled]="IsEmptyString(SAVED_SEARCH_NEW_NAME)"
+							[value]="L10n.Term('.LBL_SAVE_BUTTON_LABEL')"
+						/>
+					</div>
+					<div style="display: flex; flex-wrap: nowrap; flex: 1 0 50%">
+						<label class="control-label" style="width: 33%">{{ L10n.Term('SavedSearch.LBL_MODIFY_CURRENT_SEARCH') }}</label>
+						<span style="width: 66%">
+							<input
+								type='submit'
+								(click)="_onUpdate($event)"
+								[class]="sButtonClass"
+								style="margin-bottom: .2em"
+								[disabled]="IsEmptyString(SAVED_SEARCH_ID)"
+								[value]="L10n.Term('.LBL_UPDATE_BUTTON_LABEL')"
+							/>
+							<input
+								type='submit'
+								(click)="_onDelete($event)"
+								[class]="sButtonClass"
+								style="margin-bottom: .2em; margin-left: .5em; margin-right: .5em"
+								[disabled]="IsEmptyString(SAVED_SEARCH_ID)"
+								[value]="L10n.Term('.LBL_DELETE_BUTTON_LABEL')"
+							/>
+							<label>
+								{{ !IsEmptyString(SAVED_SEARCH_NAME) ? '\"' + SAVED_SEARCH_NAME + '\"' : null }}
+							</label>
+						</span>
+					</div>
+				</div>
+			</ng-container>
+		</div>
+	</div>
+</ng-container>

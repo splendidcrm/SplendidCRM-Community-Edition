@@ -1,0 +1,52 @@
+<ng-container *ngIf="IsError()">
+	<ng-container *ngIf="error">
+		<ErrorComponent [error]="error"></ErrorComponent>
+	</ng-container>
+</ng-container>
+<ng-container *ngIf="IsReady()">
+	<ng-container *ngIf="!hasCallback">
+		<HeaderButtonsFactory
+			[MODULE_NAME]="MODULE_NAME"
+			[ID]="ID"
+			[SUB_TITLE]="SUB_TITLE"
+			[error]="error"
+			[showRequired]="true"
+			[enableHelp]="true"
+			helpName='EditView'
+			ButtonStyle='EditHeader'
+			[VIEW_NAME]="EDIT_NAME"
+			[row]="item"
+			(Page_Command)="Page_Command($event)"
+			[showButtons]="!isSearchView && !isUpdatePanel"
+			#headerButtons
+		></HeaderButtonsFactory>
+	</ng-container>
+	<ng-container *ngIf="LAYOUT_NAME && LAYOUT_NAME.indexOf('.MassUpdate') < 0">
+		<DumpSQL [SQL]="__sql"></DumpSQL>
+	</ng-container>
+	<LayoutTabs
+		[layout]="layout"
+		(onTabChange)="_onTabChange($event)"
+	></LayoutTabs>
+	<SplendidDynamic_EditView
+		[row]="item"
+		[layout]="layout"
+		sPanelClass="tabDetailView"
+		(callback)="_onEditViewCallback($event)"
+		(Page_Command)="Page_Command($event)"
+	></SplendidDynamic_EditView>
+	<ng-container *ngIf="!callback.observed">
+		<DynamicButtons
+			ButtonStyle="EditHeader"
+			[VIEW_NAME]="EDIT_NAME"
+			[row]="item"
+			(Page_Command)="Page_Command($event)"
+			#dynamicButtonsBottom
+		></DynamicButtons>
+	</ng-container>
+</ng-container>
+<ng-container *ngIf="IsNotReady()">
+	<div style="text-align: center">
+		<fa-icon [icon]="spinner" size='5x' [spin]="true"></fa-icon>
+	</div>
+</ng-container>

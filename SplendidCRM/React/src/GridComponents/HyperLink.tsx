@@ -133,7 +133,8 @@ class HyperLink extends React.PureComponent<IHyperLinkProps, IHyperLinkState>
 										URL_MODULE = arrURL[3];
 									}
 								}
-								else
+								// 06/17/2022 Paul.  {0} is a clear indicator that not a module. 
+								else if ( arrURL[2].indexOf('{0}') < 0 )
 								{
 									let module: MODULE  = SplendidCache.Module(arrURL[2], this.constructor.name + '.constructor');
 									if ( module != null )

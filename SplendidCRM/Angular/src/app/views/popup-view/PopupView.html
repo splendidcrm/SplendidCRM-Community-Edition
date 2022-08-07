@@ -1,0 +1,157 @@
+<ng-container *ngIf="IsReady()">
+	<div [class]="'fade modal-backdrop ' + (isOpen ? 'show' : 'hide')"></div>
+	<div role="dialog" aria-modal="true" [class]="'fade modal ' + (isOpen ? 'show' : 'hide')" tabindex="-1" style="display: block; z-index: 2000;">
+		<div class="modal-dialog" style="min-height: 80vh; min-width: 90vw">
+			<div class="modal-content">
+				<div class="modal-body">
+					<ng-container *ngIf="sTheme == 'Pacific'">
+						<div>
+							<h2>{{ sMODULE_TITLE }}</h2>
+							<ErrorComponent [error]="error"></ErrorComponent>
+							<div class='PopupSearchView'>
+								<button class='PopupViewButton' (click)="_onToggleFilter()">
+									<fa-icon [icon]="open ? 'minus' : 'plus'" size='lg'></fa-icon>
+								</button>
+								<span>{{ L10n.Term('.LNK_SEARCH_FILTER') }}</span>
+							</div>
+						</div>
+					</ng-container>
+					<ng-container *ngIf="sTheme != 'Pacific'">
+						<div>
+							<h2>{{ sMODULE_TITLE }}</h2>
+							<ErrorComponent [error]="error"></ErrorComponent>
+						</div>
+					</ng-container>
+					<div [style]="'display: ' + (open || sTheme != 'Pacific' ? 'block' : 'none')">
+						<SearchView
+							[EDIT_NAME]="EDIT_NAME"
+							[IsPopupSearch]="true"
+							[fromLayoutName]="fromLayoutName"
+							(cbSearch)="_onSearchViewCallback($event)"
+							[rowDefaultSearch]="rowDefaultSearch"
+							#searchView
+						></SearchView>
+					</div>
+					<ng-container *ngIf="showProcessNotes">
+						<div style="display: flex; flex-wrap: wrap; flex: 1 0 50%">
+							<label class="control-label" style="width: 15%">{{ L10n.Term('Processes.LBL_PROCESS_NOTES') }}</label>
+							<span style="width: 30%">
+								<textarea
+									[value]="PROCESS_NOTES"
+									autoComplete='off'
+									rows="3"
+									cols="60"
+									style="width: 100%; flex-grow: 1; margin-bottom: .2em"
+									(change)="_onProcessNotesChange($event)"
+								></textarea>
+							</span>
+						</div>
+					</ng-container>
+					<ListHeader [MODULE_NAME]="MODULE_NAME"></ListHeader>
+					<div style="display: flex; flex-direction: row">
+						<div>
+							<ng-container *ngIf="multiSelect">
+								<button
+									class='button'
+									(click)="_onSelectMultiple()"
+									style="margin-bottom: .2em"
+								>
+									{{ L10n.Term('.LBL_SELECT_BUTTON_LABEL') }}
+								</button>
+							</ng-container>
+							<ng-container *ngIf="!showProcessNotes && !ClearDisabled">
+								<button
+									class='button'
+									(click)="_onClear()"
+									style="margin-bottom: .2em; margin-left: .5em"
+								>
+									{{ L10n.Term('.LBL_CLEAR_BUTTON_LABEL') }}
+								</button>
+							</ng-container>
+							<button
+								class='button'
+								(click)="_onClose()"
+								style="margin-bottom: .2em; margin-left: .5em"
+							>
+								{{ L10n.Term('.LBL_CANCEL_BUTTON_LABEL') }}
+							</button>
+						</div>
+						<div>
+							<ng-container *ngIf="ACLACCESS >= 0 && !showInlineCreate">
+								<button
+									class='button'
+									(click)="_onShowInlineEdit()"
+									style="margin-bottom: .2em; margin-left: .5em"
+								>
+									{{ L10n.Term(INLINE_EDIT_BUTTON) }}
+								</button>
+							</ng-container>
+						</div>
+					</div>
+					<ng-container *ngIf="ACLACCESS >= 0 && showInlineCreate">
+						<div>
+							<DynamicButtons
+								ButtonStyle="EditHeader"
+								VIEW_NAME="NewRecord.WithCancel"
+								[row]="null"
+								(Page_Command)="Page_Command($event)"
+								#dynamicButtonsTop
+							></DynamicButtons>
+							<ng-container *ngIf="customView">
+								React.createElement(customView, 
+						 
+									MODULE_NAME     , 
+									LAYOUT_NAME     : MODULE_NAME + '.PopupView.Inline', 
+									rowDefaultSearch: item, 
+									callback        : this.editViewCallback, 
+									history         : this.props.history, 
+									location        : this.props.location, 
+									match           : this.props.match, 
+									ref             : this.editView
+									)
+							</ng-container>
+							<ng-container *ngIf="!customView">
+								<EditView
+									[MODULE_NAME]="MODULE_NAME"
+									[LAYOUT_NAME]="MODULE_NAME + '.PopupView.Inline'"
+									[rowDefaultSearch]="item"
+									(callback)="editViewCallback($event)"
+									#editView
+								></EditView>
+							</ng-container>
+							<DynamicButtons
+								ButtonStyle="EditHeader"
+								VIEW_NAME="NewRecord.WithCancel"
+								[row]="null"
+								(Page_Command)="Page_Command($event)"
+								#dynamicButtonsBottom
+							></DynamicButtons>
+						</div>
+					</ng-container>
+					<SplendidGrid
+						(onLayoutLoaded)="_onGridLayoutLoaded()"
+						[MODULE_NAME]="MODULE_NAME"
+						[GRID_NAME]="GRID_NAME"
+						[ADMIN_MODE]="false"
+						(selectionChanged)="_onSelectionChanged($event)"
+						(hyperLinkCallback)="_onHyperLinkCallback($event)"
+						[isPopupView]="true"
+						[deferLoad]="true"
+						[enableSelection]="multiSelect"
+						(onComponentComplete)="_onComponentComplete($event)"
+						[scrollable]="true"
+						#splendidGrid
+					></SplendidGrid>
+				</div>
+				<div class="modal-footer">
+					<button class='button' (click)="_onClose()">{{ L10n.Term('.LBL_CLOSE_BUTTON_LABEL') }}</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</ng-container>
+<ng-container *ngIf="IsNotReady()">
+	<div style="text-align: center">
+		<fa-icon [icon]="spinner" size='5x' [spin]="true"></fa-icon>
+	</div>
+</ng-container>

@@ -1,0 +1,20 @@
+<ng-container>
+	<EditView
+		[MODULE_NAME]="MODULE_NAME"
+		[ID]="ID"
+		[LAYOUT_NAME]="LAYOUT_NAME"
+		[CONTROL_VIEW_NAME]="CONTROL_VIEW_NAME"
+		[rowDefaultSearch]="rowDefaultSearch"
+		[isPrecompile]="isPrecompile"
+		[isSearchView]="isSearchView"
+		[isUpdatePanel]="isUpdatePanel"
+		[isQuickCreate]="isQuickCreate"
+		[fromLayoutName]="fromLayoutName"
+		[hasCallback]="hasCallback"
+		(onLayoutLoaded)="_onLayoutLoaded()"
+		(onSubmit)="_onSubmit()"
+		(onComponentComplete)="_onComponentComplete($event)"
+		(callback)="_editViewCallback($event)"
+		#editView
+	></EditView>
+</ng-container>

@@ -446,7 +446,8 @@ export default class SplendidDynamic_EditView
 					}
 					// 06/19/2021 Paul.  bRequireUserAssignment is the correct flag here, not bRequireTeamManagement, but also, same rules for not in Search, MassUpdate or Popup. 
 					// 06/19/2021 Paul.  WorkflowAlertShells does not require Team or User. 
-					if ( bRequireUserAssignment && EDIT_NAME.indexOf('.Search') < 0 && EDIT_NAME.indexOf('.MassUpdate') < 0 && EDIT_NAME.indexOf('.Popup') < 0 && layout.EDIT_NAME.indexOf('WorkflowAlertShells') < 0 )
+					// 06/08/2022 Paul.  layout.EDIT_NAME was incorrect. 
+					if ( bRequireUserAssignment && EDIT_NAME.indexOf('.Search') < 0 && EDIT_NAME.indexOf('.MassUpdate') < 0 && EDIT_NAME.indexOf('.Popup') < 0 && EDIT_NAME.indexOf('WorkflowAlertShells') < 0 )
 					{
 						UI_REQUIRED = true;
 					}

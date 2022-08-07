@@ -186,16 +186,17 @@ export default function(group, element, bpmnFactory, elementRegistry, eventBus)
 			}
 		}, element, bpmnFactory, eventBus));
 
-		group.entries.push(entryFactory.textField(
+		// 05/10/2022 Paul.  textField is not following the show rules, so change to textBox. 
+		group.entries.push(entryFactory.textBox(
 		{
 			id            : 'ALERT_SUBJECT',
 			label         : L10n.Term('BusinessProcesses.LBL_BPMN_ALERT_SUBJECT'),
 			modelProperty : 'ALERT_SUBJECT',
-			disabled : function(element, node)
+			show : function(element, node)
 			{
 				var prop = 'SOURCE_TYPE';
 				var messageEventDefinition = eventDefinitionHelper.getMessageEventDefinition(element);
-				return !(messageEventDefinition && messageEventDefinition.get(prop) != 'custom template');
+				return messageEventDefinition && messageEventDefinition.get(prop) != 'custom template';
 			},
 			get : function(element)
 			{
@@ -233,7 +234,8 @@ export default function(group, element, bpmnFactory, elementRegistry, eventBus)
 			}
 		}));
 
-		group.entries.push(entryFactory.textArea(
+		// 05/10/2022 Paul.  Changed to textBox. 
+		group.entries.push(entryFactory.textBox(
 		{
 			id            : 'ALERT_TEXT',
 			label         : L10n.Term('BusinessProcesses.LBL_BPMN_ALERT_TEXT'),

@@ -1,0 +1,10 @@
+<ng-container *ngIf="bIsInitialized && bIsAuthenticated">
+	<ng-container *ngIf="!customView">
+		<MassUpdate
+			[MODULE_NAME]="MODULE_NAME"
+			[archiveView]="archiveView"
+			(onUpdateComplete)="_onUpdateComplete($event)"
+			#updatePanel
+		></MassUpdate>
+	</ng-container>
+</ng-container>

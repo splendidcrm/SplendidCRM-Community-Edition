@@ -1,0 +1,76 @@
+<ng-container *ngIf="MODULE_NAME == 'more'">
+	<div id='ctlSixToolbar_pnlTabHover' [ngStyle]="popupStyle()" (mouseleave)="_onModuleTabMouseLeave($event, MODULE_NAME)">
+		<table cellPadding='0' cellSpacing='0' class='MoreActionsInnerTable'>
+			<tr>
+				<td class='MoreActionsInnerCell'>
+					<ng-container *ngFor="let tabMenu of tabsSecondary">
+						<a [href]="moduleUrl(tabMenu.MODULE_NAME, null)" class='otherTabMoreLink' style='min-width: 10rem' (click)="_onModuleClick($event, tabMenu.MODULE_NAME)">{{ L10n.Term(tabMenu.DISPLAY_NAME) }}</a>
+					</ng-container>
+				</td>
+			</tr>
+		</table>
+	</div>
+</ng-container>
+<ng-container *ngIf="MODULE_NAME == 'userContextMenu'">
+	<div id='ctlSixToolbar_pnlTabHover' [ngStyle]="popupStyle()" (mouseleave)="_onModuleTabMouseLeave($event, MODULE_NAME)">
+		<table cellPadding='0' cellSpacing='0' class='MoreActionsInnerTable'>
+			<tr>
+				<td class='MoreActionsInnerCell'>
+					<a *ngIf="bIsAuthenticated                                                         " href="{{ Credentials.RemoteServer + 'Users/MyAccount'}}" id='usercontext-myprofile'    class='ModuleActionsMenuItems' (click)="_onUserProfile($event)">{{ L10n.Term('.LBL_MY_ACCOUNT'   ) }}</a>
+					<a *ngIf="bIsAuthenticated && (Security.IS_ADMIN() || Security.IS_ADMIN_DELEGATE())" href="{{ Credentials.RemoteServer + 'Administration' }}" id='usercontext-admin'        class='ModuleActionsMenuItems' (click)="_onAdminPage  ($event)">{{ L10n.Term('.LBL_ADMIN'        ) }}</a>
+					<a                                                                                   href="{{ Credentials.RemoteServer + 'Home/About'     }}" id='usercontext-about'        class='ModuleActionsMenuItems' (click)="_onAbout      ($event)">{{ L10n.Term('.LNK_ABOUT'        ) }}</a>
+					<a *ngIf="bIsAuthenticated                                                         " href='#'                                                 id='usercontext-logout'       class='ModuleActionsMenuItems' (click)="_onLogout     ($event)">{{ L10n.Term('.LBL_LOGOUT'       ) }}</a>
+				</td>
+			</tr>
+		</table>
+	</div>
+</ng-container>
+<ng-container *ngIf="MODULE_NAME == 'quickCreate'">
+	<div id='ctlSixToolbar_pnlTabHover' [ngStyle]="popupStyle()" (mouseleave)="_onModuleTabMouseLeave($event, MODULE_NAME)">
+		<table cellPadding='0' cellSpacing='0' class='MoreActionsInnerTable'>
+			<tr>
+				<td class='MoreActionsInnerCell'>
+					<ng-container *ngFor="let item of quickCreate">
+						<a href='#' class='ModuleActionsMenuItems' [title]="item.DISPLAY_NAME" (click)="_onQuickCreate($event, item.MODULE_NAME)">{{ item.DISPLAY_NAME }}</a>
+					</ng-container>
+				</td>
+			</tr>
+		</table>
+	</div>
+</ng-container>
+<ng-container *ngIf="MODULE_NAME != null && MODULE_NAME != 'more' && MODULE_NAME != 'userContextMenu' && MODULE_NAME != 'quickCreate' && MODULE_NAME != 'Home' && MODULE_NAME != 'unifiedSearch' && MODULE_NAME != 'trailingblank'">
+	<div id='ctlSixToolbar_pnlTabHover' [ngStyle]="popupStyle()" (mouseleave)="_onModuleTabMouseLeave($event, MODULE_NAME)">
+		<table cellPadding='0' cellSpacing='0' class='ModuleActionsInnerTable'>
+			<tr>
+				<td class='ModuleActionsInnerCell'>
+					<span class='ModuleActionsInnerHeader' style='font-weight: bold'>{{ L10n.Term('.LBL_ACTIONS') }}</span>
+					<ng-container *ngFor="let item of Actions(MODULE_NAME)">
+						<a [href]="Credentials.RemoteServer + item.key" class='ModuleActionsMenuItems' (click)="_onAction($event, item)">{{ item.label }}</a>
+					</ng-container>
+				</td>
+				<td class='ModuleActionsInnerCell'>
+					<span class='ModuleActionsInnerHeader' style='font-weight: bold'>{{ L10n.Term('.LBL_FAVORITES') }}</span>
+					<ng-container *ngIf="Favorites(MODULE_NAME).length > 0">
+						<ng-container *ngFor="let item of Favorites(MODULE_NAME)">
+							<a [href]="moduleUrl(MODULE_NAME, item.ID)" class='ModuleActionsMenuItems' (click)="_onFavorite($event, item)">{{ item.NAME }}</a>
+						</ng-container>
+					</ng-container>
+					<ng-container *ngIf="Favorites(MODULE_NAME).length == 0">
+						<span>{{ L10n.Term('.LBL_LINK_NONE') }}</span>
+					</ng-container>
+				</td>
+				<td class='ModuleActionsInnerCell'>
+					<span class='ModuleActionsInnerHeader' style='font-weight: bold'>{{ L10n.Term('.LBL_LAST_VIEWED') }}</span>
+					<ng-container *ngIf="LastViewed(MODULE_NAME).length > 0">
+						<ng-container *ngFor="let item of LastViewed(MODULE_NAME)">
+							<a [href]="moduleUrl(MODULE_NAME, item.ID)" class='ModuleActionsMenuItems' (click)="_onLastViewed($event, item)">{{ item.NAME }}</a>
+						</ng-container>
+					</ng-container>
+					<ng-container *ngIf="LastViewed(MODULE_NAME).length == 0">
+						<span>{{ L10n.Term('.LBL_LINK_NONE') }}</span>
+					</ng-container>
+				</td>
+			</tr>
+		</table>
+	</div>
+</ng-container>

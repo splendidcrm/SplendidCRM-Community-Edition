@@ -1,0 +1,12 @@
+<ng-container *ngIf="IsError()">
+	<ng-container *ngIf="error">
+		<ErrorComponent [error]="error"></ErrorComponent>
+	</ng-container>
+</ng-container>
+<ng-container *ngIf="IsReady()">
+</ng-container>
+<ng-container *ngIf="IsNotReady()">
+	<div style="text-align: center">
+		<fa-icon [icon]="spinner" size='5x' [spin]="true"></fa-icon>
+	</div>
+</ng-container>

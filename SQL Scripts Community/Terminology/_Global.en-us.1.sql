@@ -468,6 +468,11 @@ exec dbo.spTERMINOLOGY_InsertOnly N'LBL_LAYOUT_TAB_OTHER'                       
 exec dbo.spTERMINOLOGY_InsertOnly N'LBL_LAYOUT_TAB_BASIC'                          , N'en-US', null, null, null, N'Basic';
 -- 04/23/2022 Paul.  Empy grid should indicate no data. 
 exec dbo.spTERMINOLOGY_InsertOnly N'LBL_NO_DATA'                                   , N'en-US', null, null, null, N'No Data';
+-- 04/06/2022 Paul.  Quick Search dropdown. 
+exec dbo.spTERMINOLOGY_InsertOnly N'LBL_QUICK_SEARCH_NEW_BUTTON'                   , N'en-US', null, null, null, N'New';
+exec dbo.spTERMINOLOGY_InsertOnly N'LBL_QUICK_SEARCH_PLACEHOLDER'                  , N'en-US', null, null, null, N'Search...';
+exec dbo.spTERMINOLOGY_InsertOnly N'LBL_BULK_ACTION'                               , N'en-US', null, null, null, N'Bulk Action';
+exec dbo.spTERMINOLOGY_InsertOnly N'LNK_SEARCH_FILTER'                             , N'en-US', null, null, null, N'Filter';
 GO
 
 set nocount off;

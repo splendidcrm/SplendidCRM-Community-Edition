@@ -235,8 +235,15 @@
   margin-bottom: 9px;
 }
 /* line 188, node_modules\bpmn-js-properties-panel\styles\properties.less */
+/* 05/10/2022 Paul.  React Client is not displaying a border for the input. */
 .bpp-properties-entry .bpp-field-wrapper {
   position: relative;
+}
+.bpp-field-wrapper > div
+{
+  border: 1px solid #cccccc;
+  background-color: white;
+  padding: 5px;
 }
 /* line 191, node_modules\bpmn-js-properties-panel\styles\properties.less */
 .bpp-properties-entry .bpp-field-wrapper input[readonly] + .clear {

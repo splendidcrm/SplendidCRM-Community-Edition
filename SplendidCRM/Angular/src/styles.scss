@@ -1,0 +1,43 @@
+/* You can add global styles to this file, and also import other style files */
+.PopupViewModal .modal-dialog
+{
+	min-height: 80vh;
+	min-width: 80vw;
+}
+
+@import "~@ng-select/ng-select/themes/default.theme.css";
+
+.ng-select .ng-select-container
+{
+	min-height: unset;
+}
+.ng-select.ng-select-single .ng-select-container
+{
+	height: unset;
+}
+
+.ng-select .ng-select-container .ng-value-container .ng-input > input
+{
+	border: unset;
+}
+
+.hoverTooltip {
+	position: relative;
+	display: inline-block;
+	margin-left: 2px;
+	margin-right: 2px;
+}
+
+/* 06/20/2022 Paul.  Specify right and top to better position popover. */
+.hoverTooltip .hoverTooltipText {
+	visibility: hidden;
+	position: absolute;
+	right: -50px;
+	top: 12px;
+	z-index: 1;
+}
+
+.hoverTooltip:hover .hoverTooltipText {
+	visibility: visible;
+}
+

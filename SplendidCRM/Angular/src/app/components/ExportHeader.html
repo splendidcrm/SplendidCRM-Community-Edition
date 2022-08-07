@@ -1,0 +1,52 @@
+<ng-container *ngIf="bPhoneBurnerEnabled || SplendidCache.UserTheme != 'Pacific'">
+	<table class='h3Row' cellPadding="0" cellSpacing="1" style="width: 100%">
+		<tr>
+			<td style="white-space: nowrap">
+				<h3 class='h3ExportHeader'>
+					<fa-icon [icon]='arrowRight' size='lg' style="margin-right: .5em" transform="rotate: 45"></fa-icon>
+					&nbsp;<span>{{ sMODULE_TITLE }}</span>
+				</h3>
+			</td>
+			<td style="text-align: right">
+				<ng-container *ngIf="SplendidCache.GetUserAccess(MODULE_NAME, 'export', this.constructor.name + '.render') >= 0">
+					<div id='divExport'>
+						<label id='lblPhoneBurnerAuthorizedStatus' class='error' style="padding-right: 5px">{{ lblPhoneBurnerAuthorizedStatus }}</label>
+						<ng-container *ngIf="bPhoneBurnerEnabled && !(dtPhoneBurnerOAuthExpiresAt == null || dtPhoneBurnerOAuthExpiresAt < now)">
+							<button id='btnPhoneBurnerDialSession' (click)="_onBeginDial()" class='button'>{{ L10n.Term('PhoneBurner.LBL_BEGIN_DIAL_SESSION'    ) }}</button>
+						</ng-container>
+						<ng-container *ngIf="bPhoneBurnerEnabled &&  (dtPhoneBurnerOAuthExpiresAt == null || dtPhoneBurnerOAuthExpiresAt < now)">
+							<button id='btnPhoneBurnerAuthorize'   (click)="_onAuthorize()" class='button'>{{ L10n.Term('PhoneBurner.LBL_AUTHORIZE_BUTTON_LABEL') }}</button>
+						</ng-container>
+						<ng-container *ngIf="SplendidCache.UserTheme != 'Pacific'">
+							<ng-container *ngIf="!hideRange">
+								<select
+									id='lstEXPORT_RANGE'
+									(change)="_onEXPORT_RANGE_Change($event)"
+									[value]="EXPORT_RANGE"
+									style="width: auto; margin: 2px"
+								>
+									<ng-container *ngFor="let item of EXPORT_RANGE_LIST; let i = index">
+										<option [id]="'_ctlEditView_EXPORT_RANGE' + i.toString()" [value]="item.NAME">{{ item.DISPLAY_NAME }}</option>
+									</ng-container>
+								</select>
+							</ng-container>
+							<ng-container *ngIf="!hideFormat">
+								<select
+									id='lstEXPORT_FORMAT'
+									(change)="_onEXPORT_FORMAT_Change($event)"
+									[value]="EXPORT_FORMAT"
+									style="width: auto; margin: 2px"
+								>
+									<ng-container *ngFor="let item of EXPORT_FORMAT_LIST; let i = index">
+										<option [id]="'_ctlEditViewEXPORT_FORMAT' + i.toString()" [value]="item.NAME">{{ item.DISPLAY_NAME }}</option>
+									</ng-container>
+								</select>
+							</ng-container>
+							<input type='submit' class='button' (click)="_onExport()" [value]="L10n.Term('.LBL_EXPORT_BUTTON_LABEL')" style="margin: 2px" />
+						</ng-container>
+					</div>
+				</ng-container>
+			</td>
+		</tr>
+	</table>
+</ng-container>

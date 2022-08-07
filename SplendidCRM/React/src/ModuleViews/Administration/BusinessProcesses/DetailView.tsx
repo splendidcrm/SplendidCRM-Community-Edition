@@ -223,6 +223,8 @@ class BusinessProcessesDetailView extends React.Component<IDetailViewProps, IAdm
 				let SVG: string = null;
 				if ( item != null )
 				{
+					// 05/10/2022 Paul.  Status coming through as lowercase. 
+					item['STATUS'] = (Sql.ToBoolean(item['STATUS']) ? 'True' : 'False');
 					SVG = Sql.ToString(item['SVG']);
 					SVG = SVG.replace('<?xml version=\"1.0\" encoding=\"utf-8\"?>', '').replace('<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">', '');
 				}
