@@ -62,7 +62,8 @@ export default class PacificHeaderButtons extends HeaderButtons
 		e.preventDefault();
 		let admin = '';
 		let module:MODULE = SplendidCache.Module(MODULE_NAME, this.constructor.name + '._onClickModule');
-		if ( module.IS_ADMIN )
+		// 09/04/2022 Paul.  Module may be disabled, so it will not exist. 
+		if ( module && module.IS_ADMIN )
 		{
 			admin = '/Administration';
 		}
@@ -78,7 +79,8 @@ export default class PacificHeaderButtons extends HeaderButtons
 		e.preventDefault();
 		let admin = '';
 		let module:MODULE = SplendidCache.Module(MODULE_NAME, this.constructor.name + '._onClickItem');
-		if ( module.IS_ADMIN )
+		// 09/04/2022 Paul.  Module may be disabled, so it will not exist. 
+		if ( module && module.IS_ADMIN )
 		{
 			admin = '/Administration';
 		}
@@ -226,7 +228,8 @@ export default class PacificHeaderButtons extends HeaderButtons
 		// 12/05/2021 Paul.  User should be able to open a new table by right-click on item name.  Change from span to anchor. 
 		let admin = '';
 		let module:MODULE = SplendidCache.Module(MODULE_NAME, this.constructor.name + '.render');
-		if ( module.IS_ADMIN )
+		// 09/04/2022 Paul.  Module may be disabled, so it will not exist. 
+		if ( module && module.IS_ADMIN )
 		{
 			admin = 'Administration/';
 		}

@@ -43,7 +43,7 @@
 </script>
 <ajaxToolkit:ToolkitScriptManager ID="mgrAjax" CombineScripts="true" EnableScriptGlobalization="true" EnableScriptLocalization="false" ScriptMode="Release" runat="server" />
 
-<div id="divHeader" Visible='<%# !PrintView %>' runat="server">
+<div id="divHeader" Visible='<%# !PrintView %>' style="margin-top: 48px;" runat="server">
 	<%@ Register TagPrefix="SplendidCRM" Tagname="SixToolbar" Src="SixToolbar.ascx" %>
 	<SplendidCRM:SixToolbar ID="ctlSixToolbar" Visible='<%# !PrintView && Security.IsAuthenticated() %>' runat="Server" />
 	<%@ Register TagPrefix="SplendidCRM" Tagname="Reminders" Src="../Six/Reminders.ascx" %>

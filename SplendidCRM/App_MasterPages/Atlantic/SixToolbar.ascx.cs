@@ -150,7 +150,11 @@ namespace SplendidCRM.Themes.Atlantic
 						lnkQuickCreate.CommandArgument = sMODULE_NAME + "|" + sCONTROL_NAME + "|" + sALTERNATE_VIEW;
 						lnkQuickCreate.ToolTip         = L10n.Term(".moduleList." + sMODULE_NAME);
 						lnkQuickCreate.Text            = L10n.Term(sMODULE_NAME + ".LNK_NEW_" + Crm.Modules.SingularTableName(Crm.Modules.TableName(sMODULE_NAME)));
-						lnkQuickCreate.CssClass        = "ModuleActionsMenuItems";
+						// 08/21/2022 Paul.  Only difference for Pacific is the home image. 
+						if ( this.Page.Theme == "Pacific" )
+							lnkQuickCreate.CssClass        = "QuickCreateOtherButton";
+						else
+							lnkQuickCreate.CssClass        = "ModuleActionsMenuItems";
 						plc.Controls.Add(lnkQuickCreate);
 					}
 					catch(Exception ex)

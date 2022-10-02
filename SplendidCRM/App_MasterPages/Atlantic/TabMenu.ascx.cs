@@ -125,7 +125,10 @@ namespace SplendidCRM.Themes.Atlantic
 			tr.Cells.Add(td);
 			// 03/31/2012 Paul.  Allow the user to redefine the header home image. 
 			string sCompanyHomeImage = Sql.ToString(Application["CONFIG.header_home_image"]);
-			if ( Sql.IsEmptyString(sCompanyHomeImage) )
+			// 08/21/2022 Paul.  Only difference for Pacific is the home image. 
+			if ( Page.Theme == "Pacific" )
+				sCompanyHomeImage = "~/App_Themes/Pacific/images/Home.png";
+			else if ( Sql.IsEmptyString(sCompanyHomeImage) )
 				sCompanyHomeImage = "~/Include/images/SplendidCRM_Icon.gif";
 			if ( sCompanyHomeImage.StartsWith("~/" ) )
 				sCompanyHomeImage = sCompanyHomeImage.Replace("~/", Sql.ToString(Application["rootURL"]) );

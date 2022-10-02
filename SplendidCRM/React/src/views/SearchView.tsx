@@ -842,6 +842,11 @@ export default class SearchView extends React.Component<ISearchViewProps, ISearc
 					cmd.CommandText += 'ID in (select ID from ' + vwNORMALIZED_VIEW + ' where NORMALIZED_NUMBER like \'' + sNORMALIZED_NUMBER + '\')' + ControlChars.CrLf;
 				}
 			}
+			// 09/20/2022 Paul.  Need a way to default to exact search.  Exclude if text contains any search builder token, including space. 
+			else if ( StartsWith(DATA_FORMAT.toLowerCase(), 'exact') && !Sql.IsEmptyString(oValue) && !(/[=\"+\-\<\>\!\s;,\*]/.test(oValue)) )
+			{
+				cmd.CommandText += oSearchBuilder.BuildQuery(' and ', DATA_FIELD, '=' + oValue) + ControlChars.CrLf;
+			}
 			else if ( arrFields.length > 1 )
 			{
 				if ( cmd.CommandText.length > 0 )

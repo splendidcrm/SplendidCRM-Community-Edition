@@ -323,7 +323,8 @@ class CampaignDetailView extends React.Component<IDetailViewProps, IDetailViewSt
 			{
 				try
 				{
-					history.push(`/Reset/MailMerge/Campaigns?chkMain=` + ID);
+					// 08/17/2022 Paul.  chkMain is not the correct way to pass ID. 
+					history.push(`/Reset/MailMerge/Campaigns/` + ID);
 				}
 				catch(error)
 				{

@@ -41,6 +41,8 @@ export default class String extends React.PureComponent<IStringProps, IStringSta
 	{
 		super(props);
 		const { layout, row, html } = this.props;
+		// 08/21/2022 Paul.  Don't swap TEAM_SET_NAME on Users.Teams panel.
+		let GRID_NAME  : string = Sql.ToString(layout.GRID_NAME  );
 		let DATA_FIELD : string = Sql.ToString(layout.DATA_FIELD );
 		let DATA_LABEL : string = Sql.ToString(layout.DATA_LABEL );
 		let DATA_FORMAT: string = Sql.ToString(layout.DATA_FORMAT);
@@ -100,7 +102,8 @@ export default class String extends React.PureComponent<IStringProps, IStringSta
 							let bEnableDynamicTeams = Crm_Config.enable_dynamic_teams();
 							// 05/06/2018 Paul.  Change to single instead of 1 to prevent auto-postback. 
 							// 04/03/2021 Paul.  Apply single rule. 
-							if ( bEnableDynamicTeams && DATA_FORMAT != '1' && DATA_FORMAT.toLowerCase().indexOf('single') < 0 )
+							// 08/21/2022 Paul.  Don't swap TEAM_SET_NAME on Users.Teams panel.
+							if ( bEnableDynamicTeams && DATA_FORMAT != '1' && DATA_FORMAT.toLowerCase().indexOf('single') < 0 && GRID_NAME.indexOf('.Teams') < 0 )
 							{
 								DATA_LABEL = '.LBL_TEAM_SET_NAME';
 								DATA_FIELD = 'TEAM_SET_NAME'     ;

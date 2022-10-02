@@ -22,10 +22,10 @@
  * "Copyright (C) 2005-2011 SplendidCRM Software, Inc. All rights reserved."
  *********************************************************************************************************************/
 </script>
-<div id="divSixToolbar">
+<div id="divSixToolbar" class='divSixToolbar'">
 	<asp:UpdatePanel UpdateMode="Conditional" runat="server">
 		<ContentTemplate>
-			<table cellspacing="0" cellpadding="0" border="0" class="SixToolbar">
+			<table cellSpacing="0" cellPadding="0" border="0" class="SixToolbar">
 				<tr>
 					<td width="0px">
 						<script runat="server">
@@ -38,27 +38,6 @@
 						<%@ Register TagPrefix="SplendidCRM" Tagname="TabMenu" Src="TabMenu.ascx" %>
 						<SplendidCRM:TabMenu ID="ctlTabMenu" Visible='<%# !PrintView %>' Runat="Server" />
 					</td>
-					<td align="right" valign="middle">
-						<asp:Panel ID="cntUnifiedSearch" runat="server">
-							<div id="divUnifiedSearch">
-								<script type="text/javascript">
-								function UnifiedSearch()
-								{
-									var frm = document.forms[0];
-									// 01/21/2014 Paul.  Need to escape the query value to allow for symbols in the query. 
-									var sUrl = '<%= Application["rootURL"] %>Home/UnifiedSearch.aspx?txtUnifiedSearch=' + escape(frm['<%= txtUnifiedSearch.ClientID %>'].value);
-									window.location.href = sUrl;
-									return false;
-								}
-								</script>
-								<nobr>
-								&nbsp;<asp:TextBox ID="txtUnifiedSearch" CssClass="searchField" Text='<%# Request["txtUnifiedSearch"] %>' runat="server" />
-								<asp:ImageButton ID="btnUnifiedSearch" SkinID="searchButton" AlternateText='<%# L10n.Term(".LBL_SEARCH") %>' OnClientClick="return UnifiedSearch();" CssClass="searchButton" runat="server" />
-								&nbsp;
-								</nobr>
-							</div>
-						</asp:Panel>
-					</td>
 					<td width="100%" class="tabRow"><asp:Image SkinID="blank" Width="1" Height="1" runat="server" /></td>
 				</tr>
 			</table>
@@ -69,20 +48,10 @@
 							<tr>
 								<td class="otherUser" nowrap="1">
 									<span class="otherTabLink" visible="<%# SplendidCRM.Security.IsImpersonating() %>" runat="server"><%# L10n.Term("Users.LBL_IMPERSONATING") %><br /></span>
-									<span class="otherTabLink" style="padding-right:6px;"><%# SplendidCRM.Security.FULL_NAME %></span>
+									<span class="otherTabLink" style="padding-right:6px;">
+										<asp:Image SkinID="User" class="otherUserIcon" runat="server" /><%# SplendidCRM.Security.FULL_NAME %>
+									</span>
 									<asp:Image SkinID="more" class="otherTabMoreArrow" runat="server" /><br />
-									<asp:HyperLink NavigateUrl="javascript:void(0);" valign="bottom" runat="server">
-										<asp:Image SkinID="blank" Width="100%" Height="4" BorderWidth="0" runat="server" />
-									</asp:HyperLink>
-								</td>
-							</tr>
-						</table>
-					</td>
-					<td valign="bottom" class="otherUserLeftBorder" width="32">
-						<table id="tabToolbarQuickCreate" class="tabToolbarFrame" cellspacing="0" cellpadding="0" height="100%" runat="server">
-							<tr>
-								<td class="otherQuickCreate">
-									<asp:Image SkinID="ToolbarQuickCreate" class="otherTabMoreArrow" runat="server" /><br />
 									<asp:HyperLink NavigateUrl="javascript:void(0);" valign="bottom" runat="server">
 										<asp:Image SkinID="blank" Width="100%" Height="4" BorderWidth="0" runat="server" />
 									</asp:HyperLink>
@@ -92,10 +61,9 @@
 					</td>
 				</tr>
 			</table>
-			<div style="height: 43px; width: 100%"></div>
 			<!-- 05/18/2013 Paul.  Moving the hidden panels outside the table solves a Chrome problem with z-index. -->
 			<asp:Panel ID="pnlToolbarUserHover" CssClass="PanelHoverHidden" runat="server">
-				<table cellpadding="0" cellspacing="0" class="MoreActionsInnerTable">
+				<table cellPadding="0" cellSpacing="0" class="MoreActionsInnerTable">
 					<tr>
 						<td class="MoreActionsInnerCell">
 							<asp:HyperLink  ID="lnkMyAccount" Text='<%# L10n.Term(".LBL_MY_ACCOUNT") %>' NavigateUrl="~/Users/MyAccount.aspx"                CssClass="ModuleActionsMenuItems" Runat="server" />
@@ -110,18 +78,62 @@
 				</table>
 			</asp:Panel>
 			<ajaxToolkit:HoverMenuExtender TargetControlID="tabToolbarUser" PopupControlID="pnlToolbarUserHover" PopupPosition="Bottom" PopDelay="250" HoverDelay="500" runat="server" />
-			<asp:Panel ID="pnlToolbarQuickCreateHover" CssClass="PanelHoverHidden" runat="server">
-				<table cellpadding="0" cellspacing="0" class="MoreActionsInnerTable">
-					<tr>
-						<td class="MoreActionsInnerCell">
-							<asp:PlaceHolder ID="plcSubPanel" runat="server" />
-							<asp:HiddenField ID="hidDynamicNewRecord" Value="" runat="server" />
-						</td>
-					</tr>
-				</table>
-			</asp:Panel>
-			<ajaxToolkit:HoverMenuExtender TargetControlID="tabToolbarQuickCreate" PopupControlID="pnlToolbarQuickCreateHover" PopupPosition="Bottom" PopDelay="250" HoverDelay="500" OffsetX="<%#  L10n.IsLanguageRTL() ? 0 : -160 %>" runat="server" />
-			<asp:PlaceHolder ID="plcDynamicNewRecords" runat="server" />
+		</ContentTemplate>
+	</asp:UpdatePanel>
+	<asp:UpdatePanel UpdateMode="Conditional" runat="server">
+		<ContentTemplate>
+			<div class="UnifiedSearch" style="display: flex; flex-direction: row; justify-content: space-between; width: 100%;">
+				<div style="width: 80%">
+					<asp:Panel ID="cntUnifiedSearch" runat="server">
+						<div id="divUnifiedSearch">
+							<script type="text/javascript">
+							function UnifiedSearch()
+							{
+								var frm = document.forms[0];
+								// 01/21/2014 Paul.  Need to escape the query value to allow for symbols in the query. 
+								var sUrl = '<%= Application["rootURL"] %>Home/UnifiedSearch.aspx?txtUnifiedSearch=' + escape(frm['<%= txtUnifiedSearch.ClientID %>'].value);
+								window.location.href = sUrl;
+								return false;
+							}
+							</script>
+							<nobr>
+							&nbsp;<asp:TextBox ID="txtUnifiedSearch" CssClass="searchField" Text='<%# Request["txtUnifiedSearch"] %>' placeholder='<%# L10n.Term(".LBL_QUICK_SEARCH_PLACEHOLDER") %>' style="width: 30%;" runat="server" />
+							<asp:ImageButton ID="btnUnifiedSearch" SkinID="searchButton" AlternateText='<%# L10n.Term(".LBL_SEARCH") %>' OnClientClick="return UnifiedSearch();" CssClass="searchButton" style="padding: 5px;" runat="server" />
+							&nbsp;
+							</nobr>
+						</div>
+					</asp:Panel>
+				</div>
+				<div style="text-align: right; margin-top: 0px; margin-right: 20px">
+					<table id="tabToolbarQuickCreate" class="tabToolbarFrame" cellspacing="0" cellpadding="0" height="100%" runat="server">
+						<tr>
+							<td>
+								<span class='QuickCreateFirstButton'>
+									<%# L10n.Term(".LBL_QUICK_SEARCH_NEW_BUTTON") %>
+									<asp:Image SkinID="ToolbarQuickCreate" class="otherTabMoreArrow" runat="server" /><br />
+								</span>
+								<asp:HyperLink NavigateUrl="javascript:void(0);" valign="bottom" runat="server">
+									<asp:Image SkinID="blank" Width="100%" Height="4" BorderWidth="0" runat="server" />
+								</asp:HyperLink>
+							</td>
+						</tr>
+					</table>
+					<asp:Panel ID="pnlToolbarQuickCreateHover" CssClass="PanelHoverHidden" runat="server">
+						<table cellPadding="0" cellSpacing="0" class="QuickCreateHoverFrame">
+							<tr>
+								<td style="width: 100%">
+									<asp:PlaceHolder ID="plcSubPanel" runat="server" />
+									<asp:HiddenField ID="hidDynamicNewRecord" Value="" runat="server" />
+								</td>
+							</tr>
+						</table>
+					</asp:Panel>
+					<ajaxToolkit:HoverMenuExtender TargetControlID="tabToolbarQuickCreate" PopupControlID="pnlToolbarQuickCreateHover" PopupPosition="Bottom" PopDelay="250" HoverDelay="500" OffsetX="<%#  L10n.IsLanguageRTL() ? 0 : -85 %>" OffsetY="-14" runat="server" />
+				</div>
+			</div>
+			<div class="UnifiedSearch">
+				<asp:PlaceHolder ID="plcDynamicNewRecords" runat="server" />
+			</div>
 		</ContentTemplate>
 	</asp:UpdatePanel>
 </div>

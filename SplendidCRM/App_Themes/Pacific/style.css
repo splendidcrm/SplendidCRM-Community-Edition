@@ -138,7 +138,7 @@ input, select, textarea
 	color: #444444;
 	vertical-align: middle;
 }
-.h3Row > tr > td > h3
+.h3Row > tr > td, .h3Row > tbody > tr > td
 {
 	color: white;
 }
@@ -857,6 +857,12 @@ span.QuickCreateFirstButton
 {
 	background-color: white;
 	border: 4px solid #8D74CC;
+}
+/* 08/21/2022 Paul.  Special rules for ASP.NET rendering. */
+a.QuickCreateOtherButton
+{
+	display: block;
+	width: 140px;
 }
 .QuickCreateIcon
 {
@@ -2816,6 +2822,11 @@ input[type=submit].ListHeaderFirstButton, input[type=button].ListHeaderFirstButt
 {
 	padding-top: 6px;
 	padding-bottom: 0px;
+}
+/* 08/27/2022 Paul. Correct color. */
+.listViewPaginationTdS1 > td > span
+{
+	color: white;
 }
 
 .GridSelectionCount

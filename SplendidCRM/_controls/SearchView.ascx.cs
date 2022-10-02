@@ -1944,6 +1944,11 @@ namespace SplendidCRM._controls
 									Sql.AddParameter(cmd, "@NORMALIZED_NUMBER", sNORMALIZED_NUMBER + "%");
 								}
 							}
+							// 09/20/2022 Paul.  Need a way to default to exact search.  Exclude if text contains any search builder token, including space. 
+							else if ( sDATA_FORMAT.ToLower().StartsWith("exact") && !Sql.IsEmptyString(ctl.Text) && ctl.Text.IndexOfAny("=\"+-<>!\r\n\t ;,*".ToCharArray()) == -1 )
+							{
+								Sql.AppendParameter(cmd, ctl.Text, nFORMAT_MAX_LENGTH, Sql.SqlFilterMode.Exact, sDATA_FIELD);
+							}
 							else if ( sDATA_FIELD.IndexOf(' ') > 0 )
 								Sql.AppendParameter(cmd, ctl.Text, nFORMAT_MAX_LENGTH, Sql.SqlFilterMode.StartsWith, sDATA_FIELD.Split(' '));
 							else

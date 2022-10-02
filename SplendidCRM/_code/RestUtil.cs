@@ -4039,8 +4039,9 @@ namespace SplendidCRM
 																gDEFAULT_TEAM = Sql.ToGuid  (rowUser["DEFAULT_TEAM"]);
 																if ( Sql.IsEmptyString(sTHEME) )
 																	sTHEME = SplendidDefaults.Theme();
+																// 09/04/2022 Paul.  sTHEME was getting set to the culture. 
 																if ( Sql.IsEmptyString(sLANG) )
-																	sTHEME = SplendidDefaults.Culture();
+																	sLANG = SplendidDefaults.Culture();
 															}
 														}
 													}

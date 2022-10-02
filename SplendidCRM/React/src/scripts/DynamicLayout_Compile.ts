@@ -98,6 +98,10 @@ const ExportHeader                           = require('../components/ExportHead
 const PreviewDashboard                       = require('../views/PreviewDashboard'                ).default;
 const MassUpdate                             = require('../views/MassUpdate'                      ).default;
 const DynamicMassUpdate                      = require('../views/DynamicMassUpdate'               ).default;
+// 08/30/2022 Paul.  A customer needs to have DynamicDetailView for a custom DetailView. 
+const DynamicDetailView                      = require('../views/DynamicDetailView'               ).default;
+const DynamicEditView                        = require('../views/DynamicEditView'                 ).default;
+const DynamicListView                        = require('../views/DynamicListView'                 ).default;
 const ModuleViewFactory                      = require('../ModuleViews'                           ).default;
 const AuditView                              = require('../views/AuditView'                       ).default;
 const HeaderButtonsFactory                   = require('../ThemeComponents/HeaderButtonsFactory'  ).default;
@@ -108,6 +112,10 @@ const ActivitiesPopupView                    = require('../views/ActivitiesPopup
 const PersonalInfoView                       = require('../views/PersonalInfoView'                ).default;
 // 04/13/2022 Paul.  Add LayoutTabs to Pacific theme. 
 const LayoutTabs                             = require('../components/LayoutTabs'                 ).default;
+// 10/01/2022 Paul.  Base dashlets should have been added long ago.  They are needed when making custom from base. 
+const BaseMyDashlet                          = require('../Dashlets/BaseMyDashlet'                ).default;
+const BaseMyFavoriteDashlet                  = require('../Dashlets/BaseMyFavoriteDashlet'        ).default;
+const BaseMyTeamDashlet                      = require('../Dashlets/BaseMyTeamDashlet'            ).default;
 
 export async function DynamicLayout_Compile(responseText: string)
 {

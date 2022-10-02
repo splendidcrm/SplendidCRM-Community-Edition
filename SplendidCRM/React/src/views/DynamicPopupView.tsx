@@ -26,6 +26,8 @@ import PopupView                              from './PopupView'                
 interface IDynamicPopupViewProps extends RouteComponentProps<any>
 {
 	MODULE_NAME        : string;
+	// 09/09/2022 Paul.  Provide a way to select an alternate layout.  Only works for custom layouts. 
+	CUSTOM_LAYOUT_NAME?: string;
 	rowDefaultSearch?  : any;
 	callback           : Function;
 	isOpen             : boolean;
@@ -71,7 +73,8 @@ class DynamicPopupView extends React.Component<IDynamicPopupViewProps, IDynamicP
 			let status = await AuthenticatedMethod(this.props, this.constructor.name + '.componentDidMount');
 			if ( status == 1 )
 			{
-				let sLAYOUT_NAME = 'PopupView';
+				// 09/09/2022 Paul.  Provide a way to select an alternate layout.  Only works for custom layouts. 
+				let sLAYOUT_NAME = (this.props.CUSTOM_LAYOUT_NAME ? this.props.CUSTOM_LAYOUT_NAME : 'PopupView');
 				let customView = await DynamicLayout_Module(this.props.MODULE_NAME, 'ListViews', sLAYOUT_NAME);
 				//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.constructor ' + (customView ? 'custom' : 'default') + ' view ' + this.props.MODULE_NAME + '.' + sLAYOUT_NAME);
 				// 05/26/2019 Paul.  The component may be unmounted by the time the custom view is generated. 

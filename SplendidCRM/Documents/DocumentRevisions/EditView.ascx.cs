@@ -100,6 +100,9 @@ namespace SplendidCRM.DocumentRevisions
 											cmd.CommandText = sSQL;
 											Security.Filter(cmd, m_sMODULE, "edit");
 											Sql.AppendParameter(cmd, gID, "ID", false);
+											// 09/04/2022 Paul.  ID may be the latest revision. 
+											cmd.CommandText += "    or DOCUMENT_REVISION_ID = @DOCUMENT_REVISION_ID" + ControlChars.CrLf;
+											Sql.AddParameter(cmd, "@DOCUMENT_REVISION_ID", gID);
 											using ( DbDataAdapter da = dbf.CreateDataAdapter() )
 											{
 												((IDbDataAdapter)da).SelectCommand = cmd;
@@ -228,6 +231,9 @@ namespace SplendidCRM.DocumentRevisions
 								// 11/24/2006 Paul.  Use new Security.Filter() function to apply Team and ACL security rules.
 								Security.Filter(cmd, m_sMODULE, "edit");
 								Sql.AppendParameter(cmd, gID, "ID", false);
+								// 09/04/2022 Paul.  ID may be the latest revision. 
+								cmd.CommandText += "    or DOCUMENT_REVISION_ID = @DOCUMENT_REVISION_ID" + ControlChars.CrLf;
+								Sql.AddParameter(cmd, "@DOCUMENT_REVISION_ID", gID);
 								con.Open();
 
 								if ( bDebug )

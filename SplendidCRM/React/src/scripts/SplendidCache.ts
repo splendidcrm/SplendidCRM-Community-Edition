@@ -565,6 +565,9 @@ export class SplendidCacheStore
 			return null;
 		}
 		let arrLHS = this.RELATIONSHIPS[sLHS_MODULE];
+		// 09/15/2022 Paul.  Separate relationship lookup into two passes.  
+		// The goal here is to allow meetings_contacts to be found before contact_meetings is found. 
+		// RHS == RHS && LHS == LHS should have a higher prioirty than RHS == LHS && LHS == RHS. 
 		for ( let i = 0; i < arrLHS.length; i++ )
 		{
 			let relationship = arrLHS[i];
@@ -572,7 +575,11 @@ export class SplendidCacheStore
 			{
 				return relationship;
 			}
-			else if ( relationship.RHS_MODULE == sLHS_MODULE && relationship.LHS_MODULE == sRHS_MODULE )
+		}
+		for ( let i = 0; i < arrLHS.length; i++ )
+		{
+			let relationship = arrLHS[i];
+			if ( relationship.RHS_MODULE == sLHS_MODULE && relationship.LHS_MODULE == sRHS_MODULE )
 			{
 				return relationship;
 			}

@@ -2883,7 +2883,8 @@ namespace SplendidCRM.Administration
 				// 02/18/2021 Paul.  Azure modules. 
 				else if ( sModuleName == "CloudServices" || sModuleName == "DnsNames" || sModuleName == "ResourceGroups" || sModuleName == "SqlDatabases" || sModuleName == "SqlServers" || sModuleName == "StorageAccounts" || sModuleName == "VirtualMachines" )
 					sModuleName = "Azure";
-				bool bValid = Sql.ToBoolean(Application["Modules." + sModuleName + ".Valid"]) || sModuleName == "SystemCheck";
+				// 09/04/2022 Paul.  We want to hide Cloud Services by disabling the module.  
+				bool bValid = (Sql.ToBoolean(Application["Modules." + sModuleName + ".Valid"]) && Sql.ToBoolean(Application["Modules." + module.MODULE_NAME + ".Valid"])) || sModuleName == "SystemCheck";
 				// 09/09/2021 Paul.  Allow documentation link to be hidden. 
 				if ( bValid && module.ADMIN_ROUTE == "Documentation" )
 					bValid = !Sql.ToBoolean(Application["CONFIG.hide_training"]);

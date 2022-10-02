@@ -46,7 +46,9 @@ import ReportEditView                 from './ReportDesigner/EditView'          
 import ReportImportView               from './ModuleViews/Reports/ImportView'                                      ;
 import ReportSignatureView            from './views/ReportSignatureView'                                           ;
 import ReportAttachmentView           from './views/ReportAttachmentView'                                          ;
-import MailMergeView                  from './views/MailMergeView'                                                 ;
+// 09/04/2022 Paul.  A customer wants to change MailMerge, so make it dynamic. 
+//import MailMergeView                  from './views/MailMergeView'                                                 ;
+import DynamicMailMerge               from './views/DynamicMailMerge'                                              ;
 
 import ChartEditView                  from './ModuleViews/Charts/EditView'                                         ;
 import ChartImportView                from './ModuleViews/Charts/ImportView'                                       ;
@@ -176,9 +178,9 @@ v			<Redirect     exact from="/Emails/Drafts"                                   
 			<PrivateRoute exact path="/Users/EditMyAccount"                                      component={MyAccountEdit} />
 			<PrivateRoute exact path="/Users/Wizard"                                             component={UserWizard} />
 			<PrivateRoute exact path="/Feeds/MyFeeds"                                            component={PlaceholderView} />
-			<PrivateRoute exact path="/MailMerge/:MODULE_NAME/:ID"                               component={MailMergeView} />
-			<PrivateRoute exact path="/MailMerge/:MODULE_NAME"                                   component={MailMergeView} />
-			<PrivateRoute exact path="/MailMerge"                                                component={MailMergeView} />
+			<PrivateRoute exact path="/MailMerge/:MODULE_NAME/:ID"                               component={DynamicMailMerge} />
+			<PrivateRoute exact path="/MailMerge/:MODULE_NAME"                                   component={DynamicMailMerge} />
+			<PrivateRoute exact path="/MailMerge"                                                component={DynamicMailMerge} />
 
 			<PrivateRoute exact path="/Administration/EmailMan/AdminCampaignEditView"            component={AdminCampaignEditView} />
 			<PrivateRoute exact path="/Administration/EmailMan/ConfigView"                       component={EmailManConfigView} />

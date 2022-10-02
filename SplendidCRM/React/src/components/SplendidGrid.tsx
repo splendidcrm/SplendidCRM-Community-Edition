@@ -1179,6 +1179,8 @@ class SplendidGrid extends React.Component<ISplendidGridProps, ISplendidGridStat
 			for ( let nLayoutIndex = 0; layout != null && nLayoutIndex < layout.length; nLayoutIndex++ )
 			{
 				let lay = layout[nLayoutIndex];
+				// 08/21/2022 Paul.  Don't swap TEAM_SET_NAME on Users.Teams panel.
+				let GRID_NAME                  = lay.GRID_NAME                 ;
 				let COLUMN_TYPE                = lay.COLUMN_TYPE               ;
 				let COLUMN_INDEX               = lay.COLUMN_INDEX              ;
 				let HEADER_TEXT                = lay.HEADER_TEXT               ;
@@ -1209,7 +1211,8 @@ class SplendidGrid extends React.Component<ISplendidGridProps, ISplendidGridStat
 					{
 						// 05/06/2018 Paul.  Change to single instead of 1 to prevent auto-postback. 
 						// 04/03/2021 Paul.  Apply single rule. 
-						if ( bEnableDynamicTeams && DATA_FORMAT != '1' && Sql.ToString(DATA_FORMAT).toLowerCase().indexOf('single') < 0 )
+						// 08/21/2022 Paul.  Don't swap TEAM_SET_NAME on Users.Teams panel.
+						if ( bEnableDynamicTeams && DATA_FORMAT != '1' && Sql.ToString(DATA_FORMAT).toLowerCase().indexOf('single') < 0 && GRID_NAME.indexOf('.Teams') < 0 )
 						{
 							HEADER_TEXT = '.LBL_LIST_TEAM_SET_NAME';
 							DATA_FIELD  = 'TEAM_SET_NAME';
