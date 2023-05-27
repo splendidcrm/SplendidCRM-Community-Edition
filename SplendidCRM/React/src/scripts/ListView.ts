@@ -29,7 +29,8 @@ export async function ListView_LoadTable(sTABLE_NAME: string, sSORT_FIELD: strin
 	let obj = new Object();
 	obj['TableName'    ] = sTABLE_NAME;
 	obj['$orderby'     ] = sSORT_FIELD + ' ' + sSORT_DIRECTION;
-	obj['$select'      ] = sSELECT;
+	// 12/11/2022 Paul.  An uninitialized sSELECT can be {}, and that will be treated as SYSTEMCOLLECTIONSGENERICDICTIONARY2SYSTEMSTRING. 
+	obj['$select'      ] = typeof(sSELECT) == 'object' ? '*' : sSELECT;
 	obj['$filter'      ] = sFILTER;
 	// 11/16/2019 Paul.  We will be ignoring the $filter as we transition to $searchvalues to avoid the security issue of passing full SQL query as a paramter. 
 	if ( rowSEARCH_VALUES != null )
@@ -69,7 +70,8 @@ export async function ListView_LoadTablePaginated(sTABLE_NAME: string, sSORT_FIE
 	obj['$top'         ] = nTOP       ;
 	obj['$skip'        ] = nSKIP      ;
 	obj['$orderby'     ] = sSORT_FIELD + ' ' + sSORT_DIRECTION;
-	obj['$select'      ] = sSELECT    ;
+	// 12/11/2022 Paul.  An uninitialized sSELECT can be {}, and that will be treated as SYSTEMCOLLECTIONSGENERICDICTIONARY2SYSTEMSTRING. 
+	obj['$select'      ] = typeof(sSELECT) == 'object' ? '*' : sSELECT;
 	obj['$filter'      ] = sFILTER    ;
 	if( Sql.ToBoolean(archiveView) )
 	{
@@ -112,7 +114,8 @@ export async function ListView_LoadModule(sMODULE_NAME: string, sSORT_FIELD: str
 	let obj = new Object();
 	obj['ModuleName'   ] = sMODULE_NAME;
 	obj['$orderby'     ] = sSORT_FIELD + ' ' + sSORT_DIRECTION;
-	obj['$select'      ] = sSELECT;
+	// 12/11/2022 Paul.  An uninitialized sSELECT can be {}, and that will be treated as SYSTEMCOLLECTIONSGENERICDICTIONARY2SYSTEMSTRING. 
+	obj['$select'      ] = typeof(sSELECT) == 'object' ? '*' : sSELECT;
 	obj['$filter'      ] = sFILTER;
 	// 11/16/2019 Paul.  We will be ignoring the $filter as we transition to $searchvalues to avoid the security issue of passing full SQL query as a paramter. 
 	if ( rowSEARCH_VALUES != null )
@@ -235,7 +238,8 @@ export async function ListView_LoadModulePaginated(sMODULE_NAME: string, sSORT_F
 	obj['$top'         ] = nTOP       ;
 	obj['$skip'        ] = nSKIP      ;
 	obj['$orderby'     ] = sSORT_FIELD + ' ' + sSORT_DIRECTION;
-	obj['$select'      ] = sSELECT    ;
+	// 12/11/2022 Paul.  An uninitialized sSELECT can be {}, and that will be treated as SYSTEMCOLLECTIONSGENERICDICTIONARY2SYSTEMSTRING. 
+	obj['$select'      ] = typeof(sSELECT) == 'object' ? '*' : sSELECT;
 	obj['$filter'      ] = sFILTER    ;
 	if( Sql.ToBoolean(archiveView) )
 	{
@@ -288,7 +292,8 @@ export async function ListView_LoadTableWithAggregate(sTABLE_NAME: string, sORDE
 	let obj = new Object();
 	obj['TableName'    ] = sTABLE_NAME;
 	obj['$orderby'     ] = sORDER_BY;
-	obj['$select'      ] = sSELECT;
+	// 12/11/2022 Paul.  An uninitialized sSELECT can be {}, and that will be treated as SYSTEMCOLLECTIONSGENERICDICTIONARY2SYSTEMSTRING. 
+	obj['$select'      ] = typeof(sSELECT) == 'object' ? '' : sSELECT;
 	obj['$filter'      ] = sFILTER;
 	obj['$apply'       ] = sAPPLY;
 	// 11/16/2019 Paul.  We will be ignoring the $filter as we transition to $searchvalues to avoid the security issue of passing full SQL query as a paramter. 

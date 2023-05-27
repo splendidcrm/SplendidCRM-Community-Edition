@@ -68,5 +68,6 @@ using System.Reflection;
 // 08/29/2021 Paul.  Version 14.0 adds machine learning to Enterprise. 
 // 04/10/2022 Paul.  Version 14.5 add Pacific theme. 
 // 07/31/2022 Paul.  Version 14.6 includes experimental Angular code. 
-[assembly: AssemblyVersion("14.6.*")]
+// 10/09/2022 Paul.  Version 14.7 Add support for Invoices in Payments.EditView. 
+[assembly: AssemblyVersion("14.7.*")]
 

@@ -108,6 +108,8 @@ class UnifiedSearchView extends React.Component<IUnifiedSearchViewProps, IUnifie
 			}
 			else
 			*/
+			// 10/29/2022 Paul.  Makes no sense to search for ID. 
+			if ( arrSearchFields[i] != 'ID' )
 			{
 				sFILTER += oSearchBuilder.BuildQuery('        ' + (i == 0 ? 'and ' : ' or '), arrSearchFields[i]) + ControlChars.CrLf;
 			}

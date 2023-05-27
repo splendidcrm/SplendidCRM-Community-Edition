@@ -3310,6 +3310,16 @@ namespace SplendidCRM
 																Crm.DocumentRevisions.LoadFile(gRevisionID, byFILE_DATA, trn);
 															}
 														}
+														// 10/15/2022 Paul.  Must manually add Documents relationship. 
+														if ( dict.ContainsKey("PARENT_ID") )
+														{
+															Guid   gPARENT_ID   = Sql.ToGuid(dict["PARENT_ID"]);
+															string sMODULE      = String.Empty;
+															string sPARENT_TYPE = String.Empty;
+															string sPARENT_NAME = String.Empty;
+															SqlProcs.spPARENT_Get(ref gPARENT_ID, ref sMODULE, ref sPARENT_TYPE, ref sPARENT_NAME, trn);
+															SqlProcs.spDOCUMENTS_InsRelated(gID, sMODULE, gPARENT_ID, trn);
+														}
 													}
 													// 11/24/2021 Paul.  Document Revisions also need to pull the file data separately. 
 													else if ( sTABLE_NAME == "DOCUMENT_REVISIONS" )
@@ -3808,6 +3818,7 @@ namespace SplendidCRM
 													// 05/06/2022 Paul.  When PARENT_ID is provided, spINVOICES_PAYMENTS_Update gets called. 
 													else if ( sTABLE_NAME == "PAYMENTS" )
 													{
+														// 10/09/2022 Paul.  Keep old code while adding support for Payment Line Items, which are just Invoices. 
 														if ( dict.ContainsKey("PARENT_ID") && dict.ContainsKey("AMOUNT") )
 														{
 															IDbCommand cmdINVOICES_PAYMENTS_Update = SqlProcs.Factory(con, "spINVOICES_PAYMENTS_Update");
@@ -3828,6 +3839,81 @@ namespace SplendidCRM
 																	par.Value = DBNull.Value;
 															}
 															cmdINVOICES_PAYMENTS_Update.ExecuteNonQuery();
+														}
+														// 10/09/2022 Paul.  Add Payments.SummaryView to React Client. 
+														else
+														{
+															List<Guid> lstCurrentLineItems = new List<Guid>();
+															sSQL = "select ID"                          + ControlChars.CrLf
+																 + "  from vwPAYMENTS_INVOICES"         + ControlChars.CrLf
+																 + " where PAYMENT_ID = @PAYMENT_ID"    + ControlChars.CrLf;
+															try
+															{
+																using ( IDbCommand cmd = con.CreateCommand() )
+																{
+																	cmd.Transaction = trn;
+																	cmd.CommandText = sSQL;
+																	Sql.AddParameter(cmd, "@PAYMENT_ID", gID);
+																	using ( DbDataAdapter da = dbf.CreateDataAdapter() )
+																	{
+																		((IDbDataAdapter)da).SelectCommand = cmd;
+																		using ( DataTable dtcurrentLineItems = new DataTable() )
+																		{
+																			da.Fill(dtcurrentLineItems);
+																			foreach ( DataRow rowLineItems in dtcurrentLineItems.Rows )
+																			{
+																				lstCurrentLineItems.Add(Sql.ToGuid(rowLineItems["ID"]));
+																			}
+																		}
+																	}
+																}
+															}
+															catch(Exception ex)
+															{
+																SplendidError.SystemError(new StackTrace(true).GetFrame(0), ex.Message + ": " + sSQL);
+															}
+															// 03/09/2016 Paul.  We need to make sure to set the relationship key. 
+															string sPRIMARY_FIELD_NAME = Crm.Modules.SingularTableName(sTABLE_NAME) + "_ID";
+															if ( !dtLINE_ITEMS.Columns.Contains(sPRIMARY_FIELD_NAME) )
+																dtLINE_ITEMS.Columns.Add(sPRIMARY_FIELD_NAME);
+														
+															IDbCommand spINVOICES_PAYMENTS_Update = SqlProcs.Factory(con, "spINVOICES_PAYMENTS_Update");
+															spINVOICES_PAYMENTS_Update.Transaction = trn;
+															foreach ( DataRow rowLineItem in dtLINE_ITEMS.Rows )
+															{
+																Guid gLINE_ITEM_ID = Guid.Empty;
+																// 02/10/2020 Paul.  Dynamically generated table may not contain the field. 
+																if ( dtLINE_ITEMS.Columns.Contains("ID") )
+																	gLINE_ITEM_ID = Sql.ToGuid(rowLineItem["ID"]);
+																if ( !Sql.IsEmptyGuid(gLINE_ITEM_ID) && lstCurrentLineItems.Contains(gLINE_ITEM_ID) )
+																	lstCurrentLineItems.Remove(gLINE_ITEM_ID);
+															
+																foreach(IDbDataParameter par in spINVOICES_PAYMENTS_Update.Parameters)
+																{
+																	string sParameterName = Sql.ExtractDbName(spINVOICES_PAYMENTS_Update, par.ParameterName).ToUpper();
+																	if      ( sParameterName == "MODIFIED_USER_ID" ) par.Value = Sql.ToDBGuid   (Security.USER_ID        ) ;
+																	else if ( sParameterName == "ID"               ) par.Value = gLINE_ITEM_ID                             ;
+																	else if ( sParameterName == "PAYMENT_ID"       ) par.Value = gID                                       ;
+																	else if ( sParameterName == "INVOICE_ID"       ) par.Value = Sql.ToDBGuid   (rowLineItem["INVOICE_ID"]);
+																	else if ( sParameterName == "AMOUNT"           ) par.Value = Sql.ToDBDecimal(rowLineItem["AMOUNT"    ]);
+																}
+																spINVOICES_PAYMENTS_Update.ExecuteNonQuery();
+															}
+															IDbCommand spINVOICES_PAYMENTS_Delete = SqlProcs.Factory(con, "spINVOICES_PAYMENTS_Delete");
+															spINVOICES_PAYMENTS_Delete.Transaction = trn;
+															foreach ( Guid gLINE_ITEM_ID in lstCurrentLineItems )
+															{
+																// 05/22/2017 Paul.  Correct source proce. 
+																foreach(IDbDataParameter par in spINVOICES_PAYMENTS_Delete.Parameters)
+																{
+																	string sParameterName = Sql.ExtractDbName(spINVOICES_PAYMENTS_Delete, par.ParameterName).ToUpper();
+																	if ( sParameterName == "MODIFIED_USER_ID" )
+																		par.Value = Sql.ToDBGuid(Security.USER_ID);
+																	else if ( sParameterName == "ID" )
+																		par.Value = gLINE_ITEM_ID;
+																}
+																spINVOICES_PAYMENTS_Delete.ExecuteNonQuery();
+															}
 														}
 													}
 													// 03/04/2016 Paul.  Line items will be included with Quotes, Orders and Invoices. 
@@ -3987,6 +4073,35 @@ namespace SplendidCRM
 														// 11/24/2021 Paul.  Only clear when updating dashboards. 
 														Session.Remove("vwDASHBOARDS.ReactClient"       );
 														Session.Remove("vwDASHBOARDS_PANELS.ReactClient");
+													}
+													// 10/08/2022 Paul.  All modules can potentiallys support merge.  A supported module will have a _Merge stored procedure. 
+													if ( dict.ContainsKey("MergeIDs") )
+													{
+														nACLACCESS = SplendidCRM.Security.GetUserAccess(sMODULE_NAME, "delete");
+														if ( nACLACCESS < 0 )
+														{
+															throw(new Exception(L10n.Term("ACL.LBL_INSUFFICIENT_ACCESS") + ": " + sMODULE_NAME + " merge"));
+														}
+														System.Collections.ArrayList arrID = dict["MergeIDs"] as System.Collections.ArrayList;
+														if ( arrID != null )
+														{
+															using ( IDbCommand cmdMerge = SqlProcs.Factory(con, "sp" + sTABLE_NAME + "_Merge") )
+															{
+																cmdMerge.Transaction = trn;
+																Sql.SetParameter(cmdMerge, "@ID"              , gID             );
+																Sql.SetParameter(cmdMerge, "@MODIFIED_USER_ID", Security.USER_ID);
+																foreach ( object sMERGE_ID in arrID )
+																{
+																	Guid gMERGE_ID = Sql.ToGuid(sMERGE_ID);
+																	if ( gMERGE_ID != gID )
+																	{
+																		Sql.SetParameter(cmdMerge, "@MERGE_ID", gMERGE_ID);
+																		// 06/02/2009 Paul.  Only execute if not the primary record. 
+																		cmdMerge.ExecuteNonQuery();
+																	}
+																}
+															}
+														}
 													}
 													trn.Commit();
 												}

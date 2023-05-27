@@ -167,17 +167,20 @@ namespace SplendidCRM
 		}
 
 		// 11/09/2019 Paul.  Pass the RedirectURL so that we can call from the React client. 
-		public static Office365AccessToken Office365AcquireAccessToken(HttpContext Context, string sOAuthClientID, string sOAuthClientSecret, Guid gUSER_ID, string sAuthorizationCode, string sRedirect)
+		// 02/04/2023 Paul.  Directory Tenant is now required for single tenant app registrations. 
+		public static Office365AccessToken Office365AcquireAccessToken(HttpContext Context, string sOAuthDirectoryTenatID, string sOAuthClientID, string sOAuthClientSecret, Guid gUSER_ID, string sAuthorizationCode, string sRedirect)
 		{
 			throw(new Exception("Office 365 integration is not supported."));
 		}
 
-		public static Office365AccessToken Office365RefreshAccessToken(HttpApplicationState Application, string sOAuthClientID, string sOAuthClientSecret, Guid gUSER_ID, bool bForceRefresh)
+		// 02/04/2023 Paul.  Directory Tenant is now required for single tenant app registrations. 
+		public static Office365AccessToken Office365RefreshAccessToken(HttpApplicationState Application, string sOAuthDirectoryTenatID, string sOAuthClientID, string sOAuthClientSecret, Guid gUSER_ID, bool bForceRefresh)
 		{
 			throw(new Exception("Office 365 integration is not supported."));
 		}
 
-		public static bool Office365TestAccessToken(HttpApplicationState Application, string sOAuthClientID, string sOAuthClientSecret, Guid gUSER_ID, StringBuilder sbErrors)
+		// 02/04/2023 Paul.  Directory Tenant is now required for single tenant app registrations. 
+		public static bool Office365TestAccessToken(HttpApplicationState Application, string sOAuthDirectoryTenatID, string sOAuthClientID, string sOAuthClientSecret, Guid gUSER_ID, StringBuilder sbErrors)
 		{
 			throw(new Exception("Office 365 integration is not supported."));
 		}

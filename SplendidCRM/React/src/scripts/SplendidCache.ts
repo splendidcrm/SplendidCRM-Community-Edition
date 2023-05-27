@@ -1269,7 +1269,8 @@ export class SplendidCacheStore
 
 	SetTERMINOLOGY_LISTS(obj)
 	{
-		this.TERMINOLOGY_LISTS = obj;
+		// 12/10/2022 Paul.  Allow Login Terminology Lists to be customized. 
+		this.TERMINOLOGY_LISTS = obj ? obj : {};
 	}
 
 	SetTERMINOLOGY(obj)
@@ -1338,10 +1339,11 @@ export class SplendidCacheStore
 	// 02/25/2019 Paul.  New method to fetch the React Custom Views. 
 	SetREACT_CUSTOM_VIEWS(obj)
 	{
-		this.REACT_CUSTOM_VIEWS = obj;
+		// 12/07/2022 Paul.  Allow the LoginView to be customized. 
+		this.REACT_CUSTOM_VIEWS = obj ? obj : {};
 		// 03/01/2019 Paul.  Clear compiled views. 
 		this.COMPILED_CUSTOM_VIEWS = new Object();
-		this.REACT_DASHLETS = obj['Dashlets'];
+		this.REACT_DASHLETS = obj ? obj['Dashlets'] : {};
 		this.COMPILED_DASHLETS = new Object();
 	}
 

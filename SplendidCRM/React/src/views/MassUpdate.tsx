@@ -396,13 +396,22 @@ export default class MassUpdate extends React.Component<IMassUpdateProps, IMassU
 
 	private _onMassMerge = async (sCommandArguments) =>
 	{
+		const { MODULE_NAME } = this.props;
 		const { selectedItems } = this.state;
 		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onMassMerge', selectedItems);
 		if ( this.ValidateTwo() )
 		{
 			if ( this._isMounted )
 			{
-				this.setState({ error: L10n.Term('.LBL_FEATURE_NOT_SUPPORTED') });
+				// 10/05/2022 Paul.  Add support for MassMerge. 
+				let arrID: string[] = [];
+				for ( let id in selectedItems )
+				{
+					arrID.push(id);
+				}
+				let sID: string = arrID.join(',');
+				//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onMassMerge', sID);
+				this.props.history.push(`/Reset/Merge/${MODULE_NAME}/` + encodeURIComponent(sID));
 			}
 		}
 	}

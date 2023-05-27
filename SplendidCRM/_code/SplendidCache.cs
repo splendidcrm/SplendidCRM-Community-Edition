@@ -158,8 +158,8 @@ namespace SplendidCRM
 		public static DataTable SchedulerJobs()
 		{
 			System.Web.Caching.Cache Cache = HttpRuntime.Cache;
-
-			L10N L10n = new L10N(HttpContext.Current.Application["USER_SETTINGS/CULTURE"] as string);
+			// 05/14/2023 Paul.  L10n is not used.  Should use default or Session, not Application. 
+			//L10N L10n = new L10N(HttpContext.Current.Application["USER_SETTINGS/CULTURE"] as string);
 			DataTable dt = Cache.Get("SchedulerJobs") as DataTable;
 			if ( dt == null )
 			{
@@ -7890,7 +7890,8 @@ namespace SplendidCRM
 			foreach(DictionaryEntry oKey in Cache)
 			{
 				string sKey = oKey.Key.ToString();
-				if ( sKey.StartsWith("ArchiveExists.") )
+				// 05/15/2023 Paul.  There is no ArchiveExists.  Correct to ArchiveViewExists. 
+				if ( sKey.StartsWith("ArchiveViewExists.") )
 					Cache.Remove(sKey);
 			}
 		}
@@ -8784,6 +8785,8 @@ namespace SplendidCRM
 						List<string> lstMODULES_WithAdmin = new List<string>(lstMODULES);
 						// 06/07/2020 Paul.  Home is always available. 
 						lstMODULES_WithAdmin.Add("Home"           );
+						// 10/05/2022 Paul.  Merge is always available. 
+						lstMODULES_WithAdmin.Add("Merge"          );
 						lstMODULES_WithAdmin.Add("Users"          );
 						lstMODULES_WithAdmin.Add("Audit"          );
 						lstMODULES_WithAdmin.Add("OAuth"          );
@@ -10092,6 +10095,109 @@ namespace SplendidCRM
 			return objs;
 		}
 
+		// 12/10/2022 Paul.  Allow Login Terminology Lists to be customized. 
+		public static Dictionary<string, object> GetLoginTerminologyLists(HttpContext Context, List<string> lstLIST_NAME, Dictionary<string, object> TERMINOLOGY)
+		{
+			HttpSessionState     Session     = Context.Session;
+			HttpApplicationState Application = Context.Application;
+			// 09/27/2020 Paul.  Terminology is language specific. 
+			L10N L10n = new L10N(Session["USER_SETTINGS/CULTURE"] as string);
+			Dictionary<string, object> objs = HttpRuntime.Cache.Get("vwTERMINOLOGY_PickList.ReactClient.Login") as Dictionary<string, object>;
+			if ( objs == null )
+			{
+				objs = new Dictionary<string, object>();
+				try
+				{
+					// 12/14/2022 Paul.  Most companies will not return list data. 
+					if ( lstLIST_NAME.Count > 0 )
+					{
+						DbProviderFactory dbf = DbProviderFactories.GetFactory();
+						using ( IDbConnection con = dbf.CreateConnection() )
+						{
+							con.Open();
+							string sSQL = String.Empty;
+							sSQL = "select distinct                " + ControlChars.CrLf
+							     + "       NAME                    " + ControlChars.CrLf
+							     + "     , DISPLAY_NAME            " + ControlChars.CrLf
+							     + "     , LIST_NAME               " + ControlChars.CrLf
+							     + "     , LIST_ORDER              " + ControlChars.CrLf
+							     + "  from vwTERMINOLOGY           " + ControlChars.CrLf
+							     + " where lower(LANG) = @LANG     " + ControlChars.CrLf;
+							using ( IDbCommand cmd = con.CreateCommand() )
+							{
+								cmd.CommandText = sSQL;
+								Sql.AddParameter(cmd, "@LANG", L10n.NAME.ToLower());
+								Sql.AppendParameter(cmd, lstLIST_NAME.ToArray(), "LIST_NAME");
+								cmd.CommandText += " order by LIST_NAME, LIST_ORDER" + ControlChars.CrLf;
+							
+								using ( DbDataAdapter da = dbf.CreateDataAdapter() )
+								{
+									((IDbDataAdapter)da).SelectCommand = cmd;
+									using ( DataTable dt = new DataTable() )
+									{
+										da.Fill(dt);
+										string sLAST_LIST_NAME = String.Empty;
+										List<string> layout = null;
+										for ( int i = 0; i < dt.Rows.Count; i++ )
+										{
+											DataRow row = dt.Rows[i];
+											string sNAME         = Sql.ToString(row["NAME"        ]);
+											string sLIST_NAME    = Sql.ToString(row["LIST_NAME"   ]);
+											string sDISPLAY_NAME = Sql.ToString(row["DISPLAY_NAME"]);
+											if ( sLAST_LIST_NAME != sLIST_NAME )
+											{
+												sLAST_LIST_NAME = sLIST_NAME;
+												layout = new List<string>();
+												objs.Add(L10n.NAME + "." + sLAST_LIST_NAME, layout);
+											}
+											layout.Add(sNAME);
+											// 12/10/2022 Paul.  Make sure to include display name in TERMINOLOGY, as TERMINOLOGY_LIST only includes lists. 
+											TERMINOLOGY[L10n.NAME + "." + "." + sLIST_NAME + "." + sNAME] = sDISPLAY_NAME;
+										}
+									}
+								}
+								// 12/10/2022 Paul.  In case the list is custom, search the custom caches. 
+								foreach ( string sCACHE_NAME in lstLIST_NAME )
+								{
+									List<SplendidCacheReference> arrCustomCaches = SplendidCache.CustomCaches;
+									foreach ( SplendidCacheReference cache in arrCustomCaches )
+									{
+										if ( cache.Name == sCACHE_NAME )
+										{
+											string sDataValueField = cache.DataValueField;
+											string sDataTextField  = cache.DataTextField ;
+											SplendidCacheCallback cbkDataSource = cache.DataSource;
+											using ( DataTable dt = cbkDataSource() )
+											{
+												List<string> layout = new List<string>();
+												objs.Add(L10n.NAME + "." + sCACHE_NAME, layout);
+												for ( int i = 0; i < dt.Rows.Count; i++ )
+												{
+													DataRow row = dt.Rows[i];
+													string sID   = Sql.ToString(row[sDataValueField]);
+													string sNAME = Sql.ToString(row[sDataValueField]);
+													layout.Add(sID);
+													// 12/10/2022 Paul.  Make sure to include display name in TERMINOLOGY, as TERMINOLOGY_LIST only includes lists. 
+													TERMINOLOGY[L10n.NAME + "." + "." + sCACHE_NAME + "." + sID] = sNAME;
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					HttpRuntime.Cache.Insert("vwTERMINOLOGY_PickList.ReactClient.Login", objs, null, DefaultCacheExpiration(), Cache.NoSlidingExpiration);
+				}
+				catch(Exception ex)
+				{
+					SplendidError.SystemError(new StackTrace(true).GetFrame(0), ex);
+					throw;
+				}
+			}
+			return objs;
+		}
+
 		// 03/02/2019 Paul.  Functions are now static and take modules list input so that they can be used in the Admin API. 
 		public static Dictionary<string, object> GetAllTaxRates(HttpContext Context)
 		{
@@ -10325,13 +10431,14 @@ namespace SplendidCRM
 		}
 
 		// 03/02/2019 Paul.  Functions are now static and take modules list input so that they can be used in the Admin API. 
-		public static void GetAllReactCustomViews(HttpContext Context, Dictionary<string, object> objs, List<string> lstMODULES, string sFolder, bool bIS_ADMIN)
+		// 12/07/2022 Paul.  Allow the LoginView to be customized. 
+		public static void GetAllReactCustomViews(HttpContext Context, Dictionary<string, object> objs, List<string> lstMODULES, string sFolder, bool bIS_ADMIN, bool bLogin)
 		{
 			HttpSessionState     Session     = HttpContext.Current.Session;
 			HttpApplicationState Application = HttpContext.Current.Application;
 			try
 			{
-				if ( Security.IsAuthenticated() )
+				if ( Security.IsAuthenticated() || bLogin )
 				{
 					string sCustomViewsJS = Context.Server.MapPath(sFolder);
 					if ( Directory.Exists(sCustomViewsJS) )

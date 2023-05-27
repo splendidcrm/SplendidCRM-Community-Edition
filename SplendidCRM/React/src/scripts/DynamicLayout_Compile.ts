@@ -26,6 +26,7 @@ const BootstrapTable                         = require('react-bootstrap-table-ne
 const { FontAwesomeIcon }                    = require('@fortawesome/react-fontawesome'       );
 const moment                                 = require('moment'                               );
 const { Appear }                             = require('react-lifecycle-appear'               );
+const { RouterStore }                        = require('mobx-react-router'                    );
 // 2. Types
 const ACL_ACCESS                             = require('../types/ACL_ACCESS'                  ).default;
 const ACL_FIELD_ACCESS                       = require('../types/ACL_FIELD_ACCESS'            ).default;
@@ -64,7 +65,11 @@ const { CreateSplendidRequest, GetSplendidResult                                
 const { DetailView_LoadItem, DetailView_LoadLayout, DetailView_LoadPersonalInfo, DetailView_RemoveField, DetailView_HideField, DetailView_FindField, DetailView_GetTabList, DetailView_ActivateTab} = require('../scripts/DetailView'     );
 // 11/25/2020 Paul.  EditView_UpdateREPEAT_TYPE is used in Calls/Meetings EditView. 
 const { EditView_LoadItem, EditView_LoadLayout, EditView_ConvertItem, EditView_RemoveField, EditView_InitItem, EditView_FindField, EditView_HideField, EditView_UpdateREPEAT_TYPE, EditView_GetTabList, EditView_ActivateTab } = require('../scripts/EditView'       );
-const { AuthenticatedMethod, IsAuthenticated, LoginRedirect, GetUserProfile, GetMyUserProfile, GetUserID } = require('../scripts/Login'          );
+// 12/07/2022 Paul.  Allow the LoginView to be customized. 
+const AuthenticationContext                  = require('../scripts/adal'                      ).default;
+const { Application_GetReactLoginState }     = require('../scripts/Application'               );
+const { AppName, AppVersion }                = require('../AppVersion'                        );
+const { AuthenticatedMethod, IsAuthenticated, LoginRedirect, GetUserProfile, GetMyUserProfile, GetUserID, Login, ForgotPassword } = require('../scripts/Login'          );
 const { Right, Left, StartsWith, EndsWith, Trim, uuidFast, isEmptyObject, isTouchDevice, base64ArrayBuffer, isMobile, screenWidth, screenHeight } = require('../scripts/utility'        );
 const { NormalizeDescription, XssFilter                                                       } = require('../scripts/EmailUtils'     );
 const { ListView_LoadTable, ListView_LoadModule, ListView_LoadLayout, ListView_LoadModulePaginated, ListView_LoadTablePaginated, ListView_LoadTableWithAggregate } = require('../scripts/ListView');

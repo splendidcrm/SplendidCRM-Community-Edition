@@ -122,7 +122,9 @@ export default class AccessView extends React.Component<IAccessViewProps, IAcces
 			__sql      : null,
 			error      : null,
 			open       ,
-			subPanelVisible  : Sql.ToBoolean(props.isPrecompile),  // 08/31/2021 Paul.  Must show sub panel during precompile to allow it to continue. 
+			// 08/31/2021 Paul.  Must show sub panel during precompile to allow it to continue. 
+			// 05/26/2023 Paul.  When edting, need to show initially, otherwise it not getting displayed at all. 
+			subPanelVisible  : props.EnableACLEditing || Sql.ToBoolean(props.isPrecompile),
 		};
 	}
 

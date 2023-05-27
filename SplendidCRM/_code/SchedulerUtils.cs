@@ -32,6 +32,10 @@ namespace SplendidCRM
 	public class SchedulerUtils
 	{
 		private static bool bInsideTimer = false;
+		// 11/08/2022 Paul.  Separate Archive timer. 
+		public static bool bInsideArchiveTimer = false;
+		// 11/02/2022 Paul.  Keep track of last job for verbose logging. 
+		private static string sLastJob = String.Empty;
 
 		public static string[] Jobs = new string[]
 			{ "pollMonitoredInboxes"
@@ -573,29 +577,38 @@ namespace SplendidCRM
 				// 04/10/2018 Paul.  ModulesArchiveRules module to Professional. 
 				case "function::RunAllArchiveRules":
 				{
-					using ( IDbConnection con = dbf.CreateConnection() )
+					// 07/10/2018 Paul.  Don't run normal archive rules if external archive is enabled. 
+					// 10/27/2022 Paul.  Just now adding to Community. 
+					if ( Sql.IsEmptyString(Context.Application["ArchiveConnectionString"]) )
 					{
-						con.Open();
-						using ( IDbTransaction trn = Sql.BeginTransaction(con) )
+						using ( IDbConnection con = dbf.CreateConnection() )
 						{
-							try
+							con.Open();
+							using ( IDbTransaction trn = Sql.BeginTransaction(con) )
 							{
-								using ( IDbCommand cmd = con.CreateCommand() )
+								try
 								{
-									cmd.Transaction    = trn;
-									cmd.CommandType    = CommandType.StoredProcedure;
-									cmd.CommandText    = "spMODULES_ARCHIVE_RULES_RunAll";
-									cmd.CommandTimeout = 0;
-									cmd.ExecuteNonQuery();
+									using ( IDbCommand cmd = con.CreateCommand() )
+									{
+										cmd.Transaction    = trn;
+										cmd.CommandType    = CommandType.StoredProcedure;
+										cmd.CommandText    = "spMODULES_ARCHIVE_RULES_RunAll";
+										cmd.CommandTimeout = 0;
+										cmd.ExecuteNonQuery();
+									}
+									trn.Commit();
 								}
-								trn.Commit();
-							}
-							catch(Exception ex)
-							{
-								trn.Rollback();
-								SplendidError.SystemMessage(Context, "Error", new StackTrace(true).GetFrame(0), Utils.ExpandException(ex));
+								catch(Exception ex)
+								{
+									trn.Rollback();
+									SplendidError.SystemMessage(Context, "Error", new StackTrace(true).GetFrame(0), Utils.ExpandException(ex));
+								}
 							}
 						}
+					}
+					else
+					{
+						SplendidError.SystemMessage(Context, "Error", new StackTrace(true).GetFrame(0), "SchedulerUtils.RunJobs: Rules cannot be run manually when External Archive is enabled.");
 					}
 					break;
 				}
@@ -615,11 +628,11 @@ namespace SplendidCRM
 		// 10/27/2008 Paul.  Pass the context instead of the Application so that more information will be available to the error handling. 
 		public static void OnTimer(Object sender)
 		{
+			HttpContext Context = sender as HttpContext;
 			// 12/22/2007 Paul.  In case the timer takes a long time, only allow one timer event to be processed. 
 			if ( !bInsideTimer )
 			{
 				bInsideTimer = true;
-				HttpContext Context = sender as HttpContext;
 				try
 				{
 					DbProviderFactory dbf = DbProviderFactories.GetFactory(Context.Application);
@@ -787,14 +800,27 @@ namespace SplendidCRM
 								string   sJOB       = Sql.ToString  (row["JOB"     ]);
 								// 01/31/2008 Paul.  Next run becomes last run. 
 								DateTime dtLAST_RUN = Sql.ToDateTime(row["NEXT_RUN"]);
+								// 11/08/2022 Paul.  Separate Archive timer. 
+								if ( Sql.ToBoolean(Context.Application["CONFIG.Archive.SeparateTimer"]) )
+								{
+									if ( sJOB == "function::RunAllArchiveRules" || sJOB == "function::RunExternalArchive" )
+									{
+										break;
+									}
+								}
+								// 11/02/2022 Paul.  Keep track of last job for verbose logging. 
+								sLastJob = sJOB;
 								try
 								{
-									// 01/29/2008 Paul.  Put jobs into separate function for easy access. 
 									if ( !Sql.ToBoolean(Context.Application["CONFIG.suppress_scheduler_warning"]) )
 									{
-										SplendidError.SystemMessage(Context, "Warning", new StackTrace(true).GetFrame(0), "Scheduler Job: " + sJOB + " at " + dtLAST_RUN.ToString() );
+										SplendidError.SystemMessage(Context, "Warning", new StackTrace(true).GetFrame(0), "Scheduler Job Start: " + sJOB + " at " + dtLAST_RUN.ToString() );
 									}
 									RunJob(Context, sJOB);
+									if ( !Sql.ToBoolean(Context.Application["CONFIG.suppress_scheduler_warning"]) )
+									{
+										SplendidError.SystemMessage(Context, "Warning", new StackTrace(true).GetFrame(0), "Scheduler Job End: " + sJOB + " at " + DateTime.Now.ToString() );
+									}
 								}
 								finally
 								{
@@ -831,6 +857,133 @@ namespace SplendidCRM
 					bInsideTimer = false;
 				}
 			}
+			// 11/02/2022 Paul.  Keep track of last job for verbose logging. 
+			else if ( !Sql.ToBoolean(Context.Application["CONFIG.Scheduler.Verbose"]) )
+			{
+				SplendidError.SystemMessage(Context, "Warning", new StackTrace(true).GetFrame(0), "Scheduler Busy: " + sLastJob );
+			}
 		}
+
+		// 11/08/2022 Paul.  Separate Archive timer. 
+		public static void OnArchiveTimer(Object sender)
+		{
+			HttpContext Context = sender as HttpContext;
+			if ( !bInsideArchiveTimer )
+			{
+				bInsideArchiveTimer = true;
+				try
+				{
+					int nSplendidJobServer = Sql.ToInteger(Context.Application["SplendidJobServer"]);
+					if ( nSplendidJobServer == 0 )
+					{
+						string sSplendidJobServer = System.Configuration.ConfigurationManager.AppSettings["SplendidJobServer"];
+						string sMachineName = sSplendidJobServer;
+						try
+						{
+							// 09/17/2009 Paul.  Azure does not support MachineName.  Just ignore the error. 
+							sMachineName = System.Environment.MachineName;
+						}
+						catch
+						{
+						}
+						if ( Sql.IsEmptyString(sSplendidJobServer) || String.Compare(sMachineName, sSplendidJobServer, true) == 0 )
+						{
+							nSplendidJobServer = 1;
+							SplendidError.SystemMessage(Context, "Warning", new StackTrace(true).GetFrame(0), sMachineName + " is a Splendid Job Server.");
+						}
+						else
+						{
+							nSplendidJobServer = -1;
+							SplendidError.SystemMessage(Context, "Warning", new StackTrace(true).GetFrame(0), sMachineName + " is not a Splendid Job Server.");
+						}
+						Context.Application["SplendidJobServer"] = nSplendidJobServer;
+					}
+					if ( nSplendidJobServer > 0 )
+					{
+						using ( DataTable dt = new DataTable() )
+						{
+							DbProviderFactory dbf = DbProviderFactories.GetFactory(Context.Application);
+							using ( IDbConnection con = dbf.CreateConnection() )
+							{
+								con.Open();
+								string sSQL ;
+								sSQL = "select *               " + ControlChars.CrLf
+								     + "  from vwSCHEDULERS_Run" + ControlChars.CrLf
+								     + " where JOB in ('function::RunAllArchiveRules', 'function::RunExternalArchive')" + ControlChars.CrLf
+								     + " order by NEXT_RUN     " + ControlChars.CrLf;
+								using ( IDbCommand cmd = con.CreateCommand() )
+								{
+									cmd.CommandText = sSQL;
+									cmd.CommandTimeout = 15;
+									using ( DbDataAdapter da = dbf.CreateDataAdapter() )
+									{
+										((IDbDataAdapter)da).SelectCommand = cmd;
+										da.Fill(dt);
+									}
+								}
+							}
+							if ( !Sql.ToBoolean(Context.Application["CONFIG.suppress_scheduler_warning"]) )
+							{
+								SplendidError.SystemMessage(Context, "Warning", new StackTrace(true).GetFrame(0), "Archive Jobs to run: " + dt.Rows.Count.ToString() );
+							}
+							foreach ( DataRow row in dt.Rows )
+							{
+								Guid     gID        = Sql.ToGuid    (row["ID"      ]);
+								string   sJOB       = Sql.ToString  (row["JOB"     ]);
+								DateTime dtLAST_RUN = Sql.ToDateTime(row["NEXT_RUN"]);
+								// 11/02/2022 Paul.  Keep track of last job for verbose logging. 
+								sLastJob = sJOB;
+								try
+								{
+									if ( !Sql.ToBoolean(Context.Application["CONFIG.suppress_scheduler_warning"]) )
+									{
+										SplendidError.SystemMessage(Context, "Warning", new StackTrace(true).GetFrame(0), "Archive Job Start: " + sJOB + " at " + dtLAST_RUN.ToString() );
+									}
+									RunJob(Context, sJOB);
+									if ( !Sql.ToBoolean(Context.Application["CONFIG.suppress_scheduler_warning"]) )
+									{
+										SplendidError.SystemMessage(Context, "Warning", new StackTrace(true).GetFrame(0), "Archive Job End: " + sJOB + " at " + DateTime.Now.ToString() );
+									}
+								}
+								finally
+								{
+									using ( IDbConnection con = dbf.CreateConnection() )
+									{
+										con.Open();
+										using ( IDbTransaction trn = Sql.BeginTransaction(con) )
+										{
+											try
+											{
+												SqlProcs.spSCHEDULERS_UpdateLastRun(gID, dtLAST_RUN, trn);
+												trn.Commit();
+											}
+											catch(Exception ex)
+											{
+												trn.Rollback();
+												SplendidError.SystemMessage(Context, "Error", new StackTrace(true).GetFrame(0), Utils.ExpandException(ex));
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				catch(Exception ex)
+				{
+					SplendidError.SystemMessage(Context, "Error", new StackTrace(true).GetFrame(0), Utils.ExpandException(ex));
+				}
+				finally
+				{
+					bInsideArchiveTimer = false;
+				}
+			}
+			// 11/02/2022 Paul.  Keep track of last job for verbose logging. 
+			else if ( !Sql.ToBoolean(Context.Application["CONFIG.Scheduler.Verbose"]) )
+			{
+				SplendidError.SystemMessage(Context, "Warning", new StackTrace(true).GetFrame(0), "Archive Jobs Busy: " + sLastJob );
+			}
+		}
+
 	}
 }

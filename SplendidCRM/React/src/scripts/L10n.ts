@@ -111,6 +111,7 @@ export default class L10n
 		// 11/30/2017 Paul.  Add ASSIGNED_SET_ID for Dynamic User Assignment. 
 		// 04/19/2018 Paul.  MODIFIED_BY_ID is not the correct name, use MODIFIED_USER_ID instead. 
 		// 07/18/2018 Paul.  Add LBL_ARCHIVE_BY. 
+		// 10/08/2022 Paul.  LBL_EXCHANGE_FOLDER is global. 
 		let sTERM_NAME: string = '';
 		if (  sColumnName == 'ID'              
 		   || sColumnName == 'DELETED'         
@@ -150,6 +151,7 @@ export default class L10n
 		   || sColumnName == 'ARCHIVE_DATE_UTC'
 		   || sColumnName == 'ARCHIVE_USER_ID' 
 		   || sColumnName == 'ARCHIVE_VIEW'    
+		   || sColumnName == 'EXCHANGE_FOLDER'
 			)
 		{
 			sTERM_NAME = '.LBL_' + sColumnName;

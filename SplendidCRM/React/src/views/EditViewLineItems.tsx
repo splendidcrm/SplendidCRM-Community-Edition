@@ -135,8 +135,17 @@ export default class EditViewLineItems extends React.Component<IEditViewLineItem
 				if ( this.state.lineEdited[DATA_FIELD] != nextLineEdited[DATA_FIELD] )
 				{
 					//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.UpdateLineEdited ' + DATA_FIELD, nextLineEdited[DATA_FIELD]);
+					// 11/12/2022 Paul.  ModulePopup is having an issue with DISPLAY_VALUE being converted to the DATA_VALUE. 
+					// This happens here when DATA_VALUE is set without also providing item. 
+					let item: any = null;
+					// 11/12/2022 Paul.  We could call updateDependancy a second time for NAME, but seems better to provide an item instead. 
+					if ( ref.current.props.layout.FIELD_TYPE == 'ModulePopup' )
+					{
+						item = {};
+						item.NAME = nextLineEdited[ref.current.props.layout.DISPLAY_FIELD];
+					}
 					let DATA_VALUE = nextLineEdited[DATA_FIELD];
-					ref.current.updateDependancy(DATA_FIELD, DATA_VALUE, null, null);
+					ref.current.updateDependancy(DATA_FIELD, DATA_VALUE, null, item);
 				}
 			}
 		}
@@ -1083,7 +1092,8 @@ export default class EditViewLineItems extends React.Component<IEditViewLineItem
 							let lnk = React.createElement(HyperLink, lnkProps);
 							tdFieldChildren.push(lnk);
 						}
-						else if ( FIELD_TYPE == 'ModueLink' )
+						// 01/10/2023 Paul.  Correct the field type name, it is not ModueLink. 
+						else if ( FIELD_TYPE == 'ModuleLink' )
 						{
 							let lnkProps: any = { baseId, key, row, layout: detail, ref, fieldDidMount: this._onFieldDidMount, ERASED_FIELDS, bIsHidden };
 							let lnk = React.createElement(ModuleLink, lnkProps);

@@ -583,7 +583,14 @@ ChatDashboardUI.prototype.Render = function(sLayoutPanel, sActionsPanel, callbac
 		{
 			return RegisterEnterKeyPress(e, btnSearch.id);
 		};
-		btnSearch.onclick = BindArguments(this.Search, this);
+		// 05/19/2023 Paul.  Need to prevent default, otherwise we get page submit. 
+		var self = this;
+		btnSearch.onclick = function(e)
+		{
+			e.preventDefault();
+			e.stopPropagation();
+			self.Search(self);
+		}
 		if ( bIsMobile )
 		{
 			txtSearch.style.marginTop = '3px';

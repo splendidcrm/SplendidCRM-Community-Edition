@@ -21,20 +21,26 @@
  * the Appropriate Legal Notices must display the following words on all interactive user interfaces: 
  * "Copyright (C) 2005-2011 SplendidCRM Software, Inc. All rights reserved."
  *********************************************************************************************************************/
+/* 10/15/2022 Paul.  Put buttons on header bar and move +/- to the left to match React theme. */
 </script>
 	<asp:Table ID="tblSubPanelFrame" SkinID="tabFrame" CssClass=<%# (CookieValue(SubPanel) == "1" ? "h3Row h3RowDisabled" : "h3Row") %> runat="server">
 		<asp:TableRow>
+			<asp:TableCell Width="30px">
+				<span Visible="<%# !Sql.IsEmptyString(SubPanel) %>" runat="server">
+					<asp:HyperLink ID="lnkShowSubPanel" NavigateUrl=<%# "javascript:ShowSubPanel(\'" + lnkShowSubPanel.ClientID + "\',\'" + lnkHideSubPanel.ClientID + "\',\'" + SubPanel + "\',\'" + tblSubPanelFrame.ClientID + "\');" %> style=<%# "display:" + (CookieValue(SubPanel) == "1" ? "inline" : "none") %> runat="server"><asp:Image SkinID="subpanel_expand"   runat="server" /></asp:HyperLink>
+					<asp:HyperLink ID="lnkHideSubPanel" NavigateUrl=<%# "javascript:HideSubPanel(\'" + lnkShowSubPanel.ClientID + "\',\'" + lnkHideSubPanel.ClientID + "\',\'" + SubPanel + "\',\'" + tblSubPanelFrame.ClientID + "\');" %> style=<%# "display:" + (CookieValue(SubPanel) != "1" ? "inline" : "none") %> runat="server"><asp:Image SkinID="subpanel_collapse" runat="server" /></asp:HyperLink>
+				</span>
+			</asp:TableCell>
 			<asp:TableCell Wrap="false">
 				<h3>
 					<asp:Image SkinID="h3Arrow" Visible="<%# Sql.IsEmptyString(SubPanel) %>" Runat="server" />
 					&nbsp;<asp:Label Text='<%# L10n.Term(Title) %>' runat="server" />
 				</h3>
 			</asp:TableCell>
-			<asp:TableCell Width="30px">
-				<span Visible="<%# !Sql.IsEmptyString(SubPanel) %>" runat="server">
-					<asp:HyperLink ID="lnkShowSubPanel" NavigateUrl=<%# "javascript:ShowSubPanel(\'" + lnkShowSubPanel.ClientID + "\',\'" + lnkHideSubPanel.ClientID + "\',\'" + SubPanel + "\',\'" + tblSubPanelFrame.ClientID + "\');" %> style=<%# "display:" + (CookieValue(SubPanel) == "1" ? "inline" : "none") %> runat="server"><asp:Image SkinID="subpanel_expand"   runat="server" /></asp:HyperLink>
-					<asp:HyperLink ID="lnkHideSubPanel" NavigateUrl=<%# "javascript:HideSubPanel(\'" + lnkShowSubPanel.ClientID + "\',\'" + lnkHideSubPanel.ClientID + "\',\'" + SubPanel + "\',\'" + tblSubPanelFrame.ClientID + "\');" %> style=<%# "display:" + (CookieValue(SubPanel) != "1" ? "inline" : "none") %> runat="server"><asp:Image SkinID="subpanel_collapse" runat="server" /></asp:HyperLink>
-				</span>
+			<asp:TableCell ID="tdButtons" Width="10%" Wrap="false">
+				<div id="<%# SubPanel %>Buttons" style='<%= "display:" + (CookieValue(SubPanel) != "1" ? "inline" : "none") %>'>
+					<asp:PlaceHolder ID="pnlDynamicButtons" runat="server" />
+				</div>
 			</asp:TableCell>
 		</asp:TableRow>
 	</asp:Table>
@@ -46,22 +52,4 @@ function ConfirmDelete()
 	return confirm('<%= L10n.TermJavaScript(".NTC_DELETE_CONFIRMATION") %>');
 }
 </script>
-<div id="<%# SubPanel %>Buttons" style='<%= "display:" + (CookieValue(SubPanel) != "1" ? "inline" : "none") %>'>
-	<asp:Table SkinID="tabEditViewButtons" Visible="<%# !PrintView %>" runat="server">
-		<asp:TableRow>
-			<asp:TableCell ID="tdButtons" Width="10%" Wrap="false">
-				<asp:Panel CssClass="button-panel" runat="server">
-					<asp:PlaceHolder ID="pnlDynamicButtons" runat="server" />
-				</asp:Panel>
-			</asp:TableCell>
-			<asp:TableCell ID="tdError">
-				<asp:Label ID="lblError" CssClass="error" EnableViewState="false" Runat="server" />
-			</asp:TableCell>
-			<asp:TableCell ID="tdRequired" HorizontalAlign="Right" Wrap="false" Visible="false">
-				<asp:Label CssClass="required" Text='<%# L10n.Term(".LBL_REQUIRED_SYMBOL") %>' Runat="server" />
-				&nbsp;
-				<asp:Label Text='<%# L10n.Term(".NTC_REQUIRED") %>' Runat="server" />
-			</asp:TableCell>
-		</asp:TableRow>
-	</asp:Table>
-</div>
+<asp:Label ID="lblError" CssClass="error" EnableViewState="false" Runat="server" />

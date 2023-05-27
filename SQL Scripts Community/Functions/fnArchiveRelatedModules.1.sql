@@ -1,4 +1,4 @@
-if exists (select * from dbo.sysobjects where id = object_id(N'dbo.fnArchiveRelatedModules'))
+if exists (select * from INFORMATION_SCHEMA.ROUTINES where ROUTINE_NAME = 'fnArchiveRelatedModules' and ROUTINE_TYPE = 'FUNCTION')
 	Drop Function dbo.fnArchiveRelatedModules;
 GO
 

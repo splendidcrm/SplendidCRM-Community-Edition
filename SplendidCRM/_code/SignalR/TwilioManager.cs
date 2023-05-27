@@ -31,7 +31,9 @@ using System.Web.UI;
 using System.Diagnostics;
 using Microsoft.AspNet.SignalR;
 using Microsoft.AspNet.SignalR.Hubs;
-using Twilio;
+using Twilio.Base;
+using Twilio.Clients;
+using Twilio.Rest.Api.V2010.Account;
 
 namespace SplendidCRM
 {
@@ -347,20 +349,10 @@ namespace SplendidCRM
 			try
 			{
 				TwilioRestClient client = new TwilioRestClient(sAccountSID, sAuthToken);
-				Account result = client.GetAccount();
-				if ( sAccountSID != result.Sid )
+				FetchBalanceOptions options = new FetchBalanceOptions();
+				BalanceResource result = BalanceResource.Fetch(options, client);
+				if ( sAccountSID != result.AccountSid )
 					sSTATUS = sAccountSID;
-				/*
-				Spring.Social.Twilio.Connect.TwilioServiceProvider twilioServiceProvider = new Spring.Social.Twilio.Connect.TwilioServiceProvider();
-				Spring.Social.Twilio.Api.ITwilio service = twilioServiceProvider.GetApi(sAccountSID, sAuthToken);
-				Spring.Social.Twilio.Api.Account account = service.AccountOperations.GetAccount();
-				Debug.Write(account);
-				IList<Spring.Social.Twilio.Api.Account> accounts = service.AccountOperations.ListSubAccounts();
-				foreach ( Spring.Social.Twilio.Api.Account act in accounts )
-				{
-					Debug.Write(act);
-				}
-				*/
 			}
 			catch(Exception ex)
 			{
@@ -369,19 +361,36 @@ namespace SplendidCRM
 			return sSTATUS;
 		}
 
-		public static MessageResult ListMessages(HttpApplicationState Application, DateTime dtDateSent, string sFromNumber, string sToNumber, int nPageNumber)
+		public static List<MessageResource> ListMessages(HttpApplicationState Application, DateTime dtDateSent, string sFromNumber, string sToNumber, int nPageNumber)
 		{
 			string sAccountSID  = Sql.ToString(Application["CONFIG.Twilio.AccountSID"]);
 			string sAuthToken   = Sql.ToString(Application["CONFIG.Twilio.AuthToken" ]);
 			TwilioRestClient client = new TwilioRestClient(sAccountSID, sAuthToken);
 			
-			MessageListRequest req = new MessageListRequest();
-			req.From       = sFromNumber;
-			req.To         = sToNumber;
-			req.PageNumber = nPageNumber;
+			// 11/26/2022 Paul.  Update Twilio Rest API. 
+			ReadMessageOptions options = new ReadMessageOptions();
+			// 11/27/2022 Paul.  Must send null instead of empty string. 
+			if ( !Sql.IsEmptyString(sFromNumber) )
+				options.From       = sFromNumber;
+			if ( !Sql.IsEmptyString(sToNumber) )
+				options.To         = sToNumber;
+			//options.PageNumber = nPageNumber;
 			if ( dtDateSent != DateTime.MinValue )
-				req.DateSent = dtDateSent;
-			return client.ListMessages(req);
+				options.DateSent = dtDateSent;
+			List<MessageResource> lst = new List<MessageResource>();
+			ResourceSet<MessageResource> req = MessageResource.Read(options, client);
+			if ( req != null )
+			{
+				IEnumerator<MessageResource> e = req.GetEnumerator();
+				if ( e != null )
+				{
+					while ( e.MoveNext() )
+					{
+						lst.Add(e.Current);
+					}
+				}
+			}
+			return lst;
 		}
 
 		public static string SendText(HttpApplicationState Application, Guid gID)
@@ -491,20 +500,24 @@ namespace SplendidCRM
 							}
 						}
 					}
+					// 11/26/2022 Paul.  Update Twilio Rest API. 
+					CreateMessageOptions options = new CreateMessageOptions(sTO_NUMBER);
+					options.From           = sFROM_NUMBER;
+					options.Body           = sSUBJECT    ;
+					options.StatusCallback = new Uri(sCallbackURL);
 					if ( arrImages.Count > 0 )
 					{
-						Message msg = client.SendMessage(sFROM_NUMBER, sTO_NUMBER, sSUBJECT, arrImages.ToArray(), sCallbackURL);
-						if ( msg != null )
-							sMESSAGE_SID = msg.Sid;
-						else
-							throw(new Exception("Cannot send a picture using this phone number."));
+						options.MediaUrl = new List<Uri>();
+						foreach ( string sImage in arrImages )
+						{
+							options.MediaUrl.Add(new Uri(sImage));
+						}
 					}
+					MessageResource msg = MessageResource.Create(options, client);
+					if ( msg == null && arrImages.Count > 0 )
+						throw(new Exception("Cannot send a picture using this phone number."));
 					else
-					{
-						SMSMessage msg = client.SendSmsMessage(sFROM_NUMBER, sTO_NUMBER, sSUBJECT, sCallbackURL);
-						if ( msg != null )
-							sMESSAGE_SID = msg.Sid;
-					}
+						sMESSAGE_SID = msg.Sid;
 				}
 			}
 			return sMESSAGE_SID;
@@ -519,8 +532,13 @@ namespace SplendidCRM
 			string sCallbackURL = String.Empty;
 			string sMESSAGE_SID = String.Empty;
 			
-			Twilio.TwilioRestClient client = new Twilio.TwilioRestClient(sAccountSID, sAuthToken);
-			Twilio.SMSMessage msg = client.SendSmsMessage(sFROM_NUMBER, sTO_NUMBER, sSUBJECT, sCallbackURL);
+			TwilioRestClient client = new TwilioRestClient(sAccountSID, sAuthToken);
+			// 11/26/2022 Paul.  Update Twilio Rest API. 
+			CreateMessageOptions options = new CreateMessageOptions(sTO_NUMBER);
+			options.From           = sFROM_NUMBER;
+			options.Body           = sSUBJECT    ;
+			options.StatusCallback = new Uri(sCallbackURL);
+			MessageResource msg = MessageResource.Create(options, client);
 			if ( msg != null )
 				sMESSAGE_SID = msg.Sid;
 			return sMESSAGE_SID;

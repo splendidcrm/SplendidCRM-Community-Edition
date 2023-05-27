@@ -831,6 +831,11 @@ namespace SplendidCRM
 			Dictionary<string, object> TERMINOLOGY = SplendidCache.GetLoginTerminology(Context);
 			results.Add("TERMINOLOGY", TERMINOLOGY);
 			
+			// 12/10/2022 Paul.  Allow Login Terminology Lists to be customized. 
+			List<string> lstLIST_NAME = new List<string>();
+			Dictionary<string, object> TERMINOLOGY_LISTS = SplendidCache.GetLoginTerminologyLists(Context, lstLIST_NAME, TERMINOLOGY);
+			results.Add("TERMINOLOGY_LISTS", TERMINOLOGY_LISTS);
+
 			// 06/24/2019 Paul.  Separate out so that the settings can be returned in GetReactLoginState. 
 			Dictionary<string, object> objSingleSignOnSettings = GetSingleSignOnSettings();
 			results.Add("SingleSignOnSettings", objSingleSignOnSettings);
@@ -848,6 +853,23 @@ namespace SplendidCRM
 				sAUTHENTICATION = "Windows";
 			}
 			results.Add("AUTHENTICATION", sAUTHENTICATION);
+
+			// 12/07/2022 Paul.  Allow the LoginView to be customized. 
+			List<string> lstMODULES = new List<string>();
+			lstMODULES.Add("Home");
+			string sModuleList = String.Join(",", lstMODULES.ToArray());
+			Dictionary<string, object> objs = HttpRuntime.Cache.Get("ReactCustomViews." + sModuleList) as Dictionary<string, object>;
+#if DEBUG
+			objs = null;
+#endif
+			if ( objs == null )
+			{
+				objs = new Dictionary<string, object>();
+				SplendidCache.GetAllReactCustomViews(Context, objs, lstMODULES, "~/React/src/CustomViewsJS", false, true);
+				HttpRuntime.Cache.Insert("ReactCustomViews." + sModuleList, objs, null, SplendidCache.DefaultCacheExpiration(), System.Web.Caching.Cache.NoSlidingExpiration);
+			}
+			results.Add("REACT_CUSTOM_VIEWS", objs);
+			
 			// 04/01/2020 Paul.  Move json utils to RestUtil. 
 			return RestUtil.ToJsonStream(d);
 		}
@@ -877,149 +899,241 @@ namespace SplendidCRM
 			// 12/16/2019 Paul.  Moved GetTable to ~/_code/RestUtil.cs
 			List<string> lstMODULES = RestUtil.AccessibleModules(Context);
 			
-			// 05/27/2019 Paul.  Move GetUserProfile to cache for React client. 
-			SplendidCache.UserProfile profile = SplendidCache.GetUserProfile();
-			results.Add("USER_PROFILE", profile);
-			
-			// 12/23/2019 Paul.  Return the team tree as an object tree instead of XML. 
-			results.Add("TEAM_TREE", SplendidCache.GetUserTeamTree());
-			
-			// 07/21/2019 Paul.  We need UserAccess control for buttons. 
-			Dictionary<string, object> MODULE_ACL_ACCESS = SplendidCache.GetModuleAccess(Context, lstMODULES);
-			results.Add("MODULE_ACL_ACCESS", MODULE_ACL_ACCESS);
-			
-			Dictionary<string, object> ACL_ACCESS = SplendidCache.GetUserAccess(Context, lstMODULES);
-			results.Add("ACL_ACCESS", ACL_ACCESS);
-			
-			Dictionary<string, object> ACL_FIELD_ACCESS = SplendidCache.GetUserFieldSecurity(Context, lstMODULES);
-			results.Add("ACL_FIELD_ACCESS", ACL_FIELD_ACCESS);
-			
-			// 01/22/2021 Paul.  Some customizations may be dependent on role name. 
-			List<Dictionary<string, object>>  ACL_ROLES = SplendidCache.GetUserACLRoles(Context);
-			results.Add("ACL_ROLES", ACL_ROLES);
-			
-			// 05/17/2019 Paul.  Return the modules so that we don't need a separate request for it later. 
-			Dictionary<string, object> CONFIG = SplendidCache.GetAllConfig(Context);
-			results.Add("CONFIG", CONFIG);
-			
-			Dictionary<string, object> MODULES = SplendidCache.GetAllModules(Context, lstMODULES);
-			results.Add("MODULES", MODULES);
-			
-			Dictionary<string, object> MODULE_COLUMNS = SplendidCache.GetAllSearchColumns(Context, lstMODULES);
-			results.Add("MODULE_COLUMNS", MODULE_COLUMNS);
-			
-			// 05/26/2019 Paul.  Return Users and Teams in GetAllLayouts. 
-			Dictionary<string, object> USERS = SplendidCache.GetAllUsers(Context);
-			results.Add("USERS", USERS);
-			
-			Dictionary<string, object> TEAMS = SplendidCache.GetAllTeams(Context);
-			results.Add("TEAMS", TEAMS);
-			
-			// 05/16/2019 Paul.  Return the tab menu so that we don't need a separate request for it later. 
-			List<object> TAB_MENU = SplendidCache.GetAllTabMenus(Context);
-			results.Add("TAB_MENU", TAB_MENU);
-			
-			// 02/22/2021 Paul.  The React client needs a way to determine the default sort, besides NAME asc. 
-			Dictionary<string, object> GRIDVIEWS = SplendidCache.GetAllGridViews(Context, lstMODULES);
-			results.Add("GRIDVIEWS", GRIDVIEWS);
-			
-			Dictionary<string, object> GRIDVIEWS_COLUMNS = SplendidCache.GetAllGridViewsColumns(Context, lstMODULES);
-			results.Add("GRIDVIEWS_COLUMNS", GRIDVIEWS_COLUMNS);
-			
-			Dictionary<string, object> DETAILVIEWS_FIELDS = SplendidCache.GetAllDetailViewsFields(Context, lstMODULES);
-			results.Add("DETAILVIEWS_FIELDS", DETAILVIEWS_FIELDS);
-			
-			Dictionary<string, object> EDITVIEWS_FIELDS = SplendidCache.GetAllEditViewsFields(Context, lstMODULES);
-			results.Add("EDITVIEWS_FIELDS", EDITVIEWS_FIELDS);
-			
-			Dictionary<string, object> DETAILVIEWS_RELATIONSHIPS = SplendidCache.GetAllDetailViewsRelationships(Context, lstMODULES);
-			results.Add("DETAILVIEWS_RELATIONSHIPS", DETAILVIEWS_RELATIONSHIPS);
-			
-			Dictionary<string, object> EDITVIEWS_RELATIONSHIPS = SplendidCache.GetAllEditViewsRelationships(Context, lstMODULES);
-			results.Add("EDITVIEWS_RELATIONSHIPS", EDITVIEWS_RELATIONSHIPS);
-			
-			Dictionary<string, object> DYNAMIC_BUTTONS = SplendidCache.GetAllDynamicButtons(Context, lstMODULES);
-			results.Add("DYNAMIC_BUTTONS", DYNAMIC_BUTTONS);
-			
-			// 08/15/2019 Paul.  Add support for menu shortcuts. 
-			Dictionary<string, object> SHORTCUTS = SplendidCache.GetAllShortcuts(Context, lstMODULES);
-			results.Add("SHORTCUTS", SHORTCUTS);
-			
-			// 03/26/2019 Paul.  Admin has more custom lists. 
-			Dictionary<string, object> TERMINOLOGY_LISTS = SplendidCache.GetAllTerminologyLists(Context, false);
-			results.Add("TERMINOLOGY_LISTS", TERMINOLOGY_LISTS);
-			
-			// 03/26/2019 Paul.  Admin has more custom lists. 
-			Dictionary<string, object> TERMINOLOGY = SplendidCache.GetAllTerminology(Context, lstMODULES, false);
-			results.Add("TERMINOLOGY", TERMINOLOGY);
-			
-			// 07/01/2019 Paul.  The SubPanelsView needs to understand how to manage all relationships. 
-			Dictionary<string, object> RELATIONSHIPS = SplendidCache.GetAllRelationships(Context);
-			results.Add("RELATIONSHIPS", RELATIONSHIPS);
-			
-			Dictionary<string, object> TAX_RATES = SplendidCache.GetAllTaxRates(Context);
-			results.Add("TAX_RATES", TAX_RATES);
-			
-			Dictionary<string, object> DISCOUNTS = SplendidCache.GetAllDiscounts(Context);
-			results.Add("DISCOUNTS", DISCOUNTS);
-			
-			// 09/12/2019 Paul.  User Profile needs the timezones and currencies. 
-			Dictionary<string, object> TIMEZONES = SplendidCache.GetAllTimezones(Context);
-			results.Add("TIMEZONES", TIMEZONES);
-			
-			Dictionary<string, object> CURRENCIES = SplendidCache.GetAllCurrencies(Context);
-			results.Add("CURRENCIES", CURRENCIES);
-			
-			Dictionary<string, object> LANGUAGES = SplendidCache.GetAllLanguages(Context);
-			results.Add("LANGUAGES", LANGUAGES);
-			
-			// 04/28/2019 Paul.  Flag to include Favorites and LastViewed for the React client. 
-			Dictionary<string, object> FAVORITES = SplendidCache.GetAllFavorites(Context);
-			results.Add("FAVORITES", FAVORITES);
-			
-			Dictionary<string, object> LAST_VIEWED = SplendidCache.GetAllLastViewed(Context);
-			results.Add("LAST_VIEWED", LAST_VIEWED);
-			
-			Dictionary<string, object> SAVED_SEARCH = SplendidCache.GetAllSavedSearch(Context, lstMODULES);
-			results.Add("SAVED_SEARCH", SAVED_SEARCH);
-			
-			// 05/24/2019 Paul.  Return Dashboard in GetAllLayouts. 
-			Dictionary<string, object> DASHBOARDS = SplendidCache.GetAllDashboards(Context);
-			results.Add("DASHBOARDS", DASHBOARDS);
-			
-			Dictionary<string, object> DASHBOARDS_PANELS = SplendidCache.GetAllDashboardPanels(Context, lstMODULES);
-			results.Add("DASHBOARDS_PANELS", DASHBOARDS_PANELS);
-			
-			// 05/03/2020 Paul.  Emails.EditView should use cached list of signatures. 
-			Dictionary<string, object> SIGNATURES = SplendidCache.GetUserSignatures(Context);
-			results.Add("SIGNATURES", SIGNATURES);
-			
-			// 05/05/2020 Paul.  Emails.EditView should use cached list of OutboundMail. 
-			Dictionary<string, object> OUTBOUND_EMAILS = SplendidCache.GetOutboundMail(Context);
-			results.Add("OUTBOUND_EMAILS", OUTBOUND_EMAILS);
-			
-			// 05/05/2020 Paul.  Emails.EditView should use cached list of OutboundSms. 
-			// 09/24/2021 Paul.  Wrong lis was being used. 
-			Dictionary<string, object> OUTBOUND_SMS = SplendidCache.GetOutboundSms(Context);
-			results.Add("OUTBOUND_SMS", OUTBOUND_SMS);
-			
-			// 08/09/2020 Paul.  Convert to comma separated string. 
-			string sModuleList = String.Join(",", lstMODULES.ToArray());
-			Dictionary<string, object> objs = HttpRuntime.Cache.Get("ReactCustomViews." + sModuleList) as Dictionary<string, object>;
-#if DEBUG
-			objs = null;
-#endif
-			if ( objs == null )
+			// 02/18/2023 Paul.  Gather metrics.  Noticed odd slowless with SQL 2019. 
+			DateTime dtStart = DateTime.Now;
+			Dictionary<string, double> metrics = new Dictionary<string, double>();
+			try
 			{
-				objs = new Dictionary<string, object>();
-				SplendidCache.GetAllReactCustomViews(Context, objs, lstMODULES, "~/React/src/CustomViewsJS", false);
-				// 05/23/2019 Paul.  Include Dashlet views, but we do not yet have a way to separate by module. 
-				SplendidCache.GetAllReactDashletViews(Context, objs, lstMODULES, "~/React/src/DashletsJS");
-				HttpRuntime.Cache.Insert("ReactCustomViews." + sModuleList, objs, null, SplendidCache.DefaultCacheExpiration(), System.Web.Caching.Cache.NoSlidingExpiration);
+				// 05/27/2019 Paul.  Move GetUserProfile to cache for React client. 
+				SplendidCache.UserProfile profile = SplendidCache.GetUserProfile();
+				results.Add("USER_PROFILE", profile);
+				metrics.Add("USER_PROFILE", (DateTime.Now - dtStart).TotalSeconds);
+				dtStart = DateTime.Now;
+			
+				// 12/23/2019 Paul.  Return the team tree as an object tree instead of XML. 
+				results.Add("TEAM_TREE", SplendidCache.GetUserTeamTree());
+				metrics.Add("TEAM_TREE", (DateTime.Now - dtStart).TotalSeconds);
+				dtStart = DateTime.Now;
+			
+				// 07/21/2019 Paul.  We need UserAccess control for buttons. 
+				Dictionary<string, object> MODULE_ACL_ACCESS = SplendidCache.GetModuleAccess(Context, lstMODULES);
+				results.Add("MODULE_ACL_ACCESS", MODULE_ACL_ACCESS);
+				metrics.Add("MODULE_ACL_ACCESS", (DateTime.Now - dtStart).TotalSeconds);
+				dtStart = DateTime.Now;
+			
+				Dictionary<string, object> ACL_ACCESS = SplendidCache.GetUserAccess(Context, lstMODULES);
+				results.Add("ACL_ACCESS", ACL_ACCESS);
+				metrics.Add("ACL_ACCESS", (DateTime.Now - dtStart).TotalSeconds);
+				dtStart = DateTime.Now;
+			
+				Dictionary<string, object> ACL_FIELD_ACCESS = SplendidCache.GetUserFieldSecurity(Context, lstMODULES);
+				results.Add("ACL_FIELD_ACCESS", ACL_FIELD_ACCESS);
+				metrics.Add("ACL_FIELD_ACCESS", (DateTime.Now - dtStart).TotalSeconds);
+				dtStart = DateTime.Now;
+			
+				// 01/22/2021 Paul.  Some customizations may be dependent on role name. 
+				List<Dictionary<string, object>>  ACL_ROLES = SplendidCache.GetUserACLRoles(Context);
+				results.Add("ACL_ROLES", ACL_ROLES);
+				metrics.Add("ACL_ROLES", (DateTime.Now - dtStart).TotalSeconds);
+				dtStart = DateTime.Now;
+			
+				// 05/17/2019 Paul.  Return the modules so that we don't need a separate request for it later. 
+				Dictionary<string, object> CONFIG = SplendidCache.GetAllConfig(Context);
+				results.Add("CONFIG", CONFIG);
+				metrics.Add("CONFIG", (DateTime.Now - dtStart).TotalSeconds);
+				dtStart = DateTime.Now;
+			
+				Dictionary<string, object> MODULES = SplendidCache.GetAllModules(Context, lstMODULES);
+				results.Add("MODULES", MODULES);
+				metrics.Add("MODULES", (DateTime.Now - dtStart).TotalSeconds);
+				dtStart = DateTime.Now;
+			
+				Dictionary<string, object> MODULE_COLUMNS = SplendidCache.GetAllSearchColumns(Context, lstMODULES);
+				results.Add("MODULE_COLUMNS", MODULE_COLUMNS);
+				metrics.Add("MODULE_COLUMNS", (DateTime.Now - dtStart).TotalSeconds);
+				dtStart = DateTime.Now;
+			
+				// 05/26/2019 Paul.  Return Users and Teams in GetAllLayouts. 
+				Dictionary<string, object> USERS = SplendidCache.GetAllUsers(Context);
+				results.Add("USERS", USERS);
+				metrics.Add("USERS", (DateTime.Now - dtStart).TotalSeconds);
+				dtStart = DateTime.Now;
+			
+				Dictionary<string, object> TEAMS = SplendidCache.GetAllTeams(Context);
+				results.Add("TEAMS", TEAMS);
+				metrics.Add("TEAMS", (DateTime.Now - dtStart).TotalSeconds);
+				dtStart = DateTime.Now;
+			
+				// 05/16/2019 Paul.  Return the tab menu so that we don't need a separate request for it later. 
+				List<object> TAB_MENU = SplendidCache.GetAllTabMenus(Context);
+				results.Add("TAB_MENU", TAB_MENU);
+				metrics.Add("TAB_MENU", (DateTime.Now - dtStart).TotalSeconds);
+				dtStart = DateTime.Now;
+			
+				// 02/22/2021 Paul.  The React client needs a way to determine the default sort, besides NAME asc. 
+				Dictionary<string, object> GRIDVIEWS = SplendidCache.GetAllGridViews(Context, lstMODULES);
+				results.Add("GRIDVIEWS", GRIDVIEWS);
+				metrics.Add("GRIDVIEWS", (DateTime.Now - dtStart).TotalSeconds);
+				dtStart = DateTime.Now;
+			
+				Dictionary<string, object> GRIDVIEWS_COLUMNS = SplendidCache.GetAllGridViewsColumns(Context, lstMODULES);
+				results.Add("GRIDVIEWS_COLUMNS", GRIDVIEWS_COLUMNS);
+				metrics.Add("GRIDVIEWS_COLUMNS", (DateTime.Now - dtStart).TotalSeconds);
+				dtStart = DateTime.Now;
+			
+				Dictionary<string, object> DETAILVIEWS_FIELDS = SplendidCache.GetAllDetailViewsFields(Context, lstMODULES);
+				results.Add("DETAILVIEWS_FIELDS", DETAILVIEWS_FIELDS);
+				metrics.Add("DETAILVIEWS_FIELDS", (DateTime.Now - dtStart).TotalSeconds);
+				dtStart = DateTime.Now;
+			
+				Dictionary<string, object> EDITVIEWS_FIELDS = SplendidCache.GetAllEditViewsFields(Context, lstMODULES);
+				results.Add("EDITVIEWS_FIELDS", EDITVIEWS_FIELDS);
+				metrics.Add("EDITVIEWS_FIELDS", (DateTime.Now - dtStart).TotalSeconds);
+				dtStart = DateTime.Now;
+			
+				Dictionary<string, object> DETAILVIEWS_RELATIONSHIPS = SplendidCache.GetAllDetailViewsRelationships(Context, lstMODULES);
+				results.Add("DETAILVIEWS_RELATIONSHIPS", DETAILVIEWS_RELATIONSHIPS);
+				metrics.Add("DETAILVIEWS_RELATIONSHIPS", (DateTime.Now - dtStart).TotalSeconds);
+				dtStart = DateTime.Now;
+			
+				Dictionary<string, object> EDITVIEWS_RELATIONSHIPS = SplendidCache.GetAllEditViewsRelationships(Context, lstMODULES);
+				results.Add("EDITVIEWS_RELATIONSHIPS", EDITVIEWS_RELATIONSHIPS);
+				metrics.Add("EDITVIEWS_RELATIONSHIPS", (DateTime.Now - dtStart).TotalSeconds);
+				dtStart = DateTime.Now;
+			
+				Dictionary<string, object> DYNAMIC_BUTTONS = SplendidCache.GetAllDynamicButtons(Context, lstMODULES);
+				results.Add("DYNAMIC_BUTTONS", DYNAMIC_BUTTONS);
+				metrics.Add("DYNAMIC_BUTTONS", (DateTime.Now - dtStart).TotalSeconds);
+				dtStart = DateTime.Now;
+			
+				// 08/15/2019 Paul.  Add support for menu shortcuts. 
+				Dictionary<string, object> SHORTCUTS = SplendidCache.GetAllShortcuts(Context, lstMODULES);
+				results.Add("SHORTCUTS", SHORTCUTS);
+				metrics.Add("SHORTCUTS", (DateTime.Now - dtStart).TotalSeconds);
+				dtStart = DateTime.Now;
+			
+				// 03/26/2019 Paul.  Admin has more custom lists. 
+				Dictionary<string, object> TERMINOLOGY_LISTS = SplendidCache.GetAllTerminologyLists(Context, false);
+				results.Add("TERMINOLOGY_LISTS", TERMINOLOGY_LISTS);
+				metrics.Add("TERMINOLOGY_LISTS", (DateTime.Now - dtStart).TotalSeconds);
+				dtStart = DateTime.Now;
+			
+				// 03/26/2019 Paul.  Admin has more custom lists. 
+				Dictionary<string, object> TERMINOLOGY = SplendidCache.GetAllTerminology(Context, lstMODULES, false);
+				results.Add("TERMINOLOGY", TERMINOLOGY);
+				metrics.Add("TERMINOLOGY", (DateTime.Now - dtStart).TotalSeconds);
+				dtStart = DateTime.Now;
+			
+				// 07/01/2019 Paul.  The SubPanelsView needs to understand how to manage all relationships. 
+				Dictionary<string, object> RELATIONSHIPS = SplendidCache.GetAllRelationships(Context);
+				results.Add("RELATIONSHIPS", RELATIONSHIPS);
+				metrics.Add("RELATIONSHIPS", (DateTime.Now - dtStart).TotalSeconds);
+				dtStart = DateTime.Now;
+			
+				Dictionary<string, object> TAX_RATES = SplendidCache.GetAllTaxRates(Context);
+				results.Add("TAX_RATES", TAX_RATES);
+				metrics.Add("TAX_RATES", (DateTime.Now - dtStart).TotalSeconds);
+				dtStart = DateTime.Now;
+			
+				Dictionary<string, object> DISCOUNTS = SplendidCache.GetAllDiscounts(Context);
+				results.Add("DISCOUNTS", DISCOUNTS);
+				metrics.Add("DISCOUNTS", (DateTime.Now - dtStart).TotalSeconds);
+				dtStart = DateTime.Now;
+			
+				// 09/12/2019 Paul.  User Profile needs the timezones and currencies. 
+				Dictionary<string, object> TIMEZONES = SplendidCache.GetAllTimezones(Context);
+				results.Add("TIMEZONES", TIMEZONES);
+				metrics.Add("TIMEZONES", (DateTime.Now - dtStart).TotalSeconds);
+				dtStart = DateTime.Now;
+			
+				Dictionary<string, object> CURRENCIES = SplendidCache.GetAllCurrencies(Context);
+				results.Add("CURRENCIES", CURRENCIES);
+				metrics.Add("CURRENCIES", (DateTime.Now - dtStart).TotalSeconds);
+				dtStart = DateTime.Now;
+			
+				Dictionary<string, object> LANGUAGES = SplendidCache.GetAllLanguages(Context);
+				results.Add("LANGUAGES", LANGUAGES);
+				metrics.Add("LANGUAGES", (DateTime.Now - dtStart).TotalSeconds);
+				dtStart = DateTime.Now;
+			
+				// 04/28/2019 Paul.  Flag to include Favorites and LastViewed for the React client. 
+				Dictionary<string, object> FAVORITES = SplendidCache.GetAllFavorites(Context);
+				results.Add("FAVORITES", FAVORITES);
+				metrics.Add("FAVORITES", (DateTime.Now - dtStart).TotalSeconds);
+				dtStart = DateTime.Now;
+			
+				Dictionary<string, object> LAST_VIEWED = SplendidCache.GetAllLastViewed(Context);
+				results.Add("LAST_VIEWED", LAST_VIEWED);
+				metrics.Add("LAST_VIEWED", (DateTime.Now - dtStart).TotalSeconds);
+				dtStart = DateTime.Now;
+			
+				Dictionary<string, object> SAVED_SEARCH = SplendidCache.GetAllSavedSearch(Context, lstMODULES);
+				results.Add("SAVED_SEARCH", SAVED_SEARCH);
+				metrics.Add("SAVED_SEARCH", (DateTime.Now - dtStart).TotalSeconds);
+				dtStart = DateTime.Now;
+			
+				// 05/24/2019 Paul.  Return Dashboard in GetAllLayouts. 
+				Dictionary<string, object> DASHBOARDS = SplendidCache.GetAllDashboards(Context);
+				results.Add("DASHBOARDS", DASHBOARDS);
+				metrics.Add("DASHBOARDS", (DateTime.Now - dtStart).TotalSeconds);
+				dtStart = DateTime.Now;
+			
+				Dictionary<string, object> DASHBOARDS_PANELS = SplendidCache.GetAllDashboardPanels(Context, lstMODULES);
+				results.Add("DASHBOARDS_PANELS", DASHBOARDS_PANELS);
+				metrics.Add("DASHBOARDS_PANELS", (DateTime.Now - dtStart).TotalSeconds);
+				dtStart = DateTime.Now;
+			
+				// 05/03/2020 Paul.  Emails.EditView should use cached list of signatures. 
+				Dictionary<string, object> SIGNATURES = SplendidCache.GetUserSignatures(Context);
+				results.Add("SIGNATURES", SIGNATURES);
+				metrics.Add("SIGNATURES", (DateTime.Now - dtStart).TotalSeconds);
+				dtStart = DateTime.Now;
+			
+				// 05/05/2020 Paul.  Emails.EditView should use cached list of OutboundMail. 
+				Dictionary<string, object> OUTBOUND_EMAILS = SplendidCache.GetOutboundMail(Context);
+				results.Add("OUTBOUND_EMAILS", OUTBOUND_EMAILS);
+				metrics.Add("OUTBOUND_EMAILS", (DateTime.Now - dtStart).TotalSeconds);
+				dtStart = DateTime.Now;
+			
+				// 05/05/2020 Paul.  Emails.EditView should use cached list of OutboundSms. 
+				// 09/24/2021 Paul.  Wrong lis was being used. 
+				Dictionary<string, object> OUTBOUND_SMS = SplendidCache.GetOutboundSms(Context);
+				results.Add("OUTBOUND_SMS", OUTBOUND_SMS);
+				metrics.Add("OUTBOUND_SMS", (DateTime.Now - dtStart).TotalSeconds);
+				dtStart = DateTime.Now;
+			
+				// 08/09/2020 Paul.  Convert to comma separated string. 
+				string sModuleList = String.Join(",", lstMODULES.ToArray());
+				Dictionary<string, object> objs = HttpRuntime.Cache.Get("ReactCustomViews." + sModuleList) as Dictionary<string, object>;
+#if DEBUG
+				objs = null;
+#endif
+				if ( objs == null )
+				{
+					objs = new Dictionary<string, object>();
+					// 12/07/2022 Paul.  Allow the LoginView to be customized. 
+					SplendidCache.GetAllReactCustomViews(Context, objs, lstMODULES, "~/React/src/CustomViewsJS", false, false);
+					// 05/23/2019 Paul.  Include Dashlet views, but we do not yet have a way to separate by module. 
+					SplendidCache.GetAllReactDashletViews(Context, objs, lstMODULES, "~/React/src/DashletsJS");
+					HttpRuntime.Cache.Insert("ReactCustomViews." + sModuleList, objs, null, SplendidCache.DefaultCacheExpiration(), System.Web.Caching.Cache.NoSlidingExpiration);
+				}
+				results.Add("REACT_CUSTOM_VIEWS", objs);
+				metrics.Add("REACT_CUSTOM_VIEWS", (DateTime.Now - dtStart).TotalSeconds);
+				results.Add("Metrics", metrics);
+				// 07/12/2021 Paul.  Attempt to track timeout so that we can determine stale React state. 
+				results.Add("SessionStateTimeout", HttpContext.Current.Session.Timeout);
 			}
-			results.Add("REACT_CUSTOM_VIEWS", objs);
-			// 07/12/2021 Paul.  Attempt to track timeout so that we can determine stale React state. 
-			results.Add("SessionStateTimeout", HttpContext.Current.Session.Timeout);
+			catch(Exception ex)
+			{
+				Debug.WriteLine(ex.Message);
+				StringBuilder sb = new StringBuilder();
+				foreach ( string key in metrics.Keys )
+				{
+					sb.AppendLine("  " + key + Strings.Space(30 - key.Length) + ": " + metrics[key].ToString() + " sec");
+				}
+				Debug.Write(sb.ToString());
+				throw(new Exception(ex.Message + ControlChars.CrLf + sb.ToString()));
+			}
 			// 04/01/2020 Paul.  Move json utils to RestUtil. 
 			return RestUtil.ToJsonStream(d);
 		}
@@ -2652,6 +2766,48 @@ namespace SplendidCRM
 					}
 				}
 			}
+			// 10/09/2022 Paul.  Add Payments.SummaryView to React client. 
+			else if ( sTABLE_NAME == "PAYMENTS" )
+			{
+				DbProviderFactory dbf = DbProviderFactories.GetFactory();
+				using ( IDbConnection con = dbf.CreateConnection() )
+				{
+					con.Open();
+					Dictionary<string, object> d       = dict["d"] as Dictionary<string, object>;
+					Dictionary<string, object> results = d["results"] as Dictionary<string, object>;
+					try
+					{
+						string sLINE_ITEMS_TABLE    = "PAYMENTS_INVOICES";
+						string sRELATED_MODULE_NAME = "Invoices";
+						string sRELATED_FIELD_NAME  = Crm.Modules.SingularTableName(sTABLE_NAME) + "_ID";
+						string sSQL = String.Empty;
+						sSQL = "select *                     " + ControlChars.CrLf
+						     + "  from vw" + sLINE_ITEMS_TABLE + ControlChars.CrLf
+						     + " where 1 = 1                 " + ControlChars.CrLf;
+						using ( IDbCommand cmd = con.CreateCommand() )
+						{
+							cmd.CommandText = sSQL;
+							Sql.AppendParameter(cmd, ID, sRELATED_FIELD_NAME, false);
+							cmd.CommandText += " order by DATE_MODIFIED" + ControlChars.CrLf;
+
+							sbDumpSQL.Append(";" + ControlChars.CrLf + Sql.ExpandParameters(cmd));
+							using ( DbDataAdapter da = dbf.CreateDataAdapter() )
+							{
+								((IDbDataAdapter)da).SelectCommand = cmd;
+								using ( DataTable dtSubPanel = new DataTable() )
+								{
+									da.Fill(dtSubPanel);
+									results.Add("LineItems", RestUtil.RowsToDictionary(sBaseURI, sRELATED_MODULE_NAME, dtSubPanel, T10n));
+								}
+							}
+						}
+					}
+					catch(Exception ex)
+					{
+						SplendidError.SystemError(new StackTrace(true).GetFrame(0), ex);
+					}
+				}
+			}
 			// 11/19/2019 Paul.  Return all data in survey request. 
 			else if ( sTABLE_NAME == "SURVEYS" )
 			{
@@ -2908,6 +3064,43 @@ namespace SplendidCRM
 								{
 									da.Fill(dtSubPanel);
 									results.Add("ATTACHMENTS", RestUtil.RowsToDictionary(sBaseURI, "vwEMAIL_TEMPLATES_Attachments", dtSubPanel, T10n));
+								}
+							}
+						}
+					}
+					catch(Exception ex)
+					{
+						SplendidError.SystemError(new StackTrace(true).GetFrame(0), ex);
+					}
+				}
+			}
+			// 02/05/2023 Paul.  Include SMS Attachments. 
+			else if ( sTABLE_NAME == "SMS_MESSAGES" )
+			{
+				DbProviderFactory dbf = DbProviderFactories.GetFactory();
+				using ( IDbConnection con = dbf.CreateConnection() )
+				{
+					con.Open();
+					Dictionary<string, object> d       = dict["d"] as Dictionary<string, object>;
+					Dictionary<string, object> results = d["results"] as Dictionary<string, object>;
+					try
+					{
+						string sSQL = String.Empty;
+						sSQL = "select *                         " + ControlChars.CrLf
+						     + "  from vwSMS_MESSAGES_Attachments" + ControlChars.CrLf
+						     + " where PARENT_ID = @PARENT_ID    " + ControlChars.CrLf;
+						using ( IDbCommand cmd = con.CreateCommand() )
+						{
+							cmd.CommandText = sSQL;
+							Sql.AddParameter(cmd, "@PARENT_ID", ID);
+							sbDumpSQL.Append(";" + ControlChars.CrLf + Sql.ExpandParameters(cmd));
+							using ( DbDataAdapter da = dbf.CreateDataAdapter() )
+							{
+								((IDbDataAdapter)da).SelectCommand = cmd;
+								using ( DataTable dtSubPanel = new DataTable() )
+								{
+									da.Fill(dtSubPanel);
+									results.Add("ATTACHMENTS", RestUtil.RowsToDictionary(sBaseURI, "vwSMS_MESSAGES_Attachments", dtSubPanel, T10n));
 								}
 							}
 						}
@@ -5274,16 +5467,23 @@ namespace SplendidCRM
 				throw(new Exception(L10n.Term("ACL.LBL_INSUFFICIENT_ACCESS") + ": " + Sql.ToString(RelatedModule)));
 			}
 			// 02/27/2021 Paul.  We need to correct for singulare table names, whereby the views and procedures are plural. 
-			if ( sTABLE_NAME == "PROJECT" )
-				sTABLE_NAME = "PROJECTS";
-			else if ( sTABLE_NAME == "PROJECT_TASK" )
-				sTABLE_NAME = "PROJECT_TASKS";
-			if ( sRELATED_TABLE == "PROJECT" )
-				sRELATED_TABLE = "PROJECTS";
-			else if ( sRELATED_TABLE == "PROJECT_TASK" )
-				sRELATED_TABLE = "PROJECT_TASKS";
+			// 05/08/2023 Paul.  Only change the relationship table, not the base table. 
+			//if ( sTABLE_NAME == "PROJECT" )
+			//	sTABLE_NAME = "PROJECTS";
+			//else if ( sTABLE_NAME == "PROJECT_TASK" )
+			//	sTABLE_NAME = "PROJECT_TASKS";
+			//if ( sRELATED_TABLE == "PROJECT" )
+			//	sRELATED_TABLE = "PROJECTS";
+			//else if ( sRELATED_TABLE == "PROJECT_TASK" )
+			//	sRELATED_TABLE = "PROJECT_TASKS";
 			
 			string sRELATIONSHIP_TABLE = sTABLE_NAME + "_" + sRELATED_TABLE;
+			// 05/08/2023 Paul.  Only change the relationship table, not the base table. 
+			if ( sTABLE_NAME == "PROJECT" || sTABLE_NAME == "PROJECT_TASK" )
+				sRELATIONSHIP_TABLE = sTABLE_NAME + "S_" + sRELATED_TABLE;
+			if ( sRELATED_TABLE == "PROJECT" || sRELATED_TABLE == "PROJECT_TASK" )
+				sRELATIONSHIP_TABLE = sTABLE_NAME + "_" + sRELATED_TABLE + "S";
+
 			string sMODULE_FIELD_NAME  = Crm.Modules.SingularTableName(sTABLE_NAME   ) + "_ID";
 			string sRELATED_FIELD_NAME = Crm.Modules.SingularTableName(sRELATED_TABLE) + "_ID";
 			// 11/24/2012 Paul.  In the special cases of Accounts Related and Contacts Reports To, we need to correct the field name. 
@@ -5580,7 +5780,24 @@ namespace SplendidCRM
 				}
 			}
 
+			// 05/05/2023 Paul.  We need to correct for singulare table names, whereby the views and procedures are plural. 
+			// 05/08/2023 Paul.  Only change the relationship table, not the base table. 
+			//if ( sTABLE_NAME == "PROJECT" )
+			//	sTABLE_NAME = "PROJECTS";
+			//else if ( sTABLE_NAME == "PROJECT_TASK" )
+			//	sTABLE_NAME = "PROJECT_TASKS";
+			//if ( sRELATED_TABLE == "PROJECT" )
+			//	sRELATED_TABLE = "PROJECTS";
+			//else if ( sRELATED_TABLE == "PROJECT_TASK" )
+			//	sRELATED_TABLE = "PROJECT_TASKS";
+			
 			string sRELATIONSHIP_TABLE = sTABLE_NAME + "_" + sRELATED_TABLE;
+			// 05/08/2023 Paul.  Only change the relationship table, not the base table. 
+			if ( sTABLE_NAME == "PROJECT" || sTABLE_NAME == "PROJECT_TASK" )
+				sRELATIONSHIP_TABLE = sTABLE_NAME + "S_" + sRELATED_TABLE;
+			if ( sRELATED_TABLE == "PROJECT" || sRELATED_TABLE == "PROJECT_TASK" )
+				sRELATIONSHIP_TABLE = sTABLE_NAME + "_" + sRELATED_TABLE + "S";
+
 			string sMODULE_FIELD_NAME  = Crm.Modules.SingularTableName(sTABLE_NAME   ) + "_ID";
 			string sRELATED_FIELD_NAME = Crm.Modules.SingularTableName(sRELATED_TABLE) + "_ID";
 			// 11/24/2012 Paul.  In the special cases of Accounts Related and Contacts Reports To, we need to correct the field name. 
@@ -7159,16 +7376,23 @@ namespace SplendidCRM
 				}
 			}
 			// 02/27/2021 Paul.  We need to correct for singulare table names, whereby the views and procedures are plural. 
-			if ( sTABLE_NAME == "PROJECT" )
-				sTABLE_NAME = "PROJECTS";
-			else if ( sTABLE_NAME == "PROJECT_TASK" )
-				sTABLE_NAME = "PROJECT_TASKS";
-			if ( sRELATED_TABLE == "PROJECT" )
-				sRELATED_TABLE = "PROJECTS";
-			else if ( sRELATED_TABLE == "PROJECT_TASK" )
-				sRELATED_TABLE = "PROJECT_TASKS";
+			// 05/08/2023 Paul.  Only change the relationship table, not the base table. 
+			//if ( sTABLE_NAME == "PROJECT" )
+			//	sTABLE_NAME = "PROJECTS";
+			//else if ( sTABLE_NAME == "PROJECT_TASK" )
+			//	sTABLE_NAME = "PROJECT_TASKS";
+			//if ( sRELATED_TABLE == "PROJECT" )
+			//	sRELATED_TABLE = "PROJECTS";
+			//else if ( sRELATED_TABLE == "PROJECT_TASK" )
+			//	sRELATED_TABLE = "PROJECT_TASKS";
 			
 			string sRELATIONSHIP_TABLE = sTABLE_NAME + "_" + sRELATED_TABLE;
+			// 05/08/2023 Paul.  Only change the relationship table, not the base table. 
+			if ( sTABLE_NAME == "PROJECT" || sTABLE_NAME == "PROJECT_TASK" )
+				sRELATIONSHIP_TABLE = sTABLE_NAME + "S_" + sRELATED_TABLE;
+			if ( sRELATED_TABLE == "PROJECT" || sRELATED_TABLE == "PROJECT_TASK" )
+				sRELATIONSHIP_TABLE = sTABLE_NAME + "_" + sRELATED_TABLE + "S";
+			
 			string sMODULE_FIELD_NAME  = Crm.Modules.SingularTableName(sTABLE_NAME   ) + "_ID";
 			string sRELATED_FIELD_NAME = Crm.Modules.SingularTableName(sRELATED_TABLE) + "_ID";
 			// 11/24/2012 Paul.  In the special cases of Accounts Related and Contacts Reports To, we need to correct the field name. 

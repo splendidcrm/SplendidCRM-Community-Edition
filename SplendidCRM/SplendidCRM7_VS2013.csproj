@@ -165,9 +165,8 @@
     <Reference Include="TweetinCore">
       <HintPath>..\BackupBin2012\TweetinCore.dll</HintPath>
     </Reference>
-    <Reference Include="Twilio.Api, Version=3.4.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\BackupBin2012\Twilio.Api.dll</HintPath>
+    <Reference Include="Twilio">
+      <HintPath>..\BackupBin2022\Twilio.dll</HintPath>
     </Reference>
     <Reference Include="WebGrease">
       <HintPath>..\BackupBin2012\WebGrease.dll</HintPath>
@@ -636,6 +635,7 @@
     </Compile>
     <Compile Include="Administration\DynamicLayout\DetailViews\export.aspx.cs">
       <DependentUpon>export.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Administration\DynamicLayout\DetailViews\NewRecord.ascx.cs">
       <DependentUpon>NewRecord.ascx</DependentUpon>
@@ -671,6 +671,7 @@
     </Compile>
     <Compile Include="Administration\DynamicLayout\EditViews\export.aspx.cs">
       <DependentUpon>export.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Administration\DynamicLayout\EditViews\NewRecord.ascx.cs">
       <DependentUpon>NewRecord.ascx</DependentUpon>
@@ -690,6 +691,7 @@
     </Compile>
     <Compile Include="Administration\DynamicLayout\GridViews\export.aspx.cs">
       <DependentUpon>export.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Administration\DynamicLayout\GridViews\ListView.ascx.cs">
       <DependentUpon>ListView.ascx</DependentUpon>
@@ -948,9 +950,11 @@
     </Compile>
     <Compile Include="Administration\ModuleBuilder\default.aspx.cs">
       <DependentUpon>default.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Administration\ModuleBuilder\ListView.ascx.cs">
       <DependentUpon>ListView.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Administration\ModuleBuilder\Rest.svc.cs">
       <DependentUpon>Rest.svc</DependentUpon>
@@ -1117,6 +1121,7 @@
     </Compile>
     <Compile Include="Administration\Releases\DetailView.ascx.cs">
       <DependentUpon>DetailView.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Administration\Releases\edit.aspx.cs">
       <DependentUpon>edit.aspx</DependentUpon>
@@ -2535,6 +2540,7 @@
     </Compile>
     <Compile Include="SmsMessages\PopupSmsNumbers.aspx.cs">
       <DependentUpon>PopupSmsNumbers.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="SmsMessages\view.aspx.cs">
       <DependentUpon>view.aspx</DependentUpon>

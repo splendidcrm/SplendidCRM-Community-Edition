@@ -543,6 +543,12 @@ exec dbo.spSYSTEM_REST_TABLES_InsertOnly null, 'spSqlBackupDatabase'            
 exec dbo.spSYSTEM_REST_TABLES_InsertOnly null, 'spSCHEDULERS_UpdateStatus'         , 'spSCHEDULERS_UpdateStatus'       , 'Schedulers'               , null                       , 0, null, 1, 0, null, 0, null;
 GO
 
+-- 02/05/2023 Paul.  The React Client needs to build the PopupSmsAddresses list manually. 
+exec dbo.spSYSTEM_REST_TABLES_InsertOnly null, 'vwCONTACTS_SmsNumbers'             , 'vwCONTACTS_SmsNumbers'           , 'Contacts'                 , null                       , 0, null, 0, 1, 'ASSIGNED_USER_ID', 0;
+exec dbo.spSYSTEM_REST_TABLES_InsertOnly null, 'vwLEADS_SmsNumbers'                , 'vwLEADS_SmsNumbers'              , 'Leads'                    , null                       , 0, null, 0, 1, 'ASSIGNED_USER_ID', 0;
+exec dbo.spSYSTEM_REST_TABLES_InsertOnly null, 'vwPROSPECTS_SmsNumbers'            , 'vwPROSPECTS_SmsNumbers'          , 'Prospects'                , null                       , 0, null, 0, 1, 'ASSIGNED_USER_ID', 0;
+exec dbo.spSYSTEM_REST_TABLES_InsertOnly null, 'vwUSERS_SmsNumbers'                , 'vwUSERS_SmsNumbers'              , 'Users'                    , null                       , 0, null, 0, 1, 'ASSIGNED_USER_ID', 0;
+GO
 
 
 set nocount off;

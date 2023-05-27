@@ -251,6 +251,21 @@ export default class QuotesEditView extends React.Component<IEditViewProps, IEdi
 					this.setState( {error: 'Parent ID [' + this.PARENT_ID + '] was not found.'} );
 				}
 			}
+			// 10/08/2022 Paul.  Inline Edit will provide PARENT_ID in rowDefaultSearch. 
+			else if ( rowDefaultSearch && !Sql.IsEmptyGuid(rowDefaultSearch['PARENT_ID']) )
+			{
+				this.PARENT_ID   = rowDefaultSearch['PARENT_ID'];
+				this.PARENT_TYPE = await Crm_Modules.ParentModule(this.PARENT_ID);
+				if ( !Sql.IsEmptyString(this.PARENT_TYPE) )
+				{
+					rowDefaultSearch = await this.LoadParent(this.PARENT_TYPE, this.PARENT_ID);
+					bParentFound = true;
+				}
+				else
+				{
+					this.setState( {error: 'Parent ID [' + this.PARENT_ID + '] was not found.'} );
+				}
+			}
 			// 02/04/2020 Paul.  Must include the other conversions, OPPORTUNITY_ID. 
 			this.OPPORTUNITY_ID = Sql.ToGuid(queryParams['OPPORTUNITY_ID']);
 			if ( Sql.IsEmptyGuid(ID) && Sql.IsEmptyGuid(DuplicateID) && Sql.IsEmptyGuid(ConvertID) && Sql.IsEmptyGuid(this.OPPORTUNITY_ID) )
@@ -347,6 +362,16 @@ export default class QuotesEditView extends React.Component<IEditViewProps, IEdi
 					if ( item != null && !Sql.IsEmptyString(DuplicateID) )
 					{
 						item['QUOTE_NUM'] = null;
+						// 10/08/2022 Paul.  Must clear ID when duplicating. 
+						if ( item.LineItems )
+						{
+							for ( let i: number = 0; i < item.LineItems.length; i++ )
+							{
+								item.LineItems[i].ID         = null;
+								item.LineItems[i].ID_C       = null;
+								item.LineItems[i].QUOTE_ID   = null;
+							}
+						}
 					}
 					Sql.SetPageTitle(sMODULE_NAME, item, 'NAME');
 					let SUB_TITLE: any = Sql.DataPrivacyErasedField(item, 'NAME');

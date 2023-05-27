@@ -100,11 +100,13 @@ class LoginView extends React.Component<ILoginViewProps, ILoginViewState>
 		{
 			//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.componentDidMount', Credentials.RemoteServer);
 			// 08/11/2019 Paul.  If redirected to login after session timeout, we need to reset. 
-			SplendidCache.Reset();
+			// 12/07/2022 Paul.  Must reset in DynamicLoginView, otherwise we lose our login state. 
+			//SplendidCache.Reset();
 			let oSingleSignOnContext = null;
 			// 08/03/2020 Paul.  If the RemoteServer is provided or if not mobile client. 
-			if ( !Credentials.bMOBILE_CLIENT || !Sql.IsEmptyString(Credentials.RemoteServer) )
-				oSingleSignOnContext = await Application_GetReactLoginState();
+			// 12/07/2022 Paul.  This first call to Application_GetReactLoginState() is performed in DynamicLoginView. 
+			//if ( !Credentials.bMOBILE_CLIENT || !Sql.IsEmptyString(Credentials.RemoteServer) )
+			//	oSingleSignOnContext = await Application_GetReactLoginState();
 			// 05/30/2019 Paul.  The component may be unmounted by the time the custom view is generated. 
 			if ( this._isMounted )
 			{

@@ -567,8 +567,10 @@ namespace SplendidCRM.Users
 				{
 					string sOAuthClientID     = Sql.ToString(Application["CONFIG.Exchange.ClientID"    ]);
 					string sOAuthClientSecret = Sql.ToString(Application["CONFIG.Exchange.ClientSecret"]);
+					// 02/04/2023 Paul.  Directory Tenant is now required for single tenant app registrations. 
+					string sOAuthDirectoryTenatID = Sql.ToString(Application["CONFIG.Exchange.DirectoryTenantID"]);
 					// 11/09/2019 Paul.  Pass the RedirectURL so that we can call from the React client. 
-					Office365AccessToken token = SplendidCRM.ActiveDirectory.Office365AcquireAccessToken(Context, sOAuthClientID, sOAuthClientSecret, gID, sCode, sRedirectURL);
+					Office365AccessToken token = SplendidCRM.ActiveDirectory.Office365AcquireAccessToken(Context, sOAuthDirectoryTenatID, sOAuthClientID, sOAuthClientSecret, gID, sCode, sRedirectURL);
 					// 01/19/2017 Paul.  We want an OUTBOUND_EMAILS mapping to the office365 OAuth record. 
 					// 02/04/2017 Paul.  OutboundEmail NAME is "system" as it will be the primary email for the user. 
 					Guid gOUTBOUND_EMAIL_ID = Guid.Empty;
@@ -699,7 +701,9 @@ namespace SplendidCRM.Users
 				StringBuilder sbErrors = new StringBuilder();
 				string sOAuthClientID     = Sql.ToString(Application["CONFIG.Exchange.ClientID"    ]);
 				string sOAuthClientSecret = Sql.ToString(Application["CONFIG.Exchange.ClientSecret"]);
-				SplendidCRM.ActiveDirectory.Office365TestAccessToken(Application, sOAuthClientID, sOAuthClientSecret, gID, sbErrors);
+				// 02/04/2023 Paul.  Directory Tenant is now required for single tenant app registrations. 
+				string sOAuthDirectoryTenatID = Sql.ToString(Application["CONFIG.Exchange.DirectoryTenantID"]);
+				SplendidCRM.ActiveDirectory.Office365TestAccessToken(Application, sOAuthDirectoryTenatID, sOAuthClientID, sOAuthClientSecret, gID, sbErrors);
 
 				DataRow rdr = GetUser(gID);
 				if ( rdr != null )
@@ -755,7 +759,9 @@ namespace SplendidCRM.Users
 			{
 				string sOAuthClientID     = Sql.ToString(Application["CONFIG.Exchange.ClientID"    ]);
 				string sOAuthClientSecret = Sql.ToString(Application["CONFIG.Exchange.ClientSecret"]);
-				SplendidCRM.ActiveDirectory.Office365RefreshAccessToken(Application, sOAuthClientID, sOAuthClientSecret, gID, true);
+				// 02/04/2023 Paul.  Directory Tenant is now required for single tenant app registrations. 
+				string sOAuthDirectoryTenatID = Sql.ToString(Application["CONFIG.Exchange.DirectoryTenantID"]);
+				SplendidCRM.ActiveDirectory.Office365RefreshAccessToken(Application, sOAuthDirectoryTenatID, sOAuthClientID, sOAuthClientSecret, gID, true);
 			}
 			else
 			{

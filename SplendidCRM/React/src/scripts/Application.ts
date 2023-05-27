@@ -102,6 +102,10 @@ export async function Application_GetReactLoginState(): Promise<any>
 		SplendidCache.SetCONFIG(json.d.CONFIG);
 		Credentials.sUSER_LANG = json.d.CONFIG['default_language'];
 		SplendidCache.SetTERMINOLOGY(json.d.TERMINOLOGY);
+		// 12/10/2022 Paul.  Allow Login Terminology Lists to be customized. 
+		SplendidCache.SetTERMINOLOGY_LISTS        (json.d.TERMINOLOGY_LISTS        );
+		// 12/07/2022 Paul.  Allow the LoginView to be customized. 
+		SplendidCache.SetREACT_CUSTOM_VIEWS(json.d.REACT_CUSTOM_VIEWS);
 		UpdateApplicationTheme();
 	}
 	if ( Sql.IsEmptyString(Credentials.sUSER_LANG) )

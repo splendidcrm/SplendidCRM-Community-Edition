@@ -97,8 +97,10 @@ namespace SplendidCRM.Administration.InboundEmail
 					{
 						string sOAuthClientID     = Sql.ToString(Application["CONFIG.Exchange.ClientID"    ]);
 						string sOAuthClientSecret = Sql.ToString(Application["CONFIG.Exchange.ClientSecret"]);
+						// 02/04/2023 Paul.  Directory Tenant is now required for single tenant app registrations. 
+						string sOAuthDirectoryTenatID = Sql.ToString(Application["CONFIG.Exchange.DirectoryTenantID"]);
 						// 12/13/2020 Paul.  Move Office365 methods to Office365utils. 
-						Office365Utils.ValidateExchange(Application, sOAuthClientID, sOAuthClientSecret, gID, sMAILBOX, sbErrors);
+						Office365Utils.ValidateExchange(Application, sOAuthDirectoryTenatID, sOAuthClientID, sOAuthClientSecret, gID, sMAILBOX, sbErrors);
 						ctlDynamicButtons.ErrorText = sbErrors.ToString();
 					}
 					// 01/31/2017 Paul.  Add support for Exchange using Username/Password. 

@@ -77,7 +77,8 @@ namespace SplendidCRM
 			throw(new Exception("Office365 integration is not supported."));
 		}
 
-		public static bool ValidateExchange(HttpApplicationState Application, string sOAuthClientID, string sOAuthClientSecret, Guid gUSER_ID, string sMAILBOX, StringBuilder sbErrors)
+		// 02/04/2023 Paul.  Directory Tenant is now required for single tenant app registrations. 
+		public static bool ValidateExchange(HttpApplicationState Application, string sOAuthDirectoryTenatID, string sOAuthClientID, string sOAuthClientSecret, Guid gUSER_ID, string sMAILBOX, StringBuilder sbErrors)
 		{
 			throw(new Exception("Office365 integration is not supported."));
 		}

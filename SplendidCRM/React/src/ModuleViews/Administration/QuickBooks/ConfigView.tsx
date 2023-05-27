@@ -534,10 +534,15 @@ export default class QuickBooksConfigView extends React.Component<IQuickBooksCon
 							// 11/09/2019 Paul.  We cannot use ADAL because we are using the response_type=code style of authentication (confidential) that ADAL does not support. 
 							let item: any = this.data;
 							let state           : string = uuidFast();
-							let OAUTH_CLIENT_ID : string = item['QuickBooks.OAuthClientID' ];
+							// 02/04/2023 Paul.  Should be Exchange. 
+							let OAUTH_CLIENT_ID : string = item['Exchange.ClientID' ];
 							let resource        : string = 'https://outlook.office.com/';
 							let sREDIRECT_URL   : string = (window.location.origin + window.location.pathname);
-							let authenticateUrl : string = 'https://login.microsoftonline.com/common/oauth2/authorize?response_type=code&client_id=' + OAUTH_CLIENT_ID + '&redirect_uri=' + encodeURI(sREDIRECT_URL) + '&resource=' + encodeURI(resource) + '&state=' + state;
+							// 02/04/2023 Paul.  Directory Tenant is now required for single tenant app registrations. 
+							let tenant         : string = item['Exchange.DirectoryTenantID'];
+							if ( Sql.IsEmptyString(tenant) )
+								tenant = 'common';
+							let authenticateUrl : string = 'https://login.microsoftonline.com/'+ tenant + '/oauth2/authorize?response_type=code&client_id=' + OAUTH_CLIENT_ID + '&redirect_uri=' + encodeURI(sREDIRECT_URL) + '&resource=' + encodeURI(resource) + '&state=' + state;
 							window.location.href = authenticateUrl;
 						}
 						catch(error)

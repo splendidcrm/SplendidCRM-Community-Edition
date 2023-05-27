@@ -86,6 +86,11 @@ namespace SplendidCRM
 						if ( !Sql.IsEmptyString(sToCity  ) ) sToCity   += ",";
 						sFROM_LOCATION = (sFromCity + " " + sFromState + " " + sFromZip + " " + sFromCountry).Trim();
 						sTO_LOCATION   = (sToCity   + " " + sToState   + " " + sToZip   + " " + sToCountry  ).Trim();
+						// 11/27/2022 Paul.  If SignalR is disabled, we need to manually initialize twilio manager. 
+						if ( TwilioManager.Instance == null )
+						{
+							TwilioManager.InitApp(this.Context);
+						}
 						TwilioManager.Instance.NewSmsMessage(sMESSAGE_SID, sFROM_NUMBER, sTO_NUMBER, sSUBJECT, sFROM_LOCATION, sTO_LOCATION);
 					}
 				}

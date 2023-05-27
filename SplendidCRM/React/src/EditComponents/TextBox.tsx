@@ -15,7 +15,9 @@ import { IEditComponentProps, EditComponent } from '../types/EditComponent';
 // 3. Scripts. 
 import Sql                                    from '../scripts/Sql'        ;
 import L10n                                   from '../scripts/L10n'       ;
+import Security                               from '../scripts/Security'   ;
 import { Crm_Config }                         from '../scripts/Crm'        ;
+import { formatCurrency, formatNumber }       from '../scripts/Formatting' ;
 // 4. Components and Views. 
 
 interface ITextBoxState
@@ -301,7 +303,20 @@ export default class TextBox extends EditComponent<IEditComponentProps, ITextBox
 					else
 					*/
 					{
-						DATA_VALUE = Sql.ToString(row[DATA_FIELD]);
+						// 12/12/2022 Paul.  Need to format currencies. 
+						let oNumberFormat = Security.NumberFormatInfo();
+						if ( layout.DATA_FORMAT == '{0:c}' )
+						{
+							DATA_VALUE = formatNumber(row[DATA_FIELD], oNumberFormat);
+						}
+						// 12/12/2022 Paul.  ZipCode LONGITUDE/LATITUDE have format of 0.000000. 
+						else if ( !Sql.IsEmptyString(layout.DATA_FORMAT) && layout.DATA_FORMAT.indexOf('0') >= 0 && layout.DATA_FORMAT.indexOf('.') >= 0 )
+						{
+							oNumberFormat.CurrencyDecimalDigits = layout.DATA_FORMAT.split('.')[1].length;
+							DATA_VALUE = formatNumber(row[DATA_FIELD], oNumberFormat);
+						}
+						else
+							DATA_VALUE = Sql.ToString(row[DATA_FIELD]);
 					}
 				}
 			}

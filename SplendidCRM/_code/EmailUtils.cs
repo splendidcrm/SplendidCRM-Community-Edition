@@ -1479,6 +1479,7 @@ namespace SplendidCRM
 
 		public static void CheckInbound(HttpContext Context, Guid gID, bool bBounce)
 		{
+			bool bVerbose = Sql.ToBoolean(Context.Application["CONFIG.InboundEmail.Verbose"]);
 			if ( !bInsideCheckInbound )
 			{
 				bInsideCheckInbound = true;
@@ -1528,6 +1529,7 @@ namespace SplendidCRM
 									// 01/13/2008 Paul.  The MAILBOX_ID is the ID for the INBOUND_EMAIL record. 
 									Guid   gMAILBOX_ID     = Sql.ToGuid   (rowInbound["ID"            ]);
 									Guid   gGROUP_ID       = Sql.ToGuid   (rowInbound["GROUP_ID"      ]);
+									string sEMAIL_NAME     = Sql.ToString (rowInbound["NAME"          ]);
 									string sMAILBOX_TYPE   = Sql.ToString (rowInbound["MAILBOX_TYPE"  ]);
 									string sSERVER_URL     = Sql.ToString (rowInbound["SERVER_URL"    ]);
 									string sEMAIL_USER     = Sql.ToString (rowInbound["EMAIL_USER"    ]);
@@ -1569,6 +1571,11 @@ namespace SplendidCRM
 									{
 										SplendidError.SystemMessage(Context, "Error", new StackTrace(true).GetFrame(0), Utils.ExpandException(ex));
 									}
+									// 11/01/2022 Paul.  Log busy so we can monitor status. 
+									if ( bVerbose )
+									{
+										SplendidError.SystemMessage(Context, "Warning", new StackTrace(true).GetFrame(0), "CheckInbound " + sEMAIL_NAME + " " + sSERVICE + " " + sMAILBOX);
+									}
 									if ( bOFFICE365_OAUTH_ENABLED )
 									{
 										if ( Sql.IsEmptyString(sSERVER_URL) )
@@ -1576,6 +1583,11 @@ namespace SplendidCRM
 										if ( Sql.IsEmptyString(sMAILBOX) )
 											sMAILBOX = "Inbox";
 										DataTable dt = Office365Utils.GetFolderMessages(Context, String.Empty, String.Empty, gMAILBOX_ID, sMAILBOX, bONLY_SINCE, sEXCHANGE_WATERMARK);
+										// 11/01/2022 Paul.  Log busy so we can monitor status. 
+										if ( bVerbose && dt != null )
+										{
+											SplendidError.SystemMessage(Context, "Warning", new StackTrace(true).GetFrame(0), "CheckInbound Office365 " + sEMAIL_NAME + " " + dt.Rows.Count + " messages.");
+										}
 										foreach ( DataRow row in dt.Rows )
 										{
 											// 12/12/2017 Paul.  Azure is dropping the connection, but continuing the loop and generating lots of errors.  Just exit and wait to try again. 
@@ -2042,6 +2054,11 @@ namespace SplendidCRM
 				{
 					bInsideCheckInbound = false;
 				}
+			}
+			// 11/01/2022 Paul.  Log busy so we can monitor status. 
+			else if ( bVerbose )
+			{
+				SplendidError.SystemMessage(Context, "Warning", new StackTrace(true).GetFrame(0), "CheckInbound is busy.");
 			}
 		}
 

@@ -1087,6 +1087,8 @@ export default class EmailsEditView extends React.Component<IEditViewProps, IEdi
 						}
 						// 01/24/2021 Paul.  Status will be updated after sending, but we may have issues with concurrency that we want to ignore. 
 						row['SaveConcurrency'] = true;
+						// 05/19/2023 Paul.  If we don't populate DESCRIPTION_HTML, then email will not be sent as HTML, leaving html tags in the body. 
+						row['DESCRIPTION_HTML'] = row['DESCRIPTION'];
 						try
 						{
 							if ( this.headerButtons.current != null )

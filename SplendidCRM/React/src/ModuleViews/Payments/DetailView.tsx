@@ -233,7 +233,8 @@ class PaymentsDetailView extends React.Component<IDetailViewProps, IDetailViewSt
 			if ( this._isMounted )
 			{
 				this.setState({ layout: layout, item: null, summaryLayout: null });
-				if ( sMODULE_NAME == 'Quotes' || sMODULE_NAME == 'Orders' || sMODULE_NAME == 'Invoices' )
+				// 10/09/2022 Paul.  Add Payments.SummaryView. 
+				if ( sMODULE_NAME == 'Quotes' || sMODULE_NAME == 'Orders' || sMODULE_NAME == 'Invoices' || sMODULE_NAME == 'Payments' )
 				{
 					try
 					{
@@ -527,10 +528,12 @@ class PaymentsDetailView extends React.Component<IDetailViewProps, IDetailViewSt
 		this.refMap = {};
 		if ( SplendidCache.IsInitialized && layout && item )
 		{
+			//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.render summaryLayout', summaryLayout);
 			// 12/04/2019 Paul.  After authentication, we need to make sure that the app gets updated. 
 			Credentials.sUSER_THEME;
 			let headerButtons = HeaderButtonsFactory(SplendidCache.UserTheme);
 			// 04/13/2022 Paul.  Add LayoutTabs to Pacific theme. 
+			// 10/09/2022 Paul.  Add Payments.SummaryView. 
 			return (
 			<React.Fragment>
 				<AuditView
@@ -560,6 +563,10 @@ class PaymentsDetailView extends React.Component<IDetailViewProps, IDetailViewSt
 				<div id="content">
 					{ SplendidDynamic_DetailView.AppendDetailViewFields(item, layout, this.refMap, 'tabDetailView', null, this.Page_Command) }
 					<Invoices ID={ ID } />
+					{ MODULE_NAME == 'Quotes' || MODULE_NAME == 'Orders' || MODULE_NAME == 'Invoices' || MODULE_NAME == 'Payments'
+					? SplendidDynamic_DetailView.AppendDetailViewFields(item, summaryLayout, this.refMap, 'tabDetailView', null, this.Page_Command)
+					: null
+					}
 					<br />
 					<DetailViewRelationships key={ this.props.MODULE_NAME + '_DetailViewRelationships' } PARENT_TYPE={ this.props.MODULE_NAME } DETAIL_NAME={ DETAIL_NAME } row={ item } isPrecompile={ this.props.isPrecompile } onComponentComplete={ this.onRelationshipsComplete } />
 				</div>

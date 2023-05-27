@@ -17,6 +17,7 @@ import DETAILVIEWS_RELATIONSHIP               from '../types/DETAILVIEWS_RELATIO
 import Sql                                    from '../scripts/Sql'                    ;
 import L10n                                   from '../scripts/L10n'                   ;
 import Credentials                            from '../scripts/Credentials'            ;
+import { Crm_Config }                         from '../scripts/Crm'                    ;
 import { DetailViewRelationships_LoadLayout } from '../scripts/DetailViewRelationships';
 import { AuthenticatedMethod, LoginRedirect } from '../scripts/Login'                  ;
 // 4. Components and Views. 
@@ -49,14 +50,31 @@ class UnifiedSearch extends React.Component<IUnifiedSearchProps, IUnifiedSearchS
 		Credentials.SetViewMode('UnifiedSearch');
 		// 05/09/2022 Paul.  Must decode string, otherwise @ is kept encoded and matches nothing in database. 
 		let search: string = null;
+		let error : any    = null;
 		if ( !Sql.IsEmptyString(props.search) )
+		{
 			search = decodeURIComponent(props.search);
+			// 10/29/2022 Paul.  Customer may have too many records to allow anything. 
+			if ( search.indexOf('*') < 0 && search.indexOf('=') < 0 )
+			{
+				if ( Crm_Config.ToString('UnifiedSearch.DefaultType') == 'startswith' )
+					search = '=\"' + search + '*' + '\"';
+				else if ( Crm_Config.ToString('UnifiedSearch.DefaultType') == 'exact' )
+					search = '=\"' + search + '\"';
+			}
+		}
+		else
+		{
+			// 10/29/2022 Paul.  Do not allow an empty search. 
+			error = L10n.Term("Home.ERR_ONE_CHAR");
+		}
 		this.state =
 		{
 			layout     : [],
 			items      : [],
 			activeIndex: {},
 			search     ,
+			error      ,
 		};
 	}
 

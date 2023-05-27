@@ -1676,6 +1676,15 @@ namespace SplendidCRM
 			return par;
 		}
 
+		// 02/10/2023 Paul.  Add support for DataTable for a customer. 
+		public static IDbDataParameter AddParameter(IDbCommand cmd, string sField, DataTable tblValue)
+		{
+			IDbDataParameter par = CreateParameter(cmd, sField);
+			System.Data.SqlClient.SqlParameter sqlParameter = par as System.Data.SqlClient.SqlParameter;
+			sqlParameter.SqlValue = tblValue;
+			return par;
+		}
+
 		public static void AppendParameter(IDbCommand cmd, int nValue, string sField, bool bIsEmpty)
 		{
 			if ( !bIsEmpty )
@@ -3002,6 +3011,15 @@ namespace SplendidCRM
 			UniqueStringCollection arrSearchFields = new UniqueStringCollection();
 			SplendidDynamic.SearchGridColumns(sModule + ".Search", arrSearchFields);
 			
+			// 10/29/2022 Paul.  Customer may have too many records to allow anything. 
+			if ( !sUnifiedSearch.Contains("*") && !sUnifiedSearch.Contains("=") )
+			{
+				if ( Sql.ToString(HttpContext.Current.Application["CONFIG.UnifiedSearch.DefaultType"]) == "startswith" )
+					sUnifiedSearch = "=\"" + sUnifiedSearch + "*" + "\"";
+				else if ( Sql.ToString(HttpContext.Current.Application["CONFIG.UnifiedSearch.DefaultType"]) == "exact" )
+					sUnifiedSearch = "=\"" + sUnifiedSearch + "\"";
+			}
+			
 			SearchBuilder sb = new SearchBuilder(sUnifiedSearch, cmd);
 			sSQL += "   and (     1 = 1" + ControlChars.CrLf;
 			for ( int i = 0; i < arrSearchFields.Count; i++ )
@@ -3014,7 +3032,8 @@ namespace SplendidCRM
 					sSQL += sb.BuildQuery("                    where", "TAG_NAME");
 					sSQL += "                  )" + ControlChars.CrLf;
 				}
-				else
+				// 10/29/2022 Paul.  Makes no sense to search for ID. 
+				else if ( arrSearchFields[i] != "ID" )
 				{
 					sSQL += sb.BuildQuery("        " + (i == 0 ? "and " : " or "), arrSearchFields[i]);
 				}

@@ -34,6 +34,7 @@ GO
 -- 01/10/2014 Paul.  Add smalldatetime to support a customer customization. 
 -- 09/22/2016 Paul.  Manually specify default collation to ease migration to Azure
 -- 01/22/2020 Paul.  A customer is using the "date" type. 
+-- 02/11/2023 Paul.  Add support for DataTable using INFORMATION_SCHEMA. 
 Create View dbo.vwSqlColumns
 as
 select objects.name  collate database_default          as ObjectName
@@ -258,6 +259,7 @@ select procedures.name           as ObjectName
              when parameters.system_type_id = 108 then N'float'
              when parameters.system_type_id = 165 then N'byte[]'
              when parameters.system_type_id = 173 then N'byte[]'
+             when SCHEMA_PARAMETERS.DATA_TYPE = 'table type' then 'DataTable'
         end
        ) as CsType
      , (case when parameters.system_type_id =  36 then N'g'
@@ -283,6 +285,7 @@ select procedures.name           as ObjectName
              when parameters.system_type_id = 108 then N'fl'
              when parameters.system_type_id = 165 then N'bin'
              when parameters.system_type_id = 173 then N'bin'
+             when SCHEMA_PARAMETERS.DATA_TYPE = 'table type' then 'tbl'
         end
        ) as CsPrefix
      , cast(null as bit) as IsIdentity
@@ -290,6 +293,9 @@ select procedures.name           as ObjectName
   from      sys.procedures         procedures
  inner join sys.parameters         parameters
          on parameters.object_id = procedures.object_id
+ inner join INFORMATION_SCHEMA.PARAMETERS SCHEMA_PARAMETERS
+         on SCHEMA_PARAMETERS.SPECIFIC_NAME = procedures.name
+        and SCHEMA_PARAMETERS.PARAMETER_NAME = parameters.name
  where procedures.type = 'P'
    and parameters.system_type_id <> 189 -- timestamp
 

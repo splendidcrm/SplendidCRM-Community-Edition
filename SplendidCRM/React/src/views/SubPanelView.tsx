@@ -332,19 +332,27 @@ class SubPanelView extends React.Component<ISubPanelViewProps, ISubPanelViewStat
 					{
 						RELATED_MODULE = sCommandName.split('.')[0];
 					}
-					let customView = await DynamicLayout_Module(RELATED_MODULE, 'EditViews', 'EditView.Inline');
-					const layout   = EditView_LoadLayout(RELATED_MODULE + 'EditView.Inline', false);
-					if ( customView )
-					{
-						//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.Page_Command found ' + RELATED_MODULE + '.EditView.Inline');
-					}
-					// 09/26/2022 Paul.  If layout for inline edit is not defined, then jump to full form. 
-					else if ( layout == null )
+					// 10/15/2022 Paul.  Add support for disable_editview_inline flag. 
+					if ( Crm_Config.ToBoolean('disable_editview_inline') )
 					{
 						this.props.history.push(`/Reset/${RELATED_MODULE}/Edit?PARENT_ID=${PARENT_ID}`);
 					}
-					// 11/05/2020 Paul.  Also clear any error. 
-					this.setState({ showSearch: false, showInlineEdit: true, RELATED_MODULE, customView, error: '' });
+					else
+					{
+						let customView = await DynamicLayout_Module(RELATED_MODULE, 'EditViews', 'EditView.Inline');
+						const layout   = EditView_LoadLayout(RELATED_MODULE + 'EditView.Inline', false);
+						if ( customView )
+						{
+							//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.Page_Command found ' + RELATED_MODULE + '.EditView.Inline');
+						}
+						// 09/26/2022 Paul.  If layout for inline edit is not defined, then jump to full form. 
+						else if ( layout == null )
+						{
+							this.props.history.push(`/Reset/${RELATED_MODULE}/Edit?PARENT_ID=${PARENT_ID}`);
+						}
+						// 11/05/2020 Paul.  Also clear any error. 
+						this.setState({ showSearch: false, showInlineEdit: true, RELATED_MODULE, customView, error: '' });
+					}
 				}
 				else if ( sCommandName == 'Select' || EndsWith(sCommandName, '.Select') )
 				{

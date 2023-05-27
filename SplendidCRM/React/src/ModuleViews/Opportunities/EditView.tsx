@@ -267,6 +267,21 @@ export default class OpportunitiesEditView extends React.Component<IEditViewProp
 				this.LEAD_ID    = queryParams['LEAD_ID'];
 				rowDefaultSearch = await this.LoadParent('Leads', this.LEAD_ID);
 			}
+			// 10/08/2022 Paul.  Inline Edit will provide PARENT_ID in rowDefaultSearch. 
+			else if ( rowDefaultSearch && !Sql.IsEmptyGuid(rowDefaultSearch['PARENT_ID']) )
+			{
+				this.PARENT_ID   = rowDefaultSearch['PARENT_ID'];
+				this.PARENT_TYPE = await Crm_Modules.ParentModule(this.PARENT_ID);
+				if ( !Sql.IsEmptyString(this.PARENT_TYPE) )
+				{
+					rowDefaultSearch = await this.LoadParent(this.PARENT_TYPE, this.PARENT_ID);
+					bParentFound = true;
+				}
+				else
+				{
+					this.setState( {error: 'Parent ID [' + this.PARENT_ID + '] was not found.'} );
+				}
+			}
 			const layout = EditView_LoadLayout(EDIT_NAME);
 			//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.load', layout);
 			// 06/19/2018 Paul.  Always clear the item when setting the layout. 
@@ -328,6 +343,16 @@ export default class OpportunitiesEditView extends React.Component<IEditViewProp
 					if ( item != null && !Sql.IsEmptyString(DuplicateID) )
 					{
 						item['OPPORTUNITY_NUMBER'] = null;
+						// 10/08/2022 Paul.  Must clear ID when duplicating. 
+						if ( item.LineItems )
+						{
+							for ( let i: number = 0; i < item.LineItems.length; i++ )
+							{
+								item.LineItems[i].ID             = null;
+								item.LineItems[i].ID_C           = null;
+								item.LineItems[i].OPPORTUNITY_ID = null;
+							}
+						}
 					}
 					Sql.SetPageTitle(sMODULE_NAME, item, 'NAME');
 					let SUB_TITLE: any = Sql.DataPrivacyErasedField(item, 'NAME');

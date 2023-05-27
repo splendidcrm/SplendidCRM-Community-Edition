@@ -25,10 +25,11 @@ import Credentials                                from '../../scripts/Credential
 import SplendidCache                              from '../../scripts/SplendidCache'               ;
 import SplendidDynamic_EditView                   from '../../scripts/SplendidDynamic_EditView'    ;
 import { Crm_Config, Crm_Modules }                from '../../scripts/Crm'                         ;
-import { base64ArrayBuffer }                      from '../../scripts/utility'                     ;
+import { base64ArrayBuffer, EndsWith }            from '../../scripts/utility'                     ;
 import { AuthenticatedMethod, LoginRedirect }     from '../../scripts/Login'                       ;
 import { sPLATFORM_LAYOUT }                       from '../../scripts/SplendidInitUI'              ;
 import { EditView_LoadItem, EditView_LoadLayout, EditView_ActivateTab } from '../../scripts/EditView';
+import EDITVIEWS_FIELD                            from '../../types/EDITVIEWS_FIELD'               ;
 import { ListView_LoadTable }                     from '../../scripts/ListView'                    ;
 import { SystemSqlColumns }                       from '../../scripts/SystemCacheRequest'          ;
 import { UpdateModule }                           from '../../scripts/ModuleUpdate'                ;
@@ -39,7 +40,9 @@ import DumpSQL                                    from '../../components/DumpSQL
 import DynamicButtons                             from '../../components/DynamicButtons'           ;
 import HeaderButtonsFactory                       from '../../ThemeComponents/HeaderButtonsFactory';
 // 04/16/2022 Paul.  Add LayoutTabs to Pacific theme. 
-import LayoutTabs                                 from '../../components/LayoutTabs'           ;
+import LayoutTabs                                 from '../../components/LayoutTabs'               ;
+// 05/18/2023 Paul.  Allow insert of Survey module. 
+import DynamicPopupView                           from '../../views/DynamicPopupView'              ;
 
 interface IEditViewProps extends RouteComponentProps<any>
 {
@@ -73,6 +76,7 @@ interface IEditViewState
 	editedItem         : any;
 	dependents         : Record<string, Array<any>>;
 	error              : any;
+	popupOpen          : boolean;
 }
 
 // 09/18/2019 Paul.  Give class a unique name so that it can be debugged.  Without the unique name, Chrome gets confused.
@@ -137,7 +141,8 @@ export default class EmailTemplatesEditView extends React.Component<IEditViewPro
 			SUB_TITLE         : null,
 			editedItem        : null,
 			dependents        : {},
-			error             : null
+			error             : null,
+			popupOpen         : false
 		};
 	}
 
@@ -353,6 +358,7 @@ export default class EmailTemplatesEditView extends React.Component<IEditViewPro
 			{
 				if ( layout.length > 0 )
 				{
+					let nSUBJECT_Index: number = -1;
 					for ( let nLayoutIndex = 0; nLayoutIndex < layout.length; nLayoutIndex++ )
 					{
 						let lay = layout[nLayoutIndex];
@@ -373,7 +379,90 @@ export default class EmailTemplatesEditView extends React.Component<IEditViewPro
 							case 'VariableName':
 								lay.LIST_NAME = 'SqlColumns.Accounts.edit';
 								break;
+							case 'SUBJECT':
+								nSUBJECT_Index = nLayoutIndex;
+								break;
 						}
+					}
+					// 05/18/2023 Paul.  Allow insert of Survey module. 
+					let nACLACCESS_Archive: number = SplendidCache.GetUserAccess('Surveys', 'view', this.constructor.name + '.render');
+					if ( nACLACCESS_Archive > 0 && nSUBJECT_Index > 0 )
+					{
+						let INSERT_SURVEY: any = 
+						{
+							hidden          : false,
+							EDIT_NAME       : layout[nSUBJECT_Index].EDIT_NAME,
+							FIELD_INDEX     : nSUBJECT_Index,
+							FIELD_TYPE      : 'Label',
+							DATA_LABEL      : 'EmailTemplates.LBL_INSERT_SURVEY',
+							DATA_FIELD      : '.',
+							DATA_FORMAT     : null,
+							FORMAT_TAB_INDEX: 1,
+							COLSPAN         : 0,
+							LABEL_WIDTH     : layout[nSUBJECT_Index].LABEL_WIDTH,
+							FIELD_WIDTH     : layout[nSUBJECT_Index].FIELD_WIDTH,
+						};
+						let SELECT_SURVEY: any = 
+						{
+							hidden          : false,
+							EDIT_NAME       : layout[nSUBJECT_Index].EDIT_NAME,
+							FIELD_INDEX     : nSUBJECT_Index,
+							FIELD_TYPE      : 'Button',
+							DATA_LABEL      : 'EmailTemplates.LBL_SELECT_SURVEY',
+							DATA_FIELD      : 'SurveyButton',
+							DATA_FORMAT     : 'InsertSurvey',  // This will be the Page_Command. 
+							FORMAT_TAB_INDEX: 1,
+							COLSPAN         : -1,
+							LABEL_WIDTH     : layout[nSUBJECT_Index].LABEL_WIDTH,
+							FIELD_WIDTH     : layout[nSUBJECT_Index].FIELD_WIDTH,
+						};
+						let INCLUDE_CONTACT: any = 
+						{
+							hidden          : false,
+							EDIT_NAME       : layout[nSUBJECT_Index].EDIT_NAME,
+							FIELD_INDEX     : nSUBJECT_Index + 1,
+							FIELD_TYPE      : 'CheckBox',
+							DATA_LABEL      : 'EmailTemplates.LBL_INCLUDE_CONTACT',
+							DATA_FIELD      : 'SURVEY_CONTACT',
+							DATA_FORMAT     : null,
+							FORMAT_TAB_INDEX: 1,
+							COLSPAN         : -1,
+							LABEL_WIDTH     : layout[nSUBJECT_Index].LABEL_WIDTH,
+							FIELD_WIDTH     : layout[nSUBJECT_Index].FIELD_WIDTH,
+						};
+						let CONTACT_LABEL: any = 
+						{
+							hidden          : false,
+							EDIT_NAME       : layout[nSUBJECT_Index].EDIT_NAME,
+							FIELD_INDEX     : nSUBJECT_Index + 1,
+							FIELD_TYPE      : 'Label',
+							DATA_LABEL      : null,
+							DATA_FIELD      : 'EmailTemplates.LBL_INCLUDE_CONTACT',
+							DATA_FORMAT     : null,
+							FORMAT_TAB_INDEX: 1,
+							COLSPAN         : -1,
+							LABEL_WIDTH     : layout[nSUBJECT_Index].LABEL_WIDTH,
+							FIELD_WIDTH     : layout[nSUBJECT_Index].FIELD_WIDTH,
+						};
+						let BLANK: any = 
+						{
+							hidden          : false,
+							EDIT_NAME       : layout[nSUBJECT_Index].EDIT_NAME,
+							FIELD_INDEX     : nSUBJECT_Index + 2,
+							FIELD_TYPE      : 'Blank',
+							DATA_LABEL      : null,
+							DATA_FIELD      : null,
+							DATA_FORMAT     : null,
+							FORMAT_TAB_INDEX: null,
+							COLSPAN         : null,
+							LABEL_WIDTH     : layout[nSUBJECT_Index].LABEL_WIDTH,
+							FIELD_WIDTH     : layout[nSUBJECT_Index].FIELD_WIDTH,
+						};
+						layout.splice(nSUBJECT_Index + 0, 0, INSERT_SURVEY  );
+						layout.splice(nSUBJECT_Index + 1, 0, SELECT_SURVEY  );
+						layout.splice(nSUBJECT_Index + 2, 0, INCLUDE_CONTACT);
+						layout.splice(nSUBJECT_Index + 3, 0, CONTACT_LABEL  );
+						layout.splice(nSUBJECT_Index + 4, 0, BLANK          );
 					}
 				}
 				this.setState(
@@ -692,6 +781,31 @@ export default class EmailTemplatesEditView extends React.Component<IEditViewPro
 					}
 					break;
 				}
+				// 05/18/2023 Paul.  Allow insert of Survey module. 
+				case 'InsertSurvey':
+				{
+					this.setState({ popupOpen: true });
+					break;
+				}
+				case 'SelectSurvey':
+				{
+					let sPARENT_ID  : string = sCommandArguments['ID'  ];
+					let sPARENT_NAME: string = sCommandArguments['NAME'];
+					var sURL = this.GetSurveySiteURL() + 'run.aspx?ID=' + sPARENT_ID;
+					if ( editedItem && Sql.ToBoolean(editedItem['SURVEY_CONTACT']) )
+						sURL += '&PARENT_ID=$contact_id';
+					var sSurveyURL = '<a href="' + sURL + '">' + sPARENT_NAME + '</a>';
+
+					if ( !Sql.IsEmptyString(sPARENT_ID) )
+					{
+						let ref = this.refMap['BODY_HTML'];
+						if ( ref )
+						{
+							ref.current.updateDependancy('SelectSurvey', sSurveyURL, 'insert', null);
+						}
+					}
+					break;
+				}
 				default:
 				{
 					if ( this._isMounted )
@@ -707,6 +821,16 @@ export default class EmailTemplatesEditView extends React.Component<IEditViewPro
 			console.error((new Date()).toISOString() + ' ' + this.constructor.name + '.Page_Command ' + sCommandName, error);
 			this.setState({ error });
 		}
+	}
+
+	protected GetSurveySiteURL = () =>
+	{
+		let sSurveySiteURL: string = Crm_Config.ToString('Surveys.SurveySiteURL');
+		if ( Sql.IsEmptyString(sSurveySiteURL) )
+			sSurveySiteURL = Crm_Config.SiteURL() + 'Surveys';
+		if ( !EndsWith(sSurveySiteURL, '/') )
+			sSurveySiteURL += "/";
+		return sSurveySiteURL;
 	}
 
 	private _onAddAttachment = () =>
@@ -794,10 +918,25 @@ export default class EmailTemplatesEditView extends React.Component<IEditViewPro
 		this.setState({ layout });
 	}
 
+	// 05/18/2023 Paul.  Allow insert of Survey module. 
+	private _onSelectSurvey = async (value: { Action: string, ID: string, NAME: string, selectedItems: any }) =>
+	{
+		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onSelect ' + PARENT_TYPE, value);
+		if ( value.Action == 'SingleSelect' )
+		{
+			this.Page_Command('SelectSurvey', value);
+			this.setState({ error: null, popupOpen: false });
+		}
+		else if ( value.Action == 'Close' )
+		{
+			this.setState({ popupOpen: false });
+		}
+	}
+
 	public render()
 	{
 		const { MODULE_NAME, ID, LAYOUT_NAME, DuplicateID, isSearchView, isUpdatePanel, isQuickCreate, callback } = this.props;
-		const { item, layout, EDIT_NAME, SUB_TITLE, ATTACHMENTS, error } = this.state;
+		const { item, layout, EDIT_NAME, SUB_TITLE, ATTACHMENTS, error, popupOpen } = this.state;
 		const { __total, __sql } = this.state;
 		// 05/04/2019 Paul.  Reference obserable IsInitialized so that terminology update will cause refresh. 
 		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.render: ' + EDIT_NAME, layout, item);
@@ -822,6 +961,13 @@ export default class EmailTemplatesEditView extends React.Component<IEditViewPro
 			let headerButtons = HeaderButtonsFactory(SplendidCache.UserTheme);
 			return (
 			<React.Fragment>
+				<DynamicPopupView
+					isOpen={ popupOpen }
+					callback={ this._onSelectSurvey }
+					MODULE_NAME='Surveys'
+					multiSelect={ false }
+					ClearDisabled={ true }
+				/>
 				{ !callback && headerButtons
 				? React.createElement(headerButtons, { MODULE_NAME, ID, SUB_TITLE, error, showRequired: true, enableHelp: true, helpName: 'EditView', ButtonStyle: 'EditHeader', VIEW_NAME: EDIT_NAME, row: item, Page_Command: this.Page_Command, showButtons: !isSearchView && !isUpdatePanel, history: this.props.history, location: this.props.location, match: this.props.match, ref: this.headerButtons })
 				: null

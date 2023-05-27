@@ -432,7 +432,8 @@ class ChatDashboardView extends React.Component<IChatDashboardViewProps, IChatDa
 				row.FILE_EXT       = arrFileParts[arrFileParts.length - 1];
 				row.FILE_MIME_TYPE = hidUploadTYPE;
 				row.FILE_DATA      = hidUploadDATA;
-				await UpdateModuleTable('vwNOTE_ATTACHMENTS', row, null);
+				// 05/19/2023 Paul.  Use returned attachment ID. 
+				sNOTE_ATTACHMENT_ID = await UpdateModuleTable('vwNOTE_ATTACHMENTS', row, null);
 			}
 			row = {};
 			row.CHAT_CHANNEL_ID    = CURRENT_CHAT_CHANNEL_ID;
@@ -480,6 +481,22 @@ class ChatDashboardView extends React.Component<IChatDashboardViewProps, IChatDa
 		const { CURRENT_CHAT_CHANNEL_ID } = this.state;
 		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onSearchKeyDown', event, event.key);
 		if ( event.key == 'Enter' && !Sql.IsEmptyGuid(CURRENT_CHAT_CHANNEL_ID) )
+		{
+			let dtMessages = await this.LoadChannel(CURRENT_CHAT_CHANNEL_ID);
+			this.setState(
+			{
+				dtMessages,
+				error     : null,
+			});
+		}
+	}
+
+	// 05/13/2023 Paul.  Missing handler for search button. 
+	private _onSearch = async (event) =>
+	{
+		const { CURRENT_CHAT_CHANNEL_ID } = this.state;
+		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onSearch', event, event.key);
+		if ( !Sql.IsEmptyGuid(CURRENT_CHAT_CHANNEL_ID) )
 		{
 			let dtMessages = await this.LoadChannel(CURRENT_CHAT_CHANNEL_ID);
 			this.setState(
@@ -583,7 +600,7 @@ class ChatDashboardView extends React.Component<IChatDashboardViewProps, IChatDa
 										onChange={ this._onSearchChange }
 										onKeyDown={ this._onSearchKeyDown }
 									/>
-									<button id="divChatDashboard_btnSearch" className="ChatInputSubmit">{ L10n.Term('.LBL_SEARCH_BUTTON_LABEL') }</button>
+									<button id="divChatDashboard_btnSearch" className="ChatInputSubmit" onClick={ this._onSearch }>{ L10n.Term('.LBL_SEARCH_BUTTON_LABEL') }</button>
 								</div>
 								<div id="divChatDashboard_divMessages" className="ChatMessagesDiv" style={ {height: nMessagesHeight + 'px'} } ref={ (element) => this.panelRef(element, 'divChatDashboard_divMessages') }>
 									{ dtMessages
@@ -629,7 +646,7 @@ class ChatDashboardView extends React.Component<IChatDashboardViewProps, IChatDa
 												</div>
 												{ Sql.ToBoolean(row.ATTACHMENT_READY)
 												? <div id={ row.ID + '_FILENAME' }>
-													<a href={ Credentials.sREMOTE_SERVER + 'Notes/attachment.aspx?ID=' + row.NOTE_ATTACHMENT_ID } className='ChatMessagesFilename'>{ row.FILE_NAME }</a>
+													<a href={ Credentials.sREMOTE_SERVER + 'Notes/attachment.aspx?ID=' + row.NOTE_ATTACHMENT_ID } className='ChatMessagesFilename'>{ row.FILENAME }</a>
 													<img src={ Credentials.sREMOTE_SERVER + 'App_Themes/Atlantic/images/mime-' + Sql.ToString(row.FILE_EXT).replace('.', '') + '.gif' } className='ChatMessagesMimeType' />
 													<span className='ChatMessagesFileSize'>{ this.getFileSize(row) }</span>
 													<span className='ChatMessagesFileType'>{  Sql.ToString(row.FILE_EXT).toUpperCase() }</span>

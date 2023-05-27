@@ -168,7 +168,8 @@ namespace SplendidCRM
 			{
 				// 11/03/2021 Paul.  Utils calls may come from REST API and therefore will not have L10n in Current.Items. 
 				//L10N L10n = HttpContext.Current.Items["L10n"] as L10N;
-				L10N L10n = new L10N(HttpContext.Current.Application["USER_SETTINGS/CULTURE"] as string);
+				// 05/14/2023 Paul.  Should use Session, not Application. 
+				L10N L10n = new L10N(HttpContext.Current.Session["USER_SETTINGS/CULTURE"] as string);
 				throw(new Exception(L10n.Term(".LBL_TOO_MANY_RECORDS")));
 			}
 			
@@ -203,7 +204,8 @@ namespace SplendidCRM
 			{
 				// 11/03/2021 Paul.  Utils calls may come from REST API and therefore will not have L10n in Current.Items. 
 				//L10N L10n = HttpContext.Current.Items["L10n"] as L10N;
-				L10N L10n = new L10N(HttpContext.Current.Application["USER_SETTINGS/CULTURE"] as string);
+				// 05/14/2023 Paul.  Should use Session, not Application. 
+				L10N L10n = new L10N(HttpContext.Current.Session["USER_SETTINGS/CULTURE"] as string);
 				throw(new Exception(L10n.Term(".LBL_TOO_MANY_RECORDS")));
 			}
 			
@@ -258,7 +260,8 @@ namespace SplendidCRM
 					{
 						// 11/03/2021 Paul.  Utils calls may come from REST API and therefore will not have L10n in Current.Items. 
 						//L10N L10n = HttpContext.Current.Items["L10n"] as L10N;
-						L10N L10n = new L10N(HttpContext.Current.Application["USER_SETTINGS/CULTURE"] as string);
+						// 05/14/2023 Paul.  Should use Session, not Application. 
+						L10N L10n = new L10N(HttpContext.Current.Session["USER_SETTINGS/CULTURE"] as string);
 						throw(new Exception(L10n.Term("ACL.LBL_INSUFFICIENT_ACCESS")));
 					}
 				}
@@ -333,7 +336,8 @@ namespace SplendidCRM
 					{
 						// 11/03/2021 Paul.  Utils calls may come from REST API and therefore will not have L10n in Current.Items. 
 						//L10N L10n = HttpContext.Current.Items["L10n"] as L10N;
-						L10N L10n = new L10N(HttpContext.Current.Application["USER_SETTINGS/CULTURE"] as string);
+						// 05/14/2023 Paul.  Should use Session, not Application. 
+						L10N L10n = new L10N(HttpContext.Current.Session["USER_SETTINGS/CULTURE"] as string);
 						throw(new Exception(L10n.Term("ACL.LBL_INSUFFICIENT_ACCESS")));
 					}
 				}

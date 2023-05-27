@@ -83,11 +83,22 @@ export default class CKEditor extends React.Component<ICKEditorProps, ICKEditorS
 	{
 		if ( this.editor )
 		{
-			// https://ckeditor.com/docs/ckeditor5/latest/builds/guides/faq.html#where-are-the-editorinserthtml-and-editorinserttext-methods-how-to-insert-some-content
-			this.editor.model.change( writer =>
+			// 05/18/2023 Paul.  EmailTemplates needs to insert Survey HTML. 
+			if ( txt.indexOf('<') >= 0 )
 			{
-				writer.insertText(txt, this.editor.model.document.selection.getFirstPosition() );
-			});
+				// See: https://ckeditor.com/docs/ckeditor5/latest/builds/guides/faq.html#where-are-the-editorinserthtml-and-editorinserttext-methods-how-to-insert-some-content
+				const viewFragment = this.editor.data.processor.toView( txt );
+				const modelFragment = this.editor.data.toModel( viewFragment );
+				this.editor.model.insertContent(modelFragment);
+			}
+			else
+			{
+				// https://ckeditor.com/docs/ckeditor5/latest/builds/guides/faq.html#where-are-the-editorinserthtml-and-editorinserttext-methods-how-to-insert-some-content
+				this.editor.model.change( writer =>
+				{
+					writer.insertText(txt, this.editor.model.document.selection.getFirstPosition() );
+				});
+			}
 		}
 	}
 

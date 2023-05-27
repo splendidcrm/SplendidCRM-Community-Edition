@@ -162,9 +162,9 @@
     <Reference Include="TweetinCore">
       <HintPath>..\BackupBin2012\TweetinCore.dll</HintPath>
     </Reference>
-    <Reference Include="Twilio.Api, Version=3.4.1.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Twilio, Version=6.0.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\BackupBin2012\Twilio.Api.dll</HintPath>
+      <HintPath>..\BackupBin2022\Twilio.dll</HintPath>
     </Reference>
     <Reference Include="WebGrease">
       <HintPath>..\BackupBin2012\WebGrease.dll</HintPath>
@@ -1230,6 +1230,7 @@
     </Compile>
     <Compile Include="Administration\Tags\AutoComplete.asmx.cs">
       <DependentUpon>AutoComplete.asmx</DependentUpon>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Administration\Tags\default.aspx.cs">
       <DependentUpon>default.aspx</DependentUpon>
@@ -4776,6 +4777,7 @@
     </Compile>
     <Compile Include="_devtools\Translate.aspx.cs">
       <DependentUpon>Translate.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="_devtools\TranslateHelp.aspx.cs">
       <DependentUpon>TranslateHelp.aspx</DependentUpon>

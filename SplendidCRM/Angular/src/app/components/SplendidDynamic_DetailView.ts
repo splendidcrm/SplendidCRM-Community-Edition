@@ -540,7 +540,8 @@ export class SplendidDynamic_DetailViewComponent implements OnInit
 					let lnk: any = {tag: FIELD_TYPE, props: lnkProps, children: null};
 					tdFieldChildren.push(lnk);
 				}
-				else if ( FIELD_TYPE == 'ModueLink' )
+				// 01/10/2023 Paul.  Correct the field type name, it is not ModueLink. 
+				else if ( FIELD_TYPE == 'ModuleLink' )
 				{
 					let lnkProps: any = { baseId, key, row, layout: lay, fieldDidMount: this._onFieldDidMount, ERASED_FIELDS, bIsHidden };
 					let lnk: any = {tag: FIELD_TYPE, props: lnkProps, children: null};

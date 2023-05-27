@@ -82,6 +82,9 @@ import RulesWizardEditView       from './RulesWizard/EditView'      ;
 import RulesWizardListView       from './RulesWizard/ListView'      ;
 import ReportRulesEditView       from './ReportRules/EditView'      ;
 import ReportRulesListView       from './ReportRules/ListView'      ;
+import SmsMessagesDetailView     from './SmsMessages/DetailView'    ;
+// 02/05/2023 Paul.  Add support for SMS Messages. 
+import SmsMessagesEditView       from './SmsMessages/EditView'      ;
 import SurveysDetailView         from './Surveys/DetailView'        ;
 import SurveysResultsView        from './Surveys/ResultsView'       ;
 import SurveysSummaryView        from './Surveys/SummaryView'       ;
@@ -175,6 +178,8 @@ import PayPalListView                    from './Administration/PayPal/ListView'
 import PayPalDetailView                  from './Administration/PayPal/DetailView'                 ;
 import PayTraceListView                  from './Administration/PayTrace/ListView'                 ;
 import PayTraceDetailView                from './Administration/PayTrace/DetailView'               ;
+// 12/26/2022 Paul.  Add support for Microsoft Teams. 
+import MicrosoftTeamsConfigView          from './Administration/MicrosoftTeams/ConfigView'         ;
 // Workflow
 import WorkflowAlertTemplatesDetailView  from './Administration/WorkflowAlertTemplates/DetailView' ;
 import WorkflowAlertTemplatesEditView    from './Administration/WorkflowAlertTemplates/EditView'   ;
@@ -314,6 +319,9 @@ export default function ModuleViewFactory(sLAYOUT_NAME: string)
 		case 'RulesWizard.ListView'      :  view = RulesWizardListView      ;  break;
 		case 'ReportRules.EditView'      :  view = ReportRulesEditView      ;  break;
 		case 'ReportRules.ListView'      :  view = ReportRulesListView      ;  break;
+		// 02/05/2023 Paul.  Add support for SMS Messages. 
+		case 'SmsMessages.DetailView'    :  view = SmsMessagesDetailView    ;  break;
+		case 'SmsMessages.EditView'      :  view = SmsMessagesEditView      ;  break;
 		case 'SurveyQuestions.DetailView':  view = SurveyQuestionsDetailView;  break;
 		case 'SurveyQuestions.EditView'  :  view = SurveyQuestionsEditView  ;  break;
 		case 'Surveys.DetailView'        :  view = SurveysDetailView        ;  break;
@@ -439,6 +447,9 @@ export default function ModuleViewFactory(sLAYOUT_NAME: string)
 		case 'PayTrace.ConfigView'              :  view = AdminConfigView                 ;  break;
 		case 'PayTrace.DetailView'              :  view = PayTraceDetailView              ;  break;
 		case 'PayTrace.ListView'                :  view = PayTraceListView                ;  break;
+		// 12/26/2022 Paul.  Add support for Microsoft Teams. 
+		case 'MicrosoftTeams.ConfigView'        :  view = MicrosoftTeamsConfigView        ;  break;
+		case 'MicrosoftTeams.DetailView'        :  view = AdminReadOnlyListView           ;  break;
 		// Workflow
 		case 'WorkflowAlertTemplates.DetailView':  view = WorkflowAlertTemplatesDetailView;  break;
 		case 'WorkflowAlertTemplates.EditView'  :  view = WorkflowAlertTemplatesEditView  ;  break;

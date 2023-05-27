@@ -108,7 +108,7 @@ class Precompile extends React.Component<IPrecompileProps, IPrecompileState>
 					let currentIndex   : number  = null;
 					let lstModulePages : any[]   = [];
 					let layout         : any     = null;
-					// 04/10/2021 Paul.  Make to passes so that admin modules can be placed at the end. 
+					// 04/10/2021 Paul.  Make two passes so that admin modules can be placed at the end. 
 					for ( let MODULE_NAME in lstMODULES )
 					{
 						if ( MODULE_NAME == 'ActivityStream' 
@@ -126,6 +126,7 @@ class Precompile extends React.Component<IPrecompileProps, IPrecompileState>
 						  || MODULE_NAME == 'OrdersLineItems' 
 						  || MODULE_NAME == 'QuotesLineItems' 
 						  || MODULE_NAME == 'RevenueLineItems' 
+						  || MODULE_NAME == 'PaymentsLineItems' 
 						  || MODULE_NAME == 'MailMerge' 
 						  || MODULE_NAME == 'ProductCatalog' 
 						  || MODULE_NAME == 'ReportRules' 

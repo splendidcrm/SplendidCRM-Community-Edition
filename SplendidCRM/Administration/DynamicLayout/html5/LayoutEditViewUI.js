@@ -385,7 +385,10 @@ LayoutEditViewUI.prototype.ConvertToDetailView = function(objEditView)
 				break;
 			case "Label"              :
 				layDetailView.FIELD_TYPE   = 'String';
+				// 10/08/2022 Paul.  Copy label and field.  DATA_FORMAT is required. 
 				layDetailView.DATA_LABEL   = layEditView.DATA_LABEL  ;
+				layDetailView.DATA_FIELD   = layEditView.DATA_FIELD  ;
+				layDetailView.DATA_FORMAT  = '{0}';
 				layDetailView.COLSPAN      = layEditView.COLSPAN     ;
 				layDetailView.TOOL_TIP     = layEditView.TOOL_TIP    ;
 				break;
@@ -543,7 +546,8 @@ LayoutEditViewUI.prototype.ConvertToDetailView = function(objEditView)
 				break;
 			case "DateRange"          :  break;
 			// 05/27/2016 Paul.  Add File type. 
-			case "File"               :  break;
+			// 10/08/2022 Paul.  Break was preventing File type from functioning. 
+			case "File"               :
 				layDetailView.FIELD_TYPE   = 'File';
 				layDetailView.DATA_LABEL   = layEditView.DATA_LABEL  ;
 				layDetailView.DATA_FIELD   = layEditView.DATA_FIELD  ;

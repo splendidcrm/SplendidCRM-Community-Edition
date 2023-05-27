@@ -58,23 +58,25 @@ export default abstract class OrdersLineItemsEditor<P extends IOrdersLineItemsEd
 		let oNumberFormat = Security.NumberFormatInfo();
 
 		let CURRENCY_ID          : string = null;
-		let EXCHANGE_RATE        : number = 1;
+		// 11/12/2022 Paul.  We can't dynamically convert to a number as it will prevent editing. 
+		let EXCHANGE_RATE        : string = '1';
 		let TAXRATE_ID           : string = null;
 		let SHIPPER_ID           : string = null;
 		let SUBTOTAL             : number = 0;
 		let DISCOUNT             : number = 0;
-		let SHIPPING             : number = 0;
+		// 11/12/2022 Paul.  We can't dynamically convert to a number as it will prevent editing. 
+		let SHIPPING             : string = '0';
 		let TAX                  : number = 0;
 		let TOTAL                : number = 0;
 		if ( row != null )
 		{
 			CURRENCY_ID   = Sql.ToString (row['CURRENCY_ID'  ]);
-			EXCHANGE_RATE = Sql.ToDecimal(row['EXCHANGE_RATE']);
+			EXCHANGE_RATE = Sql.ToDecimal(row['EXCHANGE_RATE']).toString();
 			TAXRATE_ID    = Sql.ToString (row['TAXRATE_ID'   ]);
 			SHIPPER_ID    = Sql.ToString (row['SHIPPER_ID'   ]);
 			SUBTOTAL      = Sql.ToDecimal(row['SUBTOTAL'     ]);
 			DISCOUNT      = Sql.ToDecimal(row['DISCOUNT'     ]);
-			SHIPPING      = Sql.ToDecimal(row['SHIPPING'     ]);
+			SHIPPING      = formatNumber(Sql.ToDecimal(row['SHIPPING']), oNumberFormat);
 			TAX           = Sql.ToDecimal(row['TAX'          ]);
 			TOTAL         = Sql.ToDecimal(row['TOTAL'        ]);
 		}
@@ -359,6 +361,12 @@ export default abstract class OrdersLineItemsEditor<P extends IOrdersLineItemsEd
 					else if ( PARENT_FIELD == 'PRICING_FORMULA' )
 					{
 						this.UpdatePricingFormula(lineEdited, DATA_VALUE, true);
+						this.lineItems.current.UpdateLineEdited(lineEdited);
+					}
+					// 10/08/2022 Paul.  Recalculate discount when PRICING_FACTOR changes. 
+					else if ( PARENT_FIELD == 'PRICING_FACTOR' )
+					{
+						this.UpdatePricingFactor(lineEdited, DATA_VALUE, true);
 						this.lineItems.current.UpdateLineEdited(lineEdited);
 					}
 					else if ( PARENT_FIELD == 'MFT_PART_NUM' )
@@ -647,10 +655,40 @@ export default abstract class OrdersLineItemsEditor<P extends IOrdersLineItemsEd
 		}
 	}
 
+	// 10/08/2022 Paul.  Recalculate discount when PRICING_FACTOR changes. 
+	private UpdatePricingFactor = (lineEdited, sPRICING_FACTOR, bOnChange) =>
+	{
+		const { oNumberFormat } = this.state;
+		try
+		{
+			if ( Sql.IsEmptyString(sPRICING_FACTOR) )
+			{
+				sPRICING_FACTOR = 0;
+			}
+			let sPRICING_FORMULA = Sql.ToString (lineEdited['PRICING_FORMULA'])
+			let nQUANTITY        = Sql.ToDecimal(lineEdited['QUANTITY'       ]);
+			let dUNIT_PRICE      = Sql.ToDecimal(lineEdited['UNIT_PRICE'     ]);
+			let fPRICING_FACTOR  = Sql.ToFloat  (sPRICING_FACTOR              );
+			// 02/21/2021 Paul.  Move DiscountValue() to OrderUtils. 
+			let dDISCOUNT_VALUE  = DiscountValue(sPRICING_FORMULA, fPRICING_FACTOR, dUNIT_PRICE);
+		
+			lineEdited['DISCOUNT_PRICE' ] = formatNumber(nQUANTITY * dDISCOUNT_VALUE, oNumberFormat);
+			lineEdited['EXTENDED_PRICE' ] = formatNumber(nQUANTITY * dUNIT_PRICE    , oNumberFormat);
+			if ( bOnChange )
+			{
+				lineEdited['DISCOUNT_ID'] = '';
+			}
+		}
+		catch(error)
+		{
+			console.error((new Date()).toISOString() + ' ' + this.constructor.name + '.UpdatePricingFactor', error);
+		}
+	}
+
 	private UpdateTotals = () =>
 	{
 		const { onChanged } = this.props;
-		const { bEnableTaxShipping, bEnableSalesTax, bEnableTaxLineItems } = this.state;
+		const { bEnableTaxShipping, bEnableSalesTax, bEnableTaxLineItems, oNumberFormat } = this.state;
 		const { SHIPPING, TAXRATE_ID } = this.state;
 		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.UpdateTotals');
 
@@ -731,7 +769,7 @@ export default abstract class OrdersLineItemsEditor<P extends IOrdersLineItemsEd
 		}
 		dTOTAL = dSUBTOTAL - dDISCOUNT + dTAX + dSHIPPING;
 
-		this.setState( {SUBTOTAL: dSUBTOTAL, DISCOUNT: dDISCOUNT, SHIPPING: dSHIPPING, TAX: dTAX, TOTAL: dTOTAL} );
+		this.setState( {SUBTOTAL: dSUBTOTAL, DISCOUNT: dDISCOUNT, SHIPPING: formatNumber(dSHIPPING, oNumberFormat), TAX: dTAX, TOTAL: dTOTAL} );
 		onChanged('SUBTOTAL', dSUBTOTAL);
 		onChanged('DISCOUNT', dDISCOUNT);
 		onChanged('SHIPPING', dSHIPPING);
@@ -751,10 +789,11 @@ export default abstract class OrdersLineItemsEditor<P extends IOrdersLineItemsEd
 	private _onEXCHANGE_RATE_Change = (e) =>
 	{
 		const { onChanged } = this.props;
-		let EXCHANGE_RATE: number = Sql.ToDecimal(e.target.value).toString();
+		// 11/12/2022 Paul.  We can't dynamically convert to a number as it will prevent editing. 
+		let EXCHANGE_RATE: string = e.target.value;
 		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onEXCHANGE_RATE_Change', EXCHANGE_RATE);
 		this.setState({ EXCHANGE_RATE });
-		onChanged('EXCHANGE_RATE', EXCHANGE_RATE);
+		onChanged('EXCHANGE_RATE', Sql.ToDecimal(EXCHANGE_RATE));
 	}
 
 	private _onTAXRATE_ID_Change = (e) =>
@@ -783,12 +822,13 @@ export default abstract class OrdersLineItemsEditor<P extends IOrdersLineItemsEd
 	private _onSHIPPING_Change = (e) =>
 	{
 		const { onChanged } = this.props;
-		let SHIPPING: number = Sql.ToDecimal(e.target.value).toString();
+		// 11/12/2022 Paul.  We can't dynamically convert to a number as it will prevent editing. 
+		let SHIPPING: string = e.target.value;
 		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onSHIPPING_Change', SHIPPING);
 		// 05/20/2022 Paul.  Must wait to send change until after state has changed. 
 		this.setState({ SHIPPING }, () =>
 		{
-			onChanged('SHIPPING', SHIPPING);
+			onChanged('SHIPPING', Sql.ToDecimal(SHIPPING));
 			// 07/03/2022 Paul.  Don't update totals while editing as it resets the shipping value as well. 
 			//this.UpdateTotals();
 		});
@@ -941,7 +981,7 @@ export default abstract class OrdersLineItemsEditor<P extends IOrdersLineItemsEd
 						<input
 							id={ 'SHIPPING' }
 							key={ 'SHIPPING' }
-							value={ formatNumber(SHIPPING, oNumberFormat) }
+							value={ SHIPPING }
 							type='text'
 							onChange={ this._onSHIPPING_Change }
 							onBlur={ this._onSHIPPING_Blur }

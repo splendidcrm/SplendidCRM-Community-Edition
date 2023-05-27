@@ -130,7 +130,11 @@
 		// 12/29/2020 Paul.  Update scope to allow sync of contacts, calendars and mailbox. 
 		var response_type   = 'code';
 		var scope           = '<%= Spring.Social.Office365.Office365Sync.scope %>';
-		var authenticateUrl = 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize'
+		// 02/04/2023 Paul.  Directory Tenant is now required for single tenant app registrations. 
+		var tenant          = '<%= Application["CONFIG.Exchange.DirectoryTenantID"] %>';
+		if ( tenant == '' )
+			tenant = 'common';
+		var authenticateUrl = 'https://login.microsoftonline.com/'+ tenant + '/oauth2/v2.0/authorize'
 		                    + '?response_type=' + response_type
 		                    + '&client_id='     + client_id
 		                    + '&redirect_uri='  + encodeURIComponent(redirect_url)

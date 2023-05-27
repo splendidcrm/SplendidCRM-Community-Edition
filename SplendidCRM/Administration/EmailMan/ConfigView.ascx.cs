@@ -194,7 +194,9 @@ namespace SplendidCRM.Administration.EmailMan
 						{
 							string sOAuthClientID     = Sql.ToString(Application["CONFIG.Exchange.ClientID"    ]);
 							string sOAuthClientSecret = Sql.ToString(Application["CONFIG.Exchange.ClientSecret"]);
-							SplendidCRM.ActiveDirectory.Office365RefreshAccessToken(Application, sOAuthClientID, sOAuthClientSecret, EmailUtils.CAMPAIGN_MANAGER_ID, false);
+							// 02/04/2023 Paul.  Directory Tenant is now required for single tenant app registrations. 
+							string sOAuthDirectoryTenatID = Sql.ToString(Application["CONFIG.Exchange.DirectoryTenantID"]);
+							SplendidCRM.ActiveDirectory.Office365RefreshAccessToken(Application, sOAuthDirectoryTenatID, sOAuthClientID, sOAuthClientSecret, EmailUtils.CAMPAIGN_MANAGER_ID, false);
 						}
 						else if ( String.Compare(sMAIL_SENDTYPE, "GoogleApps", true) == 0 )
 						{
@@ -411,8 +413,10 @@ namespace SplendidCRM.Administration.EmailMan
 				{
 					string sOAuthClientID     = Sql.ToString(Application["CONFIG.Exchange.ClientID"    ]);
 					string sOAuthClientSecret = Sql.ToString(Application["CONFIG.Exchange.ClientSecret"]);
+					// 02/04/2023 Paul.  Directory Tenant is now required for single tenant app registrations. 
+					string sOAuthDirectoryTenatID = Sql.ToString(Application["CONFIG.Exchange.DirectoryTenantID"]);
 					// 11/09/2019 Paul.  Pass the RedirectURL so that we can call from the React client. 
-					SplendidCRM.ActiveDirectory.Office365AcquireAccessToken(Context, sOAuthClientID, sOAuthClientSecret, EmailUtils.CAMPAIGN_MANAGER_ID, OAUTH_CODE.Text, String.Empty);
+					SplendidCRM.ActiveDirectory.Office365AcquireAccessToken(Context, sOAuthDirectoryTenatID, sOAuthClientID, sOAuthClientSecret, EmailUtils.CAMPAIGN_MANAGER_ID, OAUTH_CODE.Text, String.Empty);
 					lblOffice365AuthorizedStatus.Text = L10n.Term("OAuth.LBL_TEST_SUCCESSFUL");
 					btnOffice365Authorize   .Visible = false;
 					btnOffice365Delete      .Visible = true ;
@@ -431,7 +435,9 @@ namespace SplendidCRM.Administration.EmailMan
 				{
 					string sOAuthClientID     = Sql.ToString(Application["CONFIG.Exchange.ClientID"    ]);
 					string sOAuthClientSecret = Sql.ToString(Application["CONFIG.Exchange.ClientSecret"]);
-					SplendidCRM.ActiveDirectory.Office365RefreshAccessToken(Application, sOAuthClientID, sOAuthClientSecret, EmailUtils.CAMPAIGN_MANAGER_ID, true);
+					// 02/04/2023 Paul.  Directory Tenant is now required for single tenant app registrations. 
+					string sOAuthDirectoryTenatID = Sql.ToString(Application["CONFIG.Exchange.DirectoryTenantID"]);
+					SplendidCRM.ActiveDirectory.Office365RefreshAccessToken(Application, sOAuthDirectoryTenatID, sOAuthClientID, sOAuthClientSecret, EmailUtils.CAMPAIGN_MANAGER_ID, true);
 					lblOffice365AuthorizedStatus.Text = L10n.Term("OAuth.LBL_TEST_SUCCESSFUL");
 				}
 				catch(Exception ex)
@@ -462,7 +468,9 @@ namespace SplendidCRM.Administration.EmailMan
 					StringBuilder sbErrors = new StringBuilder();
 					string sOAuthClientID     = Sql.ToString(Application["CONFIG.Exchange.ClientID"    ]);
 					string sOAuthClientSecret = Sql.ToString(Application["CONFIG.Exchange.ClientSecret"]);
-					SplendidCRM.ActiveDirectory.Office365TestAccessToken(Application, sOAuthClientID, sOAuthClientSecret, EmailUtils.CAMPAIGN_MANAGER_ID, sbErrors);
+					// 02/04/2023 Paul.  Directory Tenant is now required for single tenant app registrations. 
+					string sOAuthDirectoryTenatID = Sql.ToString(Application["CONFIG.Exchange.DirectoryTenantID"]);
+					SplendidCRM.ActiveDirectory.Office365TestAccessToken(Application, sOAuthDirectoryTenatID, sOAuthClientID, sOAuthClientSecret, EmailUtils.CAMPAIGN_MANAGER_ID, sbErrors);
 					lblOffice365AuthorizedStatus.Text = sbErrors.ToString();
 				}
 				catch(Exception ex)

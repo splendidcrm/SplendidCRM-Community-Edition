@@ -21,7 +21,8 @@ export default interface IOrdersLineItemsEditorState
 	oNumberFormat?        : any;
 
 	CURRENCY_ID?          : string;
-	EXCHANGE_RATE?        : number;
+	// 11/12/2022 Paul.  We can't dynamically convert to a number as it will prevent editing. 
+	EXCHANGE_RATE?        : string;
 	TAXRATE_ID?           : string;
 	SHIPPER_ID?           : string;
 
@@ -31,7 +32,8 @@ export default interface IOrdersLineItemsEditorState
 
 	SUBTOTAL?             : number;
 	DISCOUNT?             : number;
-	SHIPPING?             : number;
+	// 11/12/2022 Paul.  We can't dynamically convert to a number as it will prevent editing. 
+	SHIPPING?             : string;
 	TAX?                  : number;
 	TOTAL?                : number;
 }

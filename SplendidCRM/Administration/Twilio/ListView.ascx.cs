@@ -21,6 +21,7 @@
  *********************************************************************************************************************/
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Web;
@@ -28,7 +29,8 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web.UI.HtmlControls;
 using System.Diagnostics;
-using Twilio;
+using Twilio.Clients;
+using Twilio.Rest.Api.V2010.Account;
 
 namespace SplendidCRM.Administration.Twilio
 {
@@ -85,15 +87,15 @@ namespace SplendidCRM.Administration.Twilio
 		{
 			if ( !Sql.IsEmptyString(Context.Application["CONFIG.Twilio.AccountSID"]) && !Sql.IsEmptyString(Context.Application["CONFIG.Twilio.AuthToken"]) )
 			{
-				MessageResult result = Cache.Get("Twilio.Messages") as MessageResult;
+				List<MessageResource> result = Cache.Get("Twilio.Messages") as List<MessageResource>;
 				if ( result == null )
 				{
 					result = TwilioManager.ListMessages(Application, ctlSearchBasic.DATE_SENT, ctlSearchBasic.FROM_NUMBER, ctlSearchBasic.TO_NUMBER, grdMain.CurrentPageIndex);
 					Cache.Insert("Twilio.Messages", result, null, DateTime.Now.AddMinutes(1), System.Web.Caching.Cache.NoSlidingExpiration);
-					grdMain.AllowCustomPaging = true;
-					grdMain.VirtualItemCount  = result.Total;
-					grdMain.PageSize          = result.PageSize;
-					grdMain.DataSource        = result.Messages ;
+					//grdMain.AllowCustomPaging = true;
+					//grdMain.VirtualItemCount  = result.Total;
+					//grdMain.PageSize          = result.PageSize;
+					grdMain.DataSource        = result;
 				}
 				if ( bBind )
 				{
@@ -117,7 +119,7 @@ namespace SplendidCRM.Administration.Twilio
 				if ( !IsPostBack )
 				{
 					Cache.Remove("Twilio.Messages");
-					ctlSearchBasic.TO_NUMBER  = Sql.ToString(Application["CONFIG.Twilio.FromPhone"]);
+					ctlSearchBasic.FROM_NUMBER  = Sql.ToString(Application["CONFIG.Twilio.FromPhone"]);
 				}
 				Bind(!IsPostBack);
 			}

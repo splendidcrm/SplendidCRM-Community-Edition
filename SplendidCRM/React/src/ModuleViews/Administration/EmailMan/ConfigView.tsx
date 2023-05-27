@@ -828,7 +828,11 @@ export default class EmailManConfigView extends React.Component<IExchangeConfigV
 		let redirect_url   : string = window.location.origin;
 		redirect_url += window.location.pathname.replace(this.props.location.pathname, '');
 		redirect_url += '/Office365OAuth';
-		let authenticateUrl: string = 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize'
+		// 02/04/2023 Paul.  Directory Tenant is now required for single tenant app registrations. 
+		let tenant         : string = Crm_Config.ToString('Exchange.DirectoryTenantID');
+		if ( tenant == '' )
+			tenant = 'common';
+		let authenticateUrl: string = 'https://login.microsoftonline.com/'+ tenant + '/oauth2/v2.0/authorize'
 		                   + '?response_type=' + response_type
 		                   + '&client_id='     + client_id
 		                   + '&redirect_uri='  + encodeURIComponent(redirect_url)

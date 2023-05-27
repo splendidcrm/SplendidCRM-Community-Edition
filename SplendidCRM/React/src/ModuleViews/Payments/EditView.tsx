@@ -40,6 +40,8 @@ import ErrorComponent                               from '../../components/Error
 import DumpSQL                                      from '../../components/DumpSQL'              ;
 import DynamicButtons                               from '../../components/DynamicButtons'       ;
 import HeaderButtonsFactory                         from '../../ThemeComponents/HeaderButtonsFactory';
+// 10/09/2022 Paul.  Add Payments.SummaryView. 
+import PaymentsLineItems                            from './PaymentsLineItems'                       ;
 
 interface IEditViewProps extends RouteComponentProps<any>
 {
@@ -70,7 +72,7 @@ interface IEditViewState
 	DUPLICATE          : boolean;
 	LAST_DATE_MODIFIED : Date;
 	SUB_TITLE          : any;
-	editedItem        : any;
+	editedItem         : any;
 	dependents         : Record<string, Array<any>>;
 	error              : any;
 }
@@ -82,6 +84,7 @@ export default class PaymentsEditView extends React.Component<IEditViewProps, IE
 	private refMap        : Record<string, React.RefObject<EditComponent<any, any>>>;
 	private headerButtons = React.createRef<HeaderButtons>();
 	private dynamicButtonsBottom = React.createRef<DynamicButtons>();
+	private lineItems     = React.createRef<PaymentsLineItems>();
 	private PARENT_ID     : string = null;
 	private PARENT_TYPE   : string = null;
 
@@ -118,7 +121,7 @@ export default class PaymentsEditView extends React.Component<IEditViewProps, IE
 		super(props);
 		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.constructor', props);
 		let item = (props.rowDefaultSearch ? props.rowDefaultSearch : null);
-		let EDIT_NAME = props.MODULE_NAME + '.EditView' + sPLATFORM_LAYOUT;
+		let EDIT_NAME: string = props.MODULE_NAME + '.EditView' + sPLATFORM_LAYOUT;
 		if ( !Sql.IsEmptyString(props.LAYOUT_NAME) )
 		{
 			EDIT_NAME = props.LAYOUT_NAME;
@@ -133,7 +136,7 @@ export default class PaymentsEditView extends React.Component<IEditViewProps, IE
 			DUPLICATE         : false,
 			LAST_DATE_MODIFIED: null,
 			SUB_TITLE         : null,
-			editedItem       : null,
+			editedItem        : null,
 			dependents        : {},
 			error             : null
 		};
@@ -285,7 +288,7 @@ export default class PaymentsEditView extends React.Component<IEditViewProps, IE
 				let dtPAYMENT_DATE: moment.Moment = moment(dtNow);
 				rowDefaultSearch['PAYMENT_DATE'    ] = ToJsonDate(dtPAYMENT_DATE.toDate());
 			}
-			let layout = EditView_LoadLayout(EDIT_NAME);
+			const layout = EditView_LoadLayout(EDIT_NAME);
 			// 05/06/2022 Paul.  Hide CREDIT_CARD_ID if not Credit Card payment type. 
 			let PAYMENT_TYPE: string = null;
 			let lstPAYMENT_TYPE: any[] = L10n.GetList('payment_type_dom')
@@ -352,7 +355,7 @@ export default class PaymentsEditView extends React.Component<IEditViewProps, IE
 					// 10/02/2017 Paul.  We needed to make sure that the number gets reset when copying a record. 
 					if ( item != null && !Sql.IsEmptyString(DuplicateID) )
 					{
-						item['CASE_NUMBER'] = null;
+						item['PAYMENT_NUM'] = null;
 					}
 					Sql.SetPageTitle(sMODULE_NAME, item, 'NAME');
 					let SUB_TITLE: any = Sql.DataPrivacyErasedField(item, 'NAME');
@@ -422,11 +425,34 @@ export default class PaymentsEditView extends React.Component<IEditViewProps, IE
 					}
 					else if ( sPARENT_TYPE == 'Invoices' )
 					{
-						rowDefaultSearch['ACCOUNT_ID'       ] = item['BILLING_ACCOUNT_ID'  ];
-						rowDefaultSearch['ACCOUNT_NAME'     ] = item['BILLING_ACCOUNT_NAME'];
-						rowDefaultSearch['B2C_CONTACT_ID'   ] = item['BILLING_CONTACT_ID'  ];
-						rowDefaultSearch['B2C_CONTACT_NAME' ] = item['BILLING_CONTACT_NAME'];
-						rowDefaultSearch['AMOUNT'           ] = formatNumber(item['AMOUNT_DUE_USDOLLAR' ], oNumberFormat);
+						rowDefaultSearch['ACCOUNT_ID'         ] = item['BILLING_ACCOUNT_ID'  ];
+						rowDefaultSearch['ACCOUNT_NAME'       ] = item['BILLING_ACCOUNT_NAME'];
+						rowDefaultSearch['B2C_CONTACT_ID'     ] = item['BILLING_CONTACT_ID'  ];
+						rowDefaultSearch['B2C_CONTACT_NAME'   ] = item['BILLING_CONTACT_NAME'];
+						rowDefaultSearch['AMOUNT'             ] = formatNumber(item['AMOUNT_DUE'         ], oNumberFormat);
+						rowDefaultSearch['AMOUNT_USDOLLAR'    ] = Sql.ToDecimal(item['AMOUNT_DUE_USDOLLAR']);
+						rowDefaultSearch['TOTAL'              ] = formatNumber(item['AMOUNT_DUE'         ], oNumberFormat);
+						rowDefaultSearch['TOTAL_USDOLLAR'     ] = Sql.ToDecimal(item['AMOUNT_DUE_USDOLLAR']);
+
+						// 10/09/2022 Paul.  Add Payments.SummaryView. 
+						let LineItems: any[] = [];
+						let line: any = {};
+						line['INVOICE_NAME'       ] = Sql.ToString (item['NAME'               ]);
+						line['INVOICE_ID'         ] = Sql.ToGuid   (item['ID'                 ]);
+						line['AMOUNT_DUE'         ] = formatNumber(item['AMOUNT_DUE'         ], oNumberFormat);
+						line['AMOUNT_DUE_USDOLLAR'] = Sql.ToDecimal(item['AMOUNT_DUE_USDOLLAR']);
+						line['AMOUNT'             ] = formatNumber(item['AMOUNT_DUE'         ], oNumberFormat);
+						line['AMOUNT_USDOLLAR'    ] = Sql.ToDecimal(item['AMOUNT_DUE_USDOLLAR']);
+						// 02/25/2008 Paul.  If AMOUNT_DUE has not been computed, then use the TOTAL. 
+						if ( item['AMOUNT_DUE'] == null )
+						{
+							line['AMOUNT_DUE'         ] = formatNumber(item['TOTAL'         ], oNumberFormat);
+							line['AMOUNT_DUE_USDOLLAR'] = Sql.ToDecimal(item['TOTAL_USDOLLAR']);
+							line['AMOUNT'             ] = formatNumber(item['TOTAL'         ], oNumberFormat);
+							line['AMOUNT_USDOLLAR'    ] = Sql.ToDecimal(item['TOTAL_USDOLLAR']);
+						}
+						LineItems.push(line);
+						rowDefaultSearch['LineItems'] = LineItems;
 					}
 					if ( Crm_Config.ToBoolean('inherit_assigned_user') )
 					{
@@ -480,6 +506,8 @@ export default class PaymentsEditView extends React.Component<IEditViewProps, IE
 		item[DATA_FIELD] = DATA_VALUE;
 		if ( this._isMounted )
 		{
+			if ( DATA_FIELD == 'AMOUNT' )
+				this.UpdateDependancy(DATA_FIELD, DATA_VALUE);
 			this.setState({ editedItem: item });
 		}
 	}
@@ -644,6 +672,8 @@ export default class PaymentsEditView extends React.Component<IEditViewProps, IE
 							let dtPAYMENT_DATE: moment.Moment = moment(dtNow);
 							row['PAYMENT_DATE'] = ToJsonDate(dtPAYMENT_DATE.toDate());
 						}
+						// 10/09/2022 Paul.  Add Payments.SummaryView. 
+						Object.assign(row, this.lineItems.current.data);
 						if ( LAST_DATE_MODIFIED != null )
 						{
 							row['LAST_DATE_MODIFIED'] = LAST_DATE_MODIFIED;
@@ -787,6 +817,7 @@ export default class PaymentsEditView extends React.Component<IEditViewProps, IE
 		if ( SplendidCache.IsInitialized )
 		{
 			// 12/04/2019 Paul.  After authentication, we need to make sure that the app gets updated. 
+			// 10/09/2022 Paul.  Add Payments.SummaryView. 
 			Credentials.sUSER_THEME;
 			let headerButtons = HeaderButtonsFactory(SplendidCache.UserTheme);
 			return (
@@ -797,6 +828,7 @@ export default class PaymentsEditView extends React.Component<IEditViewProps, IE
 				}
 				<DumpSQL SQL={ __sql } />
 				{ SplendidDynamic_EditView.AppendEditViewFields(item, layout, this.refMap, callback, this._createDependency, this._onFieldDidMount, this._onChange, this._onUpdate, onSubmit, (isSearchView ? null : 'tabForm'), this.Page_Command) }
+				<PaymentsLineItems ID={ ID } row={ item } onChanged={ this._onChange } ref={ this.lineItems } />
 				{ !callback && headerButtons
 				? <DynamicButtons
 					ButtonStyle="EditHeader"

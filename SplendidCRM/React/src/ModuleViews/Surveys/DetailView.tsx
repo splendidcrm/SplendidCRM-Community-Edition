@@ -27,6 +27,7 @@ import SplendidDynamic_DetailView                     from '../../scripts/Splend
 import { Crm_Config, Crm_Modules }                    from '../../scripts/Crm'                       ;
 import { AuthenticatedMethod, LoginRedirect }         from '../../scripts/Login'                     ;
 import { sPLATFORM_LAYOUT }                           from '../../scripts/SplendidInitUI'            ;
+import { Trim, EndsWith }                             from '../../scripts/utility'                   ;
 import { DetailView_LoadItem, DetailView_LoadLayout, DetailView_ActivateTab } from '../../scripts/DetailView'                ;
 import { DeleteModuleItem, ArchiveMoveData, ArchiveRecoverData, ExecProcedure } from '../../scripts/ModuleUpdate'   ;
 import { jsonReactState }                             from '../../scripts/Application'               ;
@@ -419,6 +420,19 @@ class SurveysDetailView extends React.Component<IDetailViewProps, IDetailViewSta
 				}
 				break;
 			}
+			// 05/17/2023 Paul.  Test and Preview are served from ASP.NET pages. 
+			case 'Survey.Test':
+			{
+				let sUrl: string = this.GetSurveySiteURL() + 'run.aspx?ID=' + ID;
+				window.open(sUrl, 'SurveyPreview_' + ID.replace(/\s/g, '_'));
+				break;
+			}
+			case 'Survey.Preview':
+			{
+				let sUrl: string = Credentials.sREMOTE_SERVER + 'Surveys/preview.aspx?ID=' + ID;
+				window.open(sUrl, 'SurveyRun_' + ID.replace(/\s/g, '_'));
+				break;
+			}
 			default:
 			{
 				if ( this._isMounted )
@@ -429,6 +443,17 @@ class SurveysDetailView extends React.Component<IDetailViewProps, IDetailViewSta
 			}
 		}
 	}
+
+	protected GetSurveySiteURL = () =>
+	{
+		let sSurveySiteURL: string = Crm_Config.ToString('Surveys.SurveySiteURL');
+		if ( Sql.IsEmptyString(sSurveySiteURL) )
+			sSurveySiteURL = Crm_Config.SiteURL() + 'Surveys';
+		if ( !EndsWith(sSurveySiteURL, '/') )
+			sSurveySiteURL += "/";
+		return sSurveySiteURL;
+	}
+
 
 	private _onArchiveMoveData = async () =>
 	{

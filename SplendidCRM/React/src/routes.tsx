@@ -31,7 +31,8 @@ import AdminDynamicListView           from './views/DynamicAdminListView'       
 import AdminReadOnlyListView          from './views/AdminReadOnlyListView'                                         ;
 import AdminReadOnlyConfigView        from './views/AdminReadOnlyConfigView'                                       ;
 import AdminConfigView                from './views/AdminConfigView'                                               ;
-import LoginView                      from './views/LoginView'                                                     ;
+// 12/07/2022 Paul.  Allow the LoginView to be customized. 
+import DynamicLoginView               from './views/DynamicLoginView'                                              ;
 import HomeView                       from './views/HomeView'                                                      ;
 import RootView                       from './views/RootView'                                                      ;
 import ResetView                      from './views/ResetView'                                                     ;
@@ -49,6 +50,8 @@ import ReportAttachmentView           from './views/ReportAttachmentView'       
 // 09/04/2022 Paul.  A customer wants to change MailMerge, so make it dynamic. 
 //import MailMergeView                  from './views/MailMergeView'                                                 ;
 import DynamicMailMerge               from './views/DynamicMailMerge'                                              ;
+// 10/05/2022 Paul.  Add support for MassMerge. 
+import MergeView                      from './views/MergeView'                                                     ;
 
 import ChartEditView                  from './ModuleViews/Charts/EditView'                                         ;
 import ChartImportView                from './ModuleViews/Charts/ImportView'                                       ;
@@ -99,6 +102,8 @@ import PayPalListView                 from './ModuleViews/Administration/PayPal/
 import PayPalDetailView               from './ModuleViews/Administration/PayPal/DetailView'                        ;
 import PayTraceListView               from './ModuleViews/Administration/PayTrace/ListView'                        ;
 import PayTraceDetailView             from './ModuleViews/Administration/PayTrace/DetailView'                      ;
+// 12/26/2022 Paul.  Add support for Microsoft Teams. 
+import MicrosoftTeamsConfigView       from './ModuleViews/Administration/MicrosoftTeams/ConfigView'                ;
 
 import AdminDynamicLayout             from './DynamicLayoutComponents/DynamicLayoutEditor'                         ;
 import GoogleOAuth                    from './views/GoogleOAuth'                                                   ;
@@ -116,7 +121,7 @@ import ModuleBuilderWizardView        from './ModuleBuilder/WizardView'         
 export const routes = (
 	<App>
 		<Switch>
-			<Route        exact path="/login"                                                    component={LoginView} />
+			<Route        exact path="/login"                                                    component={DynamicLoginView} />
 			<Redirect     exact from="/Campaigns/roi/:ID"                                        to="/Campaigns/RoiDetailView/:ID"   />
 			<Redirect     exact from="/Campaigns/track/:ID"                                      to="/Campaigns/TrackDetailView/:ID" />
 			<Redirect     exact from="/Surveys/results/:ID"                                      to="/Surveys/ResultsView/:ID" />
@@ -181,6 +186,8 @@ v			<Redirect     exact from="/Emails/Drafts"                                   
 			<PrivateRoute exact path="/MailMerge/:MODULE_NAME/:ID"                               component={DynamicMailMerge} />
 			<PrivateRoute exact path="/MailMerge/:MODULE_NAME"                                   component={DynamicMailMerge} />
 			<PrivateRoute exact path="/MailMerge"                                                component={DynamicMailMerge} />
+			<PrivateRoute exact path="/Merge/:MODULE_NAME/:ID"                                   component={MergeView} />
+			<PrivateRoute exact path="/MassMerge/:MODULE_NAME/:ID"                               component={MergeView} />
 
 			<PrivateRoute exact path="/Administration/EmailMan/AdminCampaignEditView"            component={AdminCampaignEditView} />
 			<PrivateRoute exact path="/Administration/EmailMan/ConfigView"                       component={EmailManConfigView} />
@@ -225,6 +232,8 @@ v			<Redirect     exact from="/Emails/Drafts"                                   
 			<PrivateRoute       path="/Administration/Watson"                                    component={AdminReadOnlyConfigView} />
 			<PrivateRoute exact path="/Administration/PhoneBurner/ConfigView"                    component={PhoneBurnerConfigView} />
 			<PrivateRoute       path="/Administration/PhoneBurner"                               component={AdminReadOnlyConfigView} />
+			<PrivateRoute exact path="/Administration/MicrosoftTeams/ConfigView"                 component={MicrosoftTeamsConfigView} />
+			<PrivateRoute       path="/Administration/MicrosoftTeams"                            component={AdminReadOnlyConfigView} />
 
 			<PrivateRoute exact path="/Administration/DynamicLayout/AdminDynamicLayout"          component={AdminDynamicLayout} />
 			<PrivateRoute exact path="/Administration/Terminology/RenameTabs"                    component={AdminRenameTabs} />

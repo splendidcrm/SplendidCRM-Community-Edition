@@ -477,8 +477,10 @@ namespace SplendidCRM.Administration.InboundEmail
 				{
 					string sOAuthClientID     = Sql.ToString(Application["CONFIG.Exchange.ClientID"    ]);
 					string sOAuthClientSecret = Sql.ToString(Application["CONFIG.Exchange.ClientSecret"]);
+					// 02/04/2023 Paul.  Directory Tenant is now required for single tenant app registrations. 
+					string sOAuthDirectoryTenatID = Sql.ToString(Application["CONFIG.Exchange.DirectoryTenantID"]);
 					// 11/09/2019 Paul.  Pass the RedirectURL so that we can call from the React client. 
-					Office365AccessToken token = SplendidCRM.ActiveDirectory.Office365AcquireAccessToken(Context, sOAuthClientID, sOAuthClientSecret, gID, sCode, sRedirectURL);
+					Office365AccessToken token = SplendidCRM.ActiveDirectory.Office365AcquireAccessToken(Context, sOAuthDirectoryTenatID, sOAuthClientID, sOAuthClientSecret, gID, sCode, sRedirectURL);
 					
 					// 02/09/2017 Paul.  Use Microsoft Graph REST API to get email. 
 					MicrosoftGraphProfile profile = SplendidCRM.ActiveDirectory.GetProfile(Application, token.AccessToken);
@@ -593,10 +595,12 @@ namespace SplendidCRM.Administration.InboundEmail
 				StringBuilder sbErrors = new StringBuilder();
 				string sOAuthClientID     = Sql.ToString(Application["CONFIG.Exchange.ClientID"    ]);
 				string sOAuthClientSecret = Sql.ToString(Application["CONFIG.Exchange.ClientSecret"]);
+				// 02/04/2023 Paul.  Directory Tenant is now required for single tenant app registrations. 
+				string sOAuthDirectoryTenatID = Sql.ToString(Application["CONFIG.Exchange.DirectoryTenantID"]);
 				// 12/13/2020 Paul.  Move Office365 methods to Office365utils. 
-				Office365Utils.ValidateExchange(Application, sOAuthClientID, sOAuthClientSecret, gID, sMAILBOX, sbErrors);
+				Office365Utils.ValidateExchange(Application, sOAuthDirectoryTenatID, sOAuthClientID, sOAuthClientSecret, gID, sMAILBOX, sbErrors);
 #if DEBUG
-				Office365AccessToken token = SplendidCRM.ActiveDirectory.Office365RefreshAccessToken(Application, sOAuthClientID, sOAuthClientSecret, gID, false);
+				Office365AccessToken token = SplendidCRM.ActiveDirectory.Office365RefreshAccessToken(Application, sOAuthDirectoryTenatID, sOAuthClientID, sOAuthClientSecret, gID, false);
 				// 02/09/2017 Paul.  Use Microsoft Graph REST API to get email. 
 				MicrosoftGraphProfile profile = SplendidCRM.ActiveDirectory.GetProfile(Application, token.AccessToken);
 				if ( profile != null )
@@ -640,7 +644,9 @@ namespace SplendidCRM.Administration.InboundEmail
 			{
 				string sOAuthClientID     = Sql.ToString(Application["CONFIG.Exchange.ClientID"    ]);
 				string sOAuthClientSecret = Sql.ToString(Application["CONFIG.Exchange.ClientSecret"]);
-				SplendidCRM.ActiveDirectory.Office365RefreshAccessToken(Application, sOAuthClientID, sOAuthClientSecret, gID, true);
+				// 02/04/2023 Paul.  Directory Tenant is now required for single tenant app registrations. 
+				string sOAuthDirectoryTenatID = Sql.ToString(Application["CONFIG.Exchange.DirectoryTenantID"]);
+				SplendidCRM.ActiveDirectory.Office365RefreshAccessToken(Application, sOAuthDirectoryTenatID, sOAuthClientID, sOAuthClientSecret, gID, true);
 			}
 			else
 			{

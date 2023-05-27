@@ -3183,8 +3183,9 @@ namespace SplendidCRM.Administration
 			if ( objs == null )
 			{
 				objs = new Dictionary<string, object>();
-				SplendidCache.GetAllReactCustomViews(Context, objs, lstMODULES, "~/React/src/CustomViewsJS"     , false);
-				SplendidCache.GetAllReactCustomViews(Context, objs, lstMODULES, "~/React/src/AdminCustomViewsJS", true );
+				// 12/07/2022 Paul.  Allow the LoginView to be customized. 
+				SplendidCache.GetAllReactCustomViews(Context, objs, lstMODULES, "~/React/src/CustomViewsJS"     , false, false);
+				SplendidCache.GetAllReactCustomViews(Context, objs, lstMODULES, "~/React/src/AdminCustomViewsJS", true , false);
 				// 05/23/2019 Paul.  Include Dashlet views, but we do not yet have a way to separate by module. 
 				SplendidCache.GetAllReactDashletViews(Context, objs, lstMODULES, "~/React/src/DashletsJS");
 				HttpRuntime.Cache.Insert("ReactCustomViews.Admin." + sModuleList, objs, null, SplendidCache.DefaultCacheExpiration(), System.Web.Caching.Cache.NoSlidingExpiration);

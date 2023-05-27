@@ -430,6 +430,7 @@ if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Pardot.ConfigVie
 end -- if;
 GO
 
+-- 02/04/2023 Paul.  Directory Tenant is now required for single tenant app registrations. 
 -- delete from EDITVIEWS_FIELDS where EDIT_NAME = 'Exchange.ConfigView';
 if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Exchange.ConfigView' and DELETED = 0) begin -- then
 	print 'EDITVIEWS_FIELDS Exchange.ConfigView';
@@ -437,7 +438,7 @@ if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Exchange.ConfigV
 	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Exchange.ConfigView'        ,  0, 'Exchange.LBL_SERVER_URL'                , 'Exchange.ServerURL'              , 0, 1, 150, 35, 3;
 	exec dbo.spEDITVIEWS_FIELDS_InsButton      'Exchange.ConfigView'        ,  1, null                                     , 'Exchange.LBL_USE_OFFICE365'      , 'UseOffice365', -1;
 	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Exchange.ConfigView'        ,  2, 'Exchange.LBL_AUTHENTICATION_METHOD'     , 'Exchange.AuthenticationMethod'   , 1, 1, 'exchange_authentication_method', null, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Exchange.ConfigView'        ,  3, 'Exchange.LBL_EXCHANGE_VERSION'          , 'Exchange.Version'                , 0, 1, 'exchange_version'              , null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Exchange.ConfigView'        ,  3, 'Exchange.LBL_OAUTH_DIRECTORY_TENANT_ID' , 'Exchange.DirectoryTenantID'      , 0, 1, 150, 35, null;
 	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Exchange.ConfigView'        ,  4, 'Exchange.LBL_OAUTH_CLIENT_ID'           , 'Exchange.ClientID'               , 0, 1, 150, 35, null;
 	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Exchange.ConfigView'        ,  5, 'Exchange.LBL_OAUTH_CLIENT_SECRET'       , 'Exchange.ClientSecret'           , 0, 1, 150, 35, null;
 	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Exchange.ConfigView'        ,  6, 'Exchange.LBL_USER_NAME'                 , 'Exchange.UserName'               , 0, 1, 150, 35, null;
@@ -459,6 +460,19 @@ if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Exchange.ConfigV
 	 where EDIT_NAME         = 'Exchange.ConfigView'
 	   and DATA_FIELD        = 'Exchange.AuthenticationMethod'
 	   and DELETED           = 0;
+end else begin
+	-- 02/04/2023 Paul.  Directory Tenant is now required for single tenant app registrations. 
+	if exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Exchange.ConfigView' and DATA_FIELD = 'Exchange.Version' and DELETED = 0) begin -- then
+		update EDITVIEWS_FIELDS
+		   set DELETED           = 1
+		     , DATE_MODIFIED     = getdate()
+		     , DATE_MODIFIED_UTC = getutcdate()
+		     , MODIFIED_USER_ID  = null
+		 where EDIT_NAME         = 'Exchange.ConfigView'
+		   and DATA_FIELD        = 'Exchange.Version'
+		   and DELETED           = 0;
+		exec dbo.spEDITVIEWS_FIELDS_InsBound       'Exchange.ConfigView'        ,  3, 'Exchange.LBL_OAUTH_DIRECTORY_TENANT_ID' , 'Exchange.DirectoryTenantID'      , 0, 1, 150, 35, null;
+	end -- if; 
 end -- if;
 GO
 
@@ -695,6 +709,23 @@ if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Configurator.Adm
 	exec dbo.spEDITVIEWS_FIELDS_InsPassword    'Configurator.AdminWizard.Mail'  ,  7, 'EmailMan.LBL_MAIL_SMTPPASS'             , 'password'               , 0, 3,  64, 25, null;
 end -- if;
 GO
+
+-- 12/26/2022 Paul.  Add support for Microsoft Teams. 
+-- delete from EDITVIEWS_FIELDS where EDIT_NAME = 'MicrosoftTeams.ConfigView';
+if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'MicrosoftTeams.ConfigView' and DELETED = 0) begin -- then
+	print 'EDITVIEWS_FIELDS MicrosoftTeams.ConfigView';
+	exec dbo.spEDITVIEWS_InsertOnly            'MicrosoftTeams.ConfigView', 'MicrosoftTeams', 'vwCONFIG_Edit', '15%', '35%', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsCheckBox    'MicrosoftTeams.ConfigView' ,  0, 'MicrosoftTeams.LBL_MICROSOFTTEAMS_ENABLED'   , 'MicrosoftTeams.Enabled'           , 0, 1, null, null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsCheckBox    'MicrosoftTeams.ConfigView' ,  1, 'MicrosoftTeams.LBL_VERBOSE_STATUS'           , 'MicrosoftTeams.VerboseStatus'     , 0, 1, null, null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'MicrosoftTeams.ConfigView' ,  2, 'MicrosoftTeams.LBL_OAUTH_DIRECTORY_TENANT_ID', 'MicrosoftTeams.DirectoryTenantID' , 0, 1, 150, 35, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'MicrosoftTeams.ConfigView' ,  3, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'MicrosoftTeams.ConfigView' ,  4, 'MicrosoftTeams.LBL_OAUTH_CLIENT_ID'          , 'MicrosoftTeams.ClientID'          , 0, 1, 150, 35, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'MicrosoftTeams.ConfigView' ,  5, 'MicrosoftTeams.LBL_OAUTH_ACCESS_TOKEN'       , 'MicrosoftTeams.OAuthAccessToken'  , 0, 1, 150, 35, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'MicrosoftTeams.ConfigView' ,  6, 'MicrosoftTeams.LBL_OAUTH_CLIENT_SECRET'      , 'MicrosoftTeams.ClientSecret'      , 0, 1, 150, 35, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'MicrosoftTeams.ConfigView' ,  7, 'MicrosoftTeams.LBL_OAUTH_REFRESH_TOKEN'      , 'MicrosoftTeams.OAuthRefreshToken' , 0, 1, 150, 35, null;
+end -- if;
+GO
+
 
 set nocount off;
 GO

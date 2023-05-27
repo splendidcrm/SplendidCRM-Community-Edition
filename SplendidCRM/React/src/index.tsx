@@ -85,10 +85,16 @@ else if ( process.env.PATH )
 	pathname = process.env.PATH;
 	sRemoteServer = pathname.substring(0, pathname.indexOf('/', 1) + 1);
 }
-else
+// 05/21/2023 Paul.  SplendidApp uses ASP.Net Core and will not have /React in the URL. 
+else if ( pathname.toLowerCase().indexOf('/react', 1) >= 0 )
 {
 	// 04/28/2020 Paul.  Allow for /react, or other case issues. 
 	sRemoteServer = window.location.origin + pathname.substring(0, pathname.toLowerCase().indexOf('/react', 1) + 1);
+}
+else
+{
+	// 05/21/2023 Paul.  baseUrl is working with SplendidApp, so use directly. 
+	sRemoteServer = window.location.origin + baseUrl;
 }
 // 04/28/2020 Paul.  Allow for /react, or other case issues. 
 if ( StartsWith(pathname.toLowerCase(), baseUrl.toLowerCase()) )
@@ -131,14 +137,22 @@ try
 		else if ( !StartsWith(pathname, '/Reload') )
 		{
 			//s//console.log('index.tsx: ' + pathname);
-			history.push(pathname);
+			// 05/22/2023 Paul.  We are having an issue of the pathname being treated as a module name.  It only seems to happen with url http://localhost/SplendidCRM
+			if ( pathname + '/' == baseUrl )
+				history.push('/Home');
+			else
+				history.push(pathname);
 		}
 	}
 	else if ( !Sql.IsEmptyString(sLastActiveModule) )
 	{
 		//console.log('index.tsx: Starting at Last Active Module ' + sLastActiveModule);
 		// 05/30/2019 Paul.  Experiment with returning to the same location, no matter how deep. 
-		history.push(sLastActiveModule);
+		// 05/22/2023 Paul.  We are having an issue of the sLastActiveModule being treated as a module name.  It only seems to happen with url http://localhost/SplendidCRM
+		if ( sLastActiveModule + '/' == baseUrl )
+			history.push('/Home');
+		else
+			history.push(sLastActiveModule);
 	}
 	else
 	{

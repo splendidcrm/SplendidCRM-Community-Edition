@@ -461,6 +461,8 @@ export default class ACLRolesEditView extends React.Component<IAdminEditViewProp
 				return null;
 			}
 		}
+		// 05/26/2023 Paul.  Make sure to use Duplicate ID in AccessView when duplicating. 
+		let ROLE_ID: string = (!Sql.IsEmptyString(DuplicateID) ? DuplicateID : ID);
 		this.refMap = {};
 		let onSubmit = (this.props.onSubmit ? this._onSubmit : null);
 		if ( SplendidCache.IsInitialized && SplendidCache.AdminMenu )
@@ -495,7 +497,7 @@ export default class ACLRolesEditView extends React.Component<IAdminEditViewProp
 				<br />
 				<b>{ L10n.Term('ACLRoles.LBL_EDIT_VIEW_DIRECTIONS') }</b>
 				<br />
-				<AccessView ROLE_ID={ ID } EnableACLEditing={ true } ref={ this.accessView } />
+				<AccessView ROLE_ID={ ROLE_ID } EnableACLEditing={ true } ref={ this.accessView } />
 			</div>
 			);
 		}

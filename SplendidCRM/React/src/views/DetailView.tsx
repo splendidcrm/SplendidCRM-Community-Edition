@@ -233,7 +233,8 @@ class DetailView extends React.Component<IDetailViewProps, IDetailViewState>
 			if ( this._isMounted )
 			{
 				this.setState({ layout: layout, item: null, summaryLayout: null });
-				if ( sMODULE_NAME == 'Quotes' || sMODULE_NAME == 'Orders' || sMODULE_NAME == 'Invoices' )
+				// 10/09/2022 Paul.  Add Payments.SummaryView. 
+				if ( sMODULE_NAME == 'Quotes' || sMODULE_NAME == 'Orders' || sMODULE_NAME == 'Invoices' || sMODULE_NAME == 'Payments' )
 				{
 					try
 					{
@@ -559,11 +560,11 @@ class DetailView extends React.Component<IDetailViewProps, IDetailViewState>
 				<LayoutTabs layout={ layout } onTabChange={ this._onTabChange } />
 				<div id="content">
 					{ SplendidDynamic_DetailView.AppendDetailViewFields(item, layout, this.refMap, 'tabDetailView', null, this.Page_Command) }
-					{ MODULE_NAME == 'Quotes' || MODULE_NAME == 'Orders' || MODULE_NAME == 'Invoices' || (MODULE_NAME == 'Opportunities' && Crm_Config.ToString('OpportunitiesMode') == 'Revenue')
+					{ MODULE_NAME == 'Quotes' || MODULE_NAME == 'Orders' || MODULE_NAME == 'Invoices' || MODULE_NAME == 'Payments' || (MODULE_NAME == 'Opportunities' && Crm_Config.ToString('OpportunitiesMode') == 'Revenue')
 					? <DetailViewLineItems MODULE_NAME={ MODULE_NAME } ID={ ID } />
 					: null
 					}
-					{ MODULE_NAME == 'Quotes' || MODULE_NAME == 'Orders' || MODULE_NAME == 'Invoices'
+					{ MODULE_NAME == 'Quotes' || MODULE_NAME == 'Orders' || MODULE_NAME == 'Invoices' || MODULE_NAME == 'Payments'
 					? SplendidDynamic_DetailView.AppendDetailViewFields(item, summaryLayout, this.refMap, 'tabDetailView', null, this.Page_Command)
 					: null
 					}

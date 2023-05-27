@@ -45,6 +45,7 @@ namespace SplendidCRM
 #if !SplendidApp
 		private Timer tSchedulerManager = null;
 		private Timer tEmailManager     = null;
+		private Timer tArchiveManager   = null;
 
 		public void InitSchedulerManager()
 		{
@@ -64,6 +65,17 @@ namespace SplendidCRM
 			{
 				tEmailManager = new Timer(EmailUtils.OnTimer, this.Context, new TimeSpan(0, 1, 0), new TimeSpan(0, 1, 0));
 				SplendidError.SystemWarning(new StackTrace(true).GetFrame(0), "The Email Manager timer has been activated.");
+			}
+		}
+
+		// 11/08/2022 Paul.  Separate Archive timer. 
+		public void InitArchiveManager()
+		{
+			if ( tArchiveManager == null )
+			{
+				// 11/08/2022 Paul.  The Archive timer will match Scheduler. 
+				tArchiveManager = new Timer(SchedulerUtils.OnArchiveTimer, this.Context, new TimeSpan(0, 1, 0), new TimeSpan(0, 5, 0));
+				SplendidError.SystemWarning(new StackTrace(true).GetFrame(0), "The Archive Manager timer has been activated.");
 			}
 		}
 #endif
@@ -188,6 +200,11 @@ namespace SplendidCRM
 				WorkflowInit.StartRuntime(this.Application);
 				InitSchedulerManager();
 				InitEmailManager();
+				// 11/08/2022 Paul.  Separate Archive timer. 
+				if ( Sql.ToBoolean(this.Context.Application["CONFIG.Archive.SeparateTimer"]) )
+				{
+					InitArchiveManager();
+				}
 				// 09/02/2018 Paul.  We have seen routing error and SignalR is the only routing change.  So provide a way to disable. 
 				// [NullReferenceException: Object reference not set to an instance of an object.]
 				// System.Web.Routing.RouteCollection.GetRouteData(HttpContextBase httpContext) +247
@@ -359,6 +376,9 @@ namespace SplendidCRM
 				tSchedulerManager.Dispose();
 			if ( tEmailManager != null )
 				tEmailManager.Dispose();
+			// 11/08/2022 Paul.  Separate Archive timer. 
+			if ( tArchiveManager != null )
+				tArchiveManager.Dispose();
 			WorkflowInit.StopRuntime(this.Application);
 #endif
 			SplendidInit.StopApp(this.Context);

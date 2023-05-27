@@ -359,6 +359,7 @@ end -- if;
 GO
 
 -- 04/15/2022 Paul.  Reorganize layout using Pacific tabs. 
+-- 12/12/2022 Paul.  React requires currency fields to have currency data format. 
 -- delete from EDITVIEWS_FIELDS where EDIT_NAME = 'Campaigns.EditView';
 if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Campaigns.EditView' and DELETED = 0) begin -- then
 	print 'EDITVIEWS_FIELDS Campaigns.EditView';
@@ -387,6 +388,11 @@ if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Campaigns.EditVi
 	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Campaigns.EditView'      , -1, '.LBL_DATE_ENTERED'                      , 'DATE_ENTERED'               , null;
 	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Campaigns.EditView'      , -1, '.LBL_DATE_MODIFIED'                     , 'DATE_MODIFIED'              , null;
 
+	-- 12/12/2022 Paul.  React requires currency fields to have currency data format. 
+	exec dbo.spEDITVIEWS_FIELDS_UpdateDataFormat null, 'Campaigns.EditView', 'ACTUAL_COST'     , '{0:c}';
+	exec dbo.spEDITVIEWS_FIELDS_UpdateDataFormat null, 'Campaigns.EditView', 'BUDGET'          , '{0:c}';
+	exec dbo.spEDITVIEWS_FIELDS_UpdateDataFormat null, 'Campaigns.EditView', 'EXPECTED_COST'   , '{0:c}';
+	exec dbo.spEDITVIEWS_FIELDS_UpdateDataFormat null, 'Campaigns.EditView', 'EXPECTED_REVENUE', '{0:c}';
 end else if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Campaigns.EditView' and FIELD_TYPE = 'Header' and DATA_LABEL = '.LBL_LAYOUT_TAB_OVERVIEW' and DELETED = 0) begin -- then
 	-- 04/20/2022 Paul.  The following maintenance does not apply if this was a new Pacific layout. 
 
@@ -419,6 +425,19 @@ end else if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Campaig
 	-- 02/24/2010 Paul.  When upgrading from and old version, the Team ID will not exist. 
 	if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Campaigns.EditView' and DATA_FIELD = 'TEAM_ID' and DELETED = 0) begin -- then
 		exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'Campaigns.EditView'      , -1, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'          , 'Teams', null;
+	end -- if;
+
+	-- 12/12/2022 Paul.  React requires currency fields to have currency data format. 
+	if exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Campaigns.EditView' and DATA_FIELD in ('ACTUAL_COST', 'BUDGET', 'EXPECTED_COST', 'EXPECTED_REVENUE') and DATA_FORMAT is null and DELETED = 0) begin -- then
+		update EDITVIEWS_FIELDS
+		   set DATA_FORMAT       = '{0:c}'
+		     , DATE_MODIFIED     = getdate()
+		     , DATE_MODIFIED_UTC = getutcdate()
+		     , MODIFIED_USER_ID  = null
+		 where EDIT_NAME         = 'Campaigns.EditView'
+		   and DATA_FIELD        in ('ACTUAL_COST', 'BUDGET', 'EXPECTED_COST', 'EXPECTED_REVENUE')
+		   and DATA_FORMAT       is null
+		   and DELETED           = 0;
 	end -- if;
 end -- if;
 GO
@@ -1361,6 +1380,7 @@ GO
 -- 10/06/2010 Paul.  Size of NAME field was increased to 150. 
 -- 08/08/2015 Paul.  Separate relationship for Leads/Opportunities. 
 -- 05/12/2016 Paul.  Add Tags module. 
+-- 12/12/2022 Paul.  React requires currency fields to have currency data format. 
 -- delete from EDITVIEWS_FIELDS where EDIT_NAME = 'Opportunities.EditView';
 if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Opportunities.EditView' and DELETED = 0) begin -- then
 	print 'EDITVIEWS_FIELDS Opportunities.EditView';
@@ -1390,6 +1410,9 @@ if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Opportunities.Ed
 	exec dbo.spEDITVIEWS_FIELDS_InsHeader      'Opportunities.EditView', -1, '.LBL_LAYOUT_TAB_OTHER'                  , 3, 'tab-only';
 	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Opportunities.EditView', -1, '.LBL_DATE_ENTERED'                      , 'DATE_ENTERED'               , null;
 	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Opportunities.EditView', -1, '.LBL_DATE_MODIFIED'                     , 'DATE_MODIFIED'              , null;
+
+	-- 12/12/2022 Paul.  React requires currency fields to have currency data format. 
+	exec dbo.spEDITVIEWS_FIELDS_UpdateDataFormat null, 'Opportunities.EditView', 'AMOUNT', '{0:c}';
 end else begin
 	-- 08/24/2009 Paul.  Keep the old conversion and let the field be fixed during the TEAMS Update. 
 	exec dbo.spEDITVIEWS_FIELDS_CnvChange      'Opportunities.EditView'  ,  8, 'Teams.LBL_TEAM'                         , 'TEAM_ID'                    , 0, 1, 'TEAM_NAME'           , null, null;
@@ -1460,6 +1483,19 @@ end else begin
 		   and DELETED           = 0;
 		exec dbo.spEDITVIEWS_FIELDS_InsTagSelect   'Opportunities.EditView'          , 15, 1, null;
 		exec dbo.spEDITVIEWS_FIELDS_InsBlank       'Opportunities.EditView'          , 16, null;
+	end -- if;
+
+	-- 12/12/2022 Paul.  React requires currency fields to have currency data format. 
+	if exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Opportunities.EditView' and DATA_FIELD = 'AMOUNT' and DATA_FORMAT is null and DELETED = 0) begin -- then
+		update EDITVIEWS_FIELDS
+		   set DATA_FORMAT       = '{0:c}'
+		     , DATE_MODIFIED     = getdate()
+		     , DATE_MODIFIED_UTC = getutcdate()
+		     , MODIFIED_USER_ID  = null
+		 where EDIT_NAME         = 'Opportunities.EditView'
+		   and DATA_FIELD        = 'AMOUNT'
+		   and DATA_FORMAT       is null
+		   and DELETED           = 0;
 	end -- if;
 end -- if;
 GO
@@ -3096,6 +3132,24 @@ if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Users.UserWizard
 	exec dbo.spEDITVIEWS_FIELDS_InsLabel       'Users.UserWizard.Mail'  ,  0, 'EmailMan.LBL_MAIL_SMTPSERVER'            , 'smtpserver'             , null;
 	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Users.UserWizard.Mail'  ,  1, 'Users.LBL_MAIL_SMTPUSER'                 , 'MAIL_SMTPUSER'          , 0, 10, 100, 25, null;
 	exec dbo.spEDITVIEWS_FIELDS_InsPassword    'Users.UserWizard.Mail'  ,  2, 'Users.LBL_MAIL_SMTPPASS'                 , 'MAIL_SMTPPASS'          , 0, 10, 100, 25, null;
+end -- if;
+GO
+
+-- 02/05/2023 Paul.  Add SmsMessages layout for React Client only. 
+-- delete from EDITVIEWS_FIELDS where EDIT_NAME = 'SmsMessages.EditView'
+if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'SmsMessages.EditView' and DELETED = 0) begin -- then
+	print 'EDITVIEWS_FIELDS SmsMessages.EditView';
+	exec dbo.spEDITVIEWS_InsertOnly            'SmsMessages.EditView'   , 'SmsMessages'      , 'vwSMS_MESSAGES_Edit'      , '15%', '35%', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'SmsMessages.EditView'   , -1, 'SmsMessages.LBL_FROM_NUMBER'             , 'MAILBOX_ID'                                              , 1, 1, 'OutboundSms'        , null, null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsChange      'SmsMessages.EditView'   , -1, 'PARENT_TYPE'                             , 'PARENT_ID'                                               , 0, 1, 'PARENT_NAME'        , 'return ParentPopup();', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'SmsMessages.EditView'   , -1, 'SmsMessages.LBL_TO_NUMBER'               , 'TO_NUMBER'                                               , 1, 1,   1, 90, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsButton      'SmsMessages.EditView'   , -1, '.LBL_SELECT_BUTTON_LABEL'                , 'TO_ADDRS,TO_ADDRS_IDS,TO_ADDRS_NAMES,TO_ADDRS_EMAILS'    , 'SmsAddressesPopup', -1;
+	exec dbo.spEDITVIEWS_FIELDS_InsControl     'SmsMessages.EditView'   , -1, 'SmsMessages.LBL_DATE_START'              , 'DATE_START'                                              , 0, 1, 'DateTimeEdit'          , null, null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'SmsMessages.EditView'   , -1, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'SmsMessages.EditView'   , -1, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'SmsMessages.EditView'   , -1, 'SmsMessages.LBL_NAME'                    , 'NAME'                                                    , 1, 1,   3, 90, 3;
+	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'SmsMessages.EditView'   , -1, '.LBL_ASSIGNED_TO'                        , 'ASSIGNED_USER_ID'                                        , 0, 1, 'ASSIGNED_TO_NAME'   , 'Users', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsModulePopup 'SmsMessages.EditView'   , -1, 'Teams.LBL_TEAM'                          , 'TEAM_ID'                                                 , 0, 1, 'TEAM_NAME'          , 'Teams', null;
 end -- if;
 GO
 

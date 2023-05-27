@@ -80,6 +80,11 @@ class Office365OAuth extends React.Component<IOffice365OAuthProps, IOffice365OAu
 				let ID: string = state.substr(13);
 				url += '/Administration/InboundEmail/Edit/' + ID;
 			}
+			// 12/26/2022 Paul.  Add support for Microsoft Teams. 
+			else if ( state == 'MicrosoftTeams' )
+			{
+				url += '/Administration/MicrosoftTeams/ConfigView';
+			}
 			else
 			{
 				url += '/Users/EditMyAccount';

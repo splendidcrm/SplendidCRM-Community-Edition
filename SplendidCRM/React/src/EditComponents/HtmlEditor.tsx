@@ -315,12 +315,66 @@ export default class HtmlEditor extends EditComponent<IEditComponentProps, IHtml
 				// 08/31/2012 Paul.  Add support for speech. 
 				// 04/28/2019 Paul.  Speech as been deprecated. 
 				// https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/frameworks/react.html
+				// 05/19/2023 Paul.  Custom toolbar as default excludes sourceEditing. 
 				let config: any =
 				{
 					language    : Security.USER_LANG().substring(0, 2),
 					extraPlugins: [ MinSizePlugin ],
 					minWidth    : FORMAT_COLUMNS + 'px',
 					minHeight   : FORMAT_ROWS    + 'px',
+					toolbar     :
+					{
+						items:
+						[
+							'sourceEditing',
+							'heading',
+							'|',
+							'bold',
+							'italic',
+							'strikethrough',
+							'underline',
+							'|',
+							'fontBackgroundColor',
+							'fontColor',
+							'fontSize',
+							'fontFamily',
+							'bulletedList',
+							'numberedList',
+							'|',
+							'outdent',
+							'indent',
+							'alignment',
+							'|',
+							'link',
+							'imageUpload',
+							'blockQuote',
+							'insertTable',
+							'mediaEmbed',
+							'undo',
+							'redo'
+						]
+					},
+					image:
+					{
+						toolbar:
+						[
+							'imageTextAlternative',
+							'toggleImageCaption',
+							'imageStyle:inline',
+							'imageStyle:block',
+							'imageStyle:side',
+							'linkImage'
+						]
+					},
+					table:
+					{
+						contentToolbar:
+						[
+							'tableColumn',
+							'tableRow',
+							'mergeTableCells'
+						]
+					}
 				};
 
 				// https://ckeditor.com/docs/ckeditor5/latest/api/module_core_editor_editorconfig-EditorConfig.html

@@ -1,6 +1,6 @@
 {
 	"name": "SplendidCRM",
-	"version": "14.6.8310",
+	"version": "14.7.8547",
 	"description": "SplendidCRM Mobile React Client",
 	"author": "Paul Rony",
 	"scripts": {
@@ -47,7 +47,7 @@
 		"mobx-react": "^6.3.0",
 		"mobx-react-router": "^4.0.4",
 		"moment": "2.29.1",
-		"node-sass": "4.12.0",
+		"node-sass": "6.0.0",
 		"postcss-loader": "6.2.1",
 		"react": "17.0.2",
 		"react-big-calendar": "0.27.0",

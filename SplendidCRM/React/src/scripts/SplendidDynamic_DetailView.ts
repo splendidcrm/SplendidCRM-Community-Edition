@@ -144,8 +144,10 @@ export default class SplendidDynamic_DetailView
 			let trChildren = [];
 			let tr = null;
 			let nColumn = 0;
-			let bEnableTeamManagement = Crm_Config.enable_team_management();
-			let bEnableDynamicTeams   = Crm_Config.enable_dynamic_teams();
+			let bEnableTeamManagement   : boolean = Crm_Config.enable_team_management();
+			let bEnableDynamicTeams     : boolean = Crm_Config.enable_dynamic_teams();
+			let bEnableDynamicAssignment: boolean = Crm_Config.enable_dynamic_assignment();
+			let bEnableTaxLineItems     : boolean = Crm_Config.ToBoolean('Orders.TaxLineItems');
 			// 02/26/2016 Paul.  Use values from C# NumberFormatInfo. 
 			let oNumberFormat = Security.NumberFormatInfo();
 			// 07/01/2018 Paul.  Value may have been erased. If so, replace with Erased Value message. 
@@ -176,7 +178,7 @@ export default class SplendidDynamic_DetailView
 				let URL_FIELD   : string = Sql.ToString (lay.URL_FIELD   );
 				//let URL_FORMAT  : string = Sql.ToString (lay.URL_FORMAT  );
 				//let URL_TARGET  : string = Sql.ToString (lay.URL_TARGET  );
-				//let LIST_NAME   : string = Sql.ToString (lay.LIST_NAME   );
+				let LIST_NAME   : string = Sql.ToString (lay.LIST_NAME   );
 				let COLSPAN     : number = Sql.ToInteger(lay.COLSPAN     );
 				let LABEL_WIDTH : string = Sql.ToString (lay.LABEL_WIDTH );
 				let FIELD_WIDTH : string = Sql.ToString (lay.FIELD_WIDTH );
@@ -230,10 +232,50 @@ export default class SplendidDynamic_DetailView
 					{
 						DATA_LABEL = '.LBL_TEAM_SET_NAME';
 						DATA_FIELD = 'TEAM_SET_NAME'     ;
+						// 10/08/2022 Paul.  We need to correct the layout object so that we don't need to correct the edit components. 
+						lay.DATA_LABEL = '.LBL_TEAM_SET_NAME';
+						lay.DATA_FIELD = 'TEAM_SET_NAME'     ;
+					}
+				}
+				// 10/08/2022 Paul.  Add ASSIGNED_SET_ID for Dynamic User Assignment.  Should have been added long ago to match ASP.NET code. 
+				else if ( DATA_FIELD == 'ASSIGNED_TO' || DATA_FIELD == 'ASSIGNED_TO_NAME' || DATA_FIELD == 'ASSIGNED_SET_NAME' )
+				{
+					// 12/17/2017 Paul.  Allow a layout to remain singular with DATA_FORMAT = 1. 
+					// 05/06/2018 Paul.  Change to single instead of 1 to prevent auto-postback. 
+					if ( bEnableDynamicAssignment && !(DATA_FORMAT.toLowerCase().indexOf('single') >= 0) )
+					{
+						DATA_LABEL = '.LBL_ASSIGNED_SET_NAME';
+						DATA_FIELD = 'ASSIGNED_SET_NAME';
+						// 10/08/2022 Paul.  We need to correct the layout object so that we don't need to correct the edit components. 
+						lay.DATA_LABEL = '.LBL_ASSIGNED_SET_NAME';
+						lay.DATA_FIELD = 'ASSIGNED_SET_NAME';
+					}
+					else if ( DATA_FIELD == 'ASSIGNED_SET_NAME' )
+					{
+						DATA_LABEL = '.LBL_ASSIGNED_TO';
+						DATA_FIELD = 'ASSIGNED_TO_NAME';
+						// 10/08/2022 Paul.  We need to correct the layout object so that we don't need to correct the edit components. 
+						lay.DATA_LABEL = '.LBL_ASSIGNED_TO';
+						lay.DATA_FIELD = 'ASSIGNED_TO_NAME';
+					}
+				}
+				// 10/08/2022 Paul.  Allow each product to have a default tax rate. 
+				else if ( DATA_FIELD == 'TAX_CLASS' )
+				{
+					if ( bEnableTaxLineItems )
+					{
+						// 08/28/2009 Paul.  If dynamic teams are enabled, then always use the set name. 
+						DATA_LABEL = 'ProductTemplates.LBL_TAXRATE_ID';
+						DATA_FIELD = 'TAXRATE_ID';
+						LIST_NAME  = 'TaxRates';
+						// 10/08/2022 Paul.  We need to correct the layout object so that we don't need to correct the edit components. 
+						lay.DATA_LABEL = 'ProductTemplates.LBL_TAXRATE_ID';
+						lay.DATA_FIELD = 'TAXRATE_ID';
+						lay.LIST_NAME  = 'TaxRates';
 					}
 				}
 				// 04/04/2010 Paul.  Hide the Exchange Folder field if disabled for this module or user. 
-				if ( DATA_FIELD == 'EXCHANGE_FOLDER' )
+				else if ( DATA_FIELD == 'EXCHANGE_FOLDER' )
 				{
 					// 01/09/2021 Paul.  We need to hide the EXCHANGE_FOLDER field if the user does not have Exchange enabled. 
 					if ( !Crm_Modules.ExchangeFolders(MODULE_NAME) || !Security.HasExchangeAlias() )
@@ -522,7 +564,8 @@ export default class SplendidDynamic_DetailView
 					let lnk = React.createElement(HyperLink, lnkProps);
 					tdFieldChildren.push(lnk);
 				}
-				else if ( FIELD_TYPE == 'ModueLink' )
+				// 01/10/2023 Paul.  Correct the field type name, it is not ModueLink. 
+				else if ( FIELD_TYPE == 'ModuleLink' )
 				{
 					let lnkProps: any = { baseId, key, row, layout: lay, ref, fieldDidMount, ERASED_FIELDS, bIsHidden };
 					let lnk = React.createElement(ModuleLink, lnkProps);
@@ -1012,7 +1055,8 @@ export default class SplendidDynamic_DetailView
 					let lnk = React.createElement(HyperLink, lnkProps);
 					tdFieldChildren.push(lnk);
 				}
-				else if ( FIELD_TYPE == 'ModueLink' )
+				// 01/10/2023 Paul.  Correct the field type name, it is not ModueLink. 
+				else if ( FIELD_TYPE == 'ModuleLink' )
 				{
 					let lnkProps: any = { baseId, key, row, layout: lay, ref, fieldDidMount, ERASED_FIELDS, bIsHidden };
 					let lnk = React.createElement(ModuleLink, lnkProps);
