@@ -11,7 +11,7 @@ The quickest way to get started is to request our installer. The installer will 
 3. Visual Studio 2017 or higher. Download [Visual Studio 2019](https://visualstudio.microsoft.com/downloads/ "Visual Studio 2019")
 4. SQL Server Express 2008 or higher. Download [SQL Server Express 2019](https://www.microsoft.com/en-us/download/details.aspx?id=101064 "SQL Server Express 2019")
 5. SQL Server Management Studio. Download [SQL Server Management Studio 18.10](https://docs.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms?view=sql-server-ver15 "SQL Server Management Studio 18.10")
-6. Node version 12.18 for Windows 64-bit. Download [Node 12.18](https://nodejs.org/en/download/ "Node 12.18")
+6. Node version 16.20 for Windows 64-bit. Download [Node 16.20](https://nodejs.org/en/download/ "Node 16.20")
 7. Yarn version 1.22. Download using npm: "npm install --global yarn"
 
 ## Using the Installer
@@ -57,7 +57,7 @@ Building should be as simple as loading the SplendidCRM7_VS2017.csproj project f
 24. WebGrease.dll
 
 ### React Build
-We recommend that you use yarn to bulid the React files. We are currently using version 1.22, npm version 6.14 adn node 12.18. These versions can be important as newer versions can have build failures. The first time you build, you will need to have yarn install all packages.
+We recommend that you use yarn to bulid the React files. We are currently using version 1.22, npm version 6.14 adn node 16.20. These versions can be important as newer versions can have build failures. The first time you build, you will need to have yarn install all packages.
 
 > yarn install
 
