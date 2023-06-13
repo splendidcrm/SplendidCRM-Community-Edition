@@ -23,6 +23,7 @@ GO
 -- 04/25/2011 Paul.  We've stopped supporting SQL 2000, so we can use varchar(max). 
 -- This also fixes a problem for a customer with 100 custom fields. 
 -- 12/21/2011 Paul.  Clean Contracts table. 
+-- 06/11/2023 Paul.  Must handle USERS_CSTM_AUDIT separately. 
 Create Procedure dbo.spSqlPurgeDemoData
 as
   begin
@@ -223,6 +224,9 @@ as
 	while @@FETCH_STATUS = 0 begin -- do
 		if right(@TABLE_NAME, 5) = '_CSTM' begin -- then
 			set @Command = 'delete from ' + @TABLE_NAME + space(35 - len(@TABLE_NAME)) + ' where ID_C in (select ID from ' + substring(@TABLE_NAME, 1, len(@TABLE_NAME) - 5) + ' where CREATED_BY = ''00000000-0000-0000-0000-000000000003'');';
+		-- 06/11/2023 Paul.  Must handle USERS_CSTM_AUDIT separately. 
+		end else if right(@TABLE_NAME, 11) = '_CSTM_AUDIT' begin -- then
+			set @Command = 'delete from ' + @TABLE_NAME + space(35 - len(@TABLE_NAME)) + ' where ID_C in (select ID from ' + substring(@TABLE_NAME, 1, len(@TABLE_NAME) - 11) + ' where CREATED_BY = ''00000000-0000-0000-0000-000000000003'');';
 		end else begin
 			set @Command = 'delete from ' + @TABLE_NAME + space(35 - len(@TABLE_NAME)) + ' where CREATED_BY = ''00000000-0000-0000-0000-000000000003'';';
 		end -- if;

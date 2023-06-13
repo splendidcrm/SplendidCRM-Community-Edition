@@ -642,7 +642,7 @@ class SugarTopNav_Desktop extends React.Component<ITopNavProps, ITopNavState>
 						</React.Fragment>
 						: null
 						}
-						{ bIsAuthenticated && (Security.IS_ADMIN() || Security.IS_ADMIN_DELEGATE())
+						{ bIsAuthenticated && (Security.IS_ADMIN() || Security.IS_ADMIN_DELEGATE()) && !Crm_Config.ToBoolean('disable_admin_classic')
 						? <React.Fragment>
 							&nbsp;|&nbsp;
 							<a id="lnkAdmin"     className="myAreaLink" href={ Credentials.RemoteServer + '/' + 'Administration' } onClick={ (e) => { e.preventDefault(); this._onAdminClassicPage(); } }>{ L10n.Term('.LBL_ADMIN_CLASSIC') }</a>

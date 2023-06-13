@@ -540,6 +540,8 @@ exec dbo.spSYSTEM_REST_TABLES_InsertOnly null, 'vwFULLTEXT_INDEXES'             
 exec dbo.spSYSTEM_REST_TABLES_InsertOnly null, 'vwFULLTEXT_CATALOGS'               , 'vwFULLTEXT_CATALOGS'             , 'FullTextSearch'           , null                       , 0, null, 1, 0, null, 0, null;
 exec dbo.spSYSTEM_REST_TABLES_InsertOnly null, 'spFULLTEXT_ConfigCatalog'          , 'spFULLTEXT_ConfigCatalog'        , 'FullTextSearch'           , null                       , 0, null, 1, 0, null, 0, null;
 exec dbo.spSYSTEM_REST_TABLES_InsertOnly null, 'spSqlBackupDatabase'               , 'spSqlBackupDatabase'             , 'Administration'           , null                       , 0, null, 1, 0, null, 0, null;
+-- 06/11/2023 Paul.  Add support for Purge Demo Data. 
+exec dbo.spSYSTEM_REST_TABLES_InsertOnly null, 'spSqlPurgeDemoData'                , 'spSqlPurgeDemoData'              , 'Administration'           , null                       , 0, null, 1, 0, null, 0, null;
 exec dbo.spSYSTEM_REST_TABLES_InsertOnly null, 'spSCHEDULERS_UpdateStatus'         , 'spSCHEDULERS_UpdateStatus'       , 'Schedulers'               , null                       , 0, null, 1, 0, null, 0, null;
 GO
 

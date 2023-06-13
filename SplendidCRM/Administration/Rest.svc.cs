@@ -2759,7 +2759,8 @@ namespace SplendidCRM.Administration
 						case "CloudView":
 						{
 							AdminModule[] arrCloudView = new AdminModule[]
-							{ new AdminModule(L10n, "Facebook"              , "Facebook.LBL_MANAGE_FACEBOOK_TITLE"               , "Facebook.LBL_MANAGE_FACEBOOK"               , "ConfigView"           )
+							// 06/11/2023 Paul.  facebook.gif is all lowercase.  Fix for Docker/Linux. 
+							{ new AdminModule(L10n, "Facebook"              , "Facebook.LBL_MANAGE_FACEBOOK_TITLE"               , "Facebook.LBL_MANAGE_FACEBOOK"               , "ConfigView"           , "facebook.gif"       )
 							, new AdminModule(L10n, "Google"                , "Google.LBL_MANAGE_GOOGLE_TITLE"                   , "Google.LBL_MANAGE_GOOGLE"                   , "ConfigView"           )
 							, new AdminModule(L10n, "LinkedIn"              , "LinkedIn.LBL_MANAGE_LINKEDIN_TITLE"               , "LinkedIn.LBL_MANAGE_LINKEDIN"               , "ConfigView"           )
 							, new AdminModule(L10n, "Twitter"               , "Twitter.LBL_MANAGE_TWITTER_TITLE"                 , "Twitter.LBL_MANAGE_TWITTER"                 , "ConfigView"           )

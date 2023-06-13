@@ -88,9 +88,16 @@ export function Application_ResetReactState()
 export async function Application_GetReactLoginState(): Promise<any>
 {
 	//let ar dtStart = new Date();
-	//console.log((new Date()).toISOString() + ' ' + 'Application_GetReactLoginState', Credentials.RemoteServer);
 	let res = await SystemCacheRequestAll('GetReactLoginState');
 	let json = await GetSplendidResult(res);
+	//console.log((new Date()).toISOString() + ' ' + 'Application_GetReactLoginState', json);
+	// 06/03/2023 Paul.  A Docker app can initialize the database, so watch for it when attempting to login. 
+	if ( typeof(json) === 'string' && json.indexOf('The SplendidCRM database is being built.') > 0 )
+	{
+		console.log((new Date()).toISOString() + ' ' + 'Application_GetReactLoginState', 'The SplendidCRM database is being built.');
+		window.location.href = Credentials.RemoteServer;
+		return {};
+	}
 	//let dtEnd = new Date();
 	//let nSeconds = Math.round((dtEnd.getTime() - dtStart.getTime()) / 1000);
 	//console.log((new Date()).toISOString() + ' ' + 'Application_GetReactLoginState', json.d);

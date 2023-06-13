@@ -480,6 +480,17 @@ if not exists(select * from GRIDVIEWS_COLUMNS where GRID_NAME = 'Terminology.Pop
 end -- if;
 GO
 
+-- 02/05/2023 Paul.  The React Client needs an Sms Popup list for SmsMessages.EditView. 
+if not exists(select * from GRIDVIEWS_COLUMNS where GRID_NAME = 'Emails.PopupSmsNumbers' and DELETED = 0) begin -- then
+	print 'GRIDVIEWS_COLUMNS SmsMessages.PopupSmsNumbers';
+	exec dbo.spGRIDVIEWS_InsertOnly           'SmsMessages.PopupSmsNumbers', 'Contacts', 'vwCONTACTS_List';
+	exec dbo.spGRIDVIEWS_COLUMNS_InsHyperLink 'SmsMessages.PopupSmsNumbers', 1, 'Contacts.LBL_LIST_NAME'                   , 'NAME'            , 'NAME'            , '35%', 'listViewTdLinkS1', 'ID NAME', 'SelectContact(''{0}'', ''{1}'');', null, 'Contacts', 'ASSIGNED_USER_ID';
+	exec dbo.spGRIDVIEWS_COLUMNS_InsBound     'SmsMessages.PopupSmsNumbers', 2, 'Contacts.LBL_LIST_PHONE_MOBILE'           , 'PHONE_MOBILE'    , 'PHONE_MOBILE'    , '25%';
+	exec dbo.spGRIDVIEWS_COLUMNS_InsBound     'SmsMessages.PopupSmsNumbers', 4, 'Contacts.LBL_LIST_ACCOUNT_NAME'           , 'ACCOUNT_NAME'    , 'ACCOUNT_NAME'    , '25%';
+	exec dbo.spGRIDVIEWS_COLUMNS_InsBoundList 'SmsMessages.PopupSmsNumbers', 5, 'SmsMessages.LBL_LIST_TYPE'                , 'MODULE_TYPE'     , 'MODULE_TYPE'     , '15%', 'moduleListSingular';
+end -- if;
+GO
+
 
 set nocount off;
 GO

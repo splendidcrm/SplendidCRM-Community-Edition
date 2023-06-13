@@ -36,6 +36,8 @@ interface IAdministrationViewState
 {
 	ADMIN_MENU  : any;
 	stateKey    : number;
+	busy        : boolean;
+	// 06/11/2023 Paul.  Show spinner when busy. 
 	error       : any;
 	recompileKey: string;
 }
@@ -51,6 +53,7 @@ class AdministrationView extends React.Component<IAdministrationViewProps, IAdmi
 		{
 			ADMIN_MENU  : null,
 			stateKey    : 0,
+			busy       : false,
 			error       : null,
 			recompileKey: 'recompile',
 		};
@@ -167,6 +170,24 @@ class AdministrationView extends React.Component<IAdministrationViewProps, IAdmi
 		this.props.history.push('/Administration/_devtools/Precompile');
 	}
 
+	// 06/11/2023 Paul.  Add Purge Demo Data. 
+	private onPurgeDemoData = async () =>
+	{
+		const { stateKey } = this.state;
+		try
+		{
+			let row: any = {};
+			this.setState({ busy: true });
+			await AdminProcedure('spSqlPurgeDemoData', row);
+			this.setState( {stateKey: stateKey + 1, error: null, busy: false} );
+		}
+		catch(error)
+		{
+			console.error((new Date()).toISOString() + ' ' + this.constructor.name + '.onPurgeDemoData', error);
+			this.setState({ error, busy: false });
+		}
+	}
+
 	private toggleReactClient =  async () =>
 	{
 		const { stateKey } = this.state;
@@ -214,6 +235,16 @@ class AdministrationView extends React.Component<IAdministrationViewProps, IAdmi
 						key={ MODULE_NAME + '_Actions_' + stateKey} 
 						onClick={ (e) => { e.preventDefault(); return this.toggleConfigFlag('show_sql'); } } 
 						className='tabDetailViewDL2Link'>{ Crm_Config.ToBoolean('show_sql') ? L10n.Term('Administration.LBL_HIDE_SQL') : L10n.Term('Administration.LBL_SHOW_SQL') }</a>
+					&nbsp;)
+				</div>
+				);
+			}
+			// 06/11/2023 Paul.  Add Purge Demo Data. 
+			else if ( ADMIN_ROUTE == 'BackupDatabase' )
+			{
+				return (<div style={ {textAlign: 'center'} }>
+					(&nbsp;
+					<a href='#' onClick={ (e) => { e.preventDefault(); return this.onPurgeDemoData(); } }  className='tabDetailViewDL2Link'>{ L10n.Term('Administration.LBL_PURGE_DEMO') }</a>
 					&nbsp;)
 				</div>
 				);
@@ -533,14 +564,21 @@ class AdministrationView extends React.Component<IAdministrationViewProps, IAdmi
 
 	public render()
 	{
-		const { ADMIN_MENU, error, recompileKey } = this.state;
+		const { ADMIN_MENU, busy, error, recompileKey } = this.state;
 		// 05/04/2019 Paul.  Reference obserable IsInitialized so that terminology update will cause refresh. 
+		// 06/11/2023 Paul.  Show spinner when busy. 
 		if ( SplendidCache.IsInitialized && SplendidCache.AdminMenu )
 		{
 			return (
 			<div id="ctlAdministration">
 				<h2>{ L10n.Term('Administration.LBL_MODULE_TITLE') }</h2>
 				<ErrorComponent error={error} />
+				{ busy
+				? <div id={ this.constructor.name + '_spinner' } style={ {textAlign: 'center'} }>
+					<FontAwesomeIcon icon="spinner" spin={ true } size="5x" />
+				</div>
+				: null
+				}
 				{ ADMIN_MENU
 				? ADMIN_MENU.map(adminPanel => (
 					<div>

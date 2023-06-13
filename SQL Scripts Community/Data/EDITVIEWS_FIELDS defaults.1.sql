@@ -3136,6 +3136,7 @@ end -- if;
 GO
 
 -- 02/05/2023 Paul.  Add SmsMessages layout for React Client only. 
+-- 06/10/2023 Paul.  Select should use TO_NUMBER. 
 -- delete from EDITVIEWS_FIELDS where EDIT_NAME = 'SmsMessages.EditView'
 if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'SmsMessages.EditView' and DELETED = 0) begin -- then
 	print 'EDITVIEWS_FIELDS SmsMessages.EditView';
@@ -3143,7 +3144,7 @@ if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'SmsMessages.Edit
 	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'SmsMessages.EditView'   , -1, 'SmsMessages.LBL_FROM_NUMBER'             , 'MAILBOX_ID'                                              , 1, 1, 'OutboundSms'        , null, null, null;
 	exec dbo.spEDITVIEWS_FIELDS_InsChange      'SmsMessages.EditView'   , -1, 'PARENT_TYPE'                             , 'PARENT_ID'                                               , 0, 1, 'PARENT_NAME'        , 'return ParentPopup();', null;
 	exec dbo.spEDITVIEWS_FIELDS_InsMultiLine   'SmsMessages.EditView'   , -1, 'SmsMessages.LBL_TO_NUMBER'               , 'TO_NUMBER'                                               , 1, 1,   1, 90, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsButton      'SmsMessages.EditView'   , -1, '.LBL_SELECT_BUTTON_LABEL'                , 'TO_ADDRS,TO_ADDRS_IDS,TO_ADDRS_NAMES,TO_ADDRS_EMAILS'    , 'SmsAddressesPopup', -1;
+	exec dbo.spEDITVIEWS_FIELDS_InsButton      'SmsMessages.EditView'   , -1, '.LBL_SELECT_BUTTON_LABEL'                , 'TO_NUMBER,TO_NUMBER_ID'                                  , 'SmsAddressesPopup', -1;
 	exec dbo.spEDITVIEWS_FIELDS_InsControl     'SmsMessages.EditView'   , -1, 'SmsMessages.LBL_DATE_START'              , 'DATE_START'                                              , 0, 1, 'DateTimeEdit'          , null, null, null;
 	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'SmsMessages.EditView'   , -1, null;
 	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'SmsMessages.EditView'   , -1, null;
