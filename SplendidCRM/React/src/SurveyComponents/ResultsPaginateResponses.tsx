@@ -266,7 +266,8 @@ class ResultsPaginateResponses extends React.Component<IResultsPaginateResponses
 		let MODULE_NAME     : string = 'SurveyResults';
 		let SURVEY_RESULT_ID: string = Sql.ToString(row['SURVEY_RESULT_ID']);
 		let DISPLAY_NAME    : string = L10n.Term('Surveys.LBL_DETAILS');
-		let URL             : string = Credentials.RemoteServer + 'React/' + MODULE_NAME + '/View/' + SURVEY_RESULT_ID;
+		// 07/08/2023 Paul.  ASP.NET Core will not have /React in the base. 
+		let URL             : string = Credentials.RemoteServer + Credentials.ReactBase + MODULE_NAME + '/View/' + SURVEY_RESULT_ID;
 		return (
 			<a href={ URL } onClick={ (e) => { e.preventDefault(); history.push(`/Reset/${MODULE_NAME}/View/${SURVEY_RESULT_ID}`); } } style={ {cursor: 'pointer'} }>{ DISPLAY_NAME }</a>
 		);

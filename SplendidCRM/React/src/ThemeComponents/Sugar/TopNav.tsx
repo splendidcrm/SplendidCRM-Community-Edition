@@ -675,8 +675,9 @@ class SugarTopNav extends React.Component<ITopNavProps, ITopNavState>
 				return (<div id='pnlTabMenuMore' key='pnlTabMenuMore' style={ {position: 'absolute', left, top, zIndex: 1000} } onMouseOut={ (e) => this.moduleTabMouseOut(e, MODULE_NAME) } ref={ this.pnlTabHover }>
 					{
 						// 06/30/2021 Paul.  Provide the URL to the module so that right-click-new-tab would navigate to the correct location. 
+						// 07/08/2023 Paul.  ASP.NET Core will not have /React in the base. 
 						this.tabsSecondary.map((tabMenu) => (
-							<a href={ Credentials.RemoteServer + 'React/' + tabMenu.MODULE_NAME } className='menuItem' style={ {minWidth: '10rem'} } onClick={ (e) => { e.preventDefault(); this._onModuleClick(tabMenu.MODULE_NAME); } }>{ L10n.Term(tabMenu.DISPLAY_NAME) }</a>
+							<a href={ Credentials.RemoteServer + Credentials.ReactBase + tabMenu.MODULE_NAME } className='menuItem' style={ {minWidth: '10rem'} } onClick={ (e) => { e.preventDefault(); this._onModuleClick(tabMenu.MODULE_NAME); } }>{ L10n.Term(tabMenu.DISPLAY_NAME) }</a>
 						))
 					}
 				</div>);
@@ -851,21 +852,21 @@ class SugarTopNav extends React.Component<ITopNavProps, ITopNavState>
 						{ bIsAuthenticated
 						? <React.Fragment>
 							&nbsp;|&nbsp;
-							<a id='lnkMyAccount' className='myAreaLink' href={ Credentials.RemoteServer + 'React/' + 'Users/MyAccount' } onClick={ (e) => { e.preventDefault(); this._onUserProfile(); } }>{ L10n.Term('.LBL_MY_ACCOUNT') }</a>
+							<a id='lnkMyAccount' className='myAreaLink' href={ Credentials.RemoteServer + Credentials.ReactBase + 'Users/MyAccount' } onClick={ (e) => { e.preventDefault(); this._onUserProfile(); } }>{ L10n.Term('.LBL_MY_ACCOUNT') }</a>
 						</React.Fragment>
 						: null
 						}
 						{ bIsAuthenticated && SplendidCache.GetUserAccess('Employees', 'access') >= 0
 						? <React.Fragment>
 							&nbsp;|&nbsp;
-							<a id='lnkEmployees' className='myAreaLink' href={ Credentials.RemoteServer + 'React/' + 'Employees' } onClick={ (e) => { e.preventDefault(); this._onEmployees();   } }>{ L10n.Term('.LBL_EMPLOYEES')  }</a>
+							<a id='lnkEmployees' className='myAreaLink' href={ Credentials.RemoteServer + Credentials.ReactBase + 'Employees' } onClick={ (e) => { e.preventDefault(); this._onEmployees();   } }>{ L10n.Term('.LBL_EMPLOYEES')  }</a>
 						</React.Fragment>
 						: null
 						}
 						{ bIsAuthenticated && (Security.IS_ADMIN() || Security.IS_ADMIN_DELEGATE())
 						? <React.Fragment>
 							&nbsp;|&nbsp;
-							<a id='lnkAdmin'     className='myAreaLink' href={ Credentials.RemoteServer + 'React/' + 'Administration' } onClick={ (e) => { e.preventDefault(); this._onAdminPage();   } }>{ L10n.Term('.LBL_ADMIN')      }</a>
+							<a id='lnkAdmin'     className='myAreaLink' href={ Credentials.RemoteServer + Credentials.ReactBase + 'Administration' } onClick={ (e) => { e.preventDefault(); this._onAdminPage();   } }>{ L10n.Term('.LBL_ADMIN')      }</a>
 						</React.Fragment>
 						: null
 						}
@@ -879,12 +880,12 @@ class SugarTopNav extends React.Component<ITopNavProps, ITopNavState>
 						{ bIsAuthenticated && !Crm_Config.ToBoolean('hide_training') 
 						? <React.Fragment>
 							&nbsp;|&nbsp;
-							<a id='lnkTraining'  className='myAreaLink' href={ Credentials.RemoteServer + 'React/' + 'Home/TrainingPortal' } onClick={ (e) => { e.preventDefault(); this._onTrainingPortal(); } }>{ L10n.Term('.LBL_TRAINING') }</a>
+							<a id='lnkTraining'  className='myAreaLink' href={ Credentials.RemoteServer + Credentials.ReactBase + 'Home/TrainingPortal' } onClick={ (e) => { e.preventDefault(); this._onTrainingPortal(); } }>{ L10n.Term('.LBL_TRAINING') }</a>
 						</React.Fragment>
 						: null
 						}
 						&nbsp;|&nbsp;
-						<a id='lnkAbout'     className='myAreaLink' href={ Credentials.RemoteServer + 'React/' + 'Home/About' } onClick={ (e) => { e.preventDefault(); this._onAbout();       } }>{ L10n.Term('.LNK_ABOUT')      }</a>
+						<a id='lnkAbout'     className='myAreaLink' href={ Credentials.RemoteServer + Credentials.ReactBase + 'Home/About' } onClick={ (e) => { e.preventDefault(); this._onAbout();       } }>{ L10n.Term('.LNK_ABOUT')      }</a>
 						<br />
 					</div>
 				</td>
@@ -939,7 +940,7 @@ class SugarTopNav extends React.Component<ITopNavProps, ITopNavState>
 							<tr>
 								<td className={ (tabMenu.MODULE_NAME == activeModule ? 'current' : 'other') + 'TabLeft' }><img src={ this.themeURL + 'images/blank.gif' } style={ {borderWidth: '0px', height: '25px', width: '5px'} } /></td>
 								<td className={ (tabMenu.MODULE_NAME == activeModule ? 'current' : 'other') + 'Tab' } style={ {whiteSpace: 'nowrap', verticalAlign: 'middle'} }>
-									<a href={ Credentials.RemoteServer + 'React/' + tabMenu.MODULE_NAME } onClick={ (e) => { e.preventDefault(); this._onModuleClick(tabMenu.MODULE_NAME); } } className={ (tabMenu.MODULE_NAME == activeModule ? 'current' : 'other') + 'TabLink' }>{ L10n.Term(tabMenu.DISPLAY_NAME) }</a>
+									<a href={ Credentials.RemoteServer + Credentials.ReactBase + tabMenu.MODULE_NAME } onClick={ (e) => { e.preventDefault(); this._onModuleClick(tabMenu.MODULE_NAME); } } className={ (tabMenu.MODULE_NAME == activeModule ? 'current' : 'other') + 'TabLink' }>{ L10n.Term(tabMenu.DISPLAY_NAME) }</a>
 								</td>
 								<td className={ (tabMenu.MODULE_NAME == activeModule ? 'current' : 'other') + 'TabRight' }><img src={ this.themeURL + 'images/blank.gif' } style={ {borderWidth: '0px', height: '25px', width: '5px'} } /></td>
 							</tr>

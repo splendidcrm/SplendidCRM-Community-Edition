@@ -28,6 +28,7 @@ import { Admin_GetReactState }                      from '../../../scripts/Appli
 import { AuthenticatedMethod, LoginRedirect }       from '../../../scripts/Login'                       ;
 import { EditView_LoadItem, EditView_LoadLayout }   from '../../../scripts/EditView'                    ;
 import { CreateSplendidRequest, GetSplendidResult } from '../../../scripts/SplendidRequest'             ;
+import { AdminProcedure }                           from '../../../scripts/ModuleUpdate'                ;
 // 4. Components and Views. 
 import ErrorComponent                               from '../../../components/ErrorComponent'           ;
 import DumpSQL                                      from '../../../components/DumpSQL'                  ;
@@ -381,6 +382,14 @@ export default class ACLRolesEditView extends React.Component<IAdminEditViewProp
 							let res = await CreateSplendidRequest('Administration/Rest.svc/UpdateAclAccess', 'POST', 'application/octet-stream', sBody);
 							let json = await GetSplendidResult(res);
 							row.ID = json.d;
+							// 07/16/2023 Paul.  Also duplicte Field Level Security settings. 
+							if ( isDuplicate )
+							{
+								let dup: any = {};
+								dup.ID           = row.ID;
+								dup.DUPLICATE_ID = this.props.DuplicateID;
+								await AdminProcedure('spACL_FIELDS_Duplicate', dup);
+							}
 							history.push(`/Reset/Administration/${MODULE_NAME}/View/` + row.ID);
 						}
 						catch(error)

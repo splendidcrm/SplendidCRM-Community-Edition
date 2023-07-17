@@ -100,7 +100,7 @@ export class SignalRStore
 
 	public Startup()
 	{
-		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.Startup', this.history);
+		console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.Startup', this.history);
 		
 		let sRemoteServer                 : string = Credentials.RemoteServer                  ;
 		let sUSER_ID                      : string = Credentials.sUSER_ID                      ;

@@ -569,8 +569,9 @@ class SugarTopNav_Desktop extends React.Component<ITopNavProps, ITopNavState>
 				</table>
 			));
 			// 06/30/2021 Paul.  Provide the URL to the module so that right-click-new-tab would navigate to the correct location. 
+			// 07/08/2023 Paul.  ASP.NET Core will not have /React in the base. 
 			moreItems = tabsSecondary.map((tabMenu) => (
-				<a className="menuItem" href={ Credentials.RemoteServer + 'React/' + tabMenu.MODULE_NAME } style={ {minWidth: '10rem', fontWeight: 'normal'} } onClick={ (e) => { e.preventDefault(); this._onModuleClick(tabMenu.MODULE_NAME); } }>{ L10n.Term(tabMenu.DISPLAY_NAME) }</a>
+				<a className="menuItem" href={ Credentials.RemoteServer + Credentials.ReactBase + tabMenu.MODULE_NAME } style={ {minWidth: '10rem', fontWeight: 'normal'} } onClick={ (e) => { e.preventDefault(); this._onModuleClick(tabMenu.MODULE_NAME); } }>{ L10n.Term(tabMenu.DISPLAY_NAME) }</a>
 			));
 			lastViewed = this.LastViewed(activeModule).map((item) => 
 			(
@@ -624,21 +625,21 @@ class SugarTopNav_Desktop extends React.Component<ITopNavProps, ITopNavState>
 						{ bIsAuthenticated
 						? <React.Fragment>
 							&nbsp;|&nbsp;
-							<a id="lnkMyAccount" className="myAreaLink" href={ Credentials.RemoteServer + 'React/' + 'Users/MyAccount' } onClick={ (e) => { e.preventDefault(); this._onUserProfile(); } }>{ L10n.Term('.LBL_MY_ACCOUNT') }</a>
+							<a id="lnkMyAccount" className="myAreaLink" href={ Credentials.RemoteServer + Credentials.ReactBase + 'Users/MyAccount' } onClick={ (e) => { e.preventDefault(); this._onUserProfile(); } }>{ L10n.Term('.LBL_MY_ACCOUNT') }</a>
 						</React.Fragment>
 						: null
 						}
 						{ bIsAuthenticated && SplendidCache.GetUserAccess("Employees", "access") >= 0
 						? <React.Fragment>
 							&nbsp;|&nbsp;
-							<a id="lnkEmployees" className="myAreaLink" href={ Credentials.RemoteServer + 'React/' + 'Employees' } onClick={ (e) => { e.preventDefault(); this._onEmployees();   } }>{ L10n.Term('.LBL_EMPLOYEES')  }</a>
+							<a id="lnkEmployees" className="myAreaLink" href={ Credentials.RemoteServer + Credentials.ReactBase + 'Employees' } onClick={ (e) => { e.preventDefault(); this._onEmployees();   } }>{ L10n.Term('.LBL_EMPLOYEES')  }</a>
 						</React.Fragment>
 						: null
 						}
 						{ bIsAuthenticated && (Security.IS_ADMIN() || Security.IS_ADMIN_DELEGATE())
 						? <React.Fragment>
 							&nbsp;|&nbsp;
-							<a id="lnkAdmin"     className="myAreaLink" href={ Credentials.RemoteServer + 'React/' + 'Administration' } onClick={ (e) => { e.preventDefault(); this._onAdminPage();   } }>{ L10n.Term('.LBL_ADMIN')      }</a>
+							<a id="lnkAdmin"     className="myAreaLink" href={ Credentials.RemoteServer + Credentials.ReactBase + 'Administration' } onClick={ (e) => { e.preventDefault(); this._onAdminPage();   } }>{ L10n.Term('.LBL_ADMIN')      }</a>
 						</React.Fragment>
 						: null
 						}
@@ -652,12 +653,12 @@ class SugarTopNav_Desktop extends React.Component<ITopNavProps, ITopNavState>
 						{ bIsAuthenticated && !Crm_Config.ToBoolean('hide_training') 
 						? <React.Fragment>
 							&nbsp;|&nbsp;
-							<a id="lnkTraining"  className="myAreaLink" href={ Credentials.RemoteServer + 'React/' + 'Home/TrainingPortal' } onClick={ (e) => { e.preventDefault(); this._onTrainingPortal(); } }>{ L10n.Term('.LBL_TRAINING') }</a>
+							<a id="lnkTraining"  className="myAreaLink" href={ Credentials.RemoteServer + Credentials.ReactBase + 'Home/TrainingPortal' } onClick={ (e) => { e.preventDefault(); this._onTrainingPortal(); } }>{ L10n.Term('.LBL_TRAINING') }</a>
 						</React.Fragment>
 						: null
 						}
 						&nbsp;|&nbsp;
-						<a id="lnkAbout"     className="myAreaLink" href={ Credentials.RemoteServer + 'React/' + 'Home/About' } onClick={ (e) => { e.preventDefault(); this._onAbout();       } }>{ L10n.Term('.LNK_ABOUT')      }</a>
+						<a id="lnkAbout"     className="myAreaLink" href={ Credentials.RemoteServer + Credentials.ReactBase + 'Home/About' } onClick={ (e) => { e.preventDefault(); this._onAbout();       } }>{ L10n.Term('.LNK_ABOUT')      }</a>
 						<br />
 					</div>
 					{ unifiedSearchItems > 0

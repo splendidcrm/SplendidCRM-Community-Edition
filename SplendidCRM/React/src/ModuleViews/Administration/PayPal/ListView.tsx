@@ -229,7 +229,7 @@ class PayPalListView extends React.Component<IAdminListViewProps, IAdminListView
 	// 09/26/2020 Paul.  The SearchView needs to be able to specify a sort criteria. 
 	private _onSearchViewCallback = (sFILTER: string, row: any, oSORT?: any) =>
 	{
-		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onSearchViewCallback');
+		console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onSearchViewCallback');
 		// 07/13/2019 Paul.  Make Search public so that it can be called from a refrence. 
 		if ( this.splendidGrid.current != null )
 		{
@@ -252,6 +252,8 @@ class PayPalListView extends React.Component<IAdminListViewProps, IAdminListView
 		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onGridLayoutLoaded');
 		// 05/08/2019 Paul.  Once we have the Search callback, we can tell the SearchView to submit and it will get to the GridView. 
 		// 07/13/2019 Paul.  Call SubmitSearch directly. 
+		// 07/15/2023 Paul.  Dont' need to search twice. 
+		/*
 		if ( this.searchView.current != null )
 		{
 			this.searchView.current.SubmitSearch();
@@ -260,6 +262,7 @@ class PayPalListView extends React.Component<IAdminListViewProps, IAdminListView
 		{
 			this.splendidGrid.current.Search(null, null);
 		}
+		*/
 	}
 
 	private _onSelectionChanged = (value: any) =>
@@ -378,7 +381,7 @@ class PayPalListView extends React.Component<IAdminListViewProps, IAdminListView
 
 	private Load = async (sMODULE_NAME, sSORT_FIELD, sSORT_DIRECTION, sSELECT, sFILTER, rowSEARCH_VALUES, nTOP, nSKIP, bADMIN_MODE?, archiveView?) =>
 	{
-		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.Load', rowSEARCH_VALUES);
+		console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.Load', rowSEARCH_VALUES);
 		if (sSORT_FIELD === undefined || sSORT_FIELD == null || sSORT_FIELD == '')
 		{
 			sSORT_FIELD     = '';
@@ -389,7 +392,8 @@ class PayPalListView extends React.Component<IAdminListViewProps, IAdminListView
 		json.d.__total = 0;
 		json.d.__sql   = null;
 		json.d.results = [];
-		if ( Crm_Config.ToBoolean(MODULE_NAME + '.Enabled') )
+		// 07/15/2023 Paul.  PayPal does not have an enabled flag. ClientID and ClientSecret are used to determine if enabled. 
+		//if ( Crm_Config.ToBoolean(MODULE_NAME + '.Enabled') )
 		{
 			let obj = new Object();
 			obj['$top'         ] = nTOP            ;
@@ -404,6 +408,11 @@ class PayPalListView extends React.Component<IAdminListViewProps, IAdminListView
 			json = await GetSplendidResult(res);
 			json.d.__total = json.__total;
 			json.d.__sql = json.__sql;
+			for ( let i: number = 0; i < json.d.results.length; i++ )
+			{
+				let row: any = json.d.results[i];
+				row.ID = row['TRANSACTION_ID'];
+			}
 		}
 		return (json.d);
 	}
@@ -474,6 +483,7 @@ class PayPalListView extends React.Component<IAdminListViewProps, IAdminListView
 					AutoSaveSearch={ false }
 					deferLoad={ true }
 					enableExportHeader={ true }
+					disableEdit={ true }
 					enableSelection={ enableMassUpdate || SplendidCache.AdminUserAccess(MODULE_NAME, 'export', this.constructor.name + '.render') >= 0 }
 					cbCustomLoad={ this.Load }
 					onLayoutLoaded={ this._onGridLayoutLoaded }

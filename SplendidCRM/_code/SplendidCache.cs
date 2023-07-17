@@ -2892,6 +2892,8 @@ namespace SplendidCRM
 											string sNAME = Sql.ToString(row["NAME"]).ToLower();
 											// 05/17/2019 Paul.  Exclude any possible password or key. 
 											// 07/13/2020 Paul.  Exchange.ClientID and GoogleApps.ClientID are needed by the user profile editor. 
+											// 06/19/2023 Paul.  Twilio.LogInboundMessages looks like "login". 
+											// 06/19/2023 Paul.  Asterisk.LogIncomingMissedCalls like "login". 
 											if ( !(sNAME.Contains("password"    )
 												|| sNAME.Contains("smtppass"    )
 												|| sNAME.Contains("smtpuser"    )
@@ -2908,7 +2910,7 @@ namespace SplendidCRM
 												|| sNAME.Contains("creditcard"  )
 												|| sNAME.Contains("inboundemail")
 												|| sNAME.Contains("accountsid"  )
-												) )
+												) || sNAME.Contains("loginboundmessages") || sNAME.Contains("logincomingmissedcalls") )
 											{
 												sNAME  = Sql.ToString(row["NAME" ]);
 												string sVALUE = Sql.ToString(row["VALUE"]);

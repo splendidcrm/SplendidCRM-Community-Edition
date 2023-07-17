@@ -64,6 +64,8 @@ exec dbo.spTERMINOLOGY_InsertOnly N'LBL_LIST_FORM_TITLE'                        
 
 -- 09/26/2017 Paul.  Add Archive access right. 
 exec dbo.spTERMINOLOGY_InsertOnly N'LNK_ARCHIVED_SMS_MESSAGES'                     , N'en-US', N'SmsMessages', null, null, N'Archived Text Messages';
+-- 06/18/2023 Paul.  Add missing term. 
+exec dbo.spTERMINOLOGY_InsertOnly N'LBL_ADD_FILE'                                  , N'en-US', N'SmsMessages', null, null, N'Attach File';
 GO
 /* -- #if Oracle
 	COMMIT WORK;

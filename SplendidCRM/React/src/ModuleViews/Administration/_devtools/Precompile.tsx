@@ -160,7 +160,8 @@ class Precompile extends React.Component<IPrecompileProps, IPrecompileState>
 								obj.MODULE_NAME  = module.MODULE_NAME;
 								obj.LAYOUT_TYPE  = 'ListView';
 								obj.lnkName      = MODULE_NAME + '/ ';
-								obj.lnkReactTest = Credentials.RemoteServer + 'React/' +RELATIVE_PATH;
+								// 07/08/2023 Paul.  ASP.NET Core will not have /React in the base. 
+								obj.lnkReactTest = Credentials.RemoteServer + Credentials.ReactBase + RELATIVE_PATH;
 								obj.lnkAspTest   = Credentials.RemoteServer +           RELATIVE_PATH;
 								lstModulePages.push(obj);
 							}
@@ -173,7 +174,7 @@ class Precompile extends React.Component<IPrecompileProps, IPrecompileState>
 								obj.MODULE_NAME  = module.MODULE_NAME;
 								obj.LAYOUT_TYPE  = 'PopupView';
 								obj.lnkName      = MODULE_NAME + '/ ';
-								obj.lnkReactTest = Credentials.RemoteServer + 'React/' + RELATIVE_PATH;
+								obj.lnkReactTest = Credentials.RemoteServer + Credentials.ReactBase + RELATIVE_PATH;
 								obj.lnkAspTest   = Credentials.RemoteServer +            RELATIVE_PATH;
 								lstModulePages.push(obj);
 							}
@@ -187,7 +188,7 @@ class Precompile extends React.Component<IPrecompileProps, IPrecompileState>
 								obj.LAYOUT_TYPE   = 'DetailView';
 								obj.LAST_ID       = null;
 								obj.lnkName       = MODULE_NAME + '/ ';
-								obj.lnkReactTest  = Credentials.RemoteServer + 'React/' + RELATIVE_PATH;
+								obj.lnkReactTest  = Credentials.RemoteServer + Credentials.ReactBase + RELATIVE_PATH;
 								obj.lnkAspTest    = Credentials.RemoteServer +            RELATIVE_PATH;
 								obj.lnkReactTest += 'View/';
 								obj.lnkAspTest   += 'view.aspx?ID=';
@@ -204,7 +205,7 @@ class Precompile extends React.Component<IPrecompileProps, IPrecompileState>
 								obj.LAYOUT_TYPE   = 'EditView';
 								obj.LAST_ID       = null;
 								obj.lnkName       = MODULE_NAME + '/ ';
-								obj.lnkReactTest  = Credentials.RemoteServer + 'React/' + RELATIVE_PATH;
+								obj.lnkReactTest  = Credentials.RemoteServer + Credentials.ReactBase + RELATIVE_PATH;
 								obj.lnkAspTest    = Credentials.RemoteServer +            RELATIVE_PATH;
 								obj.lnkReactTest += 'Edit/';
 								obj.lnkAspTest   += 'edit.aspx?ID=';
@@ -249,7 +250,7 @@ class Precompile extends React.Component<IPrecompileProps, IPrecompileState>
 								obj.MODULE_NAME  = module.MODULE_NAME;
 								obj.LAYOUT_TYPE  = 'ListView';
 								obj.lnkName      = 'Administration/' + MODULE_NAME + '/ ';
-								obj.lnkReactTest = Credentials.RemoteServer + 'React/' + RELATIVE_PATH;
+								obj.lnkReactTest = Credentials.RemoteServer + Credentials.ReactBase + RELATIVE_PATH;
 								obj.lnkAspTest   = Credentials.RemoteServer +            RELATIVE_PATH;
 								lstModulePages.push(obj);
 							}
@@ -263,7 +264,7 @@ class Precompile extends React.Component<IPrecompileProps, IPrecompileState>
 								obj.LAYOUT_TYPE   = 'DetailView';
 								obj.LAST_ID       = null;
 								obj.lnkName       = 'Administration/' + MODULE_NAME + '/ ';
-								obj.lnkReactTest  = Credentials.RemoteServer + 'React/' + RELATIVE_PATH;
+								obj.lnkReactTest  = Credentials.RemoteServer + Credentials.ReactBase + RELATIVE_PATH;
 								obj.lnkAspTest    = Credentials.RemoteServer +            RELATIVE_PATH;
 								obj.lnkReactTest += 'View/';
 								obj.lnkAspTest   += 'view.aspx?ID=';
@@ -280,7 +281,7 @@ class Precompile extends React.Component<IPrecompileProps, IPrecompileState>
 								obj.LAYOUT_TYPE   = 'EditView';
 								obj.LAST_ID       = null;
 								obj.lnkName       = 'Administration/' + MODULE_NAME + '/ ';
-								obj.lnkReactTest  = Credentials.RemoteServer + 'React/' + RELATIVE_PATH;
+								obj.lnkReactTest  = Credentials.RemoteServer + Credentials.ReactBase + RELATIVE_PATH;
 								obj.lnkAspTest    = Credentials.RemoteServer +            RELATIVE_PATH;
 								obj.lnkReactTest += 'Edit/';
 								obj.lnkAspTest   += 'edit.aspx?ID=';
@@ -297,7 +298,7 @@ class Precompile extends React.Component<IPrecompileProps, IPrecompileState>
 								obj.LAYOUT_TYPE   = 'ConfigView';
 								obj.LAST_ID       = null;
 								obj.lnkName       = 'Administration/' + MODULE_NAME + '/ ';
-								obj.lnkReactTest  = Credentials.RemoteServer + 'React/' + RELATIVE_PATH;
+								obj.lnkReactTest  = Credentials.RemoteServer + Credentials.ReactBase + RELATIVE_PATH;
 								obj.lnkAspTest    = Credentials.RemoteServer +            RELATIVE_PATH;
 								obj.lnkReactTest += 'ConfigView';
 								obj.lnkAspTest   += 'config.aspx';
@@ -314,7 +315,7 @@ class Precompile extends React.Component<IPrecompileProps, IPrecompileState>
 								obj.LAYOUT_TYPE   = 'ReadOnlyConfigView';
 								obj.LAST_ID       = null;
 								obj.lnkName       = 'Administration/' + MODULE_NAME + '/ ';
-								obj.lnkReactTest  = Credentials.RemoteServer + 'React/' + RELATIVE_PATH;
+								obj.lnkReactTest  = Credentials.RemoteServer + Credentials.ReactBase + RELATIVE_PATH;
 								obj.lnkAspTest    = Credentials.RemoteServer +            RELATIVE_PATH;
 								obj.lnkReactTest += '';
 								obj.lnkAspTest   += 'default.aspx';

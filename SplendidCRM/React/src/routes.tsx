@@ -254,6 +254,8 @@ v			<Redirect     exact from="/Emails/Drafts"                                   
 			<PrivateRoute exact path="/Administration/PayPal/ConfigView"                         component={AdminConfigView} />
 			<PrivateRoute exact path="/Administration/PayPalTransactions/View/:ID"               component={PayPalDetailView} />
 			<PrivateRoute exact path="/Administration/PayPal/View/:ID"                           component={PayPalDetailView} />
+			<PrivateRoute       path="/Administration/PayPalTransactions"                        component={PayPalListView} />
+			<PrivateRoute       path="/Administration/PayPal/List"                               component={PayPalListView} />
 			<PrivateRoute       path="/Administration/PayPal"                                    component={PayPalListView} />
 			<PrivateRoute exact path="/Administration/PayTrace/ConfigView"                       component={AdminConfigView} />
 			<PrivateRoute exact path="/Administration/PayTrace/View/:ID"                         component={PayTraceDetailView} />
@@ -319,7 +321,7 @@ v			<Redirect     exact from="/Emails/Drafts"                                   
 
 			<PrivateRoute exact path="/:MODULE_NAME/"                                            component={DynamicListView}   />
 			<Route exact path="/" component={RootView} />
-			<Route render={(props) => <div>{JSON.stringify(props)}</div>} />
+			<Route render={(props) => <div id='divUnknownRoute'>Unkown Route: {JSON.stringify(props)}</div>} />
 		</Switch>
 	</App>
 );

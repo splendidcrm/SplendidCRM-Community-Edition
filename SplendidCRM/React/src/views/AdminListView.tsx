@@ -96,7 +96,8 @@ class AdminListView extends React.Component<IAdminListViewProps, IAdminListViewS
 			searchMode            : 'Basic',
 			showUpdatePanel       : false,
 			enableMassUpdate      : Crm_Modules.MassUpdate(props.MODULE_NAME),
-			error                 : null
+			// 07/07/2023 Paul.  Fix missing comma. 
+			error                 : null,
 			showSearchView        ,
 		};
 	}

@@ -72,7 +72,7 @@ export function PhoneBurnerCreateHub(signalR: SignalR, history: H.History<H.Loca
 	{
 		let oCommandArguments: any = { PARENT_TYPE, PARENT_ID, PARENT_NAME, CALL_ID };
 		console.log((new Date()).toISOString() + ' ' + hubName + '.callBegin', oCommandArguments);
-		if ( this.history != null )
+		if ( history != null )
 		{
 			history.push('/Reset/Calls/Edit/' + CALL_ID);
 		}

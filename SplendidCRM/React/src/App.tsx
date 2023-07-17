@@ -27,6 +27,7 @@ import Credentials                         from './scripts/Credentials'         
 import SplendidCache                       from './scripts/SplendidCache'          ;
 import { Crm_Config }                      from './scripts/Crm'                    ;
 import SignalRStore                        from './SignalR/SignalRStore'           ;
+import SignalRCoreStore                    from './SignalR/SignalRCoreStore'       ;
 // 4. Components and Views. 
 import { TopNavFactory, SideBarFactory }   from './ThemeComponents'                ;
 import TeamTree                            from './components/TeamTree'            ;
@@ -63,6 +64,8 @@ class App extends React.Component<IAppProps, IAppState>
 	async componentDidMount()
 	{
 		SignalRStore.SetHistory(this.props.history);
+		// 06/19/2023 Paul.  Separate implementation for SignalR on ASP.NET Core. 
+		SignalRCoreStore.SetHistory(this.props.history);
 	}
 
 	public render()

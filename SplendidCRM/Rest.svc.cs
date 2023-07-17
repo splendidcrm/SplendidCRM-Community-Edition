@@ -6293,8 +6293,12 @@ namespace SplendidCRM
 			using ( IDbConnection con = dbf.CreateConnection() )
 			{
 				string sSQL ;
-				sSQL = "select NAME        " + ControlChars.CrLf
-				    + "  from vwEMAILS_Edit" + ControlChars.CrLf;
+				// 06/18/2023 Paul.  Was not including TYPE or STATUS. 
+				sSQL = "select ID           " + ControlChars.CrLf
+				     + "     , NAME         " + ControlChars.CrLf
+				     + "     , TYPE         " + ControlChars.CrLf
+				     + "     , STATUS       " + ControlChars.CrLf
+				     + "  from vwEMAILS_Edit" + ControlChars.CrLf;
 				using ( IDbCommand cmd = con.CreateCommand() )
 				{
 					cmd.CommandText = sSQL;
@@ -6441,7 +6445,9 @@ namespace SplendidCRM
 								try
 								{
 									sSTATUS = "draft";
-									SqlProcs.spEMAILS_UpdateStatus(ID, sSTATUS);
+									// 06/18/2023 Paul.  Don't update unless necessary. 
+									if ( Sql.ToString(dt.Rows[0]["STATUS"]) != sSTATUS )
+										SqlProcs.spEMAILS_UpdateStatus(ID, sSTATUS);
 									// 07/10/2010 Paul.  The Offline Client cannot send emails.  Just mark as draft & out. 
 									// It should get sent when it is copied to the server. 
 									// 12/20/2007 Paul.  SendEmail was moved to EmailUtils.
@@ -6465,6 +6471,103 @@ namespace SplendidCRM
 										sSTATUS = "send_error";
 										SqlProcs.spEMAILS_UpdateStatus(ID, sSTATUS);
 									}
+									SplendidError.SystemError(new StackTrace(true).GetFrame(0), Utils.ExpandException(ex));
+									sSTATUS = ex.Message;
+								}
+							}
+							else
+							{
+								sSTATUS = "Not ready to send";
+							}
+						}
+						else
+						{
+							sSTATUS = L10n.Term("ACL.LBL_INSUFFICIENT_ACCESS") + ": " + ID.ToString();
+						}
+					}
+				}
+			}
+			return sSTATUS;
+		}
+
+		// 06/18/2023 Paul.  Allow SendText from React Client. 
+		[OperationContract]
+		[WebInvoke(Method="POST", BodyStyle=WebMessageBodyStyle.WrappedRequest, RequestFormat=WebMessageFormat.Json, ResponseFormat=WebMessageFormat.Json)]
+		public string SendText(Guid ID)
+		{
+			HttpApplicationState Application = HttpContext.Current.Application;
+			HttpRequest          Request     = HttpContext.Current.Request    ;
+			
+			string ModuleName = "SmsMessages";
+			if ( Sql.IsEmptyString(ModuleName) )
+				throw(new Exception("The module name must be specified."));
+			L10N L10n = new L10N(Sql.ToString(HttpContext.Current.Session["USER_SETTINGS/CULTURE"]));
+			int nACLACCESS = Security.GetUserAccess(ModuleName, "edit");
+			if ( !Security.IsAuthenticated() || !Sql.ToBoolean(Application["Modules." + ModuleName + ".RestEnabled"]) || nACLACCESS < 0 )
+			{
+				throw(new Exception(L10n.Term("ACL.LBL_INSUFFICIENT_ACCESS") + ": " + Sql.ToString(ModuleName)));
+			}
+			string sTABLE_NAME = Sql.ToString(Application["Modules." + ModuleName + ".TableName"]);
+			if ( Sql.IsEmptyString(sTABLE_NAME) )
+				throw(new Exception("Unknown module: " + ModuleName));
+			if ( Sql.IsEmptyGuid(ID) )
+				throw(new Exception("Unspecified ID: " + ID));
+			
+			// 01/24/2021 Paul.  Return status so that we can take action on error. 
+			string sSTATUS = "draft";
+			DbProviderFactory dbf = DbProviderFactories.GetFactory();
+			using ( IDbConnection con = dbf.CreateConnection() )
+			{
+				string sSQL ;
+				sSQL = "select STATUS" + ControlChars.CrLf
+				    + "  from vw" + sTABLE_NAME + ControlChars.CrLf;
+				using ( IDbCommand cmd = con.CreateCommand() )
+				{
+					cmd.CommandText = sSQL;
+					Security.Filter(cmd, ModuleName, "edit");
+					Sql.AppendParameter(cmd, ID, "ID", false);
+					con.Open();
+
+					using ( DbDataAdapter da = dbf.CreateDataAdapter() )
+					{
+						((IDbDataAdapter)da).SelectCommand = cmd;
+
+						DataTable dt = new DataTable();
+						da.Fill(dt);
+						if ( dt.Rows.Count > 0 )
+						{
+							// 06/18/2023 Paul.  Clear the send error so thatwe can send again. 
+							sSTATUS = Sql.ToString(dt.Rows[0]["STATUS"]);
+							if ( sSTATUS == "send_error" )
+								SqlProcs.spSMS_MESSAGES_UpdateStatus(ID, "draft", String.Empty);
+
+							dt = new DataTable();
+							cmd.Parameters.Clear();
+							sSQL = "select TYPE                      " + ControlChars.CrLf
+							     + "     , STATUS                    " + ControlChars.CrLf
+							     + "  from vwSMS_MESSAGES_ReadyToSend" + ControlChars.CrLf
+							     + " where ID = @ID                  " + ControlChars.CrLf;
+							cmd.CommandText = sSQL;
+							Sql.AddParameter(cmd, "@ID", ID);
+							da.Fill(dt);
+							if ( dt.Rows.Count > 0 )
+							{
+								try
+								{
+									sSTATUS = "draft";
+									// 06/18/2023 Paul.  Don't update unless necessary. 
+									if ( Sql.ToString(dt.Rows[0]["STATUS"]) != sSTATUS )
+										SqlProcs.spSMS_MESSAGES_UpdateStatus(ID, sSTATUS, String.Empty);
+									string sMESSAGE_SID = TwilioManager.SendText(Application, ID);
+									if ( !Sql.IsEmptyString(sMESSAGE_SID) )
+									{
+										sSTATUS = "sent";
+										SqlProcs.spSMS_MESSAGES_UpdateStatus(ID, sSTATUS, sMESSAGE_SID);
+									}
+								}
+								catch(Exception ex)
+								{
+									SqlProcs.spSMS_MESSAGES_UpdateStatus(ID, "send_error", String.Empty);
 									SplendidError.SystemError(new StackTrace(true).GetFrame(0), Utils.ExpandException(ex));
 									sSTATUS = ex.Message;
 								}

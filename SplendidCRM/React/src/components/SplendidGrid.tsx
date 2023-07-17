@@ -654,7 +654,8 @@ class SplendidGrid extends React.Component<ISplendidGridProps, ISplendidGridStat
 		{
 			admin = 'Administration/';
 		}
-		let url: string = Credentials.RemoteServer + `React/${admin}${MODULE_NAME}/Edit/${row.ID}`;
+		// 07/01/2023 Paul.  ASP.NET Core will not have /React in the base. 
+		let url: string = Credentials.RemoteServer + Credentials.ReactBase + `${admin}${MODULE_NAME}/Edit/${row.ID}`;
 		return url;
 	}
 
@@ -667,7 +668,8 @@ class SplendidGrid extends React.Component<ISplendidGridProps, ISplendidGridStat
 		{
 			admin = 'Administration/';
 		}
-		let url: string = Credentials.RemoteServer + `React/${admin}${MODULE_NAME}/View/${row.ID}`;
+		// 07/01/2023 Paul.  ASP.NET Core will not have /React in the base. 
+		let url: string = Credentials.RemoteServer + Credentials.ReactBase + `${admin}${MODULE_NAME}/View/${row.ID}`;
 		return url;
 	}
 

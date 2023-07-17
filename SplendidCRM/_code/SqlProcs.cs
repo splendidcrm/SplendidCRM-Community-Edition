@@ -28,7 +28,7 @@ using System.Xml;
 namespace SplendidCRM
 {
 	/// <summary>
-	/// SqlProcs generated from database [SplendidCRM7] on 2/12/2023 1:41:20 AM.
+	/// SqlProcs generated from database [SplendidCRM7] on 7/16/2023 11:04:02 PM.
 	/// </summary>
 	public partial class SqlProcs
 	{
@@ -2872,6 +2872,79 @@ namespace SplendidCRM
 			IDbDataParameter parACLTYPE          = Sql.CreateParameter(cmd, "@ACLTYPE"         , "string", 100);
 			IDbDataParameter parACLACCESS        = Sql.CreateParameter(cmd, "@ACLACCESS"       , "Int32",   4);
 			parID.Direction = ParameterDirection.InputOutput;
+			return cmd;
+		}
+		#endregion
+
+		#region spACL_FIELDS_Duplicate
+		/// <summary>
+		/// spACL_FIELDS_Duplicate
+		/// </summary>
+		public static void spACL_FIELDS_Duplicate(Guid gID, Guid gDUPLICATE_ID)
+		{
+			DbProviderFactory dbf = DbProviderFactories.GetFactory();
+			using ( IDbConnection con = dbf.CreateConnection() )
+			{
+				con.Open();
+				using ( IDbTransaction trn = Sql.BeginTransaction(con) )
+				{
+					try
+					{
+						using ( IDbCommand cmd = con.CreateCommand() )
+						{
+							cmd.Transaction = trn;
+							cmd.CommandType = CommandType.StoredProcedure;
+							cmd.CommandText = "spACL_FIELDS_Duplicate";
+							IDbDataParameter parID               = Sql.AddParameter(cmd, "@ID"              , gID                );
+							IDbDataParameter parMODIFIED_USER_ID = Sql.AddParameter(cmd, "@MODIFIED_USER_ID",  Security.USER_ID  );
+							IDbDataParameter parDUPLICATE_ID     = Sql.AddParameter(cmd, "@DUPLICATE_ID"    , gDUPLICATE_ID      );
+							cmd.ExecuteNonQuery();
+						}
+						trn.Commit();
+					}
+					catch
+					{
+						trn.Rollback();
+						throw;
+					}
+				}
+			}
+		}
+		#endregion
+
+		#region spACL_FIELDS_Duplicate
+		/// <summary>
+		/// spACL_FIELDS_Duplicate
+		/// </summary>
+		public static void spACL_FIELDS_Duplicate(Guid gID, Guid gDUPLICATE_ID, IDbTransaction trn)
+		{
+			IDbConnection con = trn.Connection;
+			using ( IDbCommand cmd = con.CreateCommand() )
+			{
+				cmd.Transaction = trn;
+				cmd.CommandType = CommandType.StoredProcedure;
+				cmd.CommandText = "spACL_FIELDS_Duplicate";
+				IDbDataParameter parID               = Sql.AddParameter(cmd, "@ID"              , gID                );
+				IDbDataParameter parMODIFIED_USER_ID = Sql.AddParameter(cmd, "@MODIFIED_USER_ID",  Security.USER_ID  );
+				IDbDataParameter parDUPLICATE_ID     = Sql.AddParameter(cmd, "@DUPLICATE_ID"    , gDUPLICATE_ID      );
+				Sql.Trace(cmd);
+				cmd.ExecuteNonQuery();
+			}
+		}
+		#endregion
+
+		#region cmdACL_FIELDS_Duplicate
+		/// <summary>
+		/// spACL_FIELDS_Duplicate
+		/// </summary>
+		public static IDbCommand cmdACL_FIELDS_Duplicate(IDbConnection con)
+		{
+			IDbCommand cmd = con.CreateCommand();
+			cmd.CommandType = CommandType.StoredProcedure;
+			cmd.CommandText = "spACL_FIELDS_Duplicate";
+			IDbDataParameter parID               = Sql.CreateParameter(cmd, "@ID"              , "Guid",  16);
+			IDbDataParameter parMODIFIED_USER_ID = Sql.CreateParameter(cmd, "@MODIFIED_USER_ID", "Guid",  16);
+			IDbDataParameter parDUPLICATE_ID     = Sql.CreateParameter(cmd, "@DUPLICATE_ID"    , "Guid",  16);
 			return cmd;
 		}
 		#endregion
@@ -74551,6 +74624,7 @@ namespace SplendidCRM
 				case "SPACL_ACTIONS_INITIALIZE"                 :  cmd = cmdACL_ACTIONS_Initialize                 (con);  break;
 				case "SPACL_ACTIONS_INSERTONLY"                 :  cmd = cmdACL_ACTIONS_InsertOnly                 (con);  break;
 				case "SPACL_ACTIONS_UPDATE"                     :  cmd = cmdACL_ACTIONS_Update                     (con);  break;
+				case "SPACL_FIELDS_DUPLICATE"                   :  cmd = cmdACL_FIELDS_Duplicate                   (con);  break;
 				case "SPACL_FIELDS_UPDATE"                      :  cmd = cmdACL_FIELDS_Update                      (con);  break;
 				case "SPACL_ROLES_ACTIONS_DELETE"               :  cmd = cmdACL_ROLES_ACTIONS_Delete               (con);  break;
 				case "SPACL_ROLES_ACTIONS_UPDATE"               :  cmd = cmdACL_ROLES_ACTIONS_Update               (con);  break;

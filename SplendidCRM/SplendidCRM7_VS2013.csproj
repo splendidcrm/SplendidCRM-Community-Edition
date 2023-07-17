@@ -979,6 +979,9 @@
       <DependentUpon>MassUpdate.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="Administration\ModulesArchiveRules\Rest.svc.cs">
+      <DependentUpon>Rest.svc</DependentUpon>
+    </Compile>
     <Compile Include="Administration\ModulesArchiveRules\view.aspx.cs">
       <DependentUpon>view.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -5010,6 +5013,7 @@
     <Content Include="Administration\ModulesArchiveRules\EditView.ascx" />
     <Content Include="Administration\ModulesArchiveRules\ListView.ascx" />
     <Content Include="Administration\ModulesArchiveRules\MassUpdate.ascx" />
+    <Content Include="Administration\ModulesArchiveRules\Rest.svc" />
     <Content Include="Administration\ModulesArchiveRules\view.aspx" />
     <Content Include="Administration\NAICSCodes\AutoComplete.asmx" />
     <Content Include="Administration\NAICSCodes\AutoComplete.js" />

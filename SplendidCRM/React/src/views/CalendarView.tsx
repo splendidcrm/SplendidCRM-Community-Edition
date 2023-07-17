@@ -360,7 +360,8 @@ class CalendarView extends React.Component<ICalendarViewProps, ICalendarViewStat
 				// 05/27/2018 Paul.  Use React routing format. 
 				// 03/18/2020 Paul.  Need leading slash. 
 				// 01/05/2022 Paul.  Use full URL here so that user can right click and open new window. 
-				event.url         = Credentials.RemoteServer + 'React/' + row.ACTIVITY_TYPE + '/View/' + row.ID;
+				// 07/08/2023 Paul.  ASP.NET Core will not have /React in the base. 
+				event.url         = Credentials.RemoteServer + Credentials.ReactBase + row.ACTIVITY_TYPE + '/View/' + row.ID;
 				// 01/05/2022 Paul.  Create separate url for react. 
 				event.reacturl    = '/' + row.ACTIVITY_TYPE + '/View/' + row.ID;
 				events.push(event);

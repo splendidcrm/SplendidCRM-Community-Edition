@@ -224,8 +224,9 @@ export default class ArcticHeaderButtons extends HeaderButtons
 		{
 			admin = 'Administration/';
 		}
-		let sModuleUrl = Credentials.RemoteServer + `React/${admin}${MODULE_NAME}/List`;
-		let sItemUrl   = Credentials.RemoteServer + `React/${admin}${MODULE_NAME}/View/${ID}`;
+		// 07/01/2023 Paul.  ASP.NET Core will not have /React in the base. 
+		let sModuleUrl = Credentials.RemoteServer + Credentials.ReactBase + `${admin}${MODULE_NAME}/List`;
+		let sItemUrl   = Credentials.RemoteServer + Credentials.ReactBase + `${admin}${MODULE_NAME}/View/${ID}`;
 		return (
 			<React.Fragment>
 				<HelpView

@@ -156,8 +156,9 @@ class Hover extends React.PureComponent<IHoverProps, IHoverState>
 				DISPLAY_NAME = Sql.ReplaceEntities(DATA_FORMAT);
 				DISPLAY_NAME = DISPLAY_NAME.replace('view.aspx?ID=', 'View/');
 				DISPLAY_NAME = DISPLAY_NAME.replace('edit.aspx?ID=', 'Edit/');
-				DISPLAY_NAME = DISPLAY_NAME.replace('~/', Credentials.RemoteServer + 'React/');
-				DISPLAY_NAME = DISPLAY_NAME.replace('../', Credentials.RemoteServer + 'React/');
+				// 07/08/2023 Paul.  ASP.NET Core will not have /React in the base. 
+				DISPLAY_NAME = DISPLAY_NAME.replace('~/' , Credentials.RemoteServer + Credentials.ReactBase);
+				DISPLAY_NAME = DISPLAY_NAME.replace('../', Credentials.RemoteServer + Credentials.ReactBase);
 				// 09/09/2019 Paul.  We need to convert a partially erased field into react components. 
 				// 12/25/2019 Paul.  Simple conversion will not work as the format typically includes HTML. 
 				/*

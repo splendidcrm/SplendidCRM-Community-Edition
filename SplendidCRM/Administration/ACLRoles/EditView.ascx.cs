@@ -178,6 +178,10 @@ namespace SplendidCRM.Administration.ACLRoles
 											//break;
 										}
 									}
+									// 07/16/2023 Paul.  Also duplicte Field Level Security settings. 
+									Guid gDuplicateID = Sql.ToGuid(Request["DuplicateID"]);
+									if ( !Sql.IsEmptyGuid(gDuplicateID) )
+										SqlProcs.spACL_FIELDS_Duplicate(gID, gDuplicateID, trn);
 									trn.Commit();
 									// 03/17/2010 Paul.  We can only reset the current user. 
 									SplendidInit.ClearUserACL();

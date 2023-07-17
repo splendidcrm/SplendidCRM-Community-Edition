@@ -457,7 +457,8 @@ export default class Label extends React.PureComponent<IEditComponentProps, ILab
 		if ( StartsWith(URL, '/Reset/') )
 		{
 			// 06/10/2022 Paul.  We don't have the history, so just navigate directly. 
-			window.location.href = URL.replace('/Reset/', Credentials.RemoteServer + 'React/');
+			// 07/08/2023 Paul.  ASP.NET Core will not have /React in the base. 
+			window.location.href = URL.replace('/Reset/', Credentials.RemoteServer + Credentials.ReactBase);
 		}
 		else
 		{
@@ -491,7 +492,8 @@ export default class Label extends React.PureComponent<IEditComponentProps, ILab
 				let sFullURL: string = URL;
 				if ( StartsWith(URL, '/Reset/') )
 				{
-					sFullURL = URL.replace('/Reset/', Credentials.RemoteServer + 'React/');
+					// 07/08/2023 Paul.  ASP.NET Core will not have /React in the base. 
+					sFullURL = URL.replace('/Reset/', Credentials.RemoteServer + Credentials.ReactBase);
 				}
 				return (<a
 					id={ ID }

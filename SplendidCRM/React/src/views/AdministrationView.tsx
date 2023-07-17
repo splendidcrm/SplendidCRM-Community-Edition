@@ -252,31 +252,35 @@ class AdministrationView extends React.Component<IAdministrationViewProps, IAdmi
 		}
 		else if ( MODULE_NAME == 'Modules' )
 		{
-			// 07/06/2021 Paul.  Provide an quick and easy way to enable/disable React client. 
-			let RELATIVE_PATH: string = '';
-			let module: any = SplendidCache.Module('Home', this.constructor.name + '.ModuleStatus');
-			if ( module != null )
-				RELATIVE_PATH = Sql.ToString(module.RELATIVE_PATH);
-			return (<div style={ {textAlign: 'center'} }>
-				(&nbsp;
-				<a href='#' 
-					key={ MODULE_NAME + '_Actions_' + stateKey} 
-					onClick={ (e) => { e.preventDefault(); return this.toggleConfigFlag('allow_custom_paging'); } } 
-					className='tabDetailViewDL2Link'>{ Crm_Config.ToBoolean('allow_custom_paging') ? L10n.Term('Modules.LBL_DISABLE') : L10n.Term('Modules.LBL_ENABLE') }</a>
-				{ SplendidCache.AdminUserAccess('Administration', 'access') >= 0
-				? <span>
-				&nbsp;
-				&nbsp;
-				<a href='#' 
-					key={ MODULE_NAME + '_React_' + stateKey} 
-					onClick={ (e) => { e.preventDefault(); return this.toggleReactClient(); } } 
-					className='tabDetailViewDL2Link'>{ RELATIVE_PATH.toLowerCase() == '~/react/home' ? L10n.Term('Modules.LBL_REACT_CLIENT_DISABLE') : L10n.Term('Modules.LBL_REACT_CLIENT_ENABLE') }</a>
-				</span>
-				: null
-				}
-				)
-			</div>
-			);
+			// 07/01/2023 Paul. Should only appear on Modules, not Configure Tabs. 
+			if ( ADMIN_ROUTE == 'List' )
+			{
+				// 07/06/2021 Paul.  Provide an quick and easy way to enable/disable React client. 
+				let RELATIVE_PATH: string = '';
+				let module: any = SplendidCache.Module('Home', this.constructor.name + '.ModuleStatus');
+				if ( module != null )
+					RELATIVE_PATH = Sql.ToString(module.RELATIVE_PATH);
+				return (<div style={ {textAlign: 'center'} }>
+					(&nbsp;
+					<a href='#' 
+						key={ MODULE_NAME + '_Actions_' + stateKey} 
+						onClick={ (e) => { e.preventDefault(); return this.toggleConfigFlag('allow_custom_paging'); } } 
+						className='tabDetailViewDL2Link'>{ Crm_Config.ToBoolean('allow_custom_paging') ? L10n.Term('Modules.LBL_DISABLE') : L10n.Term('Modules.LBL_ENABLE') }</a>
+					{ SplendidCache.AdminUserAccess('Administration', 'access') >= 0 && !Crm_Config.ToBoolean('disable_admin_classic')
+					? <span>
+					&nbsp;
+					&nbsp;
+					<a href='#' 
+						key={ MODULE_NAME + '_React_' + stateKey} 
+						onClick={ (e) => { e.preventDefault(); return this.toggleReactClient(); } } 
+						className='tabDetailViewDL2Link'>{ RELATIVE_PATH.toLowerCase() == '~/react/home' ? L10n.Term('Modules.LBL_REACT_CLIENT_DISABLE') : L10n.Term('Modules.LBL_REACT_CLIENT_ENABLE') }</a>
+					</span>
+					: null
+					}
+					)
+				</div>
+				);
+			}
 		}
 		else if ( MODULE_NAME == 'DataPrivacy' )
 		{

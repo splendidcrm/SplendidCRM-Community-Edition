@@ -223,8 +223,9 @@ export default class SevenHeaderButtons extends HeaderButtons
 		{
 			admin = 'Administration/';
 		}
-		let sModuleUrl = Credentials.RemoteServer + `React/${admin}${MODULE_NAME}/List`;
-		let sItemUrl   = Credentials.RemoteServer + `React/${admin}${MODULE_NAME}/View/${ID}`;
+		// 07/01/2023 Paul.  ASP.NET Core will not have /React in the base. 
+		let sModuleUrl = Credentials.RemoteServer + Credentials.ReactBase + `${admin}${MODULE_NAME}/List`;
+		let sItemUrl   = Credentials.RemoteServer + Credentials.ReactBase + `${admin}${MODULE_NAME}/View/${ID}`;
 		// 04/28/2019 Paul.  Can't use react-bootstrap Breadcrumb as it will reload the app is is therefore slow. 
 		// 07/09/2019 Paul.  Use span instead of a tag to prevent navigation. 
 		return (

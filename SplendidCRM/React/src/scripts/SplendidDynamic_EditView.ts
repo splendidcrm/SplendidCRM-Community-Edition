@@ -302,6 +302,15 @@ export default class SplendidDynamic_EditView
 					DATA_COLUMNS = 1;
 					COLSPAN      = 0;
 				}
+				// 07/01/2023 Paul.  Report Parameters does not include width. 
+				if ( LABEL_WIDTH == null )
+				{
+					LABEL_WIDTH = '15%';
+				}
+				if ( FIELD_WIDTH == null )
+				{
+					FIELD_WIDTH = '35%';
+				}
 				// 04/08/2017 Paul.  Use Bootstrap for responsive design.
 				// 04/19/2019 Paul.  Calculate flex width. 
 				sFlexLabelFieldWidth = Math.floor(100 / DATA_COLUMNS) + '%';

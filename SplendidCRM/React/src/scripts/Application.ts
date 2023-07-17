@@ -20,6 +20,7 @@ import { AdminRequestAll, SystemCacheRequestAll }   from '../scripts/SystemCache
 import { UpdateApplicationTheme, StartsWith }       from '../scripts/utility'           ;
 import { GetUserSession }                           from '../scripts/Login'             ;
 import SignalRStore                                 from '../SignalR/SignalRStore'      ;
+import SignalRCoreStore                             from '../SignalR/SignalRCoreStore'  ;
 
 // 07/11/2019 Paul.  Keep original React State object for debugging. 
 let jsonReactState: any = null;
@@ -358,7 +359,13 @@ export async function Application_GetReactState(source): Promise<any>
 	// 09/19/2020 Paul.  Provide events to start/stop SignalR. 
 	// 06/15/2021 Paul.  Allow SignalR to be disabled.
 	if ( !Sql.ToBoolean(SplendidCache.Config('SignalR.Disabled')) )
-		SignalRStore.Startup();
+	{
+		// 06/19/2023 Paul.  Separate implementation for SignalR on ASP.NET Core. 
+		if ( Sql.ToBoolean(SplendidCache.Config('SignalR.Core')) )
+			SignalRCoreStore.Startup();
+		else
+			SignalRStore.Startup();
+	}
 
 	// 05/28/2019 Paul.  We are getting an empty modules list, not sure why.  Use that to determine success. 
 	// 05/28/2019 Paul.  The Modules list being empty seems to be a missing Application.Lock() in SplendidInit.InitApp(). 
@@ -608,7 +615,13 @@ export async function Admin_GetReactState(sCaller?: string): Promise<any>
 	// 09/19/2020 Paul.  Provide events to start/stop SignalR. 
 	// 06/15/2021 Paul.  Allow SignalR to be disabled.
 	if ( !Sql.ToBoolean(SplendidCache.Config('SignalR.Disabled')) )
-		SignalRStore.Startup();
+	{
+		// 06/19/2023 Paul.  Separate implementation for SignalR on ASP.NET Core. 
+		if ( Sql.ToBoolean(SplendidCache.Config('SignalR.Core')) )
+			SignalRCoreStore.Startup();
+		else
+			SignalRStore.Startup();
+	}
 	
 	// 05/28/2019 Paul.  We are getting an empty modules list, not sure why.  Use that to determine success. 
 	// 05/28/2019 Paul.  The Modules list being empty seems to be a missing Application.Lock() in SplendidInit.InitApp(). 

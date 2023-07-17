@@ -34,6 +34,7 @@ import { base64ArrayBuffer }                        from '../../scripts/utility'
 import { AuthenticatedMethod, LoginRedirect }       from '../../scripts/Login'                             ;
 import { sPLATFORM_LAYOUT }                         from '../../scripts/SplendidInitUI'                    ;
 import { EditView_LoadItem, EditView_LoadLayout }   from '../../scripts/EditView'                          ;
+import { ListView_LoadTable }                       from '../../scripts/ListView'                          ;
 import { UpdateModule }                             from '../../scripts/ModuleUpdate'                      ;
 import { CreateSplendidRequest, GetSplendidResult } from '../../scripts/SplendidRequest'                   ;
 import { jsonReactState }                           from '../../scripts/Application'                       ;
@@ -1240,7 +1241,7 @@ export default class EmailsEditView extends React.Component<IEditViewProps, IEdi
 		}
 	}
 
-	private _onSelect = (value: { Action: string, ID: string, NAME: string, EMAIL: string }) =>
+	private _onSelect = (value: { Action: string, ID: string, NAME: string, EMAIL: string, selectedItems: any }) =>
 	{
 		const { addressFields } = this.state;
 		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onSelect', value);
@@ -1265,10 +1266,10 @@ export default class EmailsEditView extends React.Component<IEditViewProps, IEdi
 				}
 				else
 				{
-					if ( !Sql.IsEmptyString(currentItem[ADDRS       ]) ) currentItem[ADDRS       ] += ';';
-					if ( !Sql.IsEmptyString(currentItem[ADDRS_IDS   ]) ) currentItem[ADDRS_IDS   ] += ';';
-					if ( !Sql.IsEmptyString(currentItem[ADDRS_NAMES ]) ) currentItem[ADDRS_NAMES ] += ';';
-					if ( !Sql.IsEmptyString(currentItem[ADDRS_EMAILS]) ) currentItem[ADDRS_EMAILS] += ';';
+					if ( !Sql.IsEmptyString(currentItem[ADDRS       ]) ) currentItem[ADDRS       ] += '; ';
+					if ( !Sql.IsEmptyString(currentItem[ADDRS_IDS   ]) ) currentItem[ADDRS_IDS   ] += '; ';
+					if ( !Sql.IsEmptyString(currentItem[ADDRS_NAMES ]) ) currentItem[ADDRS_NAMES ] += '; ';
+					if ( !Sql.IsEmptyString(currentItem[ADDRS_EMAILS]) ) currentItem[ADDRS_EMAILS] += '; ';
 					currentItem[ADDRS       ] = Sql.ToString(currentItem[ADDRS       ]) + FormatEmailDisplayName(Sql.ToString(value.NAME), Sql.ToString(value.EMAIL));
 					currentItem[ADDRS_IDS   ] = Sql.ToString(currentItem[ADDRS_IDS   ]) + value.ID   ;
 					currentItem[ADDRS_NAMES ] = Sql.ToString(currentItem[ADDRS_NAMES ]) + value.NAME ;
@@ -1288,6 +1289,113 @@ export default class EmailsEditView extends React.Component<IEditViewProps, IEdi
 				catch(error)
 				{
 					this.setState({ error: error });
+				}
+			});
+		}
+		// 06/13/2023 Paul.  Add support for multi-select. 
+		else if ( value.Action == 'MultipleSelect' )
+		{
+			this.setState({ popupOpen: false }, async () =>
+			{
+				try
+				{
+					let arrID = [];
+					for ( let sID in value.selectedItems )
+					{
+						arrID.push(sID);
+					}
+					let arrAddressFields: string[] = addressFields.split(',');
+					if ( arrID.length > 0 && arrAddressFields.length == 4 )
+					{
+						let ADDRS       : string = arrAddressFields[0];
+						let ADDRS_IDS   : string = arrAddressFields[1];
+						let ADDRS_NAMES : string = arrAddressFields[2];
+						let ADDRS_EMAILS: string = arrAddressFields[3];
+
+						let d: any = { __total: 0, __sql: '', results: [] };
+						let sSELECT         : string = 'ID,NAME,EMAIL1';
+						let sSORT_FIELD     : string = 'NAME';
+						let sSORT_DIRECTION : string = 'asc';
+						let sFILTER         : string = 'ID in (\'' + arrID.join('\',\'') + '\')';
+						let rowSEARCH_VALUES: any    = null;
+						if ( SplendidCache.GetUserAccess('Contacts', 'list', this.constructor.name + '.Load') >= 0 )
+						{
+							let dContacts = await ListView_LoadTable('vwCONTACTS_EmailList', sSORT_FIELD, sSORT_DIRECTION, sSELECT, sFILTER, rowSEARCH_VALUES, false);
+							d.__total += dContacts.__total;
+							d.__sql   += dContacts.__sql + ';';
+							if ( dContacts.results != null )
+							{
+								for ( let i: number = 0; i < dContacts.results.length; i++ )
+								{
+									dContacts.results[i]['ADDRESS_TYPE'] = 'Contacts';
+									d.results.push(dContacts.results[i]);
+								}
+							}
+						}
+						if ( SplendidCache.GetUserAccess('Leads', 'list', this.constructor.name + '.Load') >= 0 )
+						{
+							let dLeads = await ListView_LoadTable('vwLEADS_EmailList', sSORT_FIELD, sSORT_DIRECTION, sSELECT, sFILTER, rowSEARCH_VALUES, false);
+							d.__total += dLeads.__total;
+							d.__sql   += dLeads.__sql + ';';
+							if ( dLeads.results != null )
+							{
+								for ( let i: number = 0; i < dLeads.results.length; i++ )
+								{
+									dLeads.results[i]['ADDRESS_TYPE'] = 'Leads';
+									d.results.push(dLeads.results[i]);
+								}
+							}
+						}
+						if ( SplendidCache.GetUserAccess('Prospects', 'list', this.constructor.name + '.Load') >= 0 )
+						{
+							let dProspects = await ListView_LoadTable('vwPROSPECTS_EmailList', sSORT_FIELD, sSORT_DIRECTION, sSELECT, sFILTER, rowSEARCH_VALUES, false);
+							d.__total += dProspects.__total;
+							d.__sql   += dProspects.__sql + ';';
+							if ( dProspects.results != null )
+							{
+								for ( let i: number = 0; i < dProspects.results.length; i++ )
+								{
+									dProspects.results[i]['ADDRESS_TYPE'] = 'Prospects';
+									d.results.push(dProspects.results[i]);
+								}
+							}
+						}
+						if ( SplendidCache.GetUserAccess('Accounts', 'list', this.constructor.name + '.Load') >= 0 )
+						{
+							let dProspects = await ListView_LoadTable('vwACCOUNTS_EmailList', sSORT_FIELD, sSORT_DIRECTION, sSELECT, sFILTER, rowSEARCH_VALUES, false);
+							d.__total += dProspects.__total;
+							d.__sql   += dProspects.__sql + ';';
+							if ( dProspects.results != null )
+							{
+								for ( let i: number = 0; i < dProspects.results.length; i++ )
+								{
+									dProspects.results[i]['ADDRESS_TYPE'] = 'Accounts';
+									d.results.push(dProspects.results[i]);
+								}
+							}
+						}
+						//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onSelect MultipleSelect', d);
+						let currentItem = Object.assign({}, this.state.item, this.state.editedItem);
+						for ( let i: number = 0; i < d.results.length; i++ )
+						{
+							let recipient: any = d.results[i];
+							if ( !Sql.IsEmptyString(currentItem[ADDRS       ]) ) currentItem[ADDRS       ] += '; ';
+							if ( !Sql.IsEmptyString(currentItem[ADDRS_IDS   ]) ) currentItem[ADDRS_IDS   ] += '; ';
+							if ( !Sql.IsEmptyString(currentItem[ADDRS_NAMES ]) ) currentItem[ADDRS_NAMES ] += '; ';
+							if ( !Sql.IsEmptyString(currentItem[ADDRS_EMAILS]) ) currentItem[ADDRS_EMAILS] += '; ';
+							currentItem[ADDRS       ] = Sql.ToString(currentItem[ADDRS       ]) + FormatEmailDisplayName(Sql.ToString(recipient.NAME), Sql.ToString(recipient.EMAIL1));
+							currentItem[ADDRS_IDS   ] = Sql.ToString(currentItem[ADDRS_IDS   ]) + recipient.ID    ;
+							currentItem[ADDRS_NAMES ] = Sql.ToString(currentItem[ADDRS_NAMES ]) + recipient.NAME  ;
+							currentItem[ADDRS_EMAILS] = Sql.ToString(currentItem[ADDRS_EMAILS]) + recipient.EMAIL1;
+							this.UpdateDependancy(ADDRS, currentItem[ADDRS], 'value');
+						}
+						this.setState({ popupOpen: false, editedItem: currentItem });
+					}
+				}
+				catch(error)
+				{
+					console.error((new Date()).toISOString() + ' ' + this.constructor.name + '._onSelect', error);
+					this.setState({ error, popupOpen: false });
 				}
 			});
 		}
@@ -1439,10 +1547,12 @@ export default class EmailsEditView extends React.Component<IEditViewProps, IEdi
 		{
 			Credentials.sUSER_THEME;
 			let headerButtons = HeaderButtonsFactory(SplendidCache.UserTheme);
+			// 06/13/2023 Paul.  Add support for multi-select. 
 			return (
 			<React.Fragment>
 				<PopupEmailAddresses
 					isOpen={ popupOpen }
+					multiSelect={ true }
 					callback={ this._onSelect }
 					MODULE_NAME='Contacts'
 				/>

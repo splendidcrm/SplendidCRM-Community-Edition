@@ -63,6 +63,12 @@ else
 }
 
 let sRemoteServer = '';
+// 07/01/2023 Paul.  ASP.NET Core will not have /React in the base. 
+let sReactBase    = '';
+if ( baseUrl.indexOf('/React') >= 0 )
+{
+	sReactBase = 'React/';
+}
 // 10/12/2019 Paul.  Include query string to allow deep links. 
 let pathname = window.location.pathname + window.location.search;
 //console.log((new Date()).toISOString() + ' ' + 'window.location', window.location);
@@ -113,6 +119,8 @@ if ( Credentials.bMOBILE_CLIENT )
 //console.log((new Date()).toISOString() + ' index.tsx ' + 'pathname', pathname);
 //console.log((new Date()).toISOString() + ' index.tsx ' + 'sRemoteServer', sRemoteServer);
 Credentials.SetREMOTE_SERVER(sRemoteServer);
+// 07/01/2023 Paul.  ASP.NET Core will not have /React in the base. 
+Credentials.SetREACT_BASE(sReactBase);
 
 const sLastActiveModule: string = Sql.ToString(localStorage.getItem('ReactLastActiveModule'));
 // 06/14/2019 Paul.  Ignore LastActiveModule if deep URL provided. 

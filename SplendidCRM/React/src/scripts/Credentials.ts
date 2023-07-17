@@ -35,6 +35,8 @@ class CredentialsStore
 {
 	bMOBILE_CLIENT                 = IsMobileClient();
 	sREMOTE_SERVER                 = '';
+	// 07/01/2023 Paul.  ASP.NET Core will not have /React in the base. 
+	sREACT_BASE                    = '';
 	sAUTHENTICATION                = '';
 	sUSER_NAME                     = '';
 	sEXCHANGE_ALIAS                = '';
@@ -197,6 +199,12 @@ class CredentialsStore
 			}
 		}
 		return this.sREMOTE_SERVER;
+	}
+
+	// 07/01/2023 Paul.  ASP.NET Core will not have /React in the base. 
+	public get ReactBase()
+	{
+		return this.sREACT_BASE;
 	}
 
 	get ValidateCredentials()
@@ -400,6 +408,8 @@ class CredentialsStore
 		this.sUSER_TIME_FORMAT = obj.replace('tt', 'a');
 	}
 	SetREMOTE_SERVER                (obj) { this.sREMOTE_SERVER                 = obj; }
+	// 07/01/2023 Paul.  ASP.NET Core will not have /React in the base. 
+	SetREACT_BASE                   (obj) { this.sREACT_BASE                    = obj; }
 	SetAUTHENTICATION               (obj) { this.sAUTHENTICATION                = obj; }
 	SetUSER_NAME                    (obj) { this.sUSER_NAME                     = obj; }
 	SetUSER_LANG                    (obj) { this.sUSER_LANG                     = obj; }
