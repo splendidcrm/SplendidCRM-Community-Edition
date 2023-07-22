@@ -23,8 +23,8 @@ The goal of the installer is to do everything necessary to get the system runnin
 5. Add SplendidApp application to IIS.
 6. Connect to the database. SQL Server can be remote or local, all that is important is that you can connect. The installer includes an initialized database, which will be attached if an existing CRM database is not detected.
 7. Create or update all tables, functions, views, procedures and/or data to run the app.
-![InstallShield installer](https://www.splendidcrm.com/portals/0/SplendidAppBuilder/Installation_InstallShield.gif "InstallShield installer")
-![Splendid App Builder Configuration Wizard](https://www.splendidcrm.com/portals/0/SplendidAppBuilder/Installation_Wizard.gif "Splendid App Builder Configuration Wizard")
+![InstallShield installer](https://www.splendidcrm.com/portals/0/SplendidCRM/Installation_InstallShield.gif "InstallShield installer")
+![SplendidCRM Configuration Wizard](https://www.splendidcrm.com/portals/0/SplendidCRM/Installation_Wizard.gif "Splendid App Builder Configuration Wizard")
 
 ## Building Yourself
 When building yourself, please note that we prefer to build the ASP.NET code separately from the React code. We do this so that Visual Studio does not take too long to debug as it will attempt to build both every time something small changes. So, we have marked the React files as content and excluded them from the build in the Visual Studio project file.  With this in mind, we have included two csproject files, one with the React files exluded from the project (_VS2013), and the other with the React included but as content (_VS2017).  This allows use to separate build from development.
