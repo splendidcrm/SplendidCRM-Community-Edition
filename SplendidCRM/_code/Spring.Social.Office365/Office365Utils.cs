@@ -38,8 +38,23 @@ namespace Spring.Social.Office365
 	{
 		public const string scope = "openid offline_access Mail.ReadWrite Mail.Send Contacts.ReadWrite Calendars.ReadWrite MailboxSettings.ReadWrite User.Read";
 
+		public static Spring.Social.Office365.Api.IOffice365 CreateApi(HttpApplicationState Application, string sOAuthAccessToken)
+		{
+			throw(new Exception("Office365 integration is not supported."));
+		}
+	
 		public class UserSync
 		{
+			public HttpContext Context            ;
+			public string      EXCHANGE_ALIAS    ;
+			public string      EXCHANGE_EMAIL    ;
+			public string      MAIL_SMTPUSER     ;
+			public string      MAIL_SMTPPASS     ;
+			public Guid        USER_ID           ;
+			public bool        SyncAll           ;
+			// 01/17/2017 Paul.  The gEXCHANGE_ID is to lookup the OAuth credentials. 
+			public bool        OFFICE365_OAUTH_ENABLED;
+
 			public UserSync(HttpContext Context, string sEXCHANGE_ALIAS, string sEXCHANGE_EMAIL, string sMAIL_SMTPUSER, string sMAIL_SMTPPASS, Guid gUSER_ID, bool bSyncAll, bool bOFFICE365_OAUTH_ENABLED)
 			{
 			}
@@ -54,16 +69,6 @@ namespace Spring.Social.Office365
 				return User;
 			}
 		}
-	}
-}
-
-namespace Spring.Social.Office365.Api
-{
-	public class Recipient
-	{
-	}
-	public class Message
-	{
 	}
 }
 

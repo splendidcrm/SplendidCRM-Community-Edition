@@ -25,6 +25,7 @@ import { ReportDesignerModules, ReportModule, ModuleField } from './ReportDesign
 import { ReportDesign, ReportTable, ReportField, ReportRelationship, ReportFilter, ReportJoinField, ReportDesign_EditView_Layout } from './ReportDesign';
 // 4. Components and Views. 
 import ModulePopup                                          from '../EditComponents/ModulePopup' ;
+import ErrorComponent                                       from '../components/ErrorComponent'  ;
 
 interface IQueryDesignerProps
 {
@@ -1636,12 +1637,10 @@ export default class QueryDesigner extends React.Component<IQueryDesignerProps, 
 				styCheckbox.transform = 'scale(1.0)';
 				styCheckbox.marginBottom = '2px';
 			}
+			// 08/12/2023 Paul.  Use ErrorComponent as JSON.stringify is returning empty object. 
 			return (
 <div id='divQueryDesigner'>
-	{ error
-	? <div className='error'>{ typeof(error) == 'string' ? error : JSON.stringify(error) }</div>
-	: null
-	}
+	<ErrorComponent error={error} />
 	<table cellSpacing={ 0 } cellPadding={ 0 } style={ {width: '100%', borderLeft: '1px solid #cccccc', borderRight: '1px solid #cccccc', borderBottom: '1px solid #cccccc'} }>
 		<tr>
 			<td rowSpan={ 3 } style={ {width: '300px', border: '1px solid #cccccc', verticalAlign: 'top'} }>

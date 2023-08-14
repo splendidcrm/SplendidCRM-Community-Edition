@@ -93,6 +93,8 @@ namespace SplendidCRM.Administration.ModulesArchiveRules
 					case "NAME"             :  sNAME                = Sql.ToString(dict[sColumnName]);  break;
 					// 02/09/2022 Paul.  Keep using MODULE to match Reports. 
 					case "MODULE"           :  sMODULE              = Sql.ToString(dict[sColumnName]);  break;
+					// 08/12/2023 Paul.  Must keep MODULE_NAME as that is what is used by RulesWizard.EditView. 
+					case "MODULE_NAME"      :  sMODULE              = Sql.ToString(dict[sColumnName]);  break;
 					case "filterXml"        :  dictFilterXml        = dict[sColumnName] as Dictionary<string, object>;  break;
 					case "relatedModuleXml" :  dictRelatedModuleXml = dict[sColumnName] as Dictionary<string, object>;  break;
 					case "relationshipXml"  :  dictRelationshipXml  = dict[sColumnName] as Dictionary<string, object>;  break;
@@ -200,6 +202,8 @@ namespace SplendidCRM.Administration.ModulesArchiveRules
 					case "NAME"             :  sNAME                = Sql.ToString(dict[sColumnName]);  break;
 					// 02/09/2022 Paul.  Keep using MODULE to match Reports. 
 					case "MODULE"           :  sMODULE              = Sql.ToString(dict[sColumnName]);  break;
+					// 08/12/2023 Paul.  Must keep MODULE_NAME as that is what is used by RulesWizard.EditView. 
+					case "MODULE_NAME"      :  sMODULE              = Sql.ToString(dict[sColumnName]);  break;
 					case "filterXml"        :  dictFilterXml        = dict[sColumnName] as Dictionary<string, object>;  break;
 					case "relatedModuleXml" :  dictRelatedModuleXml = dict[sColumnName] as Dictionary<string, object>;  break;
 					case "relationshipXml"  :  dictRelationshipXml  = dict[sColumnName] as Dictionary<string, object>;  break;

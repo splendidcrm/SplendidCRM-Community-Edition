@@ -105,6 +105,15 @@ export default class ChangeButton extends EditComponent<IChangeButtonProps, ICha
 		{
 			this.setState({ DATA_VALUE });
 		}
+		// 08/07/2023 Paul.  Match ModulePopup update features. 
+		else if ( PROPERTY_NAME == 'ID' )
+		{
+			this.setState({ DATA_VALUE });
+		}
+		else if ( PROPERTY_NAME == 'NAME' )
+		{
+			this.setState({ DISPLAY_VALUE: DATA_VALUE });
+		}
 		else if ( PROPERTY_NAME == 'MODULE_TYPE' )
 		{
 			this.setState({ MODULE_TYPE: DATA_VALUE });

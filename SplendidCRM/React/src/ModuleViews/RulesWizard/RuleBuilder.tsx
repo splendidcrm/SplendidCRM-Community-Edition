@@ -24,6 +24,7 @@ import { dumpObj, uuidFast }                          from '../../scripts/utilit
 import { CreateSplendidRequest, GetSplendidResult }   from '../../scripts/SplendidRequest'    ;
 // 4. Components and Views. 
 import NavItem                                        from '../../components/NavItem'         ;
+import ErrorComponent                                 from '../../components/ErrorComponent'  ;
 
 let bDebug: boolean = false;
 
@@ -126,7 +127,9 @@ export default class RuleBuilder extends React.Component<IRuleBuilderProps, IRul
 			let rulesXmlJson: string  = null;
 			if ( !Sql.IsEmptyString(row['RULES_XML']) )
 			{
-				rulesXml     = XMLParser.parse(row['RULES_XML'], options);
+				// 08/12/2023 Paul.  XMLParser 3.21.1 is not parsing &amp;, and 4.2.7 crashes the build, so manually parse. 
+				const RULES_XML = row['RULES_XML'].replace(/&amp;/g, '&');
+				rulesXml     = XMLParser.parse(RULES_XML, options);
 				// 05/20/2020 Paul.  A single record will not come in as an array, so convert to an array. 
 				if ( rulesXml.NewDataSet && rulesXml.NewDataSet.Table1 && !Array.isArray(rulesXml.NewDataSet.Table1) )
 				{
@@ -178,7 +181,9 @@ export default class RuleBuilder extends React.Component<IRuleBuilderProps, IRul
 				let rulesXmlJson: string  = null;
 				if ( !Sql.IsEmptyString(nextProps.row['RULES_XML']) )
 				{
-					rulesXml     = XMLParser.parse(nextProps.row['RULES_XML'], options);
+					// 08/12/2023 Paul.  XMLParser 3.21.1 is not parsing &amp;, and 4.2.7 crashes the build, so manually parse. 
+					const RULES_XML = nextProps.row['RULES_XML'].replace(/&amp;/g, '&');
+					rulesXml     = XMLParser.parse(RULES_XML, options);
 					// 05/20/2020 Paul.  A single record will not come in as an array, so convert to an array. 
 					if ( rulesXml.NewDataSet && rulesXml.NewDataSet.Table1 && !Array.isArray(rulesXml.NewDataSet.Table1) )
 					{
@@ -371,10 +376,12 @@ export default class RuleBuilder extends React.Component<IRuleBuilderProps, IRul
 					RULE_THEN_ACTIONS_REQ: false,
 					RULE_ELSE_ACTIONS    : '',
 					rulesXmlEditIndex    : -1,
+					error                : null
 				});
 			}
 			else
 			{
+				this.setState({ error: 'invalid rulesXmlEditIndex' });
 				console.error((new Date()).toISOString() + ' ' + this.constructor.name + '._onRulesUpdate invalid rulesXmlEditIndex', rulesXmlEditIndex);
 			}
 		}
@@ -483,12 +490,10 @@ export default class RuleBuilder extends React.Component<IRuleBuilderProps, IRul
 				styCheckbox.transform = 'scale(1.0)';
 				styCheckbox.marginBottom = '2px';
 			}
+			// 08/12/2023 Paul.  Use ErrorComponent as JSON.stringify is returning empty object. 
 			return (
 <div id='divRuleBuilder'>
-	{ error
-	? <div className='error'>{ typeof(error) == 'string' ? error : JSON.stringify(error) }</div>
-	: null
-	}
+	<ErrorComponent error={error} />
 		<table id='dgRules' cellSpacing={ 0 } cellPadding={ 3 } style={ {borderCollapse: 'collapse', border: '1px solid black', width: '100%'} }>
 			<tr>
 				<td style={ {border: '1px solid black'} }>{ L10n.Term('Rules.LBL_LIST_PRIORITY'    ) }</td>

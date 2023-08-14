@@ -27,6 +27,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web.UI.HtmlControls;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace SplendidCRM.Administration.InboundEmail
@@ -117,6 +118,86 @@ namespace SplendidCRM.Administration.InboundEmail
 					else
 					{
 						throw(new Exception("Unknown/unsupported mail service: " + sSERVICE));
+					}
+				}
+				// 07/18/2023 Paul.  Provide a way to archive imported messages. 
+				else if ( e.CommandName == "Archive" )
+				{
+					string sSERVICE     = Sql.ToString (ViewState["SERVICE"    ]);
+					string sMAILBOX     = Sql.ToString (ViewState["MAILBOX"    ]);
+					bool bOFFICE365_OAUTH_ENABLED  = Sql.ToBoolean(ViewState["OFFICE365_OAUTH_ENABLED" ]);
+					if ( String.Compare(sSERVICE, "Office365", true) == 0 )
+					{
+						Spring.Social.Office365.Office365Sync.UserSync User = new Spring.Social.Office365.Office365Sync.UserSync(Context, String.Empty, String.Empty, String.Empty, String.Empty, gID, false, bOFFICE365_OAUTH_ENABLED);
+						string sFOLDER_ID = Office365Utils.GetFolderId(Context, String.Empty, String.Empty, gID, sMAILBOX);
+						if ( Sql.IsEmptyString(sFOLDER_ID) )
+							throw(new Exception("Could not find folder " + sMAILBOX));
+						
+						string sOAUTH_CLIENT_ID     = Sql.ToString (User.Context.Application["CONFIG.Exchange.ClientID"         ]);
+						string sOAUTH_CLIENT_SECRET = Sql.ToString (User.Context.Application["CONFIG.Exchange.ClientSecret"     ]);
+						string sOAuthDirectoryTenatID = Sql.ToString(User.Context.Application["CONFIG.Exchange.DirectoryTenantID"]);
+						Office365AccessToken token = ActiveDirectory.Office365RefreshAccessToken(User.Context.Application, sOAuthDirectoryTenatID, sOAUTH_CLIENT_ID, sOAUTH_CLIENT_SECRET, User.USER_ID, false);
+						Spring.Social.Office365.Api.IOffice365 service = Spring.Social.Office365.Office365Sync.CreateApi(User.Context.Application, token.access_token);
+						
+						string sARCHIVE_FOLDER_ID   = String.Empty;
+						string sARCHIVE_FOLDER_NAME = Sql.ToString (User.Context.Application["CONFIG.Exchange.ArchiveFolderName"]);
+						if ( Sql.IsEmptyString(sARCHIVE_FOLDER_NAME) )
+							sARCHIVE_FOLDER_NAME = "Archive";
+						IList<Spring.Social.Office365.Api.MailFolder> fResults = service.FolderOperations.GetChildFolders(sFOLDER_ID, sARCHIVE_FOLDER_NAME);
+						if ( fResults.Count > 0 )
+						{
+							sARCHIVE_FOLDER_ID = fResults[0].Id;
+						}
+						else
+						{
+							Debug.WriteLine("Archive:  Creating Archive folder: " + sARCHIVE_FOLDER_NAME);
+							Spring.Social.Office365.Api.MailFolder fldArchive = service.FolderOperations.Insert(sFOLDER_ID, sARCHIVE_FOLDER_NAME);
+							sARCHIVE_FOLDER_ID = fldArchive.Id;
+						}
+						Debug.WriteLine("Archive:  Archive Folder ID: " + sARCHIVE_FOLDER_ID);
+
+						int nPageSize   = 200;
+						int nPageOffset = 0;
+						string sort = "lastModifiedDateTime desc";
+						Spring.Social.Office365.Api.MessagePagination results = service.FolderOperations.GetMessageIds(sFOLDER_ID, sort, nPageOffset, nPageSize);
+						if ( results != null )
+						{
+							Debug.WriteLine("Archive:  Message Count " + results.count.ToString());
+							DbProviderFactory dbf = DbProviderFactories.GetFactory();
+							using ( IDbConnection con = dbf.CreateConnection() )
+							{
+								con.Open();
+								using ( IDbCommand cmdExistingEmails = con.CreateCommand() )
+								{
+									String sSQL;
+									sSQL = "select count(*)                " + ControlChars.CrLf
+									     + "  from vwEMAILS_Inbound        " + ControlChars.CrLf
+									     + " where MESSAGE_ID = @MESSAGE_ID" + ControlChars.CrLf;
+									cmdExistingEmails.CommandText = sSQL;
+									cmdExistingEmails.CommandTimeout = 0;
+									IDbDataParameter parMESSAGE_ID = Sql.AddParameter(cmdExistingEmails, "@MESSAGE_ID", String.Empty, 851);
+									
+									for ( int i = 0; i < results.messages.Count; i++ )
+									{
+										Spring.Social.Office365.Api.Message msg = results.messages[i];
+										parMESSAGE_ID.Value = msg.Id;
+										if ( Sql.ToInteger(cmdExistingEmails.ExecuteScalar()) > 0 )
+										{
+											Debug.WriteLine((i + 1).ToString() + ".  Archiving  " + msg.Id + " " + (msg.LastModifiedDateTime.HasValue ? msg.LastModifiedDateTime.ToString() : ""));
+											//service.MailOperations.Move(msg.Id, sARCHIVE_FOLDER_ID);
+										}
+										else
+										{
+											Debug.WriteLine((i + 1).ToString() + ".  Not Found  " + msg.Id + " " + (msg.LastModifiedDateTime.HasValue ? msg.LastModifiedDateTime.ToString() : ""));
+										}
+									}
+								}
+							}
+						}
+					}
+					else
+					{
+						throw(new Exception("Archive not supported with this email service"));
 					}
 				}
 			}

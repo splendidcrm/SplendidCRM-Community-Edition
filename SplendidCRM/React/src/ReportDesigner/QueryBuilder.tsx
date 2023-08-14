@@ -30,6 +30,7 @@ import { ValidateDateParts }                             from '../scripts/utilit
 import { EditView_LoadLayout, EditView_FindField }       from '../scripts/EditView'           ;
 // 4. Components and Views. 
 import DynamicPopupView                                  from '../views/DynamicPopupView'     ;
+import ErrorComponent                                    from '../components/ErrorComponent'  ;
 
 let bDebug: boolean = false;
 const ControlChars = { CrLf: '\r\n', Cr: '\r', Lf: '\n', Tab: '\t' };
@@ -3231,12 +3232,10 @@ export default class QueryBuilder extends React.Component<IQueryBuilderProps, IQ
 				styCheckbox.transform = 'scale(1.0)';
 				styCheckbox.marginBottom = '2px';
 			}
+			// 08/12/2023 Paul.  Use ErrorComponent as JSON.stringify is returning empty object. 
 			return (
 <div id='divQueryBuilder'>
-	{ error
-	? <div className='error'>{ typeof(error) == 'string' ? error : JSON.stringify(error) }</div>
-	: null
-	}
+	<ErrorComponent error={error} />
 	<DynamicPopupView
 		isOpen={ popupOpen }
 		isSearchView={ false }

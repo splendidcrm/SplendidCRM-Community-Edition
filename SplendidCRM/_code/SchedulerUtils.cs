@@ -100,6 +100,8 @@ namespace SplendidCRM
 					{
 						nON_THE_MINUTE = Sql.ToInteger(sCRON_MINUTE);
 						sb.Append(L10n.Term("Schedulers.LBL_ON_THE"));
+						// 05/23/2013 Paul.  Just in case there is no space in the LBL_ON_THE term, add a space. 
+						sb.Append(" ");
 						if ( nON_THE_MINUTE == 0 )
 						{
 							sb.Append(L10n.Term("Schedulers.LBL_HOUR_SING"));
@@ -107,6 +109,8 @@ namespace SplendidCRM
 						else
 						{
 							sb.Append(nON_THE_MINUTE.ToString("00"));
+							// 05/23/2013 Paul.  Just in case there is no space in the LBL_MIN_MARK term, add a space. 
+							sb.Append(" ");
 							sb.Append(L10n.Term("Schedulers.LBL_MIN_MARK"));
 						}
 					}
@@ -121,12 +125,15 @@ namespace SplendidCRM
 								{
 									nCRON_VALUE_START = Sql.ToInteger(arrCRON_VALUE[0]);
 									nCRON_VALUE_END   = Sql.ToInteger(arrCRON_VALUE[1]);
-									if ( nCRON_VALUE_START >= 0 && nCRON_VALUE_START <= 23 && nCRON_VALUE_END >= 0 && nCRON_VALUE_END <= 23 )
+									// 07/24/2023 Paul.  Minutes should range between 0 and 59. 
+									if ( nCRON_VALUE_START >= 0 && nCRON_VALUE_START <= 59 && nCRON_VALUE_END >= 0 && nCRON_VALUE_END <= 59 )
 									{
 										if ( nCronEntries > 0 )
 											sb.Append(L10n.Term("Schedulers.LBL_AND"));
 										sb.Append(L10n.Term("Schedulers.LBL_FROM"));
 										sb.Append(L10n.Term("Schedulers.LBL_ON_THE"));
+										// 05/23/2013 Paul.  Just in case there is no space in the LBL_ON_THE term, add a space. 
+										sb.Append(" ");
 										if ( nCRON_VALUE_START == 0 )
 										{
 											sb.Append(L10n.Term("Schedulers.LBL_HOUR_SING"));
@@ -134,11 +141,17 @@ namespace SplendidCRM
 										else
 										{
 											sb.Append(nCRON_VALUE_START.ToString("0"));
+											// 05/23/2013 Paul.  Just in case there is no space in the LBL_MIN_MARK term, add a space. 
+											sb.Append(" ");
 											sb.Append(L10n.Term("Schedulers.LBL_MIN_MARK"));
 										}
 										sb.Append(L10n.Term("Schedulers.LBL_RANGE"));
 										sb.Append(L10n.Term("Schedulers.LBL_ON_THE"));
+										// 05/23/2013 Paul.  Just in case there is no space in the LBL_ON_THE term, add a space. 
+										sb.Append(" ");
 										sb.Append(nCRON_VALUE_END.ToString("0"));
+										// 05/23/2013 Paul.  Just in case there is no space in the LBL_MIN_MARK term, add a space. 
+										sb.Append(" ");
 										sb.Append(L10n.Term("Schedulers.LBL_MIN_MARK"));
 										nCronEntries++;
 									}
@@ -147,11 +160,14 @@ namespace SplendidCRM
 							else
 							{
 								nCRON_VALUE = Sql.ToInteger(arrCRON_TEMP[i]);
-								if ( nCRON_VALUE >= 0 && nCRON_VALUE <= 23 )
+								// 07/24/2023 Paul.  Minutes should range between 0 and 59. 
+								if ( nCRON_VALUE >= 0 && nCRON_VALUE <= 59 )
 								{
 									if ( nCronEntries > 0 )
 										sb.Append(L10n.Term("Schedulers.LBL_AND"));
 									sb.Append(L10n.Term("Schedulers.LBL_ON_THE"));
+									// 05/23/2013 Paul.  Just in case there is no space in the LBL_ON_THE term, add a space. 
+									sb.Append(" ");
 									if ( nCRON_VALUE == 0 )
 									{
 										sb.Append(L10n.Term("Schedulers.LBL_HOUR_SING"));
@@ -159,6 +175,8 @@ namespace SplendidCRM
 									else
 									{
 										sb.Append(nCRON_VALUE.ToString("0"));
+										// 05/23/2013 Paul.  Just in case there is no space in the LBL_MIN_MARK term, add a space. 
+										sb.Append(" ");
 										sb.Append(L10n.Term("Schedulers.LBL_MIN_MARK"));
 									}
 									nCronEntries++;
@@ -181,7 +199,8 @@ namespace SplendidCRM
 							{
 								nCRON_VALUE_START = Sql.ToInteger(arrCRON_VALUE[0]);
 								nCRON_VALUE_END   = Sql.ToInteger(arrCRON_VALUE[1]);
-								if ( nCRON_VALUE_START >= 1 && nCRON_VALUE_START <= 31 && nCRON_VALUE_END >= 1 && nCRON_VALUE_END <= 31 )
+								// 07/24/2023 Paul.  Hours should range between 0 and 23. 
+								if ( nCRON_VALUE_START >= 0 && nCRON_VALUE_START <= 23 && nCRON_VALUE_END >= 0 && nCRON_VALUE_END <= 23 )
 								{
 									if ( nCronEntries > 0 )
 										sb.Append(L10n.Term("Schedulers.LBL_AND"));
@@ -200,7 +219,8 @@ namespace SplendidCRM
 						else
 						{
 							nCRON_VALUE = Sql.ToInteger(arrCRON_TEMP[i]);
-							if ( nCRON_VALUE >= 1 && nCRON_VALUE <= 31 )
+							// 07/24/2023 Paul.  Hours should range between 0 and 23. 
+							if ( nCRON_VALUE >= 0 && nCRON_VALUE <= 23 )
 							{
 								if ( nCronEntries > 0 )
 									sb.Append(L10n.Term("Schedulers.LBL_AND"));
@@ -270,9 +290,12 @@ namespace SplendidCRM
 									if ( nCronEntries > 0 )
 										sb.Append(L10n.Term("Schedulers.LBL_AND"));
 									sb.Append(L10n.Term("Schedulers.LBL_FROM"));
-									sb.Append(culture.DateTimeFormat.MonthNames[nCRON_VALUE_START]);
+									// 08/17/2012 Paul.  LBL_FROM should have a trailing space, but it does not so fix here. 
+									sb.Append(" ");
+									// 08/17/2012 Paul.  Month names are 0 based. 
+									sb.Append(culture.DateTimeFormat.MonthNames[nCRON_VALUE_START - 1]);
 									sb.Append(L10n.Term("Schedulers.LBL_RANGE"));
-									sb.Append(culture.DateTimeFormat.MonthNames[nCRON_VALUE_END]);
+									sb.Append(culture.DateTimeFormat.MonthNames[nCRON_VALUE_END - 1]);
 									nCronEntries++;
 								}
 							}
@@ -284,7 +307,8 @@ namespace SplendidCRM
 							{
 								if ( nCronEntries > 0 )
 									sb.Append(L10n.Term("Schedulers.LBL_AND"));
-								sb.Append(culture.DateTimeFormat.MonthNames[nCRON_VALUE]);
+								// 08/17/2012 Paul.  Month names are 0 based. 
+								sb.Append(culture.DateTimeFormat.MonthNames[nCRON_VALUE - 1]);
 								nCronEntries++;
 							}
 						}
