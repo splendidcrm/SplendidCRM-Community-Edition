@@ -133,6 +133,10 @@ namespace SplendidCRM.Calls
 										sBodyHtml = sBodyHtml.Replace("$view_url"  , sViewURL  );
 										sBodyHtml = sBodyHtml.Replace("$edit_url"  , sEditURL  );
 										sBodyHtml = sBodyHtml.Replace("$accept_url", sAcceptURL);
+										// 08/19/2023 Paul.  Support React urls. 
+										sBodyHtml = sBodyHtml.Replace("$react_view_url"  , sViewURL  );
+										sBodyHtml = sBodyHtml.Replace("$react_edit_url"  , sEditURL  );
+										sBodyHtml = sBodyHtml.Replace("$react_accept_url", sAcceptURL);
 										sBodyHtml = sBodyHtml.Replace("href=\"~/", "\"" + sSiteURL);
 										sBodyHtml = sBodyHtml.Replace("href=\'~/", "\'" + sSiteURL);  // 12/25/2012 Paul.  Also watch for single quote. 
 										

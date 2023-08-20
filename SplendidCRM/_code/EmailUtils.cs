@@ -2316,6 +2316,11 @@ namespace SplendidCRM
 										if ( Sql.IsEmptyString(sBodyHtml) )
 											sBodyHtml = "$activity_name\n$activity_date_start\n" + (sINVITEE_TYPE == "Users" ? "\n<a href=\"$view_url\">$view_url</a>" : String.Empty);
 										
+										// 08/19/2023 Paul.  Support to React URL. 
+										string sReactViewURL    = sSiteURL + "React/" + sACTIVITY_TYPE + "/View/" + gID.ToString();
+										string sReactEditURL    = sSiteURL + "React/" + sACTIVITY_TYPE + "/Edit/" + gID.ToString();
+										sBodyHtml = sBodyHtml.Replace("$react_view_url", sReactViewURL);
+										sBodyHtml = sBodyHtml.Replace("$react_edit_url", sReactEditURL);
 										string sViewURL    = sSiteURL + sACTIVITY_TYPE + "/view.aspx?ID=" + gID.ToString();
 										string sEditURL    = sSiteURL + sACTIVITY_TYPE + "/edit.aspx?ID=" + gID.ToString();
 										sBodyHtml = sBodyHtml.Replace("$view_url", sViewURL);
@@ -2633,12 +2638,18 @@ namespace SplendidCRM
 								if ( Sql.IsEmptyString(sBodyHtml) )
 									sBodyHtml = "$activity_name\n$activity_date_start\n" + (sINVITEE_TYPE == "Users" ? "\n<a href=\"$view_url\">$view_url</a>" : String.Empty);
 								
+								// 08/19/2023 Paul.  Support to React URL. 
+								string sReactViewURL    = sSiteURL + "React/" + sACTIVITY_TYPE + "/View/"          + gID.ToString();
+								string sReactEditURL    = sSiteURL + "React/" + sACTIVITY_TYPE + "/Edit/"          + gID.ToString();
+								sBodyHtml = sBodyHtml.Replace("$react_view_url"  , sReactViewURL  );
+								sBodyHtml = sBodyHtml.Replace("$react_edit_url"  , sReactEditURL  );
 								string sViewURL    = sSiteURL + sACTIVITY_TYPE + "/view.aspx?ID="          + gID.ToString();
 								string sEditURL    = sSiteURL + sACTIVITY_TYPE + "/edit.aspx?ID="          + gID.ToString();
 								string sAcceptURL  = sSiteURL + sACTIVITY_TYPE + "/AcceptDecline.aspx?ID=" + gID.ToString() + "&INVITEE_ID=" + gINVITEE_ID.ToString();
 								sBodyHtml = sBodyHtml.Replace("$view_url"  , sViewURL  );
 								sBodyHtml = sBodyHtml.Replace("$edit_url"  , sEditURL  );
 								sBodyHtml = sBodyHtml.Replace("$accept_url", sAcceptURL);
+								sBodyHtml = sBodyHtml.Replace("$react_accept_url", sAcceptURL);
 								sBodyHtml = sBodyHtml.Replace("href=\"~/", "href=\"" + sSiteURL);
 								sBodyHtml = sBodyHtml.Replace("href=\'~/", "href=\'" + sSiteURL);  // 12/25/2012 Paul.  Also watch for single quote. 
 								

@@ -351,14 +351,14 @@ export default class SurveyQuestionsEditView extends React.Component<IEditViewPr
 		this._isMounted = false;
 	}
 
-	private GetImportColumns = async (MODULE_NAME: string) =>
+	private GetImportColumns = async (MODULE_NAME: string, bUpdateState: boolean) =>
 	{
+		let TARGET_FIELD_NAME_LIST: any[]   = [];
 		if ( !Sql.IsEmptyString(MODULE_NAME) )
 		{
 			let res  = await CreateSplendidRequest('Import/Rest.svc/GetImportSettings?ImportModule=' + MODULE_NAME, 'GET');
 			let json = await GetSplendidResult(res);
 			//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.GetImportSettings', json);
-			let TARGET_FIELD_NAME_LIST: any[]   = [];
 			// SURVEY_TARGET_MODULE_SelectedIndexChanged
 			for ( let i: number = 0; i < json.d.importColumns.length; i++ )
 			{
@@ -387,8 +387,12 @@ export default class SurveyQuestionsEditView extends React.Component<IEditViewPr
 				let bl = b.DISPLAY_NAME.toLowerCase();
 				return al == bl ? (a == b ? 0 : (a < b ? -1 : 1)) : (al < bl ? -1 : 1);
 			});
-			this.setState({ TARGET_FIELD_NAME_LIST });
+			if ( bUpdateState )
+			{
+				this.setState({ TARGET_FIELD_NAME_LIST });
+			}
 		}
+		return TARGET_FIELD_NAME_LIST;
 	}
 
 	private load = async () =>
@@ -457,6 +461,7 @@ export default class SurveyQuestionsEditView extends React.Component<IEditViewPr
 		{
 			try
 			{
+				let TARGET_FIELD_NAME_LIST: any[] = [];
 				// 11/19/2019 Paul.  Change to allow return of SQL. 
 				const d = await EditView_LoadItem(sMODULE_NAME, sID);
 				let item: any = d.results;
@@ -582,6 +587,12 @@ export default class SurveyQuestionsEditView extends React.Component<IEditViewPr
 					}
 					//if ( tblRankingNA.Visible && item['NA_LABEL'] != L10n.Term("SurveyQuestions.LBL_NA_LABEL_DEFAULT") )
 					//	NA_LABEL.Visible = true;
+					// 08/19/2023 Paul.  Update import columns. 
+					if ( item['SURVEY_TARGET_MODULE'] )
+					{
+						TARGET_FIELD_NAME_LIST = await this.GetImportColumns(item['SURVEY_TARGET_MODULE'], false);
+
+					}
 				}
 				if ( this._isMounted )
 				{
@@ -597,6 +608,7 @@ export default class SurveyQuestionsEditView extends React.Component<IEditViewPr
 						dtRatings         ,
 						dtMenus           ,
 						dtDemographicNames,
+						TARGET_FIELD_NAME_LIST,  // 08/19/2023 Paul.  Update import columns. 
 					});
 				}
 			}
@@ -1012,7 +1024,7 @@ export default class SurveyQuestionsEditView extends React.Component<IEditViewPr
 		{
 			if ( !Sql.IsEmptyString(item[PARENT_FIELD]) )
 			{
-				this.GetImportColumns(item[PARENT_FIELD]);
+				this.GetImportColumns(item[PARENT_FIELD], true);
 			}
 		}
 		else if ( PARENT_FIELD == 'lstRatingScale' )
@@ -1552,7 +1564,7 @@ export default class SurveyQuestionsEditView extends React.Component<IEditViewPr
 	private Page_Command = async (sCommandName, sCommandArguments) =>
 	{
 		const { ID, MODULE_NAME, history, location } = this.props;
-		const { LAST_DATE_MODIFIED, dtRatings, dtMenus, dtDemographicNames } = this.state;
+		const { LAST_DATE_MODIFIED, dtRatings, dtMenus, dtDemographicNames, QUESTION_TYPE_LIST } = this.state;
 
 		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.Page_Command ' + sCommandName, sCommandArguments, this.refMap)
 		// This sets the local state, which is then passed to DynamicButtons
@@ -1567,9 +1579,8 @@ export default class SurveyQuestionsEditView extends React.Component<IEditViewPr
 				case 'SaveConcurrency':
 				{
 					let isDuplicate = location.pathname.includes('Duplicate');
-					row = {
-						ID: isDuplicate ? null : ID
-					};
+					// 08/19/2023 Paul.  Data not being initialized properly.  BuildDataRow does not include question data. 
+					row = Object.assign({ ID: (isDuplicate ? null : ID), QUESTION_TYPE: QUESTION_TYPE_LIST[0] }, this.state.item, this.state.editedItem);
 					// 08/27/2019 Paul.  Move build code to shared object. 
 					let nInvalidFields: number = SplendidDynamic_EditView.BuildDataRow(row, this.refMap);
 					if ( nInvalidFields == 0 )
@@ -1701,7 +1712,8 @@ export default class SurveyQuestionsEditView extends React.Component<IEditViewPr
 						row['BOX_WIDTH'             ] = sBOX_WIDTH             ;
 						row['BOX_HEIGHT'            ] = sBOX_HEIGHT            ;
 						row['COLUMN_WIDTH'          ] = sCOLUMN_WIDTH          ;
-						row['CATEGORIES'            ] = Trim(row['CATEGORIES']);
+						// 08/19/2023 Paul.  Trim() does not check for nulls. 
+						row['CATEGORIES'            ] = (row['CATEGORIES'] ? Trim(row['CATEGORIES']) : null);
 
 						if ( sQUESTION_TYPE != "Date"              ) row['INVALID_DATE_MESSAGE'  ] = null;
 						if ( sQUESTION_TYPE != "Textbox Numerical" ) row['INVALID_NUMBER_MESSAGE'] = null;
