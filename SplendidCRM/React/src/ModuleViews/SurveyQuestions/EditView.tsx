@@ -45,6 +45,14 @@ import SurveyQuestionFactory                          from '../../SurveyComponen
 const bDebug: boolean = false;
 const ControlChars = { CrLf: '\r\n', Cr: '\r', Lf: '\n', Tab: '\t' };
 
+// 09/22/2023 Paul.  React is saving line breaks just as LF, not CRLF.  The old JavaScript rendering engine requires CRLF. 
+function NormalizeLineBreaks(s: string)
+{
+	s = s.replace(/\r\n/g, ControlChars.Lf  );
+	s = s.replace(/\n/g  , ControlChars.CrLf);
+	return s;
+}
+
 interface IEditViewProps extends RouteComponentProps<any>
 {
 	MODULE_NAME        : string;
@@ -574,7 +582,8 @@ export default class SurveyQuestionsEditView extends React.Component<IEditViewPr
 						// 10/08/2014 Paul.  Add Range question type. 
 						else if ( sQUESTION_TYPE == "Range" )
 						{
-							let arrANSWER_CHOICES: string[] = sANSWER_CHOICES.split(ControlChars.CrLf);
+							// 09/22/2023 Paul.  React is saving line breaks just as LF, not CRLF.  The old JavaScript rendering engine requires CRLF. 
+							let arrANSWER_CHOICES: string[] = NormalizeLineBreaks(sANSWER_CHOICES).split(ControlChars.CrLf);
 							item['RANGE_MIN'] = arrANSWER_CHOICES[0];
 							if ( arrANSWER_CHOICES.length > 0 )
 								item['RANGE_MAX'] = arrANSWER_CHOICES[1];
@@ -1588,6 +1597,9 @@ export default class SurveyQuestionsEditView extends React.Component<IEditViewPr
 						let sQUESTION_TYPE : string = Sql.ToString(row['QUESTION_TYPE' ]);
 						let sANSWER_CHOICES: string = Sql.ToString(row['ANSWER_CHOICES']).replace(/\s\s*$/, '');  // TrimEnd();
 						let sCOLUMN_CHOICES: string = Sql.ToString(row['COLUMN_CHOICES']).replace(/\s\s*$/, '');  // TrimEnd();
+						// 09/22/2023 Paul.  React is saving line breaks just as LF, not CRLF.  The old JavaScript rendering engine requires CRLF. 
+						sANSWER_CHOICES= NormalizeLineBreaks(sANSWER_CHOICES);
+						sCOLUMN_CHOICES= NormalizeLineBreaks(sCOLUMN_CHOICES);
 						if ( sQUESTION_TYPE == "Rating Scale" )
 						{
 							sCOLUMN_CHOICES = this.buildRatingScale(row, dtRatings);

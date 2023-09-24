@@ -249,7 +249,7 @@ export default class PhoneBurnerConfigView extends React.Component<IPhoneBurnerC
 					let code: string = queryParams['code'];
 					//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.LoadItem code', AUTHORIZATION_CODE);
 					// 01/18/2021 Paul.  The React Client uses the same ASP.NET OAuthLanding as PhoneBurner does not allow multiple redirects per application. 
-					let sREDIRECT_URL   : string = Credentials.sREMOTE_SERVER + 'Administration/PhoneBurner/OAuthLanding.aspx';
+					let sREDIRECT_URL   : string = Credentials.sREMOTE_SERVER + 'Administration/PhoneBurner/ConfigView';
 					let obj: any =
 					{
 						code        ,
@@ -458,7 +458,7 @@ export default class PhoneBurnerConfigView extends React.Component<IPhoneBurnerC
 							let OAUTH_CLIENT_ID : string = item['PhoneBurner.ClientID' ];
 							// 09/12/2020 Paul.  React does not have a good way to expose a method, so just redirect with the code in the url. 
 							// 01/18/2021 Paul.  The React Client uses the same ASP.NET OAuthLanding as PhoneBurner does not allow multiple redirects per application. 
-							let sREDIRECT_URL   : string = Credentials.sREMOTE_SERVER + 'Administration/PhoneBurner/OAuthLanding.aspx';
+							let sREDIRECT_URL   : string = Credentials.sREMOTE_SERVER + 'Administration/PhoneBurner/ConfigView';
 							let authenticateUrl : string = 'https://www.phoneburner.com/oauth/index?client_id=' + OAUTH_CLIENT_ID + '&redirect_uri=' + sREDIRECT_URL + '&response_type=code';
 							//window.location.href = authenticateUrl;
 							window.open(authenticateUrl, 'PhoneBurnerPopup', 'width=830,height=830,status=1,toolbar=0,location=0,resizable=1');

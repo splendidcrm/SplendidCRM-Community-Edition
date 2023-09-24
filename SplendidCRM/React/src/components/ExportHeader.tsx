@@ -105,7 +105,7 @@ export default class ExportHeader extends React.Component<IExportHeaderProps, IE
 					let code: string = queryParams['code'];
 					//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.LoadItem code', AUTHORIZATION_CODE);
 					// 09/12/2020 Paul.  React does not have a good way to expose a method, so just redirect with the code in the url. 
-					let sREDIRECT_URL   : string = Credentials.sREMOTE_SERVER + 'Administration/PhoneBurner/OAuthLanding.aspx'
+					let sREDIRECT_URL   : string = Credentials.sREMOTE_SERVER + 'Administration/PhoneBurner/ConfigView'
 					let obj: any =
 					{
 						code        ,
@@ -175,7 +175,7 @@ export default class ExportHeader extends React.Component<IExportHeaderProps, IE
 		{
 			let OAUTH_CLIENT_ID : string = Crm_Config.ToString('PhoneBurner.ClientID');
 			// 09/12/2020 Paul.  React does not have a good way to expose a method, so just redirect with the code in the url. 
-			let sREDIRECT_URL   : string = Credentials.sREMOTE_SERVER + 'Administration/PhoneBurner/OAuthLanding.aspx'
+			let sREDIRECT_URL   : string = Credentials.sREMOTE_SERVER + 'Administration/PhoneBurner/ConfigView'
 			let authenticateUrl : string = 'https://www.phoneburner.com/oauth/index?client_id=' + OAUTH_CLIENT_ID + '&redirect_uri=' + sREDIRECT_URL + '&response_type=code';
 			window.open(authenticateUrl, 'PhoneBurnerPopup', 'width=830,height=830,status=1,toolbar=0,location=0,resizable=1');
 		}

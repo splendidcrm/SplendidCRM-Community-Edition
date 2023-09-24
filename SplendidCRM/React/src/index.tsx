@@ -92,10 +92,11 @@ else if ( process.env.PATH )
 	sRemoteServer = pathname.substring(0, pathname.indexOf('/', 1) + 1);
 }
 // 05/21/2023 Paul.  SplendidApp uses ASP.Net Core and will not have /React in the URL. 
-else if ( pathname.toLowerCase().indexOf('/react', 1) >= 0 )
+// 09/20/2023 Paul.  Start at position 0, otherwise ASP.Net 4.8 apps with site at root will fail. 
+else if ( pathname.toLowerCase().indexOf('/react', 0) >= 0 )
 {
 	// 04/28/2020 Paul.  Allow for /react, or other case issues. 
-	sRemoteServer = window.location.origin + pathname.substring(0, pathname.toLowerCase().indexOf('/react', 1) + 1);
+	sRemoteServer = window.location.origin + pathname.substring(0, pathname.toLowerCase().indexOf('/react', 0) + 1);
 }
 else
 {
