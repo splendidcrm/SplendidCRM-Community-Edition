@@ -1616,7 +1616,8 @@ export default class SurveyQuestionsEditView extends React.Component<IEditViewPr
 						// 10/08/2014 Paul.  Add Range question type. 
 						else if ( sQUESTION_TYPE == "Range" )
 						{
-							sANSWER_CHOICES = Sql.ToInteger(row['RANGE_MIN']).toString() + ControlChars.CrLf + Sql.ToInteger(row['RANGE_MAX']).ToString() + ControlChars.CrLf + Sql.ToInteger(row['RANGE_STEP']).toString();
+							// 09/26/2023 Paul.  Need to use JavaScript toString() instead of C# ToString(). 
+							sANSWER_CHOICES = Sql.ToInteger(row['RANGE_MIN']).toString() + ControlChars.CrLf + Sql.ToInteger(row['RANGE_MAX']).toString() + ControlChars.CrLf + Sql.ToInteger(row['RANGE_STEP']).toString();
 						}
 						// 06/02/2013 Paul.  Clear any unused fields. 
 						// 11/07/2018 Paul.  Provide a way to get a single numerical or date value for lead population.
