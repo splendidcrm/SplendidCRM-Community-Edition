@@ -8047,6 +8047,7 @@ namespace SplendidCRM
 		[WebInvoke(Method="POST", BodyStyle=WebMessageBodyStyle.WrappedRequest, RequestFormat=WebMessageFormat.Json, ResponseFormat=WebMessageFormat.Json)]
 		public void MassUnsync(string ModuleName, Guid[] ID_LIST)
 		{
+			HttpContext          Context     = HttpContext.Current            ;
 			HttpApplicationState Application = HttpContext.Current.Application;
 			HttpRequest          Request     = HttpContext.Current.Request    ;
 			HttpSessionState     Session     = HttpContext.Current.Session    ;
@@ -8114,6 +8115,17 @@ namespace SplendidCRM
 									SplendidError.SystemError(new StackTrace(true).GetFrame(0), ex);
 									throw;
 								}
+							}
+						}
+						// 11/22/2023 Paul.  When unsyncing, we need to immediately clear the remote flag. 
+						if ( ModuleName == "Contacts" )
+						{
+							Guid gUSER_ID = Security.USER_ID;
+							// 11/22/2023 Paul.  We don't need to filter as only contacts previously sync'd will get cleared. 
+							for ( int i = 0; i < arrID_LIST.Count; i++ )
+							{
+								Guid gCONTACT_ID = Sql.ToGuid(arrID_LIST[i]);
+								ExchangeSync.UnsyncContact(Context, gUSER_ID, gCONTACT_ID);
 							}
 						}
 					}

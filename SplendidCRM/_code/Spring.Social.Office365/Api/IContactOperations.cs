@@ -38,5 +38,7 @@ namespace Spring.Social.Office365.Api
 		Contact           Insert          (Contact  obj   );
 		Contact           Update          (Contact  obj   );
 		void              Delete          (string   id    );
+		// 11/22/2023 Paul.  When unsyncing, we need to immediately clear the remote flag. 
+		void              Unsync          (string   id    , string sCONTACTS_CATEGORY);
 	}
 }

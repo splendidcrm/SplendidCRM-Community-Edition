@@ -2791,7 +2791,10 @@ namespace SplendidCRM
 		public static void Trace(IDbCommand cmd)
 		{
 			// 09/16/2015 Paul.  Change to Debug as it is automatically not included in a release build. 
-			//Debug.WriteLine("Sql.Trace:	exec dbo." + Sql.ExpandParameters(cmd) + ";");
+			// 12/31/2020 Paul.  Disable Sql.Trace. 
+			// 10/29/2023 Paul.  Restore Sql.Trace, but not spWWF_INSTANCE_STATES_Lock. 
+			if ( cmd.CommandText != "spWWF_INSTANCE_STATES_Lock" )
+				Debug.WriteLine("Sql.Trace:	exec dbo." + Sql.ExpandParameters(cmd) + ";");
 		}
 
 		// 08/03/2011 Paul.  Generic duplication method. 

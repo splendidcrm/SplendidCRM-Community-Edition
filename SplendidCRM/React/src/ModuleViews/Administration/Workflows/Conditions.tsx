@@ -29,6 +29,7 @@ import { AuthenticatedMethod, LoginRedirect } from '../../../scripts/Login'     
 import { Crm_Config, Crm_Modules }            from '../../../scripts/Crm'                   ;
 import { EndsWith }                           from '../../../scripts/utility'               ;
 import { UpdateModule, UpdateRelatedItem, UpdateRelatedList, DeleteRelatedItem, DeleteModuleItem } from '../../../scripts/ModuleUpdate';
+import { ListView_LoadTablePaginated }        from '../../../scripts/ListView'              ;
 // 4. Components and Views. 
 import ErrorComponent                         from '../../../components/ErrorComponent'    ;
 import SplendidGrid                           from '../../../components/SplendidGrid'      ;
@@ -667,6 +668,46 @@ class WorkflowsConditions extends React.Component<ISubPanelViewProps, ISubPanelV
 		}
 	}
 
+	// 11/05/2023 Paul.  Condition description is built. 
+	private Load = async (sMODULE_NAME, sSORT_FIELD, sSORT_DIRECTION, sSELECT, sFILTER, rowSEARCH_VALUES, nTOP, nSKIP, bADMIN_MODE?, archiveView?) =>
+	{
+		const { TABLE_NAME, PRIMARY_FIELD, PRIMARY_ID } = this.state;
+		rowSEARCH_VALUES = {};
+		rowSEARCH_VALUES[PRIMARY_FIELD] = { FIELD_TYPE: 'Hidden', value: PRIMARY_ID };
+		console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.Load', rowSEARCH_VALUES);
+		sSELECT = "FIELD,TYPE,REL_MODULE,VALUE";
+		let d = await ListView_LoadTablePaginated(TABLE_NAME, sSORT_FIELD, sSORT_DIRECTION, sSELECT, sFILTER, rowSEARCH_VALUES, nTOP, nSKIP, bADMIN_MODE, archiveView);
+		if ( d.results )
+		{
+			for ( let i: number = 0; i < d.results.length; i++ )
+			{
+				let row             : any    = d.results[i];
+				let sFIELD          : string = Sql.ToString(row['FIELD'          ]);
+				let sTYPE           : string = Sql.ToString(row['TYPE'           ]);
+				let sREL_MODULE     : string = Sql.ToString(row['REL_MODULE'     ]);
+				let sDESCRIPTION    : string = '';
+				switch ( sTYPE.toLowerCase() )
+				{
+					case 'compare_specific':
+						sDESCRIPTION = 'When ' + L10n.TableColumnName(sREL_MODULE, sFIELD) + ' changes to or from specified value';
+						break;
+					case 'trigger_record_change':
+						sDESCRIPTION = 'When the target module changes';
+						break;
+					case 'compare_change':
+						sDESCRIPTION = 'When ' + L10n.TableColumnName(sREL_MODULE, sFIELD) + ' changes';
+						break;
+					case 'filter_field':
+						break;
+					case 'filter_rel_field':
+						break;
+				}
+				row['DESCRIPTION'] = sDESCRIPTION;
+			}
+		}
+		return d;
+	}
+
 	public render()
 	{
 		const { PARENT_TYPE, row, layout, CONTROL_VIEW_NAME, disableView, disableEdit, disableRemove } = this.props;
@@ -806,8 +847,9 @@ class WorkflowsConditions extends React.Component<ISubPanelViewProps, ISubPanelV
 								deleteRelated={ layout.MODULE_NAME == 'Activities' }
 								archiveView={ archiveView }
 								deferLoad={ true }
-								disableView={ disableView }
-								disableEdit={ disableEdit }
+								cbCustomLoad={ this.Load }
+								disableView={ true }
+								disableEdit={ true }
 								disableRemove={ disableRemove }
 								cbRemove={ cbRemove }
 								onComponentComplete={ this._onComponentComplete }

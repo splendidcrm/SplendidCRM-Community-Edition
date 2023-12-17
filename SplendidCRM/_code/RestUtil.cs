@@ -4295,6 +4295,19 @@ namespace SplendidCRM
 													ChatManager.Instance.NewMessage(gID);
 												}
 											}
+											// 11/22/2023 Paul.  When unsyncing, we need to immediately clear the remote flag. 
+											if ( sTABLE_NAME == "CONTACTS" )
+											{
+												if ( rowCurrent != null && rowCurrent.Table.Columns.Contains("SYNC_CONTACT") && dict.ContainsKey("SYNC_CONTACT") )
+												{
+													bool bSYNC_CONTACT_old = Sql.ToBoolean(rowCurrent["SYNC_CONTACT"]);
+													bool bSYNC_CONTACT_new = Sql.ToBoolean(dict      ["SYNC_CONTACT"]);
+													if ( bSYNC_CONTACT_old && !bSYNC_CONTACT_new )
+													{
+														ExchangeSync.UnsyncContact(Context, Security.USER_ID, gID);
+													}
+												}
+											}
 										}
 										else
 										{

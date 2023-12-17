@@ -212,6 +212,12 @@ namespace SplendidCRM.Contacts
 						if ( !Sql.IsEmptyString(sIDs) )
 						{
 							SqlProcs.spCONTACTS_MassUnsync(sIDs);
+							// 11/22/2023 Paul.  When unsyncing, we need to immediately clear the remote flag. 
+							foreach ( string sCONTACT_ID in arrID )
+							{
+								Guid gCONTACT_ID = Sql.ToGuid(sCONTACT_ID);
+								ExchangeSync.UnsyncContact(Context, Security.USER_ID, gCONTACT_ID);
+							}
 							Response.Redirect("default.aspx");
 						}
 					}

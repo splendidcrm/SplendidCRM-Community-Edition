@@ -308,7 +308,8 @@ namespace SplendidCRM._devtools
 				}
 				// 03/07/2010 Paul.  Move the Trace function to the Sql class. 
 				// 02/10/2012 Paul.  WORKFLOW and SYSTEM procedures are plentyful and not useful in the trace. 
-				if ( bTransaction && !sProcedureName.StartsWith("spWORKFLOW_") && !sProcedureName.StartsWith("spWWF_") && !sProcedureName.StartsWith("spSCHEDULERS_") && !sProcedureName.StartsWith("spSYSTEM_") && sProcedureName != "spWORKFLOWS_UpdateLastRun" )
+				// 10/29/2023 Paul.  We need to see the workflow trace dump. 
+				if ( bTransaction && /* !sProcedureName.StartsWith("spWORKFLOW_") && !sProcedureName.StartsWith("spWWF_") && */ !sProcedureName.StartsWith("spSCHEDULERS_") && !sProcedureName.StartsWith("spSYSTEM_") && sProcedureName != "spWORKFLOWS_UpdateLastRun" )
 					sb.AppendLine(TabSpace(nIndent) + "Sql.Trace(cmd);");
 				sb.AppendLine(TabSpace(nIndent) + "cmd.ExecuteNonQuery();");
 				for ( int j = 0 ; j < colRows.Count; j++ )

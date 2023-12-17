@@ -364,6 +364,16 @@ namespace SplendidCRM.Contacts
 									return;
 								}
 							}
+							// 11/22/2023 Paul.  When unsyncing, we need to immediately clear the remote flag. 
+							if ( rowCurrent != null )
+							{
+								bool bSYNC_CONTACT_old = Sql.ToBoolean(rowCurrent["SYNC_CONTACT"]);
+								bool bSYNC_CONTACT_new = new DynamicControl(this, rowCurrent, "SYNC_CONTACT").Checked;
+								if ( bSYNC_CONTACT_old && !bSYNC_CONTACT_new )
+								{
+									ExchangeSync.UnsyncContact(Context, Security.USER_ID, gID);
+								}
+							}
 							// 11/10/2010 Paul.  Apply Business Rules. 
 							// 12/10/2012 Paul.  Provide access to the item data. 
 							rowCurrent = Crm.Modules.ItemEdit(m_sMODULE, gID);
