@@ -8,10 +8,12 @@
  * "Copyright (C) 2005-2022 SplendidCRM Software, Inc. All rights reserved."
  */
 
-import * as React from 'react';
-import { DragSource, DropTarget, ConnectDropTarget, ConnectDragSource, DropTargetMonitor, DropTargetConnector, DragSourceConnector, DragSourceMonitor } from 'react-dnd';
+import React, { memo, FC, useState }                              from 'react';
+import { useDrag, useDrop, DragSourceMonitor, DropTargetMonitor } from 'react-dnd';
 // 2. Store and Types. 
+import IDragItemState                                             from '../../types/IDragItemState'  ;
 // 3. Scripts. 
+// 4. Components and Views. 
 
 interface IDraggableCellProps
 {
@@ -23,6 +25,7 @@ interface IDraggableCellProps
 	connectDropTarget?: Function;  // ConnectDropTarget;
 	moveDraggableItem : (id: string, hoverColIndex: number, hoverRowIndex: number, didDrop: boolean) => void;
 	addSourceItem     : (id: string, hoverColIndex: number, hoverRowIndex: number) => void;
+	children          : React.ReactNode;
 }
 
 interface IDraggableCellState
@@ -31,94 +34,77 @@ interface IDraggableCellState
 	isDragging?       : boolean;
 }
 
-const itemTarget =
+// 12/31/2023 Paul.  react-dnd v15 requires use of hooks. 
+const DraggableCell: FC<IDraggableCellProps> = memo(function DraggableCell(props: IDraggableCellProps)
 {
-	hover(props: IDraggableCellProps, monitor: DropTargetMonitor, component: DraggableCell)
-	{
-		const id            : string = monitor.getItem().id        ;
-		const dragFieldIndex: number = monitor.getItem().fieldIndex;
-		const dragColIndex  : number = monitor.getItem().colIndex  ;
-		const dragRowIndex  : number = monitor.getItem().rowIndex  ;
-		const hoverColIndex : number = props.colIndex;
-		const hoverRowIndex : number = props.rowIndex;
-		//console.log((new Date()).toISOString() + ' ' + 'DraggableCell' + '.hover', props, monitor, component);
-
-		// Don't replace items with themselves
-		if ( dragColIndex === hoverColIndex && dragRowIndex === hoverRowIndex )
-		{
-			return;
-		}
-		if ( dragColIndex != -1 && dragRowIndex != -1 )
-		{
-			if ( Math.abs(dragRowIndex - hoverRowIndex) > 1 )
+	const { width, rowTotal, colIndex, rowIndex, moveDraggableItem, addSourceItem, children } = props;
+	const [dropCollect, connectDropTarget] = useDrop
+	(
+		() => ({
+			accept: ['ITEM'],
+			collect: (monitor: DropTargetMonitor) => (
 			{
-				return;
-			}
-			// 03/08/2020 Paul.  When moving items around, we do not need to move existing item. 
-			//console.log((new Date()).toISOString() + ' ' + 'DraggableCell' + '.hover', props, monitor);
-			props.moveDraggableItem(id, hoverColIndex, hoverRowIndex, false);
-		}
-		else
-		{
-			//console.log((new Date()).toISOString() + ' ' + 'DraggableCell' + '.hover', props, monitor);
-			const id: string = monitor.getItem().id;
-			props.addSourceItem(id, hoverColIndex, hoverRowIndex);
-		}
+				isOver : monitor.isOver(),
+				didDrop: monitor.didDrop(),
+			}),
+			hover(item: IDragItemState, monitor: DropTargetMonitor)
+			{
+				//console.log((new Date()).toISOString() + ' ' + 'DraggableCell' + '.hover', props, monitor);
+				const id            : string = item.id        ;
+				const dragFieldIndex: number = item.fieldIndex;
+				const dragColIndex  : number = item.colIndex  ;
+				const dragRowIndex  : number = item.rowIndex  ;
+				const hoverColIndex : number = colIndex;
+				const hoverRowIndex : number = rowIndex;
+				//console.log((new Date()).toISOString() + ' ' + 'DraggableCell' + '.hover', props, monitor, component);
 
-		// Time to actually perform the action
+				// Don't replace items with themselves
+				if ( dragColIndex === hoverColIndex && dragRowIndex === hoverRowIndex )
+				{
+					return;
+				}
+				if ( dragColIndex != -1 && dragRowIndex != -1 )
+				{
+					if ( Math.abs(dragRowIndex - hoverRowIndex) > 1 )
+					{
+						return;
+					}
+					// 03/08/2020 Paul.  When moving items around, we do not need to move existing item. 
+					//console.log((new Date()).toISOString() + ' ' + 'DraggableCell' + '.hover', props, monitor);
+					moveDraggableItem(id, hoverColIndex, hoverRowIndex, false);
+				}
+				else
+				{
+					//console.log((new Date()).toISOString() + ' ' + 'DraggableCell' + '.hover', props, monitor);
+					const id: string = item.id;
+					addSourceItem(id, hoverColIndex, hoverRowIndex);
+				}
 
-		// Note: we're mutating the monitor item here!
-		// Generally it's better to avoid mutations,
-		// but it's good here for the sake of performance
-		// to avoid expensive index searches.
-		monitor.getItem().colIndex = hoverColIndex;
-		monitor.getItem().rowIndex = hoverRowIndex;
-	},
-};
+				// Time to actually perform the action
 
-function dropCollect(connect: DropTargetConnector)
-{
-	//console.log((new Date()).toISOString() + ' ' + 'DraggableCell' + '.dropCollect', connect);
-	return {
-		connectDropTarget: connect.dropTarget()
-	};
-}
+				// Note: we're mutating the monitor item here!
+				// Generally it's better to avoid mutations,
+				// but it's good here for the sake of performance
+				// to avoid expensive index searches.
+				item.colIndex = hoverColIndex;
+				item.rowIndex = hoverRowIndex;
+			},
+			canDrop(item: IDragItemState, monitor: DropTargetMonitor)
+			{
+				//console.log((new Date()).toISOString() + ' ' + 'DraggableCell' + '.canDrop ' + typeof(item), item);
+				return true;
+			},
+		}),
+		[colIndex, rowIndex, moveDraggableItem, addSourceItem],
+	);
+	//console.log((new Date()).toISOString() + ' ' + 'DraggableCell' + ' collected', collect, dropCollect);
 
-class DraggableCell extends React.Component<IDraggableCellProps, IDraggableCellState>
-{
-	constructor(props: IDraggableCellProps)
-	{
-		super(props);
-		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.constructor', props);
-		this.state =
-		{
-			isOver    : false,
-			isDragging: false,
-		};
-	}
+	return (
+			<td ref={ (node) => connectDropTarget(node) }
+				style={{ width, border: '1px dashed grey' }}>
+				{ children }
+			</td>
+	);
+});
 
-	componentWillUpdate(nextProps)
-	{
-		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.componentWillUpdate', nextProps);
-		if ( nextProps.isDragging )
-		{
-			nextProps.setDragging(nextProps.id);
-		}
-	}
-
-	public render()
-	{
-		const { width, rowTotal, children } = this.props;
-		const { isOver } = this.state;
-		return (
-			this.props.connectDropTarget &&
-			this.props.connectDropTarget(
-				<td style={{ width, border: '1px dashed grey' }}>
-					{ children }
-				</td>
-			)
-		);
-	}
-}
-
-export default DropTarget('ITEM', itemTarget, dropCollect)(DraggableCell);
+export default DraggableCell;

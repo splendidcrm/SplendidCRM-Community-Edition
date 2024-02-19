@@ -162,8 +162,8 @@ namespace SplendidCRM._devtools
 					for ( int i = 0 ; i < dtMain.Rows.Count && Response.IsClientConnected && nErrors < 20; i++ )
 					{
 #if DEBUG
-						if ( i >= 10 )
-							break;
+//						if ( i >= 10 )
+//							break;
 #endif
 						DataRow row = dtMain.Rows[i];
 						string sNAME         = Sql.ToString (row["NAME"        ]);

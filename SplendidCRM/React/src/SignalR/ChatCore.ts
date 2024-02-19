@@ -19,12 +19,13 @@ import SplendidCache  from '../scripts/SplendidCache';
 
 export class ChatServerCore
 {
-	history            : H.History<H.LocationState>;
+	// 01/15/2024 Paul.  Updated history package. 
+	history            : H.History;
 	hub                : signalR.HubConnection;
 	started            : boolean;
 	sUSER_CHAT_CHANNELS: string;
 
-	constructor(history: H.History<H.LocationState>, hub: signalR.HubConnection, sUSER_CHAT_CHANNELS: string)
+	constructor(history: H.History, hub: signalR.HubConnection, sUSER_CHAT_CHANNELS: string)
 	{
 		this.history             = history            ;
 		this.hub                 = hub                ;
@@ -99,7 +100,7 @@ export class ChatServerCore
 	}
 }
 
-export function ChatCreateHub(history: H.History<H.LocationState>, sUSER_CHAT_CHANNELS: string): ChatServerCore
+export function ChatCreateHub(history: H.History, sUSER_CHAT_CHANNELS: string): ChatServerCore
 {
 	const hub: signalR.HubConnection = new signalR.HubConnectionBuilder()
 		.withUrl("/signalr_chathub")

@@ -11,7 +11,7 @@
 // 1. React and fabric. 
 import * as React from 'react';
 import { isObservableArray }                  from 'mobx'                    ;
-import * as XMLParser                         from 'fast-xml-parser'         ;
+import { XMLParser, XMLBuilder }              from 'fast-xml-parser'         ;
 import Select                                 from 'react-select'            ;
 // 2. Store and Types. 
 import { IEditComponentProps, EditComponent } from '../types/EditComponent'  ;
@@ -462,7 +462,9 @@ export default class ListBox extends EditComponent<IEditComponentProps, IListBox
 					// 08/17/2019 Paul.  Process as XML before CSV just in case data in wrong format.  XML easy to detect. 
 					else if ( StartsWith(DATA_VALUE, '<?xml') )
 					{
-						let xml = XMLParser.parse(DATA_VALUE);
+						// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
+						const parser = new XMLParser();
+						let xml = parser.parse(DATA_VALUE);
 						if ( xml.Values && xml.Values.Value && Array.isArray(xml.Values.Value) )
 						{
 							let DATA_VALUES: string[] = xml.Values.Value;
@@ -828,7 +830,7 @@ export default class ListBox extends EditComponent<IEditComponentProps, IListBox
 								isMulti={ true }
 								isSearchable={ false }
 								closeMenuOnSelect={ false }
-								size={ Math.abs(FORMAT_ROWS) }
+								aria-setsize={ Math.abs(FORMAT_ROWS) }
 								tabIndex={ FORMAT_TAB_INDEX }
 								onChange={ this._onMultiSelectChange }
 								value={ DATA_VALUES }

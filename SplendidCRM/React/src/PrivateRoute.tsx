@@ -9,64 +9,90 @@
  */
 
 // 1. React and fabric. 
-import * as React from 'react';
-import { Redirect, Route, RouteComponentProps, RouteProps, withRouter } from 'react-router-dom';
-import { observer }                           from 'mobx-react'             ;
+import React, { useState, useEffect }         from 'react'                            ;
+import { Outlet, useParams, useLocation, useNavigate, useOutletContext } from  'react-router-dom'       ;
+import {  SplendidHistory }                   from './Router5'                        ;
+import { FontAwesomeIcon }                    from '@fortawesome/react-fontawesome'   ;
 // 2. Store and Types. 
 // 3. Scripts. 
-import { AuthenticatedMethod, LoginRedirect } from './scripts/Login'        ;
-import { StartsWith }                         from './scripts/utility'      ;
+import { AuthenticatedMethod, LoginRedirect } from './scripts/Login'                  ;
+import { StartsWith }                         from './scripts/utility'                ;
 // 4. Components and Views. 
+import MainContent                            from './ThemeComponents/MainContent'    ;
 
-type Props =
+// https://codedamn.com/news/reactjs/handle-async-functions-with-ease
+function PrivateRouteFC()
 {
-	computedMatch?: any
-} & RouteProps & RouteComponentProps<any>;
+  const [redirecting, setRedirecting] = useState(false);
+  const [loading    , setLoading    ] = useState(true);
+  const [error      , setError      ] = useState(null);
 
-@observer
-class PrivateRoute extends React.Component<Props>
-{
-	constructor(props: Props)
-	{
-		super(props);
-	}
+	const params   = useParams();
+	const location = useLocation();
+	const navigate = useNavigate();
+	const history: SplendidHistory = new SplendidHistory(navigate);
+	//console.log((new Date()).toISOString() + ' PrivateRouteFC params'  , params);
+	//console.log((new Date()).toISOString() + ' PrivateRouteFC location', location);
+	//console.log((new Date()).toISOString() + ' PrivateRouteFC navigate', navigate);
 
-	async componentDidMount()
+	useEffect(() =>
 	{
-		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.componentDidMount', this.props.location.pathname + this.props.location.search);
-		try
+		async function CheckAuthentication()
 		{
-			let status = await AuthenticatedMethod(this.props, this.constructor.name + '.componentDidMount');
-			if ( status == 0 && !StartsWith(this.props.location.pathname, '/Reload') )
+			try
 			{
-				LoginRedirect(this.props.history, this.constructor.name + '.componentDidMount');
+				const props: any = { location, history };
+				let status = await AuthenticatedMethod(props, 'PrivateRouteFC');
+				setLoading(false);
+				if ( status == 0 && !StartsWith(props.location.pathname, '/Reload') )
+				{
+					setRedirecting(true);
+					LoginRedirect(props.history, 'PrivateRouteFC');
+				}
+			}
+			catch(error)
+			{
+				setError(error);
+				console.error((new Date()).toISOString() + ' PrivateRouteFC', error);
 			}
 		}
-		catch(error)
-		{
-			console.error((new Date()).toISOString() + ' ' + this.constructor.name + '.componentDidMount', error);
-		}
-	}
+		CheckAuthentication();
+	}, []);
 
-	public render()
+	if ( loading )
 	{
-		const { component: Component, ...rest } = this.props;
-		const match = this.props.computedMatch
-		/*
-		if ( match && match.params['MODULE_NAME'] )
-		{
-			if ( match.params['MODULE_NAME'] != 'Reload' && match.params['MODULE_NAME'] != 'Reset' )
-				localStorage.setItem('ReactLastActiveModule', match.params['MODULE_NAME']);
-		}
-		else
-		{
-			localStorage.removeItem('ReactLastActiveModule');
-		}
-		*/
-		// 05/30/2019 Paul.  Experiment with returning to the same location, no matter how deep. 
-		localStorage.setItem('ReactLastActiveModule', this.props.location.pathname);
-		return <Route {...rest} render={() => <Component {...this.props} {...match.params} />} />
+		return (
+			<div id='divPrivateRoute' style={ {fontSize: '20px', fontWeight: 'bold', padding: '20px'} }>
+				<div style={ {textAlign: 'center'} }>
+					<FontAwesomeIcon icon="spinner" spin={ true } title="PrivateRouteFC: loading" size="5x" />
+				</div>
+			</div>
+		);
 	}
-}
+	else if ( redirecting )
+	{
+		return (
+			<div id='divPrivateRoute' style={ {fontSize: '20px', fontWeight: 'bold', padding: '20px'} }>
+				<div style={ {textAlign: 'center'} }>
+					<FontAwesomeIcon icon="spinner" spin={ true } title="PrivateRouteFC: redirecting" size="5x" />
+				</div>
+			</div>
+		);
+	}
+	else if ( error )
+	{
+		return (
+			<div id='divPrivateRoute' style={ {fontSize: '20px', fontWeight: 'bold', padding: '20px'} }>
+				PrivateRouteFC error: { JSON.stringify(error) }
+			</div>
+		);
+	}
+	else
+	{
+		return (<MainContent>
+			<Outlet />
+		</MainContent>);
+	}
+};
 
-export default withRouter(PrivateRoute);
+export default PrivateRouteFC;

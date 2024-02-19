@@ -344,9 +344,9 @@ export default class SingleDate extends SurveyQuestion<ISurveyQuestionProps, ISi
 					<DateTime
 						key={ ID + '_' + resetIndex.toString() }
 						value={ VALUE != null ? moment(VALUE) : null }
-						viewDate={ VALUE != null ? moment(VALUE) : null }
+						initialViewDate={ VALUE != null ? moment(VALUE) : null }
 						onChange={ this._onChange }
-						onBlur={ this._onBlur }
+						onClose={ this._onBlur }
 						dateFormat={ dateFormat }
 						timeFormat={ timeFormat }
 						input={ true }

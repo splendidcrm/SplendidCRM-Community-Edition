@@ -9,9 +9,9 @@
  */
 
 // 1. React and fabric. 
-import * as React from 'react';
-import * as qs from 'query-string';
-import { RouteComponentProps, withRouter }          from 'react-router-dom'              ;
+import React from 'react';
+import qs from 'query-string';
+import { RouteComponentProps, withRouter }          from '../Router5'              ;
 import { FontAwesomeIcon }                          from '@fortawesome/react-fontawesome';
 // 2. Store and Types. 
 // 3. Scripts. 

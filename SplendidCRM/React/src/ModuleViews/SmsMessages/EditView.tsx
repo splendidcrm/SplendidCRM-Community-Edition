@@ -9,9 +9,9 @@
  */
 
 // 1. React and fabric. 
-import * as React from 'react';
-import * as qs from 'query-string';
-import { RouteComponentProps, withRouter }          from 'react-router-dom'                                ;
+import React from 'react';
+import qs from 'query-string';
+import { RouteComponentProps, withRouter }          from '../Router5'                                ;
 import { observer }                                 from 'mobx-react'                                      ;
 import { FontAwesomeIcon }                          from '@fortawesome/react-fontawesome'                  ;
 // 2. Store and Types. 
@@ -366,11 +366,13 @@ export default class SmsMessagesEditView extends React.Component<IEditViewProps,
 				});
 				if ( !Sql.IsEmptyString(DuplicateID) )
 				{
-					await this.LoadItem(MODULE_NAME, DuplicateID);
+					// 02/06/2024 Paul.  layout may not be available from state, so pass as parameter. 
+					await this.LoadItem(MODULE_NAME, DuplicateID, layout);
 				}
 				else
 				{
-					await this.LoadItem(MODULE_NAME, ID);
+					// 02/06/2024 Paul.  layout may not be available from state, so pass as parameter. 
+					await this.LoadItem(MODULE_NAME, ID, layout);
 				}
 			}
 		}
@@ -381,11 +383,12 @@ export default class SmsMessagesEditView extends React.Component<IEditViewProps,
 		}
 	}
 
-	private LoadItem = async (sMODULE_NAME: string, sID: string) =>
+	// 02/06/2024 Paul.  layout may not be available from state, so pass as parameter. 
+	private LoadItem = async (sMODULE_NAME: string, sID: string, layout: any[]) =>
 	{
 		const { callback, isSearchView, isUpdatePanel } = this.props;
 		// 03/01/2021 Paul.  Need to initialize old signature value. 
-		let { layout, MODULE_TITLE } = this.state;
+		let { MODULE_TITLE } = this.state;
 		if ( !Sql.IsEmptyString(sID) )
 		{
 			try

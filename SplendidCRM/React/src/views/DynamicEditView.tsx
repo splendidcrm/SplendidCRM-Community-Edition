@@ -10,7 +10,7 @@
 
 // 1. React and fabric. 
 import * as React from 'react';
-import { RouteComponentProps, withRouter }    from 'react-router-dom'              ;
+import { RouteComponentProps, withRouter }    from '../Router5'              ;
 import { FontAwesomeIcon }                    from '@fortawesome/react-fontawesome';
 import { observer }                           from 'mobx-react'                    ;
 // 2. Store and Types. 
@@ -30,7 +30,7 @@ interface IDynamicEditViewProps extends RouteComponentProps<any>
 {
 	MODULE_NAME        : string;
 	ID?                : string;
-	LAYOUT_NAME        : string;
+	LAYOUT_NAME?       : string;
 	// 04/04/2021 Paul.  Use CONTROL_VIEW_NAME to create unique keys so that same module/subpanel search multiple times. 
 	CONTROL_VIEW_NAME? : string;
 	callback?          : any;
@@ -57,7 +57,7 @@ interface IDynamicEditViewState
 }
 
 @observer
-export default class DynamicEditView extends React.Component<IDynamicEditViewProps, IDynamicEditViewState>
+export class DynamicEditView extends React.Component<IDynamicEditViewProps, IDynamicEditViewState>
 {
 	private _isMounted = false;
 	private editView   = React.createRef<EditView>();
@@ -80,6 +80,7 @@ export default class DynamicEditView extends React.Component<IDynamicEditViewPro
 	constructor(props: IDynamicEditViewProps)
 	{
 		super(props);
+		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.constructor', this.props);
 		// 01/26/2021 Paul.  Now that the search view can be customized, we need to make sure it does not set the mode. 
 		if ( !props.isSearchView && !props.isUpdatePanel && !props.isQuickCreate )
 		{
@@ -155,10 +156,11 @@ export default class DynamicEditView extends React.Component<IDynamicEditViewPro
 
 	componentDidUpdate(prevProps: IDynamicEditViewProps)
 	{
-		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.componentDidUpdate', prevProps);
+		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.componentDidUpdate', this.props, prevProps);
 		// 01/19/2021 Paul.  A user may click the browser back button from one detail view to another.  Detect and reset so that the correct custom view is loaded. 
 		if ( this.props.location.pathname != prevProps.location.pathname )
 		{
+			console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.componentDidUpdate pathname changed', this.props.location.pathname, prevProps.location.pathname);
 			// 01/23/2021 Paul.  Don't let dynamic search panel redirect. This is an issue now that we allow custom search panels. 
 			// 02/08/2021 Paul.  LAYOUT_NAME is not always defined. 
 			if ( !this.props.LAYOUT_NAME || this.props.LAYOUT_NAME.indexOf('.Search') < 0 )
@@ -204,4 +206,5 @@ export default class DynamicEditView extends React.Component<IDynamicEditViewPro
 }
 
 // 08/11/2020 Paul.  We don't want to use withRouter() as it makes it difficult to get a reference. 
-
+// 02/02/2024 Paul.  We have no choice.  We must use withRouter. 
+export default withRouter(DynamicEditView);

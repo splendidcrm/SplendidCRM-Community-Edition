@@ -9,11 +9,12 @@
  */
 
 // 1. React and fabric. 
-import * as React from 'react';
-import { DragSource, DropTarget, ConnectDropTarget, ConnectDragSource, DropTargetMonitor, DropTargetConnector, DragSourceConnector, DragSourceMonitor } from 'react-dnd';
+import React, { memo, FC }                                        from 'react';
+import { useDrag, useDrop, DragSourceMonitor, DropTargetMonitor } from 'react-dnd';
 // 2. Store and Types. 
+import IDragItemState                                             from '../../types/IDragItemState'  ;
 // 3. Scripts. 
-import L10n from '../../scripts/L10n';
+import L10n                                                       from '../../scripts/L10n'          ;
 
 const style: React.CSSProperties =
 {
@@ -31,72 +32,65 @@ interface ISouceItemProps
 	ModuleName          : string;
 	item                : any;
 	isFieldInUse        : boolean;
-	connectDragSource?  : Function;  // ConnectDragSource;
 	createItemFromSource: (item: any) => any;
 	moveDraggableItem   : (id: string, hoverColIndex: number, hoverRowIndex: number, didDrop: boolean) => void;
 	remove              : (item, type) => void;
 }
 
-const source =
+// 12/31/2023 Paul.  react-dnd v15 requires use of hooks. 
+const SouceItem: FC<ISouceItemProps> = memo(function SouceItem(props: ISouceItemProps)
 {
-	beginDrag(props: ISouceItemProps)
-	{
-		//console.log((new Date()).toISOString() + ' ' + 'SouceItem' + '.beginDrag', props);
-		let obj: any = Object.assign(props.item, { id: props.item.DATA_FIELD} );
-		return props.createItemFromSource(obj);
-	},
-	endDrag(props: ISouceItemProps, monitor: DragSourceMonitor)
-	{
-		//console.log((new Date()).toISOString() + ' ' + 'SouceItem' + '.endDrag', props, monitor.getItem());
-		if ( monitor.didDrop() )
-		{
-			const id           : string = monitor.getItem().id        ;
-			const hoverColIndex: number = monitor.getItem().colIndex  ;
-			const hoverRowIndex: number = monitor.getItem().rowIndex  ;
-			props.moveDraggableItem(id, hoverColIndex, hoverRowIndex, true);
-		}
-		else
-		{
-			// 03/14/2020 Paul.  We need to remove the ghost item created above. 
-			props.remove(monitor.getItem(), 'ITEM');
-		}
-	}
-};
+	const{ ModuleName, item, isFieldInUse, createItemFromSource, moveDraggableItem, remove } = props;
+	//console.log((new Date()).toISOString() + ' ' + 'SouceItem' + '.props', props);
+	const [collect, connectDragSource, dragPreview] = useDrag
+	(
+		() => ({
+			type: 'ITEM',
+			item: (monitor: DragSourceMonitor) =>
+			{
+				//console.log((new Date()).toISOString() + ' ' + 'SouceItem' + '.item/begin', item, props, monitor);
+				return createItemFromSource(Object.assign(props.item, { id: item.DATA_FIELD} ));
+			},
+			collect: (monitor: DragSourceMonitor) => (
+			{
+				isDragging: monitor.isDragging()
+			}),
+			end: (item: IDragItemState, monitor: DragSourceMonitor) =>
+			{
+				//console.log((new Date()).toISOString() + ' ' + 'SouceItem' + '.end', item, props);
+				if ( monitor.didDrop() )
+				{
+					// 12/31/2023 Paul.  Upgrade DnD. 
+					const id           : string = item.id        ;
+					const hoverColIndex: number = item.colIndex  ;
+					const hoverRowIndex: number = item.rowIndex  ;
+					moveDraggableItem(id, hoverColIndex, hoverRowIndex, true);
+				}
+				else
+				{
+					// 03/14/2020 Paul.  We need to remove the ghost item created above. 
+					remove(item, 'ITEM');
+				}
+			},
+			canDrag: (monitor: DragSourceMonitor) =>
+			{
+				return true;
+			},
+		}),
+		[item, createItemFromSource, moveDraggableItem, remove],
+	);
+	//console.log((new Date()).toISOString() + ' ' + 'SouceItem' + ' collected', collect, dropCollect);
+	// 03/14/2020 Paul.  When field is in use, we must hide it instead of not creating it as failure to create would prevent endDrag from firing. 
+	return (
+			<div ref={ (node) => connectDragSource(node) }
+				className='grab DynamicLayoutComponents-Shared-SourceItem'
+				style={ { ...style, display: (isFieldInUse ? 'none' : null) } }
+				>
+				{ item.ColumnName }
+				<br />
+				{ L10n.TableColumnName(ModuleName, item.ColumnName) }
+			</div>
+	);
+});
 
-function collect(connect: DragSourceConnector, monitor: DragSourceMonitor)
-{
-	//console.log((new Date()).toISOString() + ' ' + 'SouceItem' + '.collect', connect, monitor);
-	return {
-		connectDragSource: connect.dragSource()
-	};
-}
-
-class SouceItem extends React.Component<ISouceItemProps>
-{
-	constructor(props: ISouceItemProps)
-	{
-		super(props);
-		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.constructor', props);
-	}
-
-	public render()
-	{
-		const{ ModuleName, item, isFieldInUse } = this.props;
-		// 03/14/2020 Paul.  When field is in use, we must hide it instead of not creating it as failure to create would prefent endDrag from firing. 
-		return (
-			this.props.connectDragSource &&
-			this.props.connectDragSource(
-				<div
-					className='grab'
-					style={ { ...style, display: (isFieldInUse ? 'none' : null) } }
-					>
-					{ item.ColumnName }
-					<br />
-					{ L10n.TableColumnName(ModuleName, item.ColumnName) }
-				</div>
-			)
-		);
-	}
-}
-
-export default DragSource('ITEM', source, collect)(SouceItem);
+export default SouceItem;

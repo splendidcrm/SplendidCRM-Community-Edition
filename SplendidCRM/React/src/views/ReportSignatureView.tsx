@@ -10,7 +10,7 @@
 
 // 1. React and fabric. 
 import * as React from 'react';
-import { RouteComponentProps, withRouter }            from 'react-router-dom'                     ;
+import { RouteComponentProps, withRouter }            from '../Router5'                     ;
 import { observer }                                   from 'mobx-react'                           ;
 import { FontAwesomeIcon }                            from '@fortawesome/react-fontawesome'       ;
 // https://www.npmjs.com/package/react-signature-canvas
@@ -248,7 +248,7 @@ class ReportSignatureView extends React.Component<IReportSignatureViewProps, IRe
 							let res = await CreateSplendidRequest(sUrl, 'POST', 'application/octet-stream', sBody);
 							let json = await GetSplendidResult(res);
 							
-							//history.goBack();
+							//history.back();
 							//this.setState({ error: 'Saved' });
 							history.push('/Reset/' + this.props.PARENT_NAME + '/View/' + this.props.PARENT_ID);
 						}
@@ -274,7 +274,8 @@ class ReportSignatureView extends React.Component<IReportSignatureViewProps, IRe
 			}
 			case 'Cancel':
 			{
-				history.goBack();
+				// 01/15/2024 Paul.  Updated history package. 
+				history.back();
 				break;
 			}
 			default:
@@ -359,4 +360,5 @@ class ReportSignatureView extends React.Component<IReportSignatureViewProps, IRe
 	}
 }
 
-export default withRouter(withScreenSizeHook(ReportSignatureView));
+// 02/04/2024 Paul.  Prepare for v18 by swapping order. 
+export default withScreenSizeHook(withRouter(ReportSignatureView));

@@ -10,7 +10,7 @@
 
 // 1. React and fabric. 
 import * as React from 'react';
-import { RouteComponentProps, withRouter }            from 'react-router-dom'                           ;
+import { RouteComponentProps, withRouter }            from '../Router5'                           ;
 import { observer }                                   from 'mobx-react'                                 ;
 import { FontAwesomeIcon }                            from '@fortawesome/react-fontawesome'             ;
 // 2. Store and Types. 
@@ -188,7 +188,8 @@ class OutboundEmailDetailView extends React.Component<IDetailViewProps, IAdminDe
 				const layout = DetailView_LoadLayout(DETAIL_NAME);
 				// 06/19/2018 Paul.  Always clear the item when setting the layout. 
 				this.setState({ layout: layout, item: null });
-				await this.LoadItem(MODULE_NAME, ID);
+				// 02/06/2024 Paul.  layout may not be available from state, so pass as parameter. 
+				await this.LoadItem(MODULE_NAME, ID, layout);
 			}
 			else
 			{
@@ -202,9 +203,9 @@ class OutboundEmailDetailView extends React.Component<IDetailViewProps, IAdminDe
 		}
 	}
 
-	private LoadItem = async (sMODULE_NAME: string, sID: string) =>
+	// 02/06/2024 Paul.  layout may not be available from state, so pass as parameter. 
+	private LoadItem = async (sMODULE_NAME: string, sID: string, layout: any[]) =>
 	{
-		let { layout } = this.state;
 		try
 		{
 			//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.LoadItem ' + sMODULE_NAME + ' ' + sID);

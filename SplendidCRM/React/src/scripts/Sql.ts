@@ -801,7 +801,8 @@ export default class Sql
 			});
 			return cp.map((n: any) => Sql.DeepCopy<any>(n)) as any;
 		}
-		if ( typeof target === 'object' && target !== {} )
+		// 02/04/2024 Paul.  Condition will always return true. 
+		if ( typeof target === 'object' /*&& target !== {}*/ )
 		{
 			const cp = { ...(target as { [key: string]: any }) } as { [key: string]: any };
 			Object.keys(cp).forEach(k =>

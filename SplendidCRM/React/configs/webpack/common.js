@@ -14,6 +14,12 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.m?js$/,
+        resolve: {
+          fullySpecified: false
+        }
+      },
+      {
         test: /\.tsx?$/,
         use: [
           {
@@ -57,7 +63,11 @@ module.exports = {
         }]
       },
       {
-        test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
+        test: /\.svg$/,
+        loader: 'svg-inline-loader'
+      },
+      {
+        test: /\.(woff(2)?|ttf)(\?v=\d+\.\d+\.\d+)?$/,
         loader: 'file-loader'
       },
       {

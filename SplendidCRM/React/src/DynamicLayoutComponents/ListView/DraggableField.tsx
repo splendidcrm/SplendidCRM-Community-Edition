@@ -9,11 +9,12 @@
  */
 
 // 1. React and fabric. 
-import * as React from 'react';
-import { DragSource, DropTarget, ConnectDropTarget, ConnectDragSource, DropTargetMonitor, DropTargetConnector, DragSourceConnector, DragSourceMonitor } from 'react-dnd';
+import React, { memo, FC, useState }                              from 'react';
+import { useDrag, useDrop, DragSourceMonitor, DropTargetMonitor } from 'react-dnd';
+// 2. Store and Types. 
+import IDragItemState                                             from '../../types/IDragItemState'  ;
 // 3. Scripts. 
-import L10n                                         from '../../scripts/L10n'               ;
-
+import L10n                                                       from '../../scripts/L10n'               ;
 
 const style: React.CSSProperties =
 {
@@ -39,155 +40,144 @@ interface IDraggableFieldProps
 	rowTotal?         : number;
 	setDragging       : (id: string) => void;
 	draggingId        : string;
-	connectDragSource?: ConnectDragSource;
-	connectDropTarget?: ConnectDropTarget;
 	moveDraggableItem : (dragColIndex: number, dragRowIndex: number, hoverCOlIndex: number, hoverRowIndex: number) => void;
 }
 
-const source =
+// 12/31/2023 Paul.  react-dnd v15 requires use of hooks. 
+const DraggableField: FC<IDraggableFieldProps> = memo(function DraggableField(props: IDraggableFieldProps)
 {
-	beginDrag(props: IDraggableFieldProps)
-	{
-		//console.log((new Date()).toISOString() + ' ' + 'DraggableField' + '.beginDrag', props);
-		return {
-			id      : props.id,
-			colIndex: props.colIndex,
-			rowIndex: props.rowIndex,
-			origId  : props.id,
-		};
-	},
-	endDrag(props: IDraggableFieldProps, monitor: DragSourceMonitor)
-	{
-		//console.log((new Date()).toISOString() + ' ' + 'DraggableField' + '.endDrag', props, monitor);
-		if ( !monitor.didDrop() )
-		{
-			// 03/27/2022 Paul.  There is no remove. 
-			//props.remove(monitor.getItem(), monitor.getItemType());
-		}
-	}
-};
-
-const itemTarget =
-{
-	hover(props: IDraggableFieldProps, monitor: DropTargetMonitor, component: DraggableField)
-	{
-		const dragColIndex : number = monitor.getItem().colIndex;
-		const dragRowIndex : number = monitor.getItem().rowIndex;
-		const hoverColIndex: number = props.colIndex;
-		const hoverRowIndex: number = props.rowIndex;
-		//console.log((new Date()).toISOString() + ' ' + 'DraggableField' + '.hover', props, monitor, component);
-
-		// Don't replace items with themselves
-		if ( dragColIndex === hoverColIndex && dragRowIndex === hoverRowIndex )
-		{
-			return;
-		}
-		if ( dragColIndex != -1 && dragRowIndex != -1 )
-		{
-			if ( Math.abs(dragRowIndex - hoverRowIndex) > 1 )
+	const { item, id, draggingId, isDragging, rowTotal, colIndex, rowIndex, moveDraggableItem, setDragging } = props;
+	//console.log((new Date()).toISOString() + ' ' + 'DraggableField' + '.props', props);
+	const [collect, connectDragSource, dragPreview] = useDrag
+	(
+		() => ({
+			type: 'ITEM',
+			item: (monitor: DragSourceMonitor) =>
 			{
-				return;
-			}
-			props.moveDraggableItem(dragColIndex, dragRowIndex, hoverColIndex, hoverRowIndex);
-		}
-		else
-		{
-			// 03/27/2022 Paul.  There is no add. 
-			//const id: string = monitor.getItem().id;
-			//props.addSourceItem(id, hoverColIndex, hoverRowIndex)
-		}
-
-		// Time to actually perform the action
-
-		// Note: we're mutating the monitor item here!
-		// Generally it's better to avoid mutations,
-		// but it's good here for the sake of performance
-		// to avoid expensive index searches.
-		monitor.getItem().id       = props.id;
-		monitor.getItem().colIndex = hoverColIndex;
-		monitor.getItem().rowIndex = hoverRowIndex;
-	},
-};
-
-function collect(connect: DragSourceConnector, monitor: DragSourceMonitor)
-{
-	//console.log((new Date()).toISOString() + ' ' + 'DraggableField' + '.collect', connect, monitor);
-	return {
-		connectDragSource: connect.dragSource(),
-		isDragging       : monitor.isDragging(),
-		didDrop          : monitor.didDrop(),
-	};
-}
-
-function dropCollect(connect: DropTargetConnector)
-{
-	//console.log((new Date()).toISOString() + ' ' + 'DraggableField' + '.dropCollect', connect);
-	return {
-		connectDropTarget: connect.dropTarget()
-	};
-}
-
-class DraggableField extends React.Component<IDraggableFieldProps>
-{
-	constructor(props: IDraggableFieldProps)
-	{
-		super(props);
-		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.constructor', props);
-	}
-
-	shouldComponentUpdate(nextProps: IDraggableFieldProps)
-	{
-		if ( this.props.draggingId !== nextProps.draggingId )
-		{
-			if ( nextProps.draggingId !== nextProps.id )
+				//console.log((new Date()).toISOString() + ' ' + 'DraggableField' + '.item/begin', props, monitor);
+				return {
+					id      : id,
+					colIndex: colIndex,
+					rowIndex: rowIndex,
+					origId  : id,
+				};
+			},
+			collect: (monitor: DragSourceMonitor) => (
 			{
-				return false;
-			}
-		}
-		return true;
-	}
+				isDragging: monitor.isDragging(),
+				didDrop   : monitor.didDrop(),
+			}),
+			end: (item: IDragItemState, monitor: DragSourceMonitor) =>
+			{
+				//console.log((new Date()).toISOString() + ' ' + 'DraggableItem' + '.end', item, props);
+				if ( !monitor.didDrop() )
+				{
+					// 03/27/2022 Paul.  There is no remove. 
+					//remove(item, monitor.getItemType());
+				}
+				else
+				{
+					setDragging('');
+				}
+			},
+			canDrag: (monitor: DragSourceMonitor) =>
+			{
+				return true;
+			},
+		}),
+		[id, colIndex, rowIndex, setDragging],
+	);
+	const [dropCollect, connectDropTarget] = useDrop
+	(
+		() => ({
+			accept: ['ITEM'],
+			collect: (monitor: DropTargetMonitor) => (
+			{
+				isOver : monitor.isOver(),
+				didDrop: monitor.didDrop(),
+			}),
+			hover(item: IDragItemState, monitor: DropTargetMonitor)
+			{
+				//console.log((new Date()).toISOString() + ' ' + 'DraggableField' + '.hover', props, monitor);
+				const dragColIndex : number = item.colIndex;
+				const dragRowIndex : number = item.rowIndex;
+				const hoverColIndex: number = colIndex;
+				const hoverRowIndex: number = rowIndex;
 
-	componentWillUpdate(nextProps)
+				// Don't replace items with themselves
+				if ( dragColIndex === hoverColIndex && dragRowIndex === hoverRowIndex )
+				{
+					return;
+				}
+				if ( dragColIndex != -1 && dragRowIndex != -1 )
+				{
+					if ( Math.abs(dragRowIndex - hoverRowIndex) > 1 )
+					{
+						return;
+					}
+					moveDraggableItem(dragColIndex, dragRowIndex, hoverColIndex, hoverRowIndex);
+				}
+				else
+				{
+					// 03/27/2022 Paul.  There is no add. 
+					//const id: string = item.id;
+					//addSourceItem(id, hoverColIndex, hoverRowIndex)
+				}
+
+				// Time to actually perform the action
+
+				// Note: we're mutating the monitor item here!
+				// Generally it's better to avoid mutations,
+				// but it's good here for the sake of performance
+				// to avoid expensive index searches.
+				item.id       = id;
+				item.colIndex = hoverColIndex;
+				item.rowIndex = hoverRowIndex;
+			},
+			canDrop(item: IDragItemState, monitor: DropTargetMonitor)
+			{
+				//console.log((new Date()).toISOString() + ' ' + 'DraggableField' + '.canDrop ' + typeof(item), item);
+				return true;
+			},
+		}),
+		[id, colIndex, rowIndex, moveDraggableItem],
+	);
+	//console.log((new Date()).toISOString() + ' ' + 'DraggableField' + ' collected', collect, dropCollect);
+	const [dragging, setLocalDragging] = useState(false);
+	if ( dragging != collect.isDragging )
 	{
-		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.componentWillUpdate', nextProps);
-		// 03/27/2022 Paul.  We seem to be getting a second drag event.  Check dragginId before setting. 
-		if ( nextProps.isDragging && nextProps.draggingId == '' )
+		//console.log((new Date()).toISOString() + ' ' + 'DraggableItem' + ' dragging changed', collect.isDragging);
+		if ( collect.isDragging )
 		{
-			nextProps.setDragging(nextProps.id);
+			props.setDragging(props.id);
 		}
-		if ( nextProps.didDrop && nextProps.draggingId != '' )
+		if ( collect.didDrop )
 		{
-			nextProps.setDragging('');
+			props.setDragging('');
 		}
+		setLocalDragging(collect.isDragging);
 	}
 
-	public render()
-	{
-		const { item, id, draggingId, isDragging, rowTotal, connectDragSource, connectDropTarget, colIndex, children } = this.props;
-		const opacity = isDragging ? 1 : 1;
-		return (
-			connectDragSource &&
-			connectDropTarget &&
-			connectDragSource(
-				connectDropTarget(
-					<div draggable className='grab' style={{ ...style, opacity, backgroundColor: (id == draggingId ? 'grey' : 'lightgrey'), flexBasis: `${100 / rowTotal}%` }}>
-						<div>
-							<h3 style={ {display: 'inline', color: 'black'} }>
-							{ item.HEADER_TEXT
-							? L10n.Term(item.HEADER_TEXT)
-							: null
-							}
-							</h3>
-							<br />
-							{ item.DATA_FIELD }
-							<br />
-							{ item.COLUMN_TYPE } { item.DATA_FORMAT }
-						</div>
-					</div>
-				)
-			)
-		);
-	}
-}
+	const opacity = isDragging ? 1 : 1;
+	return (
+			<div ref={ (node) => connectDragSource(connectDropTarget(node)) }
+				draggable
+				className='grab'
+				style={{ ...style, opacity, backgroundColor: (id == draggingId ? 'grey' : 'lightgrey'), flexBasis: `${100 / rowTotal}%` }}>
+				<div>
+					<h3 style={ {display: 'inline', color: 'black'} }>
+					{ item.HEADER_TEXT
+					? L10n.Term(item.HEADER_TEXT)
+					: null
+					}
+					</h3>
+					<br />
+					{ item.DATA_FIELD }
+					<br />
+					{ item.COLUMN_TYPE } { item.DATA_FORMAT }
+				</div>
+			</div>
+	);
+});
 
-export default DropTarget('ITEM', itemTarget, dropCollect)(DragSource('ITEM', source, collect)(DraggableField));
+export default DraggableField;

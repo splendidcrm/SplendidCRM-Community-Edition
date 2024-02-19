@@ -11,7 +11,7 @@
 // 1. React and fabric. 
 import * as React from 'react';
 import moment from 'moment';
-import { RouteComponentProps, withRouter }      from 'react-router-dom'                       ;
+import { RouteComponentProps, withRouter }      from '../Router5'                       ;
 import { FontAwesomeIcon }                      from '@fortawesome/react-fontawesome'         ;
 // 2. Store and Types. 
 // 3. Scripts. 

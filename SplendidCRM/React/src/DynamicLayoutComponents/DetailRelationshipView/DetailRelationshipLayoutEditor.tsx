@@ -14,7 +14,6 @@ import { FontAwesomeIcon }                          from '@fortawesome/react-fon
 // 3. Scripts. 
 import Sql                                          from '../../scripts/Sql'                   ;
 import L10n                                         from '../../scripts/L10n'                  ;
-import { StartsWith, uuidFast }                     from '../../scripts/utility'               ;
 import { CreateSplendidRequest, GetSplendidResult } from '../../scripts/SplendidRequest'       ;
 // 4. Components and Views. 
 import DetailRelationshipPropertiesEditor           from './DetailRelationshipPropertiesEditor';

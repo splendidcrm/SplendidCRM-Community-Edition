@@ -31,6 +31,7 @@
 -- 01/28/2017 Paul.  EXCHANGE_WATERMARK for support of Exchange and Office365.
 -- 01/28/2017 Paul.  GROUP_TEAM_ID for inbound emails. 
 -- 03/29/2017 Paul.  SERVER_URL, EMAIL_USER, EMAIL_PASSWORD, PORT are all nullable. 
+-- 07/19/2023 Paul.  Increase size of EXCHANGE_WATERMARK to 1000.  Badly formed token. 
 if not exists (select * from INFORMATION_SCHEMA.TABLES where TABLE_NAME = 'INBOUND_EMAILS' and TABLE_TYPE = 'BASE TABLE')
   begin
 	print 'Create Table dbo.INBOUND_EMAILS';
@@ -66,7 +67,7 @@ if not exists (select * from INFORMATION_SCHEMA.TABLES where TABLE_NAME = 'INBOU
 		, REPLY_TO_NAME                      nvarchar(100) null
 		, REPLY_TO_ADDR                      nvarchar(100) null
 		, LAST_EMAIL_UID                     bigint null default(0)
-		, EXCHANGE_WATERMARK                 varchar(100) null
+		, EXCHANGE_WATERMARK                 varchar(1000) null
 		)
 
 	create index IDX_INBOUND_EMAILS on dbo.INBOUND_EMAILS (DELETED, STATUS, MAILBOX_TYPE, IS_PERSONAL, ID)

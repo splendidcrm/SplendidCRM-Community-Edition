@@ -10,7 +10,7 @@
 
 // 1. React and fabric. 
 import * as React from 'react';
-import { RouteComponentProps, withRouter }    from 'react-router-dom'              ;
+import { RouteComponentProps, withRouter }    from '../Router5'              ;
 import { FontAwesomeIcon }                    from '@fortawesome/react-fontawesome';
 import { observer }                           from 'mobx-react'                    ;
 // 2. Store and Types. 
@@ -30,7 +30,7 @@ interface IDynamicEditViewProps extends RouteComponentProps<any>
 {
 	MODULE_NAME        : string;
 	ID?                : string;
-	LAYOUT_NAME        : string;
+	LAYOUT_NAME?       : string;
 	// 04/04/2021 Paul.  Use CONTROL_VIEW_NAME to create unique keys so that same module/subpanel search multiple times. 
 	CONTROL_VIEW_NAME? : string;
 	callback?          : any;
@@ -58,7 +58,7 @@ interface IDynamicEditViewState
 
 // 09/04/2022 Paul.  A customer wants to change MailMerge, so make it dynamic. 
 @observer
-export default class DynamicMailMerge extends React.Component<IDynamicEditViewProps, IDynamicEditViewState>
+class DynamicMailMerge extends React.Component<IDynamicEditViewProps, IDynamicEditViewState>
 {
 	private _isMounted = false;
 
@@ -164,4 +164,5 @@ export default class DynamicMailMerge extends React.Component<IDynamicEditViewPr
 }
 
 // 08/11/2020 Paul.  We don't want to use withRouter() as it makes it difficult to get a reference. 
-
+// 02/02/2024 Paul.  We have no choice.  We must use withRouter. 
+export default withRouter(DynamicMailMerge);

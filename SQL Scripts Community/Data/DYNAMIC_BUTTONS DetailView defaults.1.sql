@@ -450,6 +450,8 @@ end -- if;
 GO
 
 -- 07/19/2010 Paul.  Add test button to InboundEmail.DetailView. 
+-- 07/18/2023 Paul.  Provide a way to archive imported messages. 
+-- 07/19/2023 Paul.  Not ready to implement archive. 
 -- delete from DYNAMIC_BUTTONS where VIEW_NAME = 'InboundEmail.DetailView';
 if not exists(select * from DYNAMIC_BUTTONS where VIEW_NAME = 'InboundEmail.DetailView' and DELETED = 0) begin -- then
 	print 'DYNAMIC_BUTTONS InboundEmail.DetailView';
@@ -458,13 +460,17 @@ if not exists(select * from DYNAMIC_BUTTONS where VIEW_NAME = 'InboundEmail.Deta
 	exec dbo.spDYNAMIC_BUTTONS_InsDelete    'InboundEmail.DetailView'         , 2, null;
 	exec dbo.spDYNAMIC_BUTTONS_InsCancel    'InboundEmail.DetailView'         , 3, null, 1;
 	exec dbo.spDYNAMIC_BUTTONS_InsButton    'InboundEmail.DetailView'         , 4, 'InboundEmail'    , 'edit'  , null, null, 'Test'                , null, 'EmailMan.LBL_TEST_BUTTON_LABEL'              , 'EmailMan.LBL_TEST_BUTTON_TITLE'              , null, null, null;
+--	exec dbo.spDYNAMIC_BUTTONS_InsButton    'InboundEmail.DetailView'         , 5, 'InboundEmail'    , 'edit'  , null, null, 'Archive'             , null, 'EmailMan.LBL_ARCHIVE_BUTTON_LABEL'           , 'EmailMan.LBL_ARCHIVE_BUTTON_TITLE'              , null, null, null;
 end else begin
 	if not exists(select * from DYNAMIC_BUTTONS where VIEW_NAME = 'InboundEmail.DetailView' and COMMAND_NAME = 'Test' and DELETED = 0) begin -- then
 		exec dbo.spDYNAMIC_BUTTONS_InsButton    'InboundEmail.DetailView'         , 4, 'InboundEmail'    , 'edit'  , null, null, 'Test'                , null, 'EmailMan.LBL_TEST_BUTTON_LABEL'              , 'EmailMan.LBL_TEST_BUTTON_TITLE'              , null, null, null;
 	end -- if;
+	-- 07/18/2023 Paul.  Provide a way to archive imported messages. 
+--	if not exists(select * from DYNAMIC_BUTTONS where VIEW_NAME = 'InboundEmail.DetailView' and COMMAND_NAME = 'Archive' and DELETED = 0) begin -- then
+--		exec dbo.spDYNAMIC_BUTTONS_InsButton    'InboundEmail.DetailView'         , 5, 'InboundEmail'    , 'edit'  , null, null, 'Archive'             , null, 'EmailMan.LBL_ARCHIVE_BUTTON_LABEL'           , 'EmailMan.LBL_ARCHIVE_BUTTON_TITLE'           , null, null, null;
+--	end -- if;
 end -- if;
 GO
-
 
 
 

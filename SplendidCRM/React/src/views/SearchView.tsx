@@ -12,9 +12,9 @@
 import * as React from 'react';
 import { FontAwesomeIcon }                      from '@fortawesome/react-fontawesome'   ;
 import { faAngleDoubleUp, faAngleDoubleDown }   from '@fortawesome/free-solid-svg-icons';
-import { RouteComponentProps }                  from 'react-router-dom'                 ;
+import { RouteComponentProps }                  from '../Router5'                       ;
 import { observer }                             from 'mobx-react'                       ;
-import * as XMLParser                           from 'fast-xml-parser'                  ;
+import { XMLParser, XMLBuilder }                from 'fast-xml-parser'                  ;
 // 2. Store and Types. 
 import MODULE                                   from '../types/MODULE'                  ;
 // 3. Scripts. 
@@ -33,7 +33,8 @@ import { UpdateSavedSearch, DeleteSavedSearch } from '../scripts/ModuleUpdate'  
 // 4. Components and Views. 
 import ErrorComponent                           from '../components/ErrorComponent'     ;
 // 01/22/2021 Paul.  Allow the search panel to be customized. 
-import DynamicEditView                          from '../views/DynamicEditView'         ;
+// 02/04/2024 Paul.  Export both types so ref can use correct type. 
+import DynamicEditViewWithRouter, { DynamicEditView } from '../views/DynamicEditView'        ;
 
 const ControlChars = { CrLf: '\r\n', Cr: '\r', Lf: '\n', Tab: '\t' };
 
@@ -143,6 +144,15 @@ export default class SearchView extends React.Component<ISearchViewProps, ISearc
 					let options: any = 
 					{
 						attributeNamePrefix: '',
+						// 02/18/2024 Paul.  parser v4 does not have an issue with node name as there is no value tag. 
+						//  <SearchFields>
+						//    <Field Name="CATEGORY_ID" Type="ListBox"></Field>
+						//    <Field Name="SUBCATEGORY_ID" Type="ListBox"></Field>
+						//    <Field Name="EXP_DATE" Type="DateRange">
+						//      <Before>02/25/2024</Before>
+						//      <After>02/18/2024</After>
+						//    </Field>
+						//  </SearchFields>
 						textNodeName       : 'Value',
 						ignoreAttributes   : false,
 						ignoreNameSpace    : true,
@@ -150,8 +160,9 @@ export default class SearchView extends React.Component<ISearchViewProps, ISearc
 						trimValues         : false,
 
 					};
-					let tObj = XMLParser.getTraversalObj(search.CONTENTS, options);
-					let xml = XMLParser.convertToJson(tObj, options);
+					// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
+					const parser = new XMLParser(options);
+					let xml = parser.parse(search.CONTENTS);
 					//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.constructor', xml);
 					if ( xml.SavedSearch != null )
 					{
@@ -435,14 +446,24 @@ export default class SearchView extends React.Component<ISearchViewProps, ISearc
 						let options: any = 
 						{
 							attributeNamePrefix: '',
+							// 02/18/2024 Paul.  parser v4 does not have an issue with node name as there is no value tag. 
+							//  <SearchFields>
+							//    <Field Name="CATEGORY_ID" Type="ListBox"></Field>
+							//    <Field Name="SUBCATEGORY_ID" Type="ListBox"></Field>
+							//    <Field Name="EXP_DATE" Type="DateRange">
+							//      <Before>02/25/2024</Before>
+							//      <After>02/18/2024</After>
+							//    </Field>
+							//  </SearchFields>
 							textNodeName       : 'Value',
 							ignoreAttributes   : false,
 							ignoreNameSpace    : true,
 							parseAttributeValue: true,
 							trimValues         : false,
 						};
-						let tObj = XMLParser.getTraversalObj(search.CONTENTS, options);
-						let xml = XMLParser.convertToJson(tObj, options);
+						// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
+						const parser = new XMLParser(options);
+						let xml = parser.parse(search.CONTENTS);
 						//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.constructor', xml);
 						if ( xml.SavedSearch != null && xml.SavedSearch.SearchFields !== undefined && xml.SavedSearch.SearchFields != null )
 						{
@@ -1221,10 +1242,14 @@ export default class SearchView extends React.Component<ISearchViewProps, ISearc
 					ignoreNameSpace    : true,
 					parseAttributeValue: true,
 					trimValues         : false,
-
+					format             : true,
+					// 02/17/2024 Paul.  parser v4 requires suppressBooleanAttributes, otherwise Visible does not include ="true"
+					allowBooleanAttributes: true,
+					suppressBooleanAttributes: false,
 				};
-				let parser = new XMLParser.j2xParser(options);
-				let sXML: string = '<?xml version="1.0" encoding="UTF-8"?>' + parser.parse(objSavedSearch);
+				// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
+				const builder = new XMLBuilder(options);
+				let sXML: string = '<?xml version="1.0" encoding="UTF-8"?>' + builder.build(objSavedSearch);
 				//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onSubmit', sXML);
 
 				await UpdateSavedSearch(null, SEARCH_MODULE, sXML, null, SAVED_SEARCH_ID);
@@ -1289,15 +1314,19 @@ export default class SearchView extends React.Component<ISearchViewProps, ISearc
 				let options: any = 
 				{
 					attributeNamePrefix: '@',
-					textNodeName: 'Value',
-					ignoreAttributes: false,
-					ignoreNameSpace: true,
+					textNodeName       : 'Value',
+					ignoreAttributes   : false,
+					ignoreNameSpace    : true,
 					parseAttributeValue: true,
-					trimValues: false,
-
+					trimValues         : false,
+					format             : true,
+					// 02/17/2024 Paul.  parser v4 requires suppressBooleanAttributes, otherwise Visible does not include ="true"
+					allowBooleanAttributes: true,
+					suppressBooleanAttributes: false,
 				};
-				let parser = new XMLParser.j2xParser(options);
-				let sXML: string = '<?xml version="1.0" encoding="UTF-8"?>' + parser.parse(objSavedSearch);
+				// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
+				const builder = new XMLBuilder(options);
+				let sXML: string = '<?xml version="1.0" encoding="UTF-8"?>' + builder.build(objSavedSearch);
 				//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onClear', sXML);
 
 				await UpdateSavedSearch(null, SEARCH_MODULE, sXML, null, null);
@@ -1389,14 +1418,24 @@ export default class SearchView extends React.Component<ISearchViewProps, ISearc
 				let options: any = 
 				{
 					attributeNamePrefix: '',
+					// 02/18/2024 Paul.  parser v4 does not have an issue with node name as there is no value tag. 
+					//  <SearchFields>
+					//    <Field Name="CATEGORY_ID" Type="ListBox"></Field>
+					//    <Field Name="SUBCATEGORY_ID" Type="ListBox"></Field>
+					//    <Field Name="EXP_DATE" Type="DateRange">
+					//      <Before>02/25/2024</Before>
+					//      <After>02/18/2024</After>
+					//    </Field>
+					//  </SearchFields>
 					textNodeName       : 'Value',
 					ignoreAttributes   : false,
 					ignoreNameSpace    : true,
 					parseAttributeValue: true,
 					trimValues         : false,
 				};
-				let tObj = XMLParser.getTraversalObj(search.CONTENTS, options);
-				let xml = XMLParser.convertToJson(tObj, options);
+				// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
+				const parser = new XMLParser(options);
+				let xml = parser.parse(search.CONTENTS);
 				//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.constructor', xml);
 				if ( xml.SavedSearch != null && xml.SavedSearch.SearchFields !== undefined && xml.SavedSearch.SearchFields != null )
 				{
@@ -1554,15 +1593,19 @@ export default class SearchView extends React.Component<ISearchViewProps, ISearc
 				let options: any = 
 				{
 					attributeNamePrefix: '@',
-					textNodeName: 'Value',
-					ignoreAttributes: false,
-					ignoreNameSpace: true,
+					textNodeName       : 'Value',
+					ignoreAttributes   : false,
+					ignoreNameSpace    : true,
 					parseAttributeValue: true,
-					trimValues: false,
-
+					trimValues         : false,
+					format             : true,
+					// 02/17/2024 Paul.  parser v4 requires suppressBooleanAttributes, otherwise Visible does not include ="true"
+					allowBooleanAttributes: true,
+					suppressBooleanAttributes: false,
 				};
-				let parser = new XMLParser.j2xParser(options);
-				let sXML: string = '<?xml version="1.0" encoding="UTF-8"?>' + parser.parse(objSavedSearch);
+				// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
+				const builder = new XMLBuilder(options);
+				let sXML: string = '<?xml version="1.0" encoding="UTF-8"?>' + builder.build(objSavedSearch);
 				//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onSave', sXML);
 
 				let gID = await UpdateSavedSearch(null, SEARCH_MODULE, sXML, SAVED_SEARCH_NEW_NAME, null);
@@ -1688,15 +1731,19 @@ export default class SearchView extends React.Component<ISearchViewProps, ISearc
 				let options: any = 
 				{
 					attributeNamePrefix: '@',
-					textNodeName: 'Value',
-					ignoreAttributes: false,
-					ignoreNameSpace: true,
+					textNodeName       : 'Value',
+					ignoreAttributes   : false,
+					ignoreNameSpace    : true,
 					parseAttributeValue: true,
-					trimValues: false,
-
+					trimValues         : false,
+					format             : true,
+					// 02/17/2024 Paul.  parser v4 requires suppressBooleanAttributes, otherwise Visible does not include ="true"
+					allowBooleanAttributes: true,
+					suppressBooleanAttributes: false,
 				};
-				let parser = new XMLParser.j2xParser(options);
-				let sXML: string = '<?xml version="1.0" encoding="UTF-8"?>' + parser.parse(objSavedSearch);
+				// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
+				const builder = new XMLBuilder(options);
+				let sXML: string = '<?xml version="1.0" encoding="UTF-8"?>' + builder.build(objSavedSearch);
 				//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onUpdate', sXML);
 
 				// 05/08/2019 Paul.  Before resetting, update the cached version. 
@@ -1886,7 +1933,7 @@ export default class SearchView extends React.Component<ISearchViewProps, ISearc
 						</div>
 						: null
 						}
-						<DynamicEditView
+						<DynamicEditViewWithRouter
 							key={ EDIT_NAME + '_' + Sql.ToString(SAVED_SEARCH_ID) + '_' + savedSearchCounter.toString()}
 							MODULE_NAME={ sMODULE_NAME }
 							LAYOUT_NAME={ EDIT_NAME }
@@ -1900,7 +1947,7 @@ export default class SearchView extends React.Component<ISearchViewProps, ISearc
 							history={ this.props.history }
 							location={ this.props.location }
 							match={ this.props.match }
-							ref={ this.editView }
+							withRef={ this.editView }
 						/>
 					</div>
 					<div>

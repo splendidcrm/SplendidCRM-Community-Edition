@@ -9,9 +9,9 @@
  */
 
 // 1. React and fabric. 
-import * as React from 'react';
-import * as qs from 'query-string';
-import { RouteComponentProps }                        from 'react-router-dom'                         ;
+import React from 'react';
+import qs from 'query-string';
+import { RouteComponentProps }                        from '../Router5'                         ;
 import { observer }                                   from 'mobx-react'                               ;
 import { FontAwesomeIcon }                            from '@fortawesome/react-fontawesome'           ;
 // 2. Store and Types. 
@@ -324,15 +324,6 @@ export default class RulesWizardEditView extends React.Component<IEditViewProps,
 		{
 			try
 			{
-				let options: any = 
-				{
-					attributeNamePrefix: ''     ,
-					textNodeName       : 'Value',
-					ignoreAttributes   : false  ,
-					ignoreNameSpace    : true   ,
-					parseAttributeValue: true   ,
-					trimValues         : false  ,
-				};
 				// 11/19/2019 Paul.  Change to allow return of SQL. 
 				const d = await EditView_LoadItem(RULES_WIZARD_MODULE_NAME, sID);
 				let item: any = d.results;

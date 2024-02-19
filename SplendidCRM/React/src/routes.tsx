@@ -10,10 +10,8 @@
 
 // 1. React and fabric. 
 import * as React from 'react';
-import { Route, Switch, Redirect }     from 'react-router-dom'                                                     ;
-// 4. Components and Views. 
-import PrivateRoute                   from './PrivateRoute'                                                        ;
-import App                            from './App'                                                                 ;
+import { useParams, useSearchParams, useLocation, useNavigate, useMatches }   from  'react-router-dom';
+// 4., Components and Views. 
 import CalendarView                   from './views/CalendarView'                                                  ;
 import BigCalendarView                from './views/BigCalendarView'                                               ;
 import ChatDashboardView              from './views/ChatDashboardView'                                             ;
@@ -117,211 +115,305 @@ import TerminologyImportView          from './ModuleViews/Administration/Termino
 import DatabaseImportView             from './ModuleViews/Administration/Import/ImportView'                        ;
 import ModuleBuilderWizardView        from './ModuleBuilder/WizardView'                                            ;
 
+export interface SplendidRedirect
+{
+	exact?   : boolean;
+	from     : string;
+	to       : string;
+}
+
+export interface SplendidRoute
+{
+	exact?    : boolean;
+	path      : string;
+	Component?: any   ;
+	element?  : any   ;
+}
+
+const UnknownRoute = () =>
+{
+	const params   = useParams();
+	const search   = useSearchParams();
+	const location = useLocation();
+	const navigate = useNavigate();
+	const matches  = useMatches();
+	console.log((new Date()).toISOString() + ' UnknownRoute', params, search, location, navigate, matches);
+	return <div id='divUnknownRoute' style={ {fontSize: '20px', fontWeight: 'bold', padding: '20px'} }>
+		Unkown Route: { JSON.stringify(params) }
+		<br />
+		Search: { JSON.stringify(search) }
+		<br />
+		Location: { JSON.stringify(location) }
+		<br />
+		Navigate: { JSON.stringify(navigate) }
+		<br />
+		Matches: { JSON.stringify(matches) }
+	</div>;
+};
+
 // 02/15/2020 Paul.  To debug the router, use DebugRouter in index.tsx. 
-export const routes = (
-	<App>
-		<Switch>
-			<Route        exact path="/login"                                                    component={DynamicLoginView} />
-			<Redirect     exact from="/Campaigns/roi/:ID"                                        to="/Campaigns/RoiDetailView/:ID"   />
-			<Redirect     exact from="/Campaigns/track/:ID"                                      to="/Campaigns/TrackDetailView/:ID" />
-			<Redirect     exact from="/Surveys/results/:ID"                                      to="/Surveys/ResultsView/:ID" />
-			<Redirect     exact from="/Surveys/summary/:ID"                                      to="/Surveys/SummaryView/:ID" />
-v			<Redirect     exact from="/Emails/Drafts"                                            to="/Emails/List?Type=draft" />
-			<Redirect     exact from="/Projects/*"                                               to="/Project/*" />
-			<Redirect     exact from="/ProjectTasks/*"                                           to="/ProjectTask/*" />
-			<Redirect     exact from="/ReportDesigner/*"                                         to="/Reports/*" />
-			<Redirect     exact from="/RulesWizard/View/*"                                       to="/RulesWizard/Edit/*" />
-			<Redirect     exact from="/Administration/Users/EditMyAccount"                       to="/Users/EditMyAccount" />
-			<Redirect     exact from="/Administration/iFrames/*"                                 to="/iFrames/*" />
-			<Redirect     exact from="/Reports/ReportRules/*"                                    to="/ReportRules/*" />
-			<Redirect     exact from="/ReportRules/View/*"                                       to="/ReportRules/Edit/*" />
-			<Redirect     exact from="/Administration/ModulesArchiveRules/View/*"                to="/Administration/ModulesArchiveRules/Edit/*" />
-			<Redirect     exact from="/Administration/BusinessRules/View/*"                      to="/Administration/BusinessRules/Edit/*" />
-			<Redirect           from="/Users/Reassign"                                           to="/Administration/Users/Reassign" />
+export function cleanupRoutes()
+{
+	const r: SplendidRoute[] = [
+/*
+		{ path: "*", Component: 
+			<Routes>
+				<Route path="*" element={ <div id='divUnknownRoute'>Unkown Route</div> } />
+			</Routes>
+		},
+*/
+		{ path: "*", element: <UnknownRoute /> },
+	];
+	return r;
+}
 
-			<PrivateRoute       path="/Administration/_devtools/Precompile"                      component={Precompile} />
+export function redirectRoutes()
+{
+	const r: SplendidRedirect[] = [
+		{     exact: true , from: "/About"                                      , to: "/Home/About"                                 },
+		{     exact: false, from: "/Campaigns/roi/:ID"                          , to: "/Campaigns/RoiDetailView/:ID"                },
+		{     exact: false, from: "/Campaigns/track/:ID"                        , to: "/Campaigns/TrackDetailView/:ID"              },
+		{     exact: false, from: "/Surveys/results/:ID"                        , to: "/Surveys/ResultsView/:ID"                    },
+		{     exact: false, from: "/Surveys/summary/:ID"                        , to: "/Surveys/SummaryView/:ID"                    },
+		{     exact: false, from: "/Emails/Drafts"                              , to: "/Emails/List?Type=draft"                     },
+		{     exact: false, from: "/Projects/View/:ID"                          , to: "/Project/View/:ID"                           },
+		{     exact: false, from: "/Projects/Edit/*"                            , to: "/Project/Edit/*"                             },
+		{     exact: false, from: "/Projects/List"                              , to: "/Project/List"                               },
+		{     exact: false, from: "/Projects/*"                                 , to: "/Project/*"                                  },
+		{     exact: false, from: "/ProjectTasks/View/:ID"                      , to: "/ProjectTask/View/:ID"                       },
+		{     exact: false, from: "/ProjectTasks/Edit/*"                        , to: "/ProjectTask/Edit/*"                         },
+		{     exact: false, from: "/ProjectTasks/List"                          , to: "/ProjectTask/List"                           },
+		{     exact: false, from: "/ProjectTasks/*"                             , to: "/ProjectTask/*"                              },
+		{     exact: false, from: "/ReportDesigner/View/:ID"                    , to: "/Reports/View/:ID"                           },
+		{     exact: false, from: "/ReportDesigner/Edit/*"                      , to: "/Reports/Edit/*"                             },
+		{     exact: false, from: "/ReportDesigner/List"                        , to: "/Reports/List"                               },
+		{     exact: false, from: "/ReportDesigner/*"                           , to: "/Reports/*"                                  },
+		{     exact: false, from: "/RulesWizard/View/*"                         , to: "/RulesWizard/Edit/*"                         },
+		{     exact: false, from: "/Administration/Users/EditMyAccount"         , to: "/Users/EditMyAccount"                        },
+		{     exact: false, from: "/Administration/iFrames/View/:ID"            , to: "/iFrames/View/:ID"                           },
+		{     exact: false, from: "/Administration/iFrames/Edit/*"              , to: "/iFrames/Edit/*"                             },
+		{     exact: false, from: "/Administration/iFrames/List"                , to: "/iFrames/List"                               },
+		{     exact: false, from: "/Administration/iFrames/*"                   , to: "/iFrames/*"                                  },
+		{     exact: false, from: "/Reports/ReportRules/View/:ID"               , to: "/ReportRules/View/:ID"                       },
+		{     exact: false, from: "/Reports/ReportRules/Edit/*"                 , to: "/ReportRules/Edit/*"                         },
+		{     exact: false, from: "/Reports/ReportRules/List"                   , to: "/ReportRules/List"                           },
+		{     exact: false, from: "/Reports/ReportRules/*"                      , to: "/ReportRules/*"                              },
+		{     exact: false, from: "/ReportRules/View/:ID"                       , to: "/ReportRules/Edit/:ID"                       },
+		{     exact: false, from: "/Administration/ModulesArchiveRules/View/:ID", to: "/Administration/ModulesArchiveRules/Edit/:ID"},
+		{     exact: false, from: "/Administration/BusinessRules/View/:ID"      , to: "/Administration/BusinessRules/Edit/:ID"      },
+		{                   from: "/Users/Reassign"                             , to: "/Administration/Users/Reassign"              },
+	];
+	return r;
+}
 
-			<PrivateRoute exact path="/GoogleOAuth"                                              component={GoogleOAuth} />
-			<PrivateRoute exact path="/Office365OAuth"                                           component={Office365OAuth} />
-			<PrivateRoute exact path="/Home/About"                                               component={AboutView} />
-			<PrivateRoute exact path="/Home/TrainingPortal"                                      component={TrainingPortal} />
-			<PrivateRoute exact path="/Home/DashboardEdit/:ID"                                   component={HomeDashboardEditView} />
-			<PrivateRoute exact path="/Home/DashboardEdit"                                       component={HomeDashboardEditView} />
-			<PrivateRoute exact path="/Home/:ID"                                                 component={HomeView} />
-			<PrivateRoute exact path="/Home"                                                     component={HomeView} />
-			<PrivateRoute exact path="/Reset/*"                                                  component={ResetView } />
-			<PrivateRoute exact path="/Reload"                                                   component={ReloadView} />
-			<PrivateRoute exact path="/Reload/*"                                                 component={ReloadView} />
-			<PrivateRoute exact path="/BigCalendar"                                              component={BigCalendarView} />
-			<PrivateRoute       path="/Calendar"                                                 component={CalendarView} />
-			<PrivateRoute exact path="/Dashboard/DashboardEdit/:ID"                              component={DashboardEditView} />
-			<PrivateRoute exact path="/Dashboard/DashboardEdit"                                  component={DashboardEditView} />
-			<PrivateRoute exact path="/Dashboard/:ID"                                            component={DashboardView} />
-			<PrivateRoute exact path="/Dashboard"                                                component={DashboardView} />
-			<PrivateRoute exact path="/UnifiedSearch/:search"                                    component={UnifiedSearch} />
-			<PrivateRoute exact path="/UnifiedSearch"                                            component={UnifiedSearch} />
+export function publicRoutes()
+{
+	const routes: SplendidRoute[] = [
+		{ exact: true, path: "/login"                                                   , Component: DynamicLoginView               },
+	];
+	return routes;
+}
 
-			<PrivateRoute exact path="/ChatDashboard/:ID"                                        component={ChatDashboardView} />
-			<PrivateRoute exact path="/ChatDashboard"                                            component={ChatDashboardView} />
-			<PrivateRoute exact path="/Reports/Edit/:ID"                                         component={ReportEditView} />
-			<PrivateRoute exact path="/Reports/Edit"                                             component={ReportEditView} />
-			<PrivateRoute exact path="/Reports/Import"                                           component={ReportImportView} />
-			<PrivateRoute exact path="/Reports/View/:ID"                                         component={ReportView} />
-			<PrivateRoute exact path="/Reports/View/:ID/*"                                       component={ReportView} />
-			<PrivateRoute exact path="/Reports/Attachment/:ID/:PARENT_NAME/:PARENT_ID/*"         component={ReportAttachmentView} />
-			<PrivateRoute exact path="/Reports/Attachment/:ID"                                   component={ReportAttachmentView} />
-			<PrivateRoute exact path="/Reports/Signature/:ID/:PARENT_NAME/:PARENT_ID/*"          component={ReportSignatureView} />
-			<PrivateRoute exact path="/Reports/Signature/:ID"                                    component={ReportSignatureView} />
+export function resetRoutes()
+{
+	const routes: SplendidRoute[] = [
+		{ exact: true, path: "/Reset/*"                                                 , Component: ResetView                      },
+		{ exact: true, path: "/Reload/*"                                                , Component: ReloadView                     },
+	];
+	return routes;
+}
 
-			<PrivateRoute exact path="/Charts/Edit/:ID"                                         component={ChartEditView} />
-			<PrivateRoute exact path="/Charts/Edit"                                             component={ChartEditView} />
-			<PrivateRoute exact path="/Charts/Import"                                           component={ChartImportView} />
-			<PrivateRoute exact path="/Charts/View/:ID"                                         component={ChartDetailView} />
-			<PrivateRoute exact path="/Charts/View/:ID/*"                                       component={ChartDetailView} />
+export function privateRoutes()
+{
+	const routes: SplendidRoute[] = [
+		{              path: "/Administration/_devtools/Precompile"                     , Component: Precompile                     },
+		{ exact: true, path: "/Home/About"                                              , Component: AboutView                      },
 
-			<PrivateRoute exact path="/Users/MyAccount"                                          component={MyAccountView} />
-			<PrivateRoute exact path="/Users/EditMyAccount"                                      component={MyAccountEdit} />
-			<PrivateRoute exact path="/Users/Wizard"                                             component={UserWizard} />
-			<PrivateRoute exact path="/Feeds/MyFeeds"                                            component={PlaceholderView} />
-			<PrivateRoute exact path="/MailMerge/:MODULE_NAME/:ID"                               component={DynamicMailMerge} />
-			<PrivateRoute exact path="/MailMerge/:MODULE_NAME"                                   component={DynamicMailMerge} />
-			<PrivateRoute exact path="/MailMerge"                                                component={DynamicMailMerge} />
-			<PrivateRoute exact path="/Merge/:MODULE_NAME/:ID"                                   component={MergeView} />
-			<PrivateRoute exact path="/MassMerge/:MODULE_NAME/:ID"                               component={MergeView} />
+		{              path: "/GoogleOAuth"                                             , Component: GoogleOAuth                    },
+		{              path: "/Office365OAuth"                                          , Component: Office365OAuth                 },
+		{ exact: true, path: "/Home/TrainingPortal"                                     , Component: TrainingPortal                 },
+		{ exact: true, path: "/Home/DashboardEdit/:ID"                                  , Component: HomeDashboardEditView          },
+		{ exact: true, path: "/Home/DashboardEdit"                                      , Component: HomeDashboardEditView          },
+		{ exact: true, path: "/Home/:ID"                                                , Component: HomeView                       },
+		{ exact: true, path: "/Home"                                                    , Component: HomeView                       },
+		{ exact: true, path: "/BigCalendar"                                             , Component: BigCalendarView                },
+		{              path: "/Calendar"                                                , Component: CalendarView                   },
+		{ exact: true, path: "/Dashboard/DashboardEdit/:ID"                             , Component: DashboardEditView              },
+		{ exact: true, path: "/Dashboard/DashboardEdit"                                 , Component: DashboardEditView              },
+		{ exact: true, path: "/Dashboard/:ID"                                           , Component: DashboardView                  },
+		{ exact: true, path: "/Dashboard"                                               , Component: DashboardView                  },
+		{ exact: true, path: "/UnifiedSearch/:search"                                   , Component: UnifiedSearch                  },
+		{ exact: true, path: "/UnifiedSearch"                                           , Component: UnifiedSearch                  },
 
-			<PrivateRoute exact path="/Administration/EmailMan/AdminCampaignEditView"            component={AdminCampaignEditView} />
-			<PrivateRoute exact path="/Administration/EmailMan/ConfigView"                       component={EmailManConfigView} />
-			<PrivateRoute       path="/Administration/Users/Reassign"                            component={UsersReassignView} />
-			<PrivateRoute       path="/Administration/Config/PasswordManager"                    component={AdminPasswordManager} />
-			<PrivateRoute       path="/Administration/Config/BusinessMode"                       component={AdminBusinessMode} />
-			<PrivateRoute       path="/Administration/Config/BackupDatabase"                     component={BackupsConfigView} />
-			<PrivateRoute       path="/Administration/Config/Updater"                            component={UpdaterConfigView} />
-			<PrivateRoute       path="/Administration/Terminology/TerminologyImport"             component={TerminologyImportView} />
-			<PrivateRoute       path="/Administration/Import/ImportDatabase"                     component={DatabaseImportView} />
-			<PrivateRoute exact path="/Administration/Exchange/ConfigView"                       component={ExchangeConfigView} />
-			<PrivateRoute exact path="/Administration/Google/ConfigView"                         component={GoogleConfigView} />
-			<PrivateRoute       path="/Administration/Google"                                    component={GoogleConfigView} />
-			<PrivateRoute       path="/Administration/ModuleBuilder"                             component={ModuleBuilderWizardView} />
+		{ exact: true, path: "/ChatDashboard/:ID"                                       , Component: ChatDashboardView              },
+		{ exact: true, path: "/ChatDashboard"                                           , Component: ChatDashboardView              },
+		{ exact: true, path: "/Reports/Edit/:ID"                                        , Component: ReportEditView                 },
+		{ exact: true, path: "/Reports/Edit"                                            , Component: ReportEditView                 },
+		{ exact: true, path: "/Reports/Import"                                          , Component: ReportImportView               },
+		{ exact: true, path: "/Reports/View/:ID"                                        , Component: ReportView                     },
+		{ exact: true, path: "/Reports/View/:ID/*"                                      , Component: ReportView                     },
+		{ exact: true, path: "/Reports/Attachment/:ID/:PARENT_NAME/:PARENT_ID/*"        , Component: ReportAttachmentView           },
+		{ exact: true, path: "/Reports/Attachment/:ID"                                  , Component: ReportAttachmentView           },
+		{ exact: true, path: "/Reports/Signature/:ID/:PARENT_NAME/:PARENT_ID/*"         , Component: ReportSignatureView            },
+		{ exact: true, path: "/Reports/Signature/:ID"                                   , Component: ReportSignatureView            },
 
-			<PrivateRoute       path="/Administration/Configurator"                              component={ConfiguratorAdminWizard} />
-			<PrivateRoute       path="/Administration/Facebook"                                  component={AdminConfigView} />
-			<PrivateRoute       path="/Administration/LinkedIn"                                  component={AdminConfigView} />
-			<PrivateRoute       path="/Administration/Salesforce"                                component={AdminConfigView} />
-			<PrivateRoute       path="/Administration/Twitter"                                   component={AdminConfigView} />
-			<PrivateRoute exact path="/Administration/QuickBooks/ConfigView"                     component={QuickBooksConfigView} />
-			<PrivateRoute       path="/Administration/QuickBooks"                                component={AdminReadOnlyConfigView} />
-			<PrivateRoute exact path="/Administration/Twilio/ConfigView"                         component={AdminConfigView} />
-			<PrivateRoute       path="/Administration/Twilio"                                    component={AdminReadOnlyListView} />
-			<PrivateRoute exact path="/Administration/HubSpot/ConfigView"                        component={HubSpotConfigView} />
-			<PrivateRoute       path="/Administration/HubSpot"                                   component={AdminReadOnlyConfigView} />
-			<PrivateRoute exact path="/Administration/iContact/ConfigView"                       component={iContactConfigView} />
-			<PrivateRoute       path="/Administration/iContact"                                  component={AdminReadOnlyConfigView} />
-			<PrivateRoute exact path="/Administration/ConstantContact/ConfigView"                component={ConstantContactConfigView} />
-			<PrivateRoute       path="/Administration/ConstantContact"                           component={AdminReadOnlyConfigView} />
-			<PrivateRoute exact path="/Administration/Marketo/ConfigView"                        component={MarketoConfigView} />
-			<PrivateRoute       path="/Administration/Marketo"                                   component={AdminReadOnlyConfigView} />
-			<PrivateRoute exact path="/Administration/MailChimp/ConfigView"                      component={MailChimpConfigView} />
-			<PrivateRoute       path="/Administration/MailChimp"                                 component={AdminReadOnlyConfigView} />
-			<PrivateRoute exact path="/Administration/CurrencyLayer/ConfigView"                  component={AdminConfigView} />
-			<PrivateRoute       path="/Administration/CurrencyLayer"                             component={AdminReadOnlyConfigView} />
-			<PrivateRoute exact path="/Administration/GetResponse/ConfigView"                    component={AdminConfigView} />
-			<PrivateRoute       path="/Administration/GetResponse"                               component={AdminReadOnlyConfigView} />
-			<PrivateRoute exact path="/Administration/Pardot/ConfigView"                         component={AdminConfigView} />
-			<PrivateRoute       path="/Administration/Pardot"                                    component={AdminReadOnlyConfigView} />
-			<PrivateRoute exact path="/Administration/Watson/ConfigView"                         component={WatsonConfigView} />
-			<PrivateRoute       path="/Administration/Watson"                                    component={AdminReadOnlyConfigView} />
-			<PrivateRoute exact path="/Administration/PhoneBurner/ConfigView"                    component={PhoneBurnerConfigView} />
-			<PrivateRoute       path="/Administration/PhoneBurner"                               component={AdminReadOnlyConfigView} />
-			<PrivateRoute exact path="/Administration/MicrosoftTeams/ConfigView"                 component={MicrosoftTeamsConfigView} />
-			<PrivateRoute       path="/Administration/MicrosoftTeams"                            component={AdminReadOnlyConfigView} />
+		{ exact: true, path: "/Charts/Edit/:ID"                                         , Component: ChartEditView                  },
+		{ exact: true, path: "/Charts/Edit"                                             , Component: ChartEditView                  },
+		{ exact: true, path: "/Charts/Import"                                           , Component: ChartImportView                },
+		{ exact: true, path: "/Charts/View/:ID"                                         , Component: ChartDetailView                },
+		{ exact: true, path: "/Charts/View/:ID/*"                                       , Component: ChartDetailView                },
 
-			<PrivateRoute exact path="/Administration/DynamicLayout/AdminDynamicLayout"          component={AdminDynamicLayout} />
-			<PrivateRoute exact path="/Administration/Terminology/RenameTabs"                    component={AdminRenameTabs} />
-			<PrivateRoute exact path="/Administration/Modules/ConfigureTabs"                     component={AdminConfigureTabs} />
+		{ exact: true, path: "/Users/MyAccount"                                         , Component: MyAccountView                  },
+		{ exact: true, path: "/Users/EditMyAccount"                                     , Component: MyAccountEdit                  },
+		{ exact: true, path: "/Users/Wizard"                                            , Component: UserWizard                     },
+		{ exact: true, path: "/Feeds/MyFeeds"                                           , Component: PlaceholderView                },
+		{ exact: true, path: "/MailMerge/:MODULE_NAME/:ID"                              , Component: DynamicMailMerge               },
+		{ exact: true, path: "/MailMerge/:MODULE_NAME"                                  , Component: DynamicMailMerge               },
+		{ exact: true, path: "/MailMerge"                                               , Component: DynamicMailMerge               },
+		{ exact: true, path: "/Merge/:MODULE_NAME/:ID"                                  , Component: MergeView                      },
+		{ exact: true, path: "/MassMerge/:MODULE_NAME/:ID"                              , Component: MergeView                      },
 
-			<PrivateRoute       path="/Administration/FullTextSearch"                            component={FullTextSearchConfigView} />
-			<PrivateRoute       path="/Administration/SystemLog"                                 component={SystemLogListView} />
-			<PrivateRoute       path="/Administration/SystemSyncLog"                             component={SystemSyncLogListView} />
-			<PrivateRoute       path="/Administration/UserLogins"                                component={UserLoginsListView} />
-			<PrivateRoute       path="/Administration/AuditEvents"                               component={AdminReadOnlyListView} />
-			<PrivateRoute       path="/Administration/WorkflowEventLog"                          component={WorkflowEventLogListView} />
-			<PrivateRoute       path="/Administration/BusinessProcessesLog"                      component={BusinessProcessesLogListView} />
+		{ exact: true, path: "/Administration/EmailMan/AdminCampaignEditView"           , Component: AdminCampaignEditView          },
+		{ exact: true, path: "/Administration/EmailMan/ConfigView"                      , Component: EmailManConfigView             },
+		{              path: "/Administration/Users/Reassign"                           , Component: UsersReassignView              },
+		{              path: "/Administration/Config/PasswordManager"                   , Component: AdminPasswordManager           },
+		{              path: "/Administration/Config/BusinessMode"                      , Component: AdminBusinessMode              },
+		{              path: "/Administration/Config/BackupDatabase"                    , Component: BackupsConfigView              },
+		{              path: "/Administration/Config/Updater"                           , Component: UpdaterConfigView              },
+		{              path: "/Administration/Terminology/TerminologyImport"            , Component: TerminologyImportView          },
+		{              path: "/Administration/Import/ImportDatabase"                    , Component: DatabaseImportView             },
+		{ exact: true, path: "/Administration/Exchange/ConfigView"                      , Component: ExchangeConfigView             },
+		{ exact: true, path: "/Administration/Google/ConfigView"                        , Component: GoogleConfigView               },
+		{              path: "/Administration/Google"                                   , Component: GoogleConfigView               },
+		{              path: "/Administration/ModuleBuilder"                            , Component: ModuleBuilderWizardView        },
 
-			<PrivateRoute exact path="/Administration/AuthorizeNet/ConfigView"                   component={AdminConfigView} />
-			<PrivateRoute exact path="/Administration/AuthorizeNet/CustomerProfiles/View/:ID"    component={AuthorizeNetCustomerDetailView} />
-			<PrivateRoute       path="/Administration/AuthorizeNet/CustomerProfiles"             component={AuthorizeNetCustomerListView} />
-			<PrivateRoute       path="/Administration/AuthorizeNet"                              component={AuthorizeNetListView} />
-			<PrivateRoute exact path="/Administration/PayPal/ConfigView"                         component={AdminConfigView} />
-			<PrivateRoute exact path="/Administration/PayPalTransactions/View/:ID"               component={PayPalDetailView} />
-			<PrivateRoute exact path="/Administration/PayPal/View/:ID"                           component={PayPalDetailView} />
-			<PrivateRoute       path="/Administration/PayPalTransactions"                        component={PayPalListView} />
-			<PrivateRoute       path="/Administration/PayPal/List"                               component={PayPalListView} />
-			<PrivateRoute       path="/Administration/PayPal"                                    component={PayPalListView} />
-			<PrivateRoute exact path="/Administration/PayTrace/ConfigView"                       component={AdminConfigView} />
-			<PrivateRoute exact path="/Administration/PayTrace/View/:ID"                         component={PayTraceDetailView} />
-			<PrivateRoute       path="/Administration/PayTrace"                                  component={PayTraceListView} />
-			<PrivateRoute exact path="/Administration/Asterisk/ConfigView"                       component={AdminConfigView} />
-			<PrivateRoute exact path="/Administration/Asterisk/View/:ID"                         component={AsteriskDetailView} />
-			<PrivateRoute       path="/Administration/Asterisk"                                  component={AsteriskListView} />
-			<PrivateRoute exact path="/Administration/Avaya/ConfigView"                          component={AdminConfigView} />
-			<PrivateRoute exact path="/Administration/Avaya/View/:ID"                            component={AvayaDetailView} />
-			<PrivateRoute       path="/Administration/Avaya"                                     component={AvayaListView} />
+		{              path: "/Administration/Configurator"                             , Component: ConfiguratorAdminWizard        },
+		{              path: "/Administration/Facebook"                                 , Component: AdminConfigView                },
+		{              path: "/Administration/LinkedIn"                                 , Component: AdminConfigView                },
+		{              path: "/Administration/Salesforce"                               , Component: AdminConfigView                },
+		{              path: "/Administration/Twitter"                                  , Component: AdminConfigView                },
+		{ exact: true, path: "/Administration/QuickBooks/ConfigView"                    , Component: QuickBooksConfigView           },
+		{              path: "/Administration/QuickBooks"                               , Component: AdminReadOnlyConfigView        },
+		{ exact: true, path: "/Administration/Twilio/ConfigView"                        , Component: AdminConfigView                },
+		{              path: "/Administration/Twilio"                                   , Component: AdminReadOnlyListView          },
+		{ exact: true, path: "/Administration/HubSpot/ConfigView"                       , Component: HubSpotConfigView              },
+		{              path: "/Administration/HubSpot"                                  , Component: AdminReadOnlyConfigView        },
+		{ exact: true, path: "/Administration/iContact/ConfigView"                      , Component: iContactConfigView             },
+		{              path: "/Administration/iContact"                                 , Component: AdminReadOnlyConfigView        },
+		{ exact: true, path: "/Administration/ConstantContact/ConfigView"               , Component: ConstantContactConfigView      },
+		{              path: "/Administration/ConstantContact"                          , Component: AdminReadOnlyConfigView        },
+		{ exact: true, path: "/Administration/Marketo/ConfigView"                       , Component: MarketoConfigView              },
+		{              path: "/Administration/Marketo"                                  , Component: AdminReadOnlyConfigView        },
+		{ exact: true, path: "/Administration/MailChimp/ConfigView"                     , Component: MailChimpConfigView            },
+		{              path: "/Administration/MailChimp"                                , Component: AdminReadOnlyConfigView        },
+		{ exact: true, path: "/Administration/CurrencyLayer/ConfigView"                 , Component: AdminConfigView                },
+		{              path: "/Administration/CurrencyLayer"                            , Component: AdminReadOnlyConfigView        },
+		{ exact: true, path: "/Administration/GetResponse/ConfigView"                   , Component: AdminConfigView                },
+		{              path: "/Administration/GetResponse"                              , Component: AdminReadOnlyConfigView        },
+		{ exact: true, path: "/Administration/Pardot/ConfigView"                        , Component: AdminConfigView                },
+		{              path: "/Administration/Pardot"                                   , Component: AdminReadOnlyConfigView        },
+		{ exact: true, path: "/Administration/Watson/ConfigView"                        , Component: WatsonConfigView               },
+		{              path: "/Administration/Watson"                                   , Component: AdminReadOnlyConfigView        },
+		{ exact: true, path: "/Administration/PhoneBurner/ConfigView"                   , Component: PhoneBurnerConfigView          },
+		{              path: "/Administration/PhoneBurner"                              , Component: AdminReadOnlyConfigView        },
+		{ exact: true, path: "/Administration/MicrosoftTeams/ConfigView"                , Component: MicrosoftTeamsConfigView       },
+		{              path: "/Administration/MicrosoftTeams"                           , Component: AdminReadOnlyConfigView        },
 
-			<PrivateRoute exact path="/Administration/Azure/:MODULE_NAME/ConfigView"             component={AdminConfigView} />
-			<PrivateRoute exact path="/Administration/Azure/:MODULE_NAME/ReadOnlyListView"       component={AdminReadOnlyListView} />
-			<PrivateRoute exact path="/Administration/Azure/:MODULE_NAME/DetailView"             component={AdminReadOnlyConfigView} />
-			<PrivateRoute exact path="/Administration/Azure/:MODULE_NAME/List"                   component={AdminDynamicListView} />
-			<PrivateRoute exact path="/Administration/Azure/:MODULE_NAME/View/:ID"               component={AdminDynamicDetailView} />
-			<PrivateRoute exact path="/Administration/Azure/:MODULE_NAME/Duplicate/:DuplicateID" component={AdminDynamicEditView} />
-			<PrivateRoute exact path="/Administration/Azure/:MODULE_NAME/Edit/:ID"               component={AdminDynamicEditView} />
-			<PrivateRoute exact path="/Administration/Azure/:MODULE_NAME/Edit"                   component={AdminDynamicEditView} />
-			<PrivateRoute exact path="/Administration/Azure/ConfigView"                          component={AzureConfigView} />
-			<PrivateRoute       path="/Administration/Azure/"                                    component={AzureDetailView} />
-			
-			<PrivateRoute exact path="/Administration/ACLRoles/Edit/:ID/FieldSecurity"           component={ACLRolesFieldSecurity} />
-			<PrivateRoute exact path="/Administration/ACLRoles/ByUser"                           component={ACLRolesByUser} />
-			<PrivateRoute exact path="/Administration/:MODULE_NAME/ReadOnlyListView"             component={AdminReadOnlyListView} />
-			<PrivateRoute exact path="/Administration/:MODULE_NAME/DetailView"                   component={AdminReadOnlyConfigView} />
-			<PrivateRoute exact path="/Administration/:MODULE_NAME/ConfigView"                   component={AdminConfigView} />
-			<PrivateRoute exact path="/Administration/:MODULE_NAME/Config"                       component={AdminConfigView} />
-			<PrivateRoute exact path="/Administration/:MODULE_NAME/List"                         component={AdminDynamicListView} />
-			<PrivateRoute exact path="/Administration/:MODULE_NAME/View/:ID"                     component={AdminDynamicDetailView} />
-			<PrivateRoute exact path="/Administration/:MODULE_NAME/Duplicate/:DuplicateID"       component={AdminDynamicEditView} />
-			<PrivateRoute exact path="/Administration/:MODULE_NAME/Edit/:ID"                     component={AdminDynamicEditView} />
-			<PrivateRoute exact path="/Administration/:MODULE_NAME/Edit"                         component={AdminDynamicEditView} />
-			<PrivateRoute exact path="/Administration/:MODULE_NAME/Import"                       component={ImportView} />
-			<PrivateRoute exact path="/Administration/Workflows/Sequence"                        component={WorkflowsSequenceView} />
-			<PrivateRoute exact path="/Administration/SimpleEmail/Statistics"                    component={PlaceholderView} />
-			<PrivateRoute exact path="/Administration/QuickBooks/:MODULE_NAME"                   component={PlaceholderView} />
-			<PrivateRoute exact path="/Administration/MailChimp/:MODULE_NAME/Edit/:ID"           component={PlaceholderView} />
+		{ exact: true, path: "/Administration/DynamicLayout/AdminDynamicLayout"         , Component: AdminDynamicLayout             },
+		{ exact: true, path: "/Administration/Terminology/RenameTabs"                   , Component: AdminRenameTabs                },
+		{ exact: true, path: "/Administration/Modules/ConfigureTabs"                    , Component: AdminConfigureTabs             },
 
-			<PrivateRoute exact path="/Administration/:MODULE_NAME/"                             component={AdminDynamicListView} />
-			<PrivateRoute exact path="/Administration"                                           component={AdministrationView} />
+		{              path: "/Administration/FullTextSearch"                           , Component: FullTextSearchConfigView       },
+		{              path: "/Administration/SystemLog"                                , Component: SystemLogListView              },
+		{              path: "/Administration/SystemSyncLog"                            , Component: SystemSyncLogListView          },
+		{              path: "/Administration/UserLogins"                               , Component: UserLoginsListView             },
+		{              path: "/Administration/AuditEvents"                              , Component: AdminReadOnlyListView          },
+		{              path: "/Administration/WorkflowEventLog"                         , Component: WorkflowEventLogListView       },
+		{              path: "/Administration/BusinessProcessesLog"                     , Component: BusinessProcessesLogListView   },
 
-			<PrivateRoute exact path="/Parents/View/:ID"                                         component={ParentsView} />
-			<PrivateRoute exact path="/:MODULE_NAME/List"                                        component={DynamicListView} />
-			<PrivateRoute exact path="/:MODULE_NAME/View/:ID"                                    component={DynamicDetailView} />
-			<PrivateRoute exact path="/:MODULE_NAME/ArchiveView/:ID"                             component={DynamicDetailView} />
-			<PrivateRoute exact path="/:MODULE_NAME/ArchiveView"                                 component={DynamicListView} />
-			<PrivateRoute exact path="/:MODULE_NAME/Duplicate/:DuplicateID"                      component={DynamicEditView} />
-			<PrivateRoute exact path="/:MODULE_NAME/Convert/:ConvertModule/:ConvertID"           component={DynamicEditView} />
-			<PrivateRoute exact path="/:MODULE_NAME/Edit/:ID"                                    component={DynamicEditView} />
-			<PrivateRoute exact path="/:MODULE_NAME/Edit"                                        component={DynamicEditView} />
-			<PrivateRoute exact path="/:MODULE_NAME/Import"                                      component={ImportView} />
-			<PrivateRoute exact path="/:MODULE_NAME/Stream"                                      component={StreamView} />
+		{ exact: true, path: "/Administration/AuthorizeNet/ConfigView"                  , Component: AdminConfigView                },
+		{ exact: true, path: "/Administration/AuthorizeNet/CustomerProfiles/View/:ID"   , Component: AuthorizeNetCustomerDetailView },
+		{              path: "/Administration/AuthorizeNet/CustomerProfiles"            , Component: AuthorizeNetCustomerListView   },
+		{              path: "/Administration/AuthorizeNet"                             , Component: AuthorizeNetListView           },
+		{ exact: true, path: "/Administration/PayPal/ConfigView"                        , Component: AdminConfigView                },
+		{ exact: true, path: "/Administration/PayPalTransactions/View/:ID"              , Component: PayPalDetailView               },
+		{ exact: true, path: "/Administration/PayPal/View/:ID"                          , Component: PayPalDetailView               },
+		{              path: "/Administration/PayPalTransactions"                       , Component: PayPalListView                 },
+		{              path: "/Administration/PayPal/List"                              , Component: PayPalListView                 },
+		{              path: "/Administration/PayPal"                                   , Component: PayPalListView                 },
+		{ exact: true, path: "/Administration/PayTrace/ConfigView"                      , Component: AdminConfigView                },
+		{ exact: true, path: "/Administration/PayTrace/View/:ID"                        , Component: PayTraceDetailView             },
+		{              path: "/Administration/PayTrace"                                 , Component: PayTraceListView               },
+		{ exact: true, path: "/Administration/Asterisk/ConfigView"                      , Component: AdminConfigView                },
+		{ exact: true, path: "/Administration/Asterisk/View/:ID"                        , Component: AsteriskDetailView             },
+		{              path: "/Administration/Asterisk"                                 , Component: AsteriskListView               },
+		{ exact: true, path: "/Administration/Avaya/ConfigView"                         , Component: AdminConfigView                },
+		{ exact: true, path: "/Administration/Avaya/View/:ID"                           , Component: AvayaDetailView                },
+		{              path: "/Administration/Avaya"                                    , Component: AvayaListView                  },
 
-			<PrivateRoute exact path="/Exchange/:MODULE_NAME/Edit/:ID"                           component={PlaceholderView} />
-			<PrivateRoute exact path="/GoogleApps/:MODULE_NAME/Edit/:ID"                         component={PlaceholderView} />
-			<PrivateRoute exact path="/iCloud/:MODULE_NAME/Edit/:ID"                             component={PlaceholderView} />
-			<PrivateRoute exact path="/QuickBooks/:MODULE_NAME/Edit/:ID"                         component={PlaceholderView} />
-			<PrivateRoute exact path="/QuickBooks/:MODULE_NAME"                                  component={PlaceholderView} />
+		{ exact: true, path: "/Administration/Azure/:MODULE_NAME/ConfigView"            , Component: AdminConfigView                },
+		{ exact: true, path: "/Administration/Azure/:MODULE_NAME/ReadOnlyListView"      , Component: AdminReadOnlyListView          },
+		{ exact: true, path: "/Administration/Azure/:MODULE_NAME/DetailView"            , Component: AdminReadOnlyConfigView        },
+		{ exact: true, path: "/Administration/Azure/:MODULE_NAME/List"                  , Component: AdminDynamicListView           },
+		{ exact: true, path: "/Administration/Azure/:MODULE_NAME/View/:ID"              , Component: AdminDynamicDetailView         },
+		{ exact: true, path: "/Administration/Azure/:MODULE_NAME/Duplicate/:DuplicateID", Component: AdminDynamicEditView           },
+		{ exact: true, path: "/Administration/Azure/:MODULE_NAME/Edit/:ID"              , Component: AdminDynamicEditView           },
+		{ exact: true, path: "/Administration/Azure/:MODULE_NAME/Edit"                  , Component: AdminDynamicEditView           },
+		{ exact: true, path: "/Administration/Azure/ConfigView"                         , Component: AzureConfigView                },
+		{              path: "/Administration/Azure"                                    , Component: AzureDetailView                },
 
-			<PrivateRoute exact path="/:MODULE_NAME/:VIEW_NAME/:ID"                              component={DynamicLayoutView} />
-			<PrivateRoute exact path="/:MODULE_NAME/:VIEW_NAME"                                  component={DynamicLayoutView} />
+		{ exact: true, path: "/Administration/ACLRoles/Edit/:ID/FieldSecurity"          , Component: ACLRolesFieldSecurity          },
+		{ exact: true, path: "/Administration/ACLRoles/ByUser"                          , Component: ACLRolesByUser                 },
+		{ exact: true, path: "/Administration/:MODULE_NAME/ReadOnlyListView"            , Component: AdminReadOnlyListView          },
+		{ exact: true, path: "/Administration/:MODULE_NAME/DetailView"                  , Component: AdminReadOnlyConfigView        },
+		{ exact: true, path: "/Administration/:MODULE_NAME/ConfigView"                  , Component: AdminConfigView                },
+		{ exact: true, path: "/Administration/:MODULE_NAME/Config"                      , Component: AdminConfigView                },
+		{ exact: true, path: "/Administration/:MODULE_NAME/List"                        , Component: AdminDynamicListView           },
+		{ exact: true, path: "/Administration/:MODULE_NAME/View/:ID"                    , Component: AdminDynamicDetailView         },
+		{ exact: true, path: "/Administration/:MODULE_NAME/Duplicate/:DuplicateID"      , Component: AdminDynamicEditView           },
+		{ exact: true, path: "/Administration/:MODULE_NAME/Edit/:ID"                    , Component: AdminDynamicEditView           },
+		{ exact: true, path: "/Administration/:MODULE_NAME/Edit"                        , Component: AdminDynamicEditView           },
+		{ exact: true, path: "/Administration/:MODULE_NAME/Import"                      , Component: ImportView                     },
+		{ exact: true, path: "/Administration/Workflows/Sequence"                       , Component: WorkflowsSequenceView          },
+		{ exact: true, path: "/Administration/SimpleEmail/Statistics"                   , Component: PlaceholderView                },
+		{ exact: true, path: "/Administration/QuickBooks/:MODULE_NAME"                  , Component: PlaceholderView                },
+		{ exact: true, path: "/Administration/MailChimp/:MODULE_NAME/Edit/:ID"          , Component: PlaceholderView                },
 
-			<PrivateRoute exact path="/:MODULE_NAME/"                                            component={DynamicListView}   />
-			<Route exact path="/" component={RootView} />
-			<Route render={(props) => <div id='divUnknownRoute'>Unkown Route: {JSON.stringify(props)}</div>} />
-		</Switch>
-	</App>
-);
+		{ exact: true, path: "/Administration/:MODULE_NAME/"                            , Component: AdminDynamicListView           },
+		{ exact: true, path: "/Administration"                                          , Component: AdministrationView             },
+
+		{ exact: true, path: "/Parents/View/:ID"                                        , Component: ParentsView                    },
+		{ exact: true, path: "/:MODULE_NAME/List"                                       , Component: DynamicListView                },
+		{ exact: true, path: "/:MODULE_NAME/View/:ID"                                   , Component: DynamicDetailView              },
+		{ exact: true, path: "/:MODULE_NAME/ArchiveView/:ID"                            , Component: DynamicDetailView              },
+		{ exact: true, path: "/:MODULE_NAME/ArchiveView"                                , Component: DynamicListView                },
+		{ exact: true, path: "/:MODULE_NAME/Duplicate/:DuplicateID"                     , Component: DynamicEditView                },
+		{ exact: true, path: "/:MODULE_NAME/Convert/:ConvertModule/:ConvertID"          , Component: DynamicEditView                },
+		{ exact: true, path: "/:MODULE_NAME/Edit/:ID"                                   , Component: DynamicEditView                },
+		{ exact: true, path: "/:MODULE_NAME/Edit"                                       , Component: DynamicEditView                },
+		{ exact: true, path: "/:MODULE_NAME/Import"                                     , Component: ImportView                     },
+		{ exact: true, path: "/:MODULE_NAME/Stream"                                     , Component: StreamView                     },
+
+		{ exact: true, path: "/Exchange/:MODULE_NAME/Edit/:ID"                          , Component: PlaceholderView                },
+		{ exact: true, path: "/GoogleApps/:MODULE_NAME/Edit/:ID"                        , Component: PlaceholderView                },
+		{ exact: true, path: "/iCloud/:MODULE_NAME/Edit/:ID"                            , Component: PlaceholderView                },
+		{ exact: true, path: "/QuickBooks/:MODULE_NAME/Edit/:ID"                        , Component: PlaceholderView                },
+		{ exact: true, path: "/QuickBooks/:MODULE_NAME"                                 , Component: PlaceholderView                },
+
+		{ exact: true, path: "/Reset/:MODULE_NAME/:VIEW_NAME"                           , Component: ResetView                      },
+		{ exact: true, path: "/:MODULE_NAME/:VIEW_NAME/:ID"                             , Component: DynamicLayoutView              },
+		{ exact: true, path: "/:MODULE_NAME/:VIEW_NAME"                                 , Component: DynamicLayoutView              },
+
+		{ exact: true, path: "/:MODULE_NAME/"                                           , Component: DynamicListView                },
+		{ exact: true, path: "/*"                                                       , Component: RootView                       },
+	];
+	// 01/21/2024 Paul.  Apply non-exact rule. 
+	for ( let i = 0; i < routes.length; i++ )
+	{
+		if ( !routes[i].exact )
+		{
+			routes[i].path = routes[i].path + '/*';
+		}
+	}
+	return routes;
+}

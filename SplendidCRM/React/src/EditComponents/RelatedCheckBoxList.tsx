@@ -11,7 +11,7 @@
 // 1. React and fabric. 
 import * as React from 'react';
 import { isObservableArray }                  from 'mobx'                  ;
-import * as XMLParser                         from 'fast-xml-parser'       ;
+import { XMLParser, XMLBuilder }              from 'fast-xml-parser'       ;
 // 2. Store and Types. 
 import { IEditComponentProps, EditComponent } from '../types/EditComponent';
 // 3. Scripts. 
@@ -321,7 +321,9 @@ export default class RelatedCheckBoxList extends EditComponent<IEditComponentPro
 							// 08/01/2013 Paul.  Expand XML values from CheckBoxList. 
 							else if ( StartsWith(DATA_VALUE, '<?xml') )
 							{
-								let xml = XMLParser.parse(DATA_VALUE);
+								// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
+								const parser = new XMLParser();
+								let xml = parser.parse(DATA_VALUE);
 								if ( xml.Values && xml.Values.Value && Array.isArray(xml.Values.Value) )
 								{
 									let DATA_VALUES: string[] = xml.Values.Value;

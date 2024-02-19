@@ -8,8 +8,13 @@
  * "Copyright (C) 2005-2022 SplendidCRM Software, Inc. All rights reserved."
  */
 
-import * as React from 'react';
-import { DragSource, DropTarget, ConnectDropTarget, ConnectDragSource, DropTargetMonitor, DropTargetConnector, DragSourceConnector, DragSourceMonitor } from 'react-dnd';
+// 1. React and fabric. 
+import React, { memo, FC }                                        from 'react';
+import { useDrag, useDrop, DragSourceMonitor, DropTargetMonitor } from 'react-dnd';
+// 2. Store and Types. 
+import IDragItemState                                             from '../types/IDragItemState'  ;
+// 3. Scripts. 
+// 4. Components and Views. 
 
 const style: React.CSSProperties =
 {
@@ -27,66 +32,59 @@ interface ISouceItemProps
 	createItemFromSource: (item: any) => any;
 	moveDraggableItem   : (dragColIndex: number, dragRowIndex: number, hoverCOlIndex: number, hoverRowIndex: number) => void;
 	remove              : (item, type) => void;
-	connectDragSource?  : ConnectDragSource;
 }
 
-const source =
+// 12/31/2023 Paul.  react-dnd v15 requires use of hooks. 
+const SouceItem: FC<ISouceItemProps> = memo(function SouceItem(props: ISouceItemProps)
 {
-	beginDrag(props: ISouceItemProps)
-	{
-		//console.log((new Date()).toISOString() + ' ' + 'SouceItem' + '.beginDrag', props);
-		return props.createItemFromSource(props.item);
-	},
-	endDrag(props: ISouceItemProps, monitor: DragSourceMonitor)
-	{
-		//console.log((new Date()).toISOString() + ' ' + 'SouceItem' + '.endDrag', props, monitor.getItem());
-		if ( monitor.didDrop() )
-		{
-			//const id           : string = monitor.getItem().id        ;
-			//const hoverColIndex: number = monitor.getItem().colIndex  ;
-			//const hoverRowIndex: number = monitor.getItem().rowIndex  ;
-			//props.moveDraggableItem(id, hoverColIndex, hoverRowIndex);
-		}
-		else
-		{
-			// 03/14/2020 Paul.  We need to remove the ghost item created above. 
-			props.remove( monitor.getItem(), 'ITEM');
-		}
-	}
-};
+	const{ item, isAppInUse, createItemFromSource, moveDraggableItem, remove } = props;
+	//console.log((new Date()).toISOString() + ' ' + 'SouceItem' + '.props', props);
+	const [collect, connectDragSource, dragPreview] = useDrag
+	(
+		() => ({
+			type: 'ITEM',
+			item: (monitor: DragSourceMonitor) =>
+			{
+				//console.log((new Date()).toISOString() + ' ' + 'SouceItem' + '.item/begin', item, props, monitor);
+				return createItemFromSource(props.item);
+			},
+			collect: (monitor: DragSourceMonitor) => (
+			{
+				isDragging: monitor.isDragging()
+			}),
+			end: (item: IDragItemState, monitor: DragSourceMonitor) =>
+			{
+				//console.log((new Date()).toISOString() + ' ' + 'SouceItem' + '.end', item, props);
+				if ( !monitor.didDrop() )
+				{
+					//const id           : string = item.id        ;
+					//const hoverColIndex: number = item.colIndex  ;
+					//const hoverRowIndex: number = item.rowIndex  ;
+					//props.moveDraggableItem(id, hoverColIndex, hoverRowIndex);
+				}
+				else
+				{
+					// 03/14/2020 Paul.  We need to remove the ghost item created above. 
+					//remove( item, monitor.getItemType());
+				}
+			},
+			canDrag: (monitor: DragSourceMonitor) =>
+			{
+				return true;
+			},
+		}),
+		[createItemFromSource, moveDraggableItem, remove],
+	);
+	//console.log((new Date()).toISOString() + ' ' + 'SouceItem' + ' collected', collect, dropCollect);
+	return (
+			<div ref={ (node) => connectDragSource(node) }
+				className='grab DashboardComponents-SourceItem'
+				style={ { ...style, display: (isAppInUse ? 'none' : null) } }>
+				{ item.NAME }
+				<br />
+				<small>{ item.MODULE_NAME }</small>
+			</div>
+	);
+});
 
-function collect(connect: DragSourceConnector, monitor: DragSourceMonitor)
-{
-	//console.log((new Date()).toISOString() + ' ' + 'SouceItem' + '.collect', connect, monitor);
-	return {
-		connectDragSource: connect.dragSource()
-	};
-}
-
-class SouceItem extends React.Component<ISouceItemProps>
-{
-	constructor(props: ISouceItemProps)
-	{
-		super(props);
-		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.constructor', props);
-	}
-
-	public render()
-	{
-		const{ item, isAppInUse, connectDragSource } = this.props;
-		return (
-			connectDragSource &&
-			connectDragSource(
-				<div
-					className='grab'
-					style={ { ...style, display: (isAppInUse ? 'none' : null) } }>
-					{ item.NAME }
-					<br />
-					<small>{ item.MODULE_NAME }</small>
-				</div>
-			)
-		);
-	}
-}
-
-export default DragSource('ITEM', source, collect)(SouceItem);
+export default SouceItem;

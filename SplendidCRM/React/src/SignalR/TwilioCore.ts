@@ -18,13 +18,14 @@ import { Crm_Config } from '../scripts/Crm'          ;
 
 export class TwilioServerCore
 {
-	history            : H.History<H.LocationState>;
+	// 01/15/2024 Paul.  Updated history package. 
+	history            : H.History;
 	hub                : signalR.HubConnection;
 	started            : boolean;
 	sUSER_PHONE_MOBILE : string;
 	sUSER_SMS_OPT_IN   : string;
 
-	constructor(history: H.History<H.LocationState>, hub: signalR.HubConnection, sUSER_PHONE_MOBILE: string, sUSER_SMS_OPT_IN: string)
+	constructor(history: H.History, hub: signalR.HubConnection, sUSER_PHONE_MOBILE: string, sUSER_SMS_OPT_IN: string)
 	{
 		this.history             = history            ;
 		this.hub                 = hub                ;
@@ -101,7 +102,7 @@ export class TwilioServerCore
 	}
 }
 
-export function TwilioCreateHub(history: H.History<H.LocationState>, sUSER_PHONE_MOBILE: string, sUSER_SMS_OPT_IN: string): TwilioServerCore
+export function TwilioCreateHub(history: H.History, sUSER_PHONE_MOBILE: string, sUSER_SMS_OPT_IN: string): TwilioServerCore
 {
 	const hub: signalR.HubConnection = new signalR.HubConnectionBuilder()
 		.withUrl("/signalr_twiliohub")

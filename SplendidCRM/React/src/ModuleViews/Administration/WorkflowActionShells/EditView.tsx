@@ -9,10 +9,10 @@
  */
 
 // 1. React and fabric. 
-import * as React from 'react';
-import * as qs from 'query-string';
-import * as XMLParser                               from 'fast-xml-parser'                              ;
-import { RouteComponentProps }                      from 'react-router-dom'                             ;
+import React from 'react';
+import qs from 'query-string';
+import { XMLParser, XMLBuilder }                    from 'fast-xml-parser'                              ;
+import { RouteComponentProps }                      from '../Router5'                                   ;
 import { observer }                                 from 'mobx-react'                                   ;
 import { FontAwesomeIcon }                          from '@fortawesome/react-fontawesome'               ;
 // 2. Store and Types. 
@@ -111,6 +111,7 @@ export default class WorkflowActionShellsEditView extends React.Component<IAdmin
 	constructor(props: IAdminEditViewProps)
 	{
 		super(props);
+		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.constructor', props);
 		let EDIT_NAME = props.MODULE_NAME + '.EditView';
 		if ( !Sql.IsEmptyString(props.LAYOUT_NAME) )
 		{
@@ -258,11 +259,13 @@ export default class WorkflowActionShellsEditView extends React.Component<IAdmin
 				});
 				if ( !Sql.IsEmptyString(DuplicateID) )
 				{
-					await this.LoadItem(MODULE_NAME, DuplicateID);
+					// 02/06/2024 Paul.  layout may not be available from state, so pass as parameter. 
+					await this.LoadItem(MODULE_NAME, DuplicateID, layout);
 				}
 				else
 				{
-					await this.LoadItem(MODULE_NAME, ID);
+					// 02/06/2024 Paul.  layout may not be available from state, so pass as parameter. 
+					await this.LoadItem(MODULE_NAME, ID, layout);
 				}
 			}
 		}
@@ -273,9 +276,9 @@ export default class WorkflowActionShellsEditView extends React.Component<IAdmin
 		}
 	}
 
-	private LoadItem = async (sMODULE_NAME: string, sID: string) =>
+	// 02/06/2024 Paul.  layout may not be available from state, so pass as parameter. 
+	private LoadItem = async (sMODULE_NAME: string, sID: string, layout: any[]) =>
 	{
-		let { layout } = this.state;
 		if ( !Sql.IsEmptyString(sID) )
 		{
 			try
@@ -283,12 +286,26 @@ export default class WorkflowActionShellsEditView extends React.Component<IAdmin
 				let options: any = 
 				{
 					attributeNamePrefix: ''     ,
-					textNodeName       : 'Value',
+					// 02/18/2024 Paul.  parser v4 creates object for Value. 
+					// 02/18/2024 Paul.  When tag name is also Value, v4 creates an array, which is wrong and bad. 
+					//<CustomProperties>
+					//	<CustomProperty>
+					//		<Name>crm:Module</Name>
+					//		<Value>Accounts</Value>
+					//	</CustomProperty>
+					//	<CustomProperty>
+					//		<Name>crm:Related</Name>
+					//		<Value></Value>
+					//	</CustomProperty>
+					//</CustomProperties>
+					//textNodeName       : 'Value',
 					ignoreAttributes   : false  ,
 					ignoreNameSpace    : true   ,
 					parseAttributeValue: true   ,
 					trimValues         : false  ,
 				};
+				// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
+				const parser = new XMLParser(options);
 
 				// 11/19/2019 Paul.  Change to allow return of SQL. 
 				const d = await EditView_LoadItem(sMODULE_NAME, sID, true);
@@ -310,9 +327,11 @@ export default class WorkflowActionShellsEditView extends React.Component<IAdmin
 				}
 				if ( item != null )
 				{
-					if ( !Sql.IsEmptyString(item['RDL']) )
+					let sRDL: string = Sql.ToString(item['RDL']);
+					if ( !Sql.IsEmptyString(sRDL) )
 					{
-						let reportXml: any = XMLParser.parse(item['RDL'], options);
+						// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
+						let reportXml: any = parser.parse(sRDL);
 						// 05/20/2020 Paul.  A single record will not come in as an array, so convert to an array. 
 						if ( reportXml.Filters && reportXml.Filters.Filter && !Array.isArray(reportXml.Filters.Filter) )
 						{
@@ -634,6 +653,7 @@ export default class WorkflowActionShellsEditView extends React.Component<IAdmin
 		}
 		else if ( error )
 		{
+			console.error((new Date()).toISOString() + ' ' + this.constructor.name + '.render', error);
 			return (<ErrorComponent error={error} />);
 		}
 		else

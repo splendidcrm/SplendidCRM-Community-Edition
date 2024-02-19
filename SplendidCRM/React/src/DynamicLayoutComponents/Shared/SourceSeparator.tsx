@@ -8,9 +8,14 @@
  * "Copyright (C) 2005-2022 SplendidCRM Software, Inc. All rights reserved."
  */
 
-import * as React from 'react';
-import { DragSource, DropTarget, ConnectDropTarget, ConnectDragSource, DropTargetMonitor, DropTargetConnector, DragSourceConnector, DragSourceMonitor } from 'react-dnd';
-import { uuidFast }                           from '../../scripts/utility'            ;
+// 1. React and fabric. 
+import React, { memo, FC }                                        from 'react';
+import { useDrag, useDrop, DragSourceMonitor, DropTargetMonitor } from 'react-dnd';
+// 2. Store and Types. 
+import IDragItemState                                             from '../../types/IDragItemState'  ;
+// 3. Scripts. 
+import { uuidFast }                                               from '../../scripts/utility'       ;
+// 4. Components and Views. 
 
 const style: React.CSSProperties =
 {
@@ -26,80 +31,77 @@ interface ISourceSeparatorProps
 {
 	TITLE               : string;
 	createItemFromSource: (item: any) => any;
-	connectDragSource?  : Function; // ConnectDragSource;
 	moveDraggableItem   : (id: string, hoverColIndex: number, hoverRowIndex: number, didDrop: boolean) => void;
 	remove              : (item, type) => void;
 }
 
-const source =
+// 12/31/2023 Paul.  react-dnd v15 requires use of hooks. 
+const SourceSeparator: FC<ISourceSeparatorProps> = memo(function SourceSeparator(props: ISourceSeparatorProps)
 {
-	beginDrag(props: ISourceSeparatorProps)
-	{
-		//console.log((new Date()).toISOString() + ' ' + 'SourceSeparator' + '.beginDrag', props);
-		let obj: any     = {};
-		obj.id           = uuidFast() ;
-		obj.index        = -1         ;
-		obj.ID           = null       ;
-		obj.FIELD_TYPE   = 'Separator';
-		obj.DATA_LABEL   = null       ;
-		obj.DATA_FIELD   = null       ;
-		obj.DATA_FORMAT  = null       ;
-		obj.URL_FIELD    = null       ;
-		obj.URL_FORMAT   = null       ;
-		obj.URL_TARGET   = null       ;
-		obj.MODULE_TYPE  = null       ;
-		obj.LIST_NAME    = null       ;
-		obj.COLSPAN      = null       ;
-		obj.TOOL_TIP     = null       ;
-		obj.PARENT_FIELD = null       ;
-		return props.createItemFromSource(obj);
-	},
-	endDrag(props: ISourceSeparatorProps, monitor: DragSourceMonitor)
-	{
-		//console.log((new Date()).toISOString() + ' ' + 'SourceSeparator' + '.endDrag', props, monitor.getItem());
-		if ( monitor.didDrop() )
-		{
-			const id           : string = monitor.getItem().id        ;
-			const hoverColIndex: number = monitor.getItem().colIndex  ;
-			const hoverRowIndex: number = monitor.getItem().rowIndex  ;
-			props.moveDraggableItem(id, hoverColIndex, hoverRowIndex, true);
-		}
-		else
-		{
-			// 03/14/2020 Paul.  We need to remove the ghost item created above. 
-			props.remove(monitor.getItem(), 'ITEM');
-		}
-	}
-};
+	const{ TITLE, createItemFromSource, moveDraggableItem, remove } = props;
+	//console.log((new Date()).toISOString() + ' ' + 'SourceHeader' + '.props', props);
+	const [collect, connectDragSource, dragPreview] = useDrag
+	(
+		() => ({
+			type: 'ITEM',
+			item: (monitor: DragSourceMonitor) =>
+			{
+				//console.log((new Date()).toISOString() + ' ' + 'SouceBlank' + '.item/begin', props, monitor);
+				return createItemFromSource(
+					{
+						id          : uuidFast() ,
+						index       : -1         ,
+						ID          : null       ,
+						FIELD_TYPE  : 'Separator',
+						DATA_LABEL  : null       ,
+						DATA_FIELD  : null       ,
+						DATA_FORMAT : null       ,
+						URL_FIELD   : null       ,
+						URL_FORMAT  : null       ,
+						URL_TARGET  : null       ,
+						MODULE_TYPE : null       ,
+						LIST_NAME   : null       ,
+						COLSPAN     : null       ,
+						TOOL_TIP    : null       ,
+						PARENT_FIELD: null       ,
+					});
+			},
+			collect: (monitor: DragSourceMonitor) => (
+			{
+				isDragging: monitor.isDragging()
+			}),
+			end: (item: IDragItemState, monitor: DragSourceMonitor) =>
+			{
+				//console.log((new Date()).toISOString() + ' ' + 'SouceItem' + '.end', item, props);
+				if ( monitor.didDrop() )
+				{
+					// 12/31/2023 Paul.  Upgrade DnD. 
+					const id           : string = item.id        ;
+					const hoverColIndex: number = item.colIndex  ;
+					const hoverRowIndex: number = item.rowIndex  ;
+					moveDraggableItem(id, hoverColIndex, hoverRowIndex, true);
+				}
+				else
+				{
+					// 03/14/2020 Paul.  We need to remove the ghost item created above. 
+					remove(item, 'ITEM');
+				}
+			},
+			canDrag: (monitor: DragSourceMonitor) =>
+			{
+				return true;
+			},
+		}),
+		[createItemFromSource, moveDraggableItem, remove],
+	);
+	//console.log((new Date()).toISOString() + ' ' + 'SourceHeader' + ' collected', collect, dropCollect);
+	return (
+			<div ref={ (node) => connectDragSource(node) }
+				className='grab DynamicLayoutComponents-Shared-SourceSeparator'
+				style={ { ...style } }>
+				{ TITLE }
+			</div>
+	);
+});
 
-function collect(connect: DragSourceConnector, monitor: DragSourceMonitor)
-{
-	//console.log((new Date()).toISOString() + ' ' + 'SourceSeparator' + '.collect', connect, monitor);
-	return {
-		connectDragSource: connect.dragSource()
-	};
-}
-
-class SourceSeparator extends React.Component<ISourceSeparatorProps>
-{
-	constructor(props: ISourceSeparatorProps)
-	{
-		super(props);
-		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.constructor', props);
-	}
-
-	public render()
-	{
-		const{ TITLE } = this.props;
-		return (
-			this.props.connectDragSource &&
-			this.props.connectDragSource(
-				<div style={ { ...style } } className='grab'>
-					{ TITLE }
-				</div>
-			)
-		);
-	}
-}
-
-export default DragSource('ITEM', source, collect)(SourceSeparator);
+export default SourceSeparator;

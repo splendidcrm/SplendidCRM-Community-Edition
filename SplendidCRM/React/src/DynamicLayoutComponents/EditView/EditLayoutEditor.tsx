@@ -184,7 +184,8 @@ export default class EditLayoutEditor extends React.Component<IEditLayoutEditorP
 		activeFields[id] = obj;
 		if ( this._isMounted )
 		{
-			this.setState({ activeFields, draggingId: id, error: null });
+			// 01/13/2024 Paul.  createItemFromSource is called during initial layout for all items, so we cannot start dragging. 
+			this.setState({ activeFields, error: null });
 		}
 		return {
 			id        : id,
@@ -238,7 +239,8 @@ export default class EditLayoutEditor extends React.Component<IEditLayoutEditorP
 		}
 		if ( this._isMounted )
 		{
-			this.setState({ rows, activeFields, error: null });
+			// 01/11/2024 Paul.  Clear dragging. 
+			this.setState({ rows, activeFields, draggingId: '', error: null });
 		}
 	}
 
@@ -330,7 +332,11 @@ export default class EditLayoutEditor extends React.Component<IEditLayoutEditorP
 			//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.moveDraggableItem ' + id, dragFieldIndex, dragColIndex, dragRowIndex, hoverColIndex, hoverRowIndex);
 			if ( rows[hoverRowIndex].columns.length == 0 )
 			{
-				rows[hoverRowIndex].columns.push([]);
+				let maxColumns: number = this.LayoutColumns();
+				for ( let i = 0; i < maxColumns; i++ )
+				{
+					rows[hoverRowIndex].columns.push([]);
+				}
 			}
 			fields = rows[hoverRowIndex].columns[hoverColIndex];
 			if ( fields.length == 1 )
@@ -362,7 +368,11 @@ export default class EditLayoutEditor extends React.Component<IEditLayoutEditorP
 		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.addSourceItem', id, hoverColIndex, hoverRowIndex);
 		if ( rows[hoverRowIndex].columns.length == 0 )
 		{
-			rows[hoverRowIndex].columns.push([]);
+			let maxColumns: number = this.LayoutColumns();
+			for ( let i = 0; i < maxColumns; i++ )
+			{
+				rows[hoverRowIndex].columns.push([]);
+			}
 		}
 		let fields: string[] = rows[hoverRowIndex].columns[hoverColIndex];
 		if ( fields.length == 1 )
@@ -526,6 +536,21 @@ export default class EditLayoutEditor extends React.Component<IEditLayoutEditorP
 		return false;
 	}
 
+	private LayoutColumns = () =>
+	{
+		const { layoutProperties } = this.state;
+		let maxColumns: number = 2;
+		if ( layoutProperties )
+		{
+			maxColumns = Sql.ToInteger(layoutProperties.DATA_COLUMNS);
+			if ( maxColumns <= 0 )
+			{
+				maxColumns = 2;
+			}
+		}
+		return maxColumns;
+	}
+
 	private _onSave = async (e) =>
 	{
 		const { layoutName, rows, activeFields, layoutProperties } = this.state;
@@ -533,11 +558,7 @@ export default class EditLayoutEditor extends React.Component<IEditLayoutEditorP
 		{
 			if ( this._isMounted )
 			{
-				let maxColumns: number = Sql.ToInteger(layoutProperties.DATA_COLUMNS);
-				if ( maxColumns == 0 )
-				{
-					maxColumns = 2;
-				}
+				let maxColumns: number = this.LayoutColumns();
 
 				let obj: any = new Object();
 				obj.EDITVIEWS                     = new Object();

@@ -2887,6 +2887,12 @@ namespace SplendidCRM
 										rowFieldSecurity["NAME" ] = "bEnableACLFieldSecurity";
 										rowFieldSecurity["VALUE"] = SplendidInit.bEnableACLFieldSecurity;
 										dt.Rows.Add(rowFieldSecurity);
+										// 02/06/2024 Paul.  Provide a way to detect Azure enabled. 
+										DataRow rowAzureRestExists = null;
+										rowAzureRestExists= dt.NewRow();
+										rowAzureRestExists["NAME" ] = "AzureRestExists";
+										rowAzureRestExists["VALUE"] = Utils.CachedFileExists(Context, "~/Administration/Azure/Rest.svc");
+										dt.Rows.Add(rowAzureRestExists);
 										foreach ( DataRow row in dt.Rows )
 										{
 											string sNAME = Sql.ToString(row["NAME"]).ToLower();

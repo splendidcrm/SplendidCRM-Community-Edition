@@ -10,10 +10,10 @@
 
 // 1. React and fabric. 
 import * as React from 'react';
-import { RouteComponentProps, withRouter }            from 'react-router-dom'                          ;
+import { RouteComponentProps, withRouter }            from '../Router5'                                ;
 import { observer }                                   from 'mobx-react'                                ;
 import { FontAwesomeIcon }                            from '@fortawesome/react-fontawesome'            ;
-import * as XMLParser                                 from 'fast-xml-parser'                           ;
+import { XMLParser, XMLBuilder }                      from 'fast-xml-parser'                           ;
 // 2. Store and Types. 
 import { HeaderButtons }                              from '../../types/HeaderButtons'                 ;
 // 3. Scripts. 
@@ -163,12 +163,27 @@ class DetailView extends React.Component<IDetailViewProps, IDetailViewState>
 			let options: any = 
 			{
 				attributeNamePrefix: ''     ,
-				textNodeName       : 'Value',
+				// 02/18/2024 Paul.  When tag name is also Value, v4 creates an array, which is wrong and bad. 
+				//<CustomProperties>
+				//	<CustomProperty>
+				//		<Name>crm:Module</Name>
+				//		<Value>Accounts</Value>
+				//	</CustomProperty>
+				//	<CustomProperty>
+				//		<Name>crm:Related</Name>
+				//		<Value>
+				//	</Value>
+				//	</CustomProperty>
+				//</CustomProperties>
+				//textNodeName       : 'Value',
 				ignoreAttributes   : false  ,
 				ignoreNameSpace    : true   ,
 				parseAttributeValue: true   ,
 				trimValues         : false  ,
 			};
+			// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
+			const parser = new XMLParser(options);
+
 			// 11/19/2019 Paul.  Change to allow return of SQL. 
 			const d = await DetailView_LoadItem(MODULE_NAME, ID, false, false);
 			if ( this._isMounted )
@@ -207,7 +222,7 @@ class DetailView extends React.Component<IDetailViewProps, IDetailViewState>
 					let sRDL: string = Sql.ToString(item['RDL']);
 					if ( !Sql.IsEmptyString(sRDL) && StartsWith(sRDL, '<?xml') && Sql.ToString(item['CHART_TYPE']) != 'Freeform' )
 					{
-						reportXml = XMLParser.parse(sRDL, options);
+						reportXml = parser.parse(sRDL);
 						if ( reportXml.Report != null )
 						{
 							if ( reportXml.Report.CustomProperties != null && reportXml.Report.CustomProperties.CustomProperty != null && Array.isArray(reportXml.Report.CustomProperties.CustomProperty) )
@@ -224,7 +239,8 @@ class DetailView extends React.Component<IDetailViewProps, IDetailViewState>
 										case 'crm:RelatedModules':
 											// 05/15/2021 Paul.  Ignore data from file and just use latest QueryBuilderState. 
 											sValue = this.decodeHTML(sValue);
-											relatedModuleXml = XMLParser.parse(sValue, options);
+											// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
+											relatedModuleXml = parser.parse(sValue);
 											// 05/14/2021 Paul.  If there is only one, convert to an array. 
 											if ( relatedModuleXml.Relationships && relatedModuleXml.Relationships.Relationship && !Array.isArray(relatedModuleXml.Relationships.Relationship) )
 											{
@@ -236,7 +252,8 @@ class DetailView extends React.Component<IDetailViewProps, IDetailViewState>
 										case 'crm:Relationships' :
 											// 05/15/2021 Paul.  Ignore data from file and just use latest QueryBuilderState. 
 											sValue = this.decodeHTML(sValue);
-											relationshipXml  = XMLParser.parse(sValue, options);
+											// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
+											relationshipXml  = parser.parse(sValue);
 											// 05/14/2021 Paul.  If there is only one, convert to an array. 
 											if ( relationshipXml.Relationships && relationshipXml.Relationships.Relationship && !Array.isArray(relationshipXml.Relationships.Relationship) )
 											{
@@ -247,7 +264,8 @@ class DetailView extends React.Component<IDetailViewProps, IDetailViewState>
 											break;
 										case 'crm:Filters'       :
 											sValue = this.decodeHTML(sValue);
-											filterXml        = XMLParser.parse(sValue, options);
+											// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
+											filterXml        = parser.parse(sValue);
 											// 05/14/2021 Paul.  If there is only one, convert to an array. 
 											if ( filterXml.Filters && filterXml.Filters.Filter && !Array.isArray(filterXml.Filters.Filter) )
 											{
@@ -595,4 +613,5 @@ class DetailView extends React.Component<IDetailViewProps, IDetailViewState>
 	}
 }
 
-export default withRouter(withScreenSizeHook(DetailView));
+// 02/04/2024 Paul.  Prepare for v18 by swapping order. 
+export default withScreenSizeHook(withRouter(DetailView));

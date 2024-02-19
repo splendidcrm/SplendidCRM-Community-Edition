@@ -10,7 +10,7 @@
 
 // 1. React and fabric. 
 import * as React from 'react';
-import { RouteComponentProps, withRouter, Link } from 'react-router-dom';
+import { RouteComponentProps, withRouter, Link } from '../Router5';
 import { FontAwesomeIcon }                 from '@fortawesome/react-fontawesome';
 // 2. Store and Types. 
 import MODULE        from '../types/MODULE'         ;

@@ -10,7 +10,7 @@
 
 // 1. React and fabric. 
 import * as React from 'react';
-import { RouteComponentProps, withRouter }       from 'react-router-dom'                   ;
+import { RouteComponentProps, withRouter }       from '../Router5'                   ;
 import { observer }                              from 'mobx-react'                         ;
 import { FontAwesomeIcon }                       from '@fortawesome/react-fontawesome'     ;
 // 2. Store and Types. 
@@ -33,7 +33,8 @@ import { UpdateModule }                          from '../../scripts/ModuleUpdat
 // 4. Components and Views.
 import ErrorComponent                            from '../../components/ErrorComponent'    ;
 import DynamicButtons                            from '../../components/DynamicButtons'    ;
-import DynamicEditView                           from '../../views/DynamicEditView'        ;
+// 02/04/2024 Paul.  Export both types so ref can use correct type. 
+import DynamicEditViewWithRouter, { DynamicEditView } from '../../views/DynamicEditView'        ;
 import NavItem                                   from '../../components/NavItem'           ;
 
 interface ITopNavProps extends RouteComponentProps<any>
@@ -1321,7 +1322,7 @@ class ArcticTopNav extends React.Component<ITopNavProps, ITopNavState>
 		</div>
 		<div className='tabForm' style={ {width: '100%', marginBottom: '4px'} }>
 			<h4>{ L10n.Term(QUICK_CREATE_MODULE + '.LBL_NEW_FORM_TITLE') }</h4>
-			<DynamicEditView
+			<DynamicEditViewWithRouter
 				key={ QUICK_CREATE_MODULE + '.EditView.Inline' }
 				MODULE_NAME={ QUICK_CREATE_MODULE }
 				LAYOUT_NAME={ QUICK_CREATE_MODULE + '.EditView.Inline' }
@@ -1331,7 +1332,7 @@ class ArcticTopNav extends React.Component<ITopNavProps, ITopNavState>
 				history={ this.props.history }
 				location={ this.props.location }
 				match={ this.props.match }
-				ref={ this.editView }
+				withRef={ this.editView }
 			/>
 		</div>
 	</div>

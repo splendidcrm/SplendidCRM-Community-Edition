@@ -10,11 +10,9 @@
 
 // 1. React and fabric. 
 import * as React from 'react';
-import { FontAwesomeIcon }                      from '@fortawesome/react-fontawesome'         ;
-import { faAngleDoubleUp, faAngleDoubleDown }   from '@fortawesome/free-solid-svg-icons'      ;
-import { RouteComponentProps }                  from 'react-router-dom'                       ;
+import { RouteComponentProps }                  from '../Router5'                             ;
 import { observer }                             from 'mobx-react'                             ;
-import * as XMLParser                           from 'fast-xml-parser'                        ;
+import { XMLParser, XMLBuilder }                from 'fast-xml-parser'                        ;
 // 2. Store and Types. 
 import MODULE                                   from '../../../types/MODULE'                  ;
 // 3. Scripts. 
@@ -126,15 +124,23 @@ export default class SearchView extends React.Component<ISearchViewProps, ISearc
 					let options: any = 
 					{
 						attributeNamePrefix: '',
+						// 02/18/2024 Paul.  parser v4 does not have an issue with node name as there is no value tag. 
+						//<SavedSearch>
+						//  <SortColumn>NAME</SortColumn>
+						//  <SortOrder>asc</SortOrder>
+						//  <SearchFields>
+						//    <Field Name="LANG" Type="ListBox">en-US</Field>
+						//  </SearchFields>
+						//</SavedSearch>
 						textNodeName       : 'Value',
 						ignoreAttributes   : false,
 						ignoreNameSpace    : true,
 						parseAttributeValue: true,
 						trimValues         : false,
-
 					};
-					let tObj = XMLParser.getTraversalObj(search.CONTENTS, options);
-					let xml = XMLParser.convertToJson(tObj, options);
+					// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
+					const parser = new XMLParser(options);
+					let xml = parser.parse(search.CONTENTS);
 					//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.constructor', xml);
 					if ( xml.SavedSearch != null )
 					{
@@ -1041,10 +1047,14 @@ export default class SearchView extends React.Component<ISearchViewProps, ISearc
 					ignoreNameSpace    : true,
 					parseAttributeValue: true,
 					trimValues         : false,
-
+					format             : true,
+					// 02/17/2024 Paul.  parser v4 requires suppressBooleanAttributes, otherwise Visible does not include ="true"
+					allowBooleanAttributes: true,
+					suppressBooleanAttributes: false,
 				};
-				let parser = new XMLParser.j2xParser(options);
-				let sXML: string = '<?xml version="1.0" encoding="UTF-8"?>' + parser.parse(objSavedSearch);
+				// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
+				const builder = new XMLBuilder(options);
+				let sXML: string = '<?xml version="1.0" encoding="UTF-8"?>' + builder.build(objSavedSearch);
 				//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onSubmit', sXML);
 
 				await UpdateSavedSearch(null, SEARCH_MODULE, sXML, null, SAVED_SEARCH_ID);
@@ -1109,15 +1119,19 @@ export default class SearchView extends React.Component<ISearchViewProps, ISearc
 				let options: any = 
 				{
 					attributeNamePrefix: '@',
-					textNodeName: 'Value',
-					ignoreAttributes: false,
-					ignoreNameSpace: true,
+					textNodeName       : 'Value',
+					ignoreAttributes   : false,
+					ignoreNameSpace    : true,
 					parseAttributeValue: true,
-					trimValues: false,
-
+					trimValues         : false,
+					format             : true,
+					// 02/17/2024 Paul.  parser v4 requires suppressBooleanAttributes, otherwise Visible does not include ="true"
+					allowBooleanAttributes: true,
+					suppressBooleanAttributes: false,
 				};
-				let parser = new XMLParser.j2xParser(options);
-				let sXML: string = '<?xml version="1.0" encoding="UTF-8"?>' + parser.parse(objSavedSearch);
+				// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
+				const builder = new XMLBuilder(options);
+				let sXML: string = '<?xml version="1.0" encoding="UTF-8"?>' + builder.build(objSavedSearch);
 				//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onClear', sXML);
 
 				await UpdateSavedSearch(null, SEARCH_MODULE, sXML, null, null);

@@ -9,13 +9,13 @@
  */
 
 // 1. React and fabric. 
-import * as React from 'react';
-import * as qs from 'query-string';
-import * as XMLParser                                 from 'fast-xml-parser'                           ;
-import { RouteComponentProps, withRouter }            from 'react-router-dom'                          ;
+import React from 'react';
+import qs from 'query-string';
+import { XMLParser, XMLBuilder }                      from 'fast-xml-parser'                           ;
+import { RouteComponentProps, withRouter }            from '../Router5'                                ;
 import { observer }                                   from 'mobx-react'                                ;
 import { FontAwesomeIcon }                            from '@fortawesome/react-fontawesome'            ;
-import Select, { components }                         from 'react-select'                              ;
+import Select, { components, OptionProps, SingleValueProps } from 'react-select'                       ;
 // 2. Store and Types. 
 import { EditComponent }                              from '../../types/EditComponent'                 ;
 import { HeaderButtons }                              from '../../types/HeaderButtons'                 ;
@@ -44,6 +44,46 @@ import SurveyQuestionFactory                          from '../../SurveyComponen
 
 const bDebug: boolean = false;
 const ControlChars = { CrLf: '\r\n', Cr: '\r', Lf: '\n', Tab: '\t' };
+
+interface SelectOption
+{
+	id  : string;
+	name: string;
+}
+
+// 02/15/2024 Paul.  react-select 5.8 requires functional components. 
+const QuestionTypeSingleValue = ({children, ...props}: SingleValueProps) =>
+{
+	//console.log((new Date()).toISOString() + ' SurveyQuestionsEditView.QuestionTypeSingleValue', props, children);
+	return (
+	<components.SingleValue {...props}>
+		<div style={ {fontSize: '1.3em'} }>{ children }</div>
+	</components.SingleValue>
+	);
+}
+
+// https://react-select.com/components#components
+const QuestionTypeOption = (props: OptionProps<SelectOption>) =>
+{
+	let QUESTION_TYPE: string = props.data.id;
+	//console.log((new Date()).toISOString() + ' SurveyQuestionsEditView.QuestionTypeOption', props, QUESTION_TYPE);
+	let sampleItem   : any    = { QUESTION_TYPE };
+	sampleItem.ID              = 'divQuestionEditViewOption' + QUESTION_TYPE;
+	sampleItem.DESCRIPTION     = L10n.ListTerm('survey_question_type', QUESTION_TYPE);
+	sampleItem.QUESTION_NUMBER = 1;
+	let question: any = SurveyQuestionFactory(sampleItem);
+
+	return (<React.Fragment>
+		<components.Option {...props}>
+			<div className='SurveyQuestionDesignFrame SurveyQuestionFrame' style={ {backgroundColor: 'white'} }>
+				<div className='SurveyQuestionContent'>
+					{ React.createElement(question, { row: sampleItem, displayMode: 'Sample' }) }
+				</div>
+			</div>
+		</components.Option>
+	</React.Fragment>
+	);
+}
 
 // 09/22/2023 Paul.  React is saving line breaks just as LF, not CRLF.  The old JavaScript rendering engine requires CRLF. 
 function NormalizeLineBreaks(s: string)
@@ -514,12 +554,32 @@ export default class SurveyQuestionsEditView extends React.Component<IEditViewPr
 
 					try
 					{
+						// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
 						let sANSWER_CHOICES: string = Sql.ToString (item["ANSWER_CHOICES"]);
 						let sCOLUMN_CHOICES: string = Sql.ToString (item["COLUMN_CHOICES"]);
 						if ( sQUESTION_TYPE == "Rating Scale" )
 						{
 							item['COLUMN_CHOICES'] = null;
-							let xml = XMLParser.parse(sCOLUMN_CHOICES);
+							// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
+							let options: any = 
+							{
+								attributeNamePrefix: '',
+								// 02/16/2024 Paul.  parser v4 creates object for Label.  
+								// 02/16/2024 Paul.  Label and Weight at same level causes confusion. 
+								// <Ratings>
+								//	<Rating>
+								//		<Label>11</Label>
+								//		<Weight>1</Weight>
+								//	</Rating>
+								// </Ratings>
+								//textNodeName       : 'Label',
+								ignoreAttributes   : false,
+								ignoreNameSpace    : true,
+								parseAttributeValue: true,
+								trimValues         : false,
+							};
+							const parser = new XMLParser(options);
+							let xml = parser.parse(sCOLUMN_CHOICES);
 							if ( xml.Ratings && xml.Ratings.Rating && Array.isArray(xml.Ratings.Rating) )
 							{
 								let nl: any[] = xml.Ratings.Rating;
@@ -538,7 +598,30 @@ export default class SurveyQuestionsEditView extends React.Component<IEditViewPr
 						else if ( sQUESTION_TYPE == "Dropdown Matrix" )
 						{
 							item['COLUMN_CHOICES'] = null;
-							let xml = XMLParser.parse(sCOLUMN_CHOICES);
+							// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
+							let options: any = 
+							{
+								attributeNamePrefix: '',
+								// 02/16/2024 Paul.  parser v4 creates object for Value. 
+								// 02/16/2024 Paul.  Heading and Options at same level causes confusion. 
+								//textNodeName       : 'Value',
+								// <Menus>
+								// 	<Menu>
+								// 		<Heading>Size</Heading>
+								// 		<Options>Small  Medium  Large</Options>
+								// 	</Menu>
+								// 	<Menu>
+								// 		<Heading>Color</Heading>
+								// 		<Options>Red  Green  Blue</Options>
+								// 	</Menu>
+								// </Menus>
+								ignoreAttributes   : false,
+								ignoreNameSpace    : true,
+								parseAttributeValue: true,
+								trimValues         : false,
+							};
+							const parser = new XMLParser(options);
+							let xml = parser.parse(sCOLUMN_CHOICES);
 							if ( xml.Menus && xml.Menus.Menu && Array.isArray(xml.Menus.Menu) )
 							{
 								let nl: any[] = xml.Menus.Menu;
@@ -557,11 +640,28 @@ export default class SurveyQuestionsEditView extends React.Component<IEditViewPr
 						else if ( sQUESTION_TYPE == "Demographic" )
 						{
 							item['COLUMN_CHOICES'] = null;
-							let xml = XMLParser.parse(sCOLUMN_CHOICES);
+							// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
+							let options: any = 
+							{
+								attributeNamePrefix: '',
+								// 02/16/2024 Paul.  parser v4 does not have an issue with node name as there are no two tags in same cell. 
+								// <Demographic>
+								// 	<Field Name="NAME" Visible="True" Required="False" TargetField="FIRST_NAME">First Name:</Field>
+								// 	<Field Name="COMPANY" Visible="True" Required="True" TargetField="LAST_NAME">Last Name:</Field>
+								// </Demographic>
+								textNodeName       : 'Value',
+								ignoreAttributes   : false,
+								ignoreNameSpace    : true,
+								parseAttributeValue: true,
+								trimValues         : false,
+							};
+							const parser = new XMLParser(options);
+							let xml = parser.parse(sCOLUMN_CHOICES);
 							if ( xml.Demographic && xml.Demographic.Field && Array.isArray(xml.Demographic.Field) )
 							{
 								let nl: any[] = xml.Demographic.Field;
-								for ( let n: number = 1; n <= nl.length; n++ )
+								// 02/17/2024 Paul.  Not sure why started at 1 and not 0. 
+								for ( let n: number = 0; n <= nl.length; n++ )
 								{
 									let xField: any = nl[n];
 									let sNAME: string = xField.Name;
@@ -1472,13 +1572,27 @@ export default class SurveyQuestionsEditView extends React.Component<IEditViewPr
 		let options: any = 
 		{
 			attributeNamePrefix: '@',
-			textNodeName       : 'Value',
+			// 02/16/2024 Paul.  parser v4 creates object for Label.  
+			// 02/16/2024 Paul.  Label and Weight at same level causes confusion. 
+			// <Ratings>
+			//	<Rating>
+			//		<Label>11</Label>
+			//		<Weight>1</Weight>
+			//	</Rating>
+			// </Ratings>
+			//textNodeName       : 'Label',
 			ignoreAttributes   : false,
 			ignoreNameSpace    : true,
 			parseAttributeValue: true,
 			trimValues         : false,
+			format             : true,
+			// 02/17/2024 Paul.  parser v4 requires suppressBooleanAttributes, otherwise Visible does not include ="true"
+			allowBooleanAttributes: true,
+			suppressBooleanAttributes: false,
 		};
-		let parser = new XMLParser.j2xParser(options);
+		// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
+		const builder = new XMLBuilder(options);
+
 		let xml: any = {};
 		xml.Ratings = {};
 		xml.Ratings.Rating = [];
@@ -1493,7 +1607,7 @@ export default class SurveyQuestionsEditView extends React.Component<IEditViewPr
 				xRating.Weight = Sql.ToInteger(dtRatings[n].Weight);
 			}
 		}
-		let sCOLUMN_CHOICES: string = '<?xml version="1.0" encoding="UTF-8"?>' + parser.parse(xml);
+		let sCOLUMN_CHOICES: string = '<?xml version="1.0" encoding="UTF-8"?>' + builder.build(xml);
 		return sCOLUMN_CHOICES;
 	}
 
@@ -1504,13 +1618,31 @@ export default class SurveyQuestionsEditView extends React.Component<IEditViewPr
 		let options: any = 
 		{
 			attributeNamePrefix: '@',
-			textNodeName       : 'Value',
+			// 02/16/2024 Paul.  parser v4 creates object for Value. 
+			// 02/16/2024 Paul.  Heading and Options at same level causes confusion. 
+			//textNodeName       : 'Value',
+			// <Menus>
+			// 	<Menu>
+			// 		<Heading>Size</Heading>
+			// 		<Options>Small  Medium  Large</Options>
+			// 	</Menu>
+			// 	<Menu>
+			// 		<Heading>Color</Heading>
+			// 		<Options>Red  Green  Blue</Options>
+			// 	</Menu>
+			// </Menus>
 			ignoreAttributes   : false,
 			ignoreNameSpace    : true,
 			parseAttributeValue: true,
 			trimValues         : false,
+			format             : true,
+			// 02/17/2024 Paul.  parser v4 requires suppressBooleanAttributes, otherwise Visible does not include ="true"
+			allowBooleanAttributes: true,
+			suppressBooleanAttributes: false,
 		};
-		let parser = new XMLParser.j2xParser(options);
+		// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
+		const builder = new XMLBuilder(options);
+
 		let xml: any = {};
 		xml.Menus = {};
 		xml.Menus.Menu = [];
@@ -1525,7 +1657,7 @@ export default class SurveyQuestionsEditView extends React.Component<IEditViewPr
 				xMenu.Options = Sql.ToString(dtMenus[n].Options).replace(/\s\s*$/, '');  // TrimEnd();
 			}
 		}
-		let sCOLUMN_CHOICES: string = '<?xml version="1.0" encoding="UTF-8"?>' + parser.parse(xml);
+		let sCOLUMN_CHOICES: string = '<?xml version="1.0" encoding="UTF-8"?>' + builder.build(xml);
 		return sCOLUMN_CHOICES;
 	}
 
@@ -1535,13 +1667,24 @@ export default class SurveyQuestionsEditView extends React.Component<IEditViewPr
 		let options: any = 
 		{
 			attributeNamePrefix: '@',
+			// 02/16/2024 Paul.  parser v4 does not have an issue with node name as there are no two tags in same cell. 
+			// <Demographic>
+			// 	<Field Name="NAME" Visible="True" Required="False" TargetField="FIRST_NAME">First Name:</Field>
+			// 	<Field Name="COMPANY" Visible="True" Required="True" TargetField="LAST_NAME">Last Name:</Field>
+			// </Demographic>
 			textNodeName       : 'Value',
 			ignoreAttributes   : false,
 			ignoreNameSpace    : true,
 			parseAttributeValue: true,
 			trimValues         : false,
+			format             : true,
+			// 02/17/2024 Paul.  parser v4 requires suppressBooleanAttributes, otherwise Visible does not include ="true"
+			allowBooleanAttributes: true,
+			suppressBooleanAttributes: false,
 		};
-		let parser = new XMLParser.j2xParser(options);
+		// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
+		const builder = new XMLBuilder(options);
+
 		let xml: any = {};
 		xml.Demographic = {};
 		xml.Demographic.Field = [];
@@ -1564,7 +1707,7 @@ export default class SurveyQuestionsEditView extends React.Component<IEditViewPr
 				xField["@TargetField"] = (field ? field['TARGET_FIELD_NAME'] : null);
 			}
 		}
-		let sCOLUMN_CHOICES: string = '<?xml version="1.0" encoding="UTF-8"?>' + parser.parse(xml);
+		let sCOLUMN_CHOICES: string = '<?xml version="1.0" encoding="UTF-8"?>' + builder.build(xml);
 		return sCOLUMN_CHOICES;
 	}
 
@@ -1842,7 +1985,9 @@ export default class SurveyQuestionsEditView extends React.Component<IEditViewPr
 
 	private _onTEXT_Change = (e, DATA_FIELD: string): void =>
 	{
-		this._onChange(DATA_FIELD, e.target.value);
+		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onTEXT_Change: ' + DATA_FIELD, e);
+		const data: SelectOption = e.target.value;
+		this._onChange(DATA_FIELD, data['id']);
 	}
 
 	private _onCHECKBOX_Change = (e, DATA_FIELD: string): void =>
@@ -1906,39 +2051,6 @@ export default class SurveyQuestionsEditView extends React.Component<IEditViewPr
 		{
 			this.setState({ dtDemographicNames: item, previewIndex: this.state.previewIndex + 1 });
 		}
-	}
-
-	private QuestionTypeSingleValue = ({ children, ...props }) =>
-	{
-		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.QuestionTypeSingleValue', props, children);
-		return (
-		<components.SingleValue {...props}>
-			<div style={ {fontSize: '1.3em'} }>{ children }</div>
-		</components.SingleValue>
-		);
-	}
-
-	// https://react-select.com/components#components
-	private QuestionTypeOption = ({ children, ...props }) =>
-	{
-		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.QuestionTypeOption', props);
-		let QUESTION_TYPE: string = props.value;
-		let sampleItem   : any    = { QUESTION_TYPE };
-		sampleItem.ID              = 'divQuestionEditViewOption' + QUESTION_TYPE;
-		sampleItem.DESCRIPTION     = L10n.ListTerm('survey_question_type', QUESTION_TYPE);
-		sampleItem.QUESTION_NUMBER = 1;
-		let question: any = SurveyQuestionFactory(sampleItem);
-
-		return (<React.Fragment>
-			<components.Option {...props}>
-				<div className='SurveyQuestionDesignFrame SurveyQuestionFrame' style={ {backgroundColor: 'white'} }>
-					<div className='SurveyQuestionContent'>
-						{ React.createElement(question, { row: sampleItem, displayMode: 'Sample' }) }
-					</div>
-				</div>
-			</components.Option>
-		</React.Fragment>
-		);
 	}
 
 	private BuildMenuChoices = (row) =>
@@ -2039,6 +2151,14 @@ export default class SurveyQuestionsEditView extends React.Component<IEditViewPr
 			Credentials.sUSER_THEME;
 			let headerButtons = HeaderButtonsFactory(SplendidCache.UserTheme);
 			let question: any = SurveyQuestionFactory(sampleItem);
+			// 02/15/2024 Paul. react-select 5.8 requires array of objects, not array of strings. 
+			const QUESTION_TYPE_LIST_obj: any[] = [];
+			QUESTION_TYPE_LIST.map((item, index) => 
+			{
+				const data: SelectOption = {id: item, name: item};
+				QUESTION_TYPE_LIST_obj.push(data);
+			});
+
 			return (
 			<React.Fragment>
 				{ !callback && headerButtons
@@ -2090,10 +2210,10 @@ export default class SurveyQuestionsEditView extends React.Component<IEditViewPr
 								controlShouldRenderValue={ true }
 								value={ [currentItem['QUESTION_TYPE']] }
 								onChange={ (e) => this._onTEXT_Change({target: {value: e}}, 'QUESTION_TYPE') }
-								options={ QUESTION_TYPE_LIST }
+								options={ QUESTION_TYPE_LIST_obj }
 								getOptionLabel={ (option) => L10n.ListTerm('survey_question_type', option) }
 								getOptionValue={ (option) => option }
-								components={ { SingleValue: this.QuestionTypeSingleValue, Option: this.QuestionTypeOption } }
+								components={ { SingleValue: QuestionTypeSingleValue, Option: QuestionTypeOption } }
 							>
 							</Select>
 						</td>

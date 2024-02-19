@@ -10,8 +10,8 @@
 
 // 1. React and fabric. 
 import * as React from 'react';
-import * as XMLParser from 'fast-xml-parser';
-import { RouteComponentProps, withRouter } from 'react-router-dom'              ;
+import { XMLParser, XMLBuilder }           from 'fast-xml-parser'               ;
+import { RouteComponentProps, withRouter } from '../Router5'                    ;
 import { FontAwesomeIcon }                 from '@fortawesome/react-fontawesome';
 // 2. Store and Types. 
 // 3. Scripts. 

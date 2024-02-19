@@ -18,12 +18,13 @@ import { Crm_Config } from '../scripts/Crm'          ;
 
 export class AsteriskServerCore
 {
-	history            : H.History<H.LocationState>;
+	// 01/15/2024 Paul.  Updated history package. 
+	history            : H.History;
 	hub                : signalR.HubConnection;
 	started            : boolean;
 	sUSER_EXTENSION    : string;
 
-	constructor(history: H.History<H.LocationState>, hub: signalR.HubConnection, sUSER_EXTENSION: string)
+	constructor(history: H.History, hub: signalR.HubConnection, sUSER_EXTENSION: string)
 	{
 		this.history             = history            ;
 		this.hub                 = hub                ;
@@ -140,7 +141,7 @@ export class AsteriskServerCore
 	}
 }
 
-export function AsteriskCreateHub(history: H.History<H.LocationState>, sUSER_EXTENSION: string): AsteriskServerCore
+export function AsteriskCreateHub(history: H.History, sUSER_EXTENSION: string): AsteriskServerCore
 {
 	const hub: signalR.HubConnection = new signalR.HubConnectionBuilder()
 		.withUrl("/signalr_asteriskhub")

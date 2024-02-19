@@ -9,7 +9,7 @@
  */
 
 import * as React from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps } from '../Router5';
 // 2. Store and Types. 
 import DYNAMIC_BUTTON          from '../types/DYNAMIC_BUTTON'     ;
 // 3. Scripts. 

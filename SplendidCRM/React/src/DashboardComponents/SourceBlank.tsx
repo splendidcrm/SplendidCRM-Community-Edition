@@ -8,9 +8,14 @@
  * "Copyright (C) 2005-2022 SplendidCRM Software, Inc. All rights reserved."
  */
 
-import * as React from 'react';
-import { DragSource, DropTarget, ConnectDropTarget, ConnectDragSource, DropTargetMonitor, DropTargetConnector, DragSourceConnector, DragSourceMonitor } from 'react-dnd';
-import { uuidFast }                           from '../scripts/utility'            ;
+// 1. React and fabric. 
+import React, { memo, FC }                                        from 'react';
+import { useDrag, useDrop, DragSourceMonitor, DropTargetMonitor } from 'react-dnd';
+// 2. Store and Types. 
+import IDragItemState                                             from '../types/IDragItemState'  ;
+// 3. Scripts. 
+import { uuidFast }                                               from '../scripts/utility'       ;
+// 4. Components and Views. 
 
 const style: React.CSSProperties =
 {
@@ -24,63 +29,58 @@ interface ISourceBlankProps
 {
 	TITLE               : string;
 	createItemFromSource: (item: any) => any;
-	connectDragSource?  : ConnectDragSource;
 }
 
-const source =
+// 12/31/2023 Paul.  react-dnd v15 requires use of hooks. 
+const SourceBlank: FC<ISourceBlankProps> = memo(function SourceBlank(props: ISourceBlankProps)
 {
-	beginDrag(props: ISourceBlankProps)
-	{
-		//console.log((new Date()).toISOString() + ' ' + 'SourceBlank' + '.beginDrag', props);
-		return props.createItemFromSource(
-		{
-			id               : uuidFast(),
-			index            : -1,
-			NAME             : '(blank)',
-			CATEGORY         : null,
-			MODULE_NAME      : null,
-			TITLE            : '(blank)',
-			SETTINGS_EDITVIEW: null,
-			IS_ADMIN         : false,
-			APP_ENABLED      : true,
-			SCRIPT_URL       : null,
-			DEFAULT_SETTINGS : null,
-		});
-	},
-	endDrag(props: ISourceBlankProps, monitor: DragSourceMonitor)
-	{
-		//console.log((new Date()).toISOString() + ' ' + 'SourceBlank' + '.endDrag', props, monitor);
-	}
-};
+	const{ TITLE, createItemFromSource } = props;
+	//console.log((new Date()).toISOString() + ' ' + 'SourceBlank' + '.props', props);
+	const [collect, connectDragSource, dragPreview] = useDrag
+	(
+		() => ({
+			type: 'ITEM',
+			item: (monitor: DragSourceMonitor) =>
+			{
+				//console.log((new Date()).toISOString() + ' ' + 'SouceBlank' + '.item/begin', props, monitor);
+				return createItemFromSource(
+					{
+						id               : uuidFast(),
+						index            : -1,
+						NAME             : '(blank)',
+						CATEGORY         : null,
+						MODULE_NAME      : null,
+						TITLE            : '(blank)',
+						SETTINGS_EDITVIEW: null,
+						IS_ADMIN         : false,
+						APP_ENABLED      : true,
+						SCRIPT_URL       : null,
+						DEFAULT_SETTINGS : null,
+				});
+			},
+			collect: (monitor: DragSourceMonitor) => (
+			{
+				isDragging: monitor.isDragging()
+			}),
+			end: (item: IDragItemState, monitor: DragSourceMonitor) =>
+			{
+				//console.log((new Date()).toISOString() + ' ' + 'SouceBlank' + '.end', item, props);
+			},
+			canDrag: (monitor: DragSourceMonitor) =>
+			{
+				return true;
+			},
+		}),
+		[createItemFromSource],
+	);
+	//console.log((new Date()).toISOString() + ' ' + 'SourceBlank' + ' collected', collect, dropCollect);
+	return (
+			<div ref={ (node) => connectDragSource(node) }
+				className="grab DashboardComponents-SourceBlank"
+				style={ { ...style } }>
+				{ TITLE }
+			</div>
+	);
+});
 
-function collect(connect: DragSourceConnector, monitor: DragSourceMonitor)
-{
-	//console.log((new Date()).toISOString() + ' ' + 'SourceBlank' + '.collect', connect, monitor);
-	return {
-		connectDragSource: connect.dragSource()
-	};
-}
-
-class SourceBlank extends React.Component<ISourceBlankProps>
-{
-	constructor(props: ISourceBlankProps)
-	{
-		super(props);
-		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.constructor', props);
-	}
-
-	public render()
-	{
-		const{ TITLE, connectDragSource } = this.props;
-		return (
-			connectDragSource &&
-			connectDragSource(
-				<div style={ { ...style } } className="grab">
-					{ TITLE }
-				</div>
-			)
-		);
-	}
-}
-
-export default DragSource('ITEM', source, collect)(SourceBlank);
+export default SourceBlank;

@@ -518,9 +518,9 @@ export default class DateRange extends EditComponent<IEditComponentProps, IDateR
 										? <DateTime
 											key={ ID + '_AFTER' + '_' + resetIndexAfter.toString() }
 											value={ DATA_AFTER != null ? moment(DATA_AFTER) : null }
-											viewDate={ DATA_AFTER != null ? moment(DATA_AFTER) : null }
+											initialViewDate={ DATA_AFTER != null ? moment(DATA_AFTER) : null }
 											onChange={ this._onChangeAfter }
-											onBlur={ this._onBlurAfter }
+											onClose={ this._onBlurAfter }
 											dateFormat={ DATE_FORMAT }
 											timeFormat={ false }
 											input={ true }
@@ -546,9 +546,9 @@ export default class DateRange extends EditComponent<IEditComponentProps, IDateR
 										? <DateTime
 											key={ ID + '_BEFORE' + '_' + resetIndexBefore.toString() }
 											value={ DATA_BEFORE != null ? moment(DATA_BEFORE) : null }
-											viewDate={ DATA_BEFORE != null ? moment(DATA_BEFORE) : null }
+											initialViewDate={ DATA_BEFORE != null ? moment(DATA_BEFORE) : null }
 											onChange={ this._onChangeBefore }
-											onBlur={ this._onBlurBefore }
+											onClose={ this._onBlurBefore }
 											dateFormat={ DATE_FORMAT }
 											timeFormat={ false }
 											input={ true }

@@ -114,7 +114,7 @@ function showLeftCol(bShow, bSetCookie)
 								</asp:TableCell>
 								<asp:TableCell HorizontalAlign="Right">
 									&nbsp;
-									<asp:Button ID="btnAddDashlets" CommandName="AddDashlets" Text='<%# L10n.Term("Home.LBL_ADD_DASHLETS") %>' OnCommand="Page_Command" Visible="<%# !this.IsMobile && !Sql.ToBoolean(Application["CONFIG.disable_add_dashlets"]) %>" runat="server" />
+									<asp:Button ID="btnAddDashlets" CommandName="AddDashlets" Text='<%# L10n.Term("Home.LBL_ADD_DASHLETS") %>' OnCommand="Page_Command" Visible='<%# !this.IsMobile && !Sql.ToBoolean(Application["CONFIG.disable_add_dashlets"]) %>' runat="server" />
 								</asp:TableCell>
 							</asp:TableRow>
 						</asp:Table>

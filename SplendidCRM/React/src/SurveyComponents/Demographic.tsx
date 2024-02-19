@@ -10,7 +10,7 @@
 
 // 1. React and fabric. 
 import * as React from 'react';
-import * as XMLParser from 'fast-xml-parser';
+import { XMLParser, XMLBuilder }                from 'fast-xml-parser'              ;
 import { Appear }                               from 'react-lifecycle-appear'       ;
 // 2. Store and Types. 
 import ISurveyQuestionProps                     from '../types/ISurveyQuestionProps';
@@ -162,6 +162,7 @@ export default class Demographic extends SurveyQuestion<ISurveyQuestionProps, ID
 			ID = (row.ID ? row.ID.replace(/-/g, '_') : null);
 			sCOLUMN_CHOICES = Sql.ToString(row.COLUMN_CHOICES);
 		}
+		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.constructor', row);
 		if ( displayMode == 'Sample' )
 		{
 			sCOLUMN_CHOICES = '<?xml version="1.0" encoding="UTF-8"?><Demographic>';
@@ -183,14 +184,21 @@ export default class Demographic extends SurveyQuestion<ISurveyQuestionProps, ID
 			let options: any = 
 			{
 				attributeNamePrefix: '',
+				// 02/16/2024 Paul.  parser v4 does not have an issue with node name as there are no two tags in same cell. 
+				// <Demographic>
+				// 	<Field Name="NAME" Visible="True" Required="False" TargetField="FIRST_NAME">First Name:</Field>
+				// 	<Field Name="COMPANY" Visible="True" Required="True" TargetField="LAST_NAME">Last Name:</Field>
+				// </Demographic>
 				textNodeName       : 'Label',
 				ignoreAttributes   : false,
 				ignoreNameSpace    : true,
 				parseAttributeValue: true,
 				trimValues         : false,
 			};
+			// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
+			const parser = new XMLParser(options);
 			// 07/11/2021 Paul.  should be parsing sCOLUMN_CHOICES and not props.row.COLUMN_CHOICES. 
-			let arrCOLUMN_CHOICES = XMLParser.parse(sCOLUMN_CHOICES, options).Demographic.Field;
+			let arrCOLUMN_CHOICES = parser.parse(sCOLUMN_CHOICES).Demographic.Field;
 			COLUMN_CHOICES = new Array();
 			for ( let i = 0; i < arrCOLUMN_CHOICES.length; i++ )
 			{
@@ -391,14 +399,21 @@ export default class Demographic extends SurveyQuestion<ISurveyQuestionProps, ID
 			let options: any = 
 			{
 				attributeNamePrefix: '',
+				// 02/16/2024 Paul.  parser v4 does not have an issue with node name as there are no two tags in same cell. 
+				// <Demographic>
+				// 	<Field Name="NAME" Visible="True" Required="False" TargetField="FIRST_NAME">First Name:</Field>
+				// 	<Field Name="COMPANY" Visible="True" Required="True" TargetField="LAST_NAME">Last Name:</Field>
+				// </Demographic>
 				textNodeName       : 'Label',
 				ignoreAttributes   : false,
 				ignoreNameSpace    : true,
 				parseAttributeValue: true,
 				trimValues         : false,
 			};
+			// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
+			const parser = new XMLParser(options);
 			// 07/11/2021 Paul.  should be parsing sCOLUMN_CHOICES and not props.row.COLUMN_CHOICES. 
-			let arrCOLUMN_CHOICES = XMLParser.parse(this.props.row.COLUMN_CHOICES, options).Demographic.Field;
+			let arrCOLUMN_CHOICES = parser.parse(this.props.row.COLUMN_CHOICES).Demographic.Field;
 			for ( var i = 0; i < arrCOLUMN_CHOICES.length; i++ )
 			{
 				if ( Sql.ToBoolean(arrCOLUMN_CHOICES[i].Visible) )

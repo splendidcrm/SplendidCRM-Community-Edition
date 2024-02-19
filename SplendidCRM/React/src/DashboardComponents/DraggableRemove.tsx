@@ -8,50 +8,54 @@
  * "Copyright (C) 2005-2022 SplendidCRM Software, Inc. All rights reserved."
  */
 
-import React from 'react';
-import { FontAwesomeIcon }                       from '@fortawesome/react-fontawesome';
-import { DropTarget, DropTargetConnector, DropTargetMonitor, ConnectDropTarget } from 'react-dnd';
+// 1. React and fabric. 
+import React, { memo, FC }                                        from 'react';
+import { FontAwesomeIcon }                                        from '@fortawesome/react-fontawesome';
+import { useDrag, useDrop, DragSourceMonitor, DropTargetMonitor } from 'react-dnd';
+// 2. Store and Types. 
+import IDragItemState                                             from '../types/IDragItemState'  ;
+// 3. Scripts. 
+// 4. Components and Views. 
 
 interface IDraggableRemoveProps
 {
 	isOver?           : boolean
-	connectDropTarget?: ConnectDropTarget;
 	remove            : (item, type) => void;
 }
 
-const boxTarget =
+// 12/31/2023 Paul.  react-dnd v15 requires use of hooks. 
+const DraggableRemove: FC<IDraggableRemoveProps> = memo(function DraggableRemove(props: IDraggableRemoveProps)
 {
-	drop(props: IDraggableRemoveProps, monitor: DropTargetMonitor)
-	{
-		//console.log((new Date()).toISOString() + ' ' + 'DraggableRemove' + '.drop', props);
-		props.remove(monitor.getItem(), monitor.getItemType());
-	}
-};
+	const { remove } = props;
+	//console.log((new Date()).toISOString() + ' ' + 'DraggableRemove' + '.props', props);
+	const [dropCollect, connectDropTarget] = useDrop
+	(
+		() => ({
+			accept: ['ITEM', 'ROW'],
+			collect: (monitor: DropTargetMonitor) => (
+			{
+				isOver: monitor.isOver()
+			}),
+			drop(item: IDragItemState, monitor: DropTargetMonitor)
+			{
+				//console.log((new Date()).toISOString() + ' ' + 'DraggableRemove' + '.drop', props);
+				remove(item, monitor.getItemType());
+			},
+			canDrop(item: IDragItemState, monitor: DropTargetMonitor)
+			{
+				//console.log((new Date()).toISOString() + ' ' + 'DraggableRemove' + '.canDrop ' + typeof(item), item);
+				return true;
+			},
+		}),
+		[remove],
+	);
+	//console.log((new Date()).toISOString() + ' ' + 'DraggableRemove' + ' collected', collect, dropCollect);
+	return (
+			<div ref={ (node) => connectDropTarget(node) }
+				style={{ padding: '1em 0', display: 'inline-block' }}>
+				<FontAwesomeIcon icon='trash-alt' size='4x' />
+			</div>
+	);
+});
 
-function collect(connect: DropTargetConnector, monitor: DropTargetMonitor)
-{
-	//console.log((new Date()).toISOString() + ' ' + 'DraggableRemove' + '.collect', connect, monitor);
-	return {
-		connectDropTarget: connect.dropTarget(),
-		isOver           : monitor.isOver(),
-	};
-}
-
-class DraggableRemove extends React.Component<IDraggableRemoveProps>
-{
-	public render()
-	{
-		const { isOver, connectDropTarget } = this.props
-		return (
-			connectDropTarget &&
-			connectDropTarget(
-				<div
-					style={{ padding: '1em 0', display: 'inline-block' }}>
-					<FontAwesomeIcon icon='trash-alt' size='4x' />
-				</div>
-			)
-		);
-	}
-}
-
-export default DropTarget(['ITEM', 'ROW'], boxTarget, collect)(DraggableRemove);
+export default DraggableRemove;

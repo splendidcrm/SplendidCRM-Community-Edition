@@ -386,9 +386,9 @@ export default class DatePicker extends EditComponent<IEditComponentProps, IDate
 						? <DateTime
 							key={ ID + '_' + resetIndex.toString() }
 							value={ DATA_VALUE != null ? moment(DATA_VALUE) : null }
-							viewDate={ DATA_VALUE != null ? moment(DATA_VALUE) : null }
+							initialViewDate={ DATA_VALUE != null ? moment(DATA_VALUE) : null }
 							onChange={ this._onChange }
-							onBlur={ this._onBlur }
+							onClose={ this._onBlur }
 							dateFormat={ DATE_FORMAT }
 							timeFormat={ false }
 							input={ true }

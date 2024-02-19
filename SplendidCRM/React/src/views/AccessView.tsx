@@ -11,7 +11,7 @@
 // 1. React and fabric. 
 import * as React from 'react';
 import posed from 'react-pose';
-import { RouteComponentProps }                      from 'react-router-dom'               ;
+import { RouteComponentProps }                      from '../Router5'               ;
 import { FontAwesomeIcon }                          from '@fortawesome/react-fontawesome' ;
 import { Appear }                                   from 'react-lifecycle-appear'         ;
 // 2. Store and Types. 

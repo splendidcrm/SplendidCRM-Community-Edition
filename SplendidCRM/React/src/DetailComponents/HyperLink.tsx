@@ -10,7 +10,7 @@
 
 // 1. React and fabric. 
 import * as React from 'react';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { RouteComponentProps, withRouter } from '../Router5';
 // 2. Store and Types. 
 import { IDetailComponentProps, IDetailComponentState, DetailComponent } from '../types/DetailComponent';
 // 3. Scripts. 

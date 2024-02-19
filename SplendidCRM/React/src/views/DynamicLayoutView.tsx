@@ -10,7 +10,7 @@
 
 // 1. React and fabric. 
 import * as React from 'react';
-import { RouteComponentProps, withRouter }            from 'react-router-dom'              ;
+import { RouteComponentProps, withRouter }            from '../Router5'              ;
 import { FontAwesomeIcon }                            from '@fortawesome/react-fontawesome';
 import { observer }                                   from 'mobx-react'                    ;
 // 2. Store and Types. 
@@ -27,6 +27,7 @@ import ErrorComponent                                 from '../components/ErrorC
 import DetailView                                     from './DetailView'                  ;
 import EditView                                       from './EditView'                    ;
 import ListView                                       from './ListView'                    ;
+import ReloadView                                     from './ReloadView'                  ;
 
 interface IDynamicLayoutViewProps extends RouteComponentProps<any>
 {
@@ -71,11 +72,13 @@ class DynamicLayoutView extends React.Component<IDynamicLayoutViewProps, IDynami
 	async componentDidMount()
 	{
 		const { MODULE_NAME, ID, VIEW_NAME } = this.props;
-		const { LAYOUT_NAME } = this.state;
-		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.componentDidMount ' + this.props.MODULE_NAME + ' ' + this.props.ID);
+		let { LAYOUT_NAME } = this.state;
+		console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.componentDidMount ' + this.props.MODULE_NAME + ' ' + this.props.ID, LAYOUT_NAME);
 		this._isMounted = true;
 		try
 		{
+			// 01/21/2024 Paul.  LAYOUT_NAME is being set to undefined.undefined in constructor. 
+			LAYOUT_NAME = (MODULE_NAME + '.' + VIEW_NAME);
 			let status = await AuthenticatedMethod(this.props, this.constructor.name + '.componentDidMount');
 			if ( status == 1 )
 			{
@@ -106,6 +109,11 @@ class DynamicLayoutView extends React.Component<IDynamicLayoutViewProps, IDynami
 									Credentials.SetViewMode('EditView');
 								}
 							}
+							// 01/24/2024 Paul.  ReloadView is following through, so just use.
+							else if ( MODULE_NAME === 'Reload' )
+							{
+								customView = ReloadView;
+							}
 						}
 					}
 					else
@@ -130,13 +138,18 @@ class DynamicLayoutView extends React.Component<IDynamicLayoutViewProps, IDynami
 								customView = ListView;
 								Credentials.SetViewMode('ListView');
 							}
+							// 01/24/2024 Paul.  ReloadView is following through, so just use.
+							else if ( MODULE_NAME === 'Reload' )
+							{
+								customView = ReloadView;
+							}
 						}
 					}
 				}
 				// 05/26/2019 Paul.  The component may be unmounted by the time the custom view is generated. 
 				if ( this._isMounted )
 				{
-					this.setState({ customView });
+					this.setState({ LAYOUT_NAME, customView });
 				}
 			}
 			else
@@ -188,7 +201,7 @@ class DynamicLayoutView extends React.Component<IDynamicLayoutViewProps, IDynami
 		}
 		else if ( SplendidCache.IsInitialized && Credentials.bIsAuthenticated )
 		{
-			return <span>Layout not found for { LAYOUT_NAME }</span>;
+			return <span>Layout not found for { LAYOUT_NAME } params: { JSON.stringify(this.props.params) }</span>;
 		}
 		else
 		{

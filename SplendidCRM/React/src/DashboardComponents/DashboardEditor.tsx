@@ -10,7 +10,7 @@
 
 // 1. React and fabric. 
 import * as React from 'react';
-import { RouteComponentProps, withRouter }    from 'react-router-dom'              ;
+import { RouteComponentProps, withRouter }    from '../Router5'              ;
 import { observer }                           from 'mobx-react'                    ;
 import { FontAwesomeIcon }                    from '@fortawesome/react-fontawesome';
 // 2. Store and Types. 
@@ -163,7 +163,8 @@ class DashboardEditor extends React.Component<IDashboardEditorProps, IDashboardE
 		panels[id] = obj;
 		if ( this._isMounted )
 		{
-			this.setState({ panels, draggingId: id, error: null });
+			// 01/13/2024 Paul.  createItemFromSource is called during initial layout for all items, so we cannot start dragging. 
+			this.setState({ panels, error: null });
 		}
 		return {
 			id      : id,
@@ -216,7 +217,8 @@ class DashboardEditor extends React.Component<IDashboardEditorProps, IDashboardE
 		}
 		if ( this._isMounted )
 		{
-			this.setState({ rows, panels, error: null });
+			// 01/11/2024 Paul.  Clear dragging. 
+			this.setState({ rows, panels, draggingId: '', error: null });
 		}
 	}
 
@@ -300,6 +302,7 @@ class DashboardEditor extends React.Component<IDashboardEditorProps, IDashboardE
 	private load = async () =>
 	{
 		const { ID } = this.state;
+		let { panels } = this.state;
 		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.load', ID);
 		try
 		{
@@ -316,7 +319,8 @@ class DashboardEditor extends React.Component<IDashboardEditorProps, IDashboardE
 				{
 					let results = await Dashboards_LoadPanels(ID);
 					let rows = [];
-					let panels: any = {};
+					// 01/09/2024 Paul.  Make sure to use existing panels object as it has toolbox items. 
+					//let panels: any = {};
 					for ( let i = 0; i < results.length; i++ )
 					{
 						let panel = results[i];

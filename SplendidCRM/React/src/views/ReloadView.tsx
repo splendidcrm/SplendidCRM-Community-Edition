@@ -10,7 +10,7 @@
 
 // 1. React and fabric. 
 import * as React from 'react';
-import { RouteComponentProps, withRouter } from 'react-router-dom'              ;
+import { RouteComponentProps, withRouter, Navigate } from '../Router5'    ;
 import { FontAwesomeIcon }                 from '@fortawesome/react-fontawesome';
 // 2. Store and Types. 
 // 3. Scripts. 
@@ -20,18 +20,32 @@ import SplendidCache                       from '../scripts/SplendidCache'      
 import { SplendidUI_Init }                 from '../scripts/SplendidInitUI'     ;
 import { StartsWith }                      from '../scripts/utility'            ;
 import { Crm_Config }                      from '../scripts/Crm'                ;
-import Security from '../scripts/Security';
 // 4. Components and Views. 
+import MainContent                                   from '../ThemeComponents/MainContent';
 
 interface IReloadViewProps extends RouteComponentProps<any>
 {
 }
 
-class ReloadView extends React.Component<IReloadViewProps>
+interface IReloadViewState
+{
+	sRedirectUrl: string | null;
+}
+
+class ReloadView extends React.Component<IReloadViewProps, IReloadViewState>
 {
 	private timerID = null;
 	private sRedirectUrl: string = '';
 	private resetCount = 0;
+
+	constructor(props: IReloadViewProps)
+	{
+		super(props);
+		this.state =
+		{
+			sRedirectUrl: null
+		};
+	}
 
 	async componentDidMount()
 	{
@@ -61,7 +75,10 @@ class ReloadView extends React.Component<IReloadViewProps>
 		if ( SplendidCache.IsInitialized )
 		{
 			// 08/05/2019 Paul.  Try and replace the /Reset so that the back button will work properly. 
+			// 01/21/2024 Paul.  Reset not actually being followed. 
 			history.replace(this.sRedirectUrl);
+			// 02/02/2024 Paul.  Navigate component seems to work. 
+			this.setState({ sRedirectUrl: this.sRedirectUrl });
 		}
 		else
 		{
@@ -86,10 +103,14 @@ class ReloadView extends React.Component<IReloadViewProps>
 				if ( Sql.IsEmptyString(Credentials.sORIGINAL_TIMEZONE_ID) && !Crm_Config.ToBoolean("disableUserWizard") )
 				{
 					history.replace('/Users/Wizard');
+					// 02/02/2024 Paul.  Navigate component seems to work. 
+					this.setState({ sRedirectUrl: '/Users/Wizard' });
 				}
 				else
 				{
 					history.replace('/Reset' + this.sRedirectUrl);
+					// 02/02/2024 Paul.  Navigate component seems to work. 
+					this.setState({ sRedirectUrl: '/Reset' + this.sRedirectUrl });
 				}
 			}
 			else
@@ -132,22 +153,32 @@ class ReloadView extends React.Component<IReloadViewProps>
 			if ( SplendidCache.IsInitialized && Sql.IsEmptyString(Credentials.sORIGINAL_TIMEZONE_ID) && !Crm_Config.ToBoolean("disableUserWizard") )
 			{
 				history.replace('/Users/Wizard');
+				// 02/02/2024 Paul.  Navigate component seems to work. 
+				this.setState({ sRedirectUrl: '/Users/Wizard' });
 			}
 			else
 			{
 				history.replace('/Reset' + this.sRedirectUrl);
+				// 02/02/2024 Paul.  Navigate component seems to work. 
+				this.setState({ sRedirectUrl: '/Reset' + this.sRedirectUrl });
 			}
 		}
 	}
 
 	public render()
 	{
-		const { history, location } = this.props;
+		const { location } = this.props;
 		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.render', location.pathname);
-		return (
-		<div id={ this.constructor.name + '_spinner' } style={ {textAlign: 'center'} }>
-			<FontAwesomeIcon icon="spinner" spin={ true } size="5x" />
-		</div>);
+
+		return (<MainContent>
+			<div id={ this.constructor.name + '_spinner' } style={ {textAlign: 'center'} }>
+				<FontAwesomeIcon icon="spinner" spin={ true } size="5x" />
+				{ this.state.sRedirectUrl
+				? <Navigate to={ this.state.sRedirectUrl } replace={ true } />
+				: null
+				}
+			</div>
+		</MainContent>);
 	}
 }
 

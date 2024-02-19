@@ -10,7 +10,7 @@
 
 // 1. React and fabric. 
 import * as React from 'react';
-import { RouteComponentProps, withRouter }    from 'react-router-dom'            ;
+import { RouteComponentProps, withRouter }    from '../Router5'            ;
 // 2. Store and Types. 
 // 3. Scripts. 
 import Sql                                    from '../scripts/Sql'              ;
@@ -38,6 +38,7 @@ class RootView extends React.Component<IRootViewProps, IRootViewState>
 
 	async componentDidMount()
 	{
+		console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.componentDidMount');
 		try
 		{
 			let status = await AuthenticatedMethod(this.props, this.constructor.name + '.componentDidMount');

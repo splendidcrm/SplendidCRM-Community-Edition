@@ -10,12 +10,12 @@
 
 // 1. React and fabric. 
 import * as React from 'react';
-import { RouteComponentProps, withRouter }            from 'react-router-dom'                          ;
+import { RouteComponentProps, withRouter }            from '../Router5'                                ;
 import { observer }                                   from 'mobx-react'                                ;
 import { FontAwesomeIcon }                            from '@fortawesome/react-fontawesome'            ;
 import * as am4core                                   from "@amcharts/amcharts4/core"                  ;
 import * as am4charts                                 from "@amcharts/amcharts4/charts"                ;
-import * as XMLParser                                 from 'fast-xml-parser'                           ;
+import { XMLParser, XMLBuilder }                      from 'fast-xml-parser'                           ;
 // 2. Store and Types. 
 import { HeaderButtons }                              from '../../types/HeaderButtons'                 ;
 // 3. Scripts. 
@@ -494,4 +494,5 @@ class ChartView extends React.Component<IChartViewProps, IChartViewState>
 	}
 }
 
-export default withRouter(withScreenSizeHook(ChartView));
+// 02/04/2024 Paul.  Prepare for v18 by swapping order. 
+export default withScreenSizeHook(withRouter(ChartView));

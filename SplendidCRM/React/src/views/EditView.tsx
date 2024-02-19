@@ -9,9 +9,9 @@
  */
 
 // 1. React and fabric. 
-import * as React from 'react';
-import * as qs from 'query-string';
-import { RouteComponentProps, withRouter }    from 'react-router-dom'                   ;
+import React from 'react';
+import qs from 'query-string';
+import { RouteComponentProps, withRouter }    from '../Router5'                   ;
 import { observer }                           from 'mobx-react'                         ;
 import { FontAwesomeIcon }                    from '@fortawesome/react-fontawesome'     ;
 // 2. Store and Types. 
@@ -41,7 +41,7 @@ interface IEditViewProps extends RouteComponentProps<any>
 {
 	MODULE_NAME        : string;
 	ID?                : string;
-	LAYOUT_NAME        : string;
+	LAYOUT_NAME?       : string;
 	// 04/04/2021 Paul.  Use CONTROL_VIEW_NAME to create unique keys so that same module/subpanel search multiple times. 
 	CONTROL_VIEW_NAME? : string;
 	callback?          : any;

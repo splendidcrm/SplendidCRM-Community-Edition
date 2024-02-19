@@ -9,7 +9,7 @@
  */
 
 // 1. React and fabric. 
-import { RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps } from '../Router5';
 // 2. Store and Types. 
 
 export default interface IDashletProps extends RouteComponentProps<any>

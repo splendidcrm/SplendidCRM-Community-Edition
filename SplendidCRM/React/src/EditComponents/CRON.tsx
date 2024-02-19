@@ -514,7 +514,8 @@ export default class CRON extends EditComponent<IEditComponentProps, ITextBoxSta
 				{
 					let nStart = parseInt(arrRange[0], 10);
 					let nEnd   = parseInt(arrRange[1], 10);
-					if ( nStart != NaN && nEnd != NaN )
+					// 01/15/2024 Paul.  use isNaN() instead. 
+					if ( !isNaN(nStart) && !isNaN(nEnd) )
 					{
 						if ( nStart <= nEnd )
 						{
@@ -529,7 +530,8 @@ export default class CRON extends EditComponent<IEditComponentProps, ITextBoxSta
 				else
 				{
 					let nParam = parseInt(arrRange[0], 10);
-					if ( nParam != NaN )
+					// 01/15/2024 Paul.  use isNaN() instead. 
+					if ( !isNaN(nParam) )
 					{
 						let sParam: string = nParam.toString();
 						arrVALUES.push(sParam);
@@ -564,11 +566,13 @@ export default class CRON extends EditComponent<IEditComponentProps, ITextBoxSta
 				{
 					let nStart = parseInt(arrRange[0], 10);
 					let nEnd   = parseInt(arrRange[1], 10);
-					if ( nStart != NaN && nEnd != NaN )
+					// 01/15/2024 Paul.  use isNaN() instead. 
+					if ( !isNaN(nStart) && !isNaN(nEnd) )
 					{
 						if ( nStart <= nEnd )
 						{
-							for ( let nParam = nStart; nParam < nEnd; nParam++ )
+							// 01/19/2024 Paul.  Include end value 
+							for ( let nParam = nStart; nParam <= nEnd; nParam++ )
 							{
 								if ( nParam - nOffset >= 0 )
 								{
@@ -581,7 +585,8 @@ export default class CRON extends EditComponent<IEditComponentProps, ITextBoxSta
 				else
 				{
 					let nParam = parseInt(arrRange[0], 10);
-					if ( nParam != NaN )
+					// 01/15/2024 Paul.  use isNaN() instead. 
+					if ( !isNaN(nParam) )
 					{
 						if ( nParam - nOffset >= 0 )
 						{

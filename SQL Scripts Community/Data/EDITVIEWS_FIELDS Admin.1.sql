@@ -430,7 +430,8 @@ if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Pardot.ConfigVie
 end -- if;
 GO
 
--- 02/04/2023 Paul.  Directory Tenant is now required for single tenant app registrations. 
+-- 02/04/2023 Paul.  Directory Tenant is now required for single tenant app registrations.
+-- 07/08/2023 Paul.  Password should be of type Password.  
 -- delete from EDITVIEWS_FIELDS where EDIT_NAME = 'Exchange.ConfigView';
 if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Exchange.ConfigView' and DELETED = 0) begin -- then
 	print 'EDITVIEWS_FIELDS Exchange.ConfigView';
@@ -442,7 +443,7 @@ if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Exchange.ConfigV
 	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Exchange.ConfigView'        ,  4, 'Exchange.LBL_OAUTH_CLIENT_ID'           , 'Exchange.ClientID'               , 0, 1, 150, 35, null;
 	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Exchange.ConfigView'        ,  5, 'Exchange.LBL_OAUTH_CLIENT_SECRET'       , 'Exchange.ClientSecret'           , 0, 1, 150, 35, null;
 	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Exchange.ConfigView'        ,  6, 'Exchange.LBL_USER_NAME'                 , 'Exchange.UserName'               , 0, 1, 150, 35, null;
-	exec dbo.spEDITVIEWS_FIELDS_InsBound       'Exchange.ConfigView'        ,  7, 'Exchange.LBL_PASSWORD'                  , 'Exchange.Password'               , 0, 1, 150, 35, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsPassword    'Exchange.ConfigView'        ,  7, 'Exchange.LBL_PASSWORD'                  , 'Exchange.Password'               , 0, 1, 150, 35, null;
 	exec dbo.spEDITVIEWS_FIELDS_InsCheckBox    'Exchange.ConfigView'        ,  8, 'Exchange.LBL_IGNORE_CERTIFICATE'        , 'Exchange.IgnoreCertificate'      , 0, 1, null, null, null;
 	exec dbo.spEDITVIEWS_FIELDS_InsBoundList   'Exchange.ConfigView'        ,  9, 'Exchange.LBL_IMPERSONATED_TYPE'         , 'Exchange.ImpersonatedType'       , 1, 1, 'exchange_impersonated_type'    , null, null;
 	exec dbo.spEDITVIEWS_FIELDS_InsCheckBox    'Exchange.ConfigView'        , 10, 'Exchange.LBL_INBOX_ROOT'                , 'Exchange.InboxRoot'              , 0, 1, null, null, null;
@@ -472,6 +473,18 @@ end else begin
 		   and DATA_FIELD        = 'Exchange.Version'
 		   and DELETED           = 0;
 		exec dbo.spEDITVIEWS_FIELDS_InsBound       'Exchange.ConfigView'        ,  3, 'Exchange.LBL_OAUTH_DIRECTORY_TENANT_ID' , 'Exchange.DirectoryTenantID'      , 0, 1, 150, 35, null;
+	end -- if; 
+	-- 07/08/2023 Paul.  Password should be of type Password.  
+	if exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'Exchange.ConfigView' and DATA_FIELD = 'Exchange.Password' and FIELD_TYPE = 'TextBox' and DELETED = 0) begin -- then
+		update EDITVIEWS_FIELDS
+		   set FIELD_TYPE        = 'Password'
+		     , DATE_MODIFIED     = getdate()
+		     , DATE_MODIFIED_UTC = getutcdate()
+		     , MODIFIED_USER_ID  = null
+		 where EDIT_NAME         = 'Exchange.ConfigView'
+		   and DATA_FIELD        = 'Exchange.Password'
+		   and FIELD_TYPE        = 'TextBox'
+		   and DELETED           = 0;
 	end -- if; 
 end -- if;
 GO

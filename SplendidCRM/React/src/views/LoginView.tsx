@@ -10,7 +10,7 @@
 
 // 1. React and fabric. 
 import * as React from 'react';
-import { RouteComponentProps, withRouter }           from 'react-router-dom'              ;
+import { RouteComponentProps, withRouter }           from '../Router5'              ;
 import { FontAwesomeIcon }                           from '@fortawesome/react-fontawesome';
 import { observer }                                  from 'mobx-react'                    ;
 // 2. Store and Types. 
@@ -33,7 +33,7 @@ import { StartsWith }                                from '../scripts/utility'  
 interface ILoginViewProps extends RouteComponentProps<any>
 {
 	routing?             : RouterStore;
-	initState            : any;
+	initState?           : any;
 }
 
 interface ILoginViewState

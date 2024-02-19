@@ -18,12 +18,13 @@ import { Crm_Config } from '../scripts/Crm'          ;
 
 export class AvayaServerCore
 {
-	history            : H.History<H.LocationState>;
+	// 01/15/2024 Paul.  Updated history package. 
+	history            : H.History;
 	hub                : signalR.HubConnection;
 	started            : boolean;
 	sUSER_EXTENSION    : string;
 
-	constructor(history: H.History<H.LocationState>, hub: signalR.HubConnection, sUSER_EXTENSION: string)
+	constructor(history: H.History, hub: signalR.HubConnection, sUSER_EXTENSION: string)
 	{
 		this.history             = history            ;
 		this.hub                 = hub                ;
@@ -144,7 +145,7 @@ export class AvayaServerCore
 	}
 }
 
-export function AvayaCreateHub(history: H.History<H.LocationState>, sUSER_EXTENSION: string): AvayaServerCore
+export function AvayaCreateHub(history: H.History, sUSER_EXTENSION: string): AvayaServerCore
 {
 	const hub: signalR.HubConnection = new signalR.HubConnectionBuilder()
 		.withUrl("/signalr_asteriskhub")

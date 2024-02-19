@@ -10,7 +10,7 @@
 
 // 1. React and fabric. 
 import * as React from 'react';
-import * as XMLParser from 'fast-xml-parser';
+import { XMLParser, XMLBuilder }                from 'fast-xml-parser'              ;
 import * as am4core                             from "@amcharts/amcharts4/core"     ;
 import * as am4charts                           from "@amcharts/amcharts4/charts"   ;
 import { Appear }                               from 'react-lifecycle-appear'       ;
@@ -326,14 +326,24 @@ export default class RatingScale extends SurveyQuestion<ISurveyQuestionProps, IR
 			let options: any = 
 			{
 				attributeNamePrefix: '',
-				textNodeName       : 'Label',
+				// 02/16/2024 Paul.  parser v4 creates object for Label. 
+				// 02/16/2024 Paul.  Label and Weight at same level causes confusion. 
+				// <Ratings>
+				//	<Rating>
+				//		<Label>11</Label>
+				//		<Weight>1</Weight>
+				//	</Rating>
+				// </Ratings>
+				//textNodeName       : 'Label',
 				ignoreAttributes   : false,
 				ignoreNameSpace    : true,
 				parseAttributeValue: true,
 				trimValues         : false,
 			};
+			// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
+			const parser = new XMLParser(options);
 			// 07/11/2021 Paul.  should be parsing sCOLUMN_CHOICES and not props.row.COLUMN_CHOICES. 
-			COLUMN_CHOICES = XMLParser.parse(sCOLUMN_CHOICES, options).Ratings.Rating;
+			COLUMN_CHOICES = parser.parse(sCOLUMN_CHOICES).Ratings.Rating;
 		}
 		if ( ANSWER_CHOICES && COLUMN_CHOICES )
 		{
@@ -900,14 +910,24 @@ export default class RatingScale extends SurveyQuestion<ISurveyQuestionProps, IR
 			let options: any = 
 			{
 				attributeNamePrefix: '',
-				textNodeName       : 'Label',
+				// 02/16/2024 Paul.  parser v4 creates object for Label. 
+				// 02/16/2024 Paul.  Label and Weight at same level causes confusion. 
+				// <Ratings>
+				//	<Rating>
+				//		<Label>11</Label>
+				//		<Weight>1</Weight>
+				//	</Rating>
+				// </Ratings>
+				//textNodeName       : 'Label',
 				ignoreAttributes   : false,
 				ignoreNameSpace    : true,
 				parseAttributeValue: true,
 				trimValues         : false,
 			};
+			// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
+			const parser = new XMLParser(options);
 			// 07/11/2021 Paul.  should be parsing sCOLUMN_CHOICES and not props.row.COLUMN_CHOICES. 
-			arrCOLUMN_CHOICES = XMLParser.parse(this.props.row.COLUMN_CHOICES, options).Ratings.Rating;
+			arrCOLUMN_CHOICES = parser.parse(this.props.row.COLUMN_CHOICES).Ratings.Rating;
 			for ( let i: number = 0; i < arrANSWER_CHOICES.length; i++ )
 			{
 				let oSUMMARY: any = new Object();

@@ -10,7 +10,7 @@
 
 // 1. React and fabric. 
 import * as React from 'react';
-import { RouteComponentProps, withRouter }              from 'react-router-dom'                   ;
+import { RouteComponentProps, withRouter }              from '../Router5'                   ;
 import { observer }                                     from 'mobx-react'                         ;
 // 2. Store and Types. 
 import MODULE                                           from '../../types/MODULE'                 ;

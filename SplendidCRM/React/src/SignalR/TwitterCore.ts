@@ -18,12 +18,13 @@ import { Crm_Config } from '../scripts/Crm'          ;
 
 export class TwitterServerCore
 {
-	history             : H.History<H.LocationState>;
+	// 01/15/2024 Paul.  Updated history package. 
+	history             : H.History;
 	hub                 : signalR.HubConnection;
 	started             : boolean;
 	sUSER_TWITTER_TRACKS: string;
 
-	constructor(history: H.History<H.LocationState>, hub: signalR.HubConnection, sUSER_TWITTER_TRACKS: string)
+	constructor(history: H.History, hub: signalR.HubConnection, sUSER_TWITTER_TRACKS: string)
 	{
 		this.history              = history             ;
 		this.hub                  = hub                 ;
@@ -94,7 +95,7 @@ export class TwitterServerCore
 	}
 }
 
-export function TwitterCreateHub(history: H.History<H.LocationState>, sUSER_TWITTER_TRACKS: string): TwitterServerCore
+export function TwitterCreateHub(history: H.History, sUSER_TWITTER_TRACKS: string): TwitterServerCore
 {
 	const hub: signalR.HubConnection = new signalR.HubConnectionBuilder()
 		.withUrl("/signalr_twitterhub")

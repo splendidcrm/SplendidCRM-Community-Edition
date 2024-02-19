@@ -9,7 +9,7 @@
  */
 
 // 1. React and fabric. 
-import * as H                                      from 'history'               ;
+import { History }                                 from 'history'               ;
 // 2. Store and Types. 
 // 3. Scripts. 
 import Credentials                                 from '../scripts/Credentials';
@@ -85,7 +85,7 @@ export class SignalRCoreStore
 	public  twilioManager     : TwilioServerCore      = null;
 	public  twitterManager    : TwitterServerCore     = null;
 	public  phoneBurnerManager: PhoneBurnerServerCore = null;
-	private history           : H.History<H.LocationState> = null;
+	private history           : History = null;
 
 	// 06/19/2023 Paul.  Call from main App to provide access to history. 
 	public SetHistory(history)

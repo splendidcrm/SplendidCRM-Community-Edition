@@ -10,7 +10,7 @@
 
 // 1. React and fabric. 
 import * as React from 'react';
-import { RouteComponentProps, withRouter }          from 'react-router-dom'                     ;
+import { RouteComponentProps, withRouter }          from '../Router5'                     ;
 import { observer }                                 from 'mobx-react'                           ;
 import { FontAwesomeIcon }                          from '@fortawesome/react-fontawesome'       ;
 // 2. Store and Types. 
@@ -378,7 +378,7 @@ export default class RenameTabsListView extends React.Component<IRenameTabsListV
 					<SearchView
 						key='Terminology.RenameTabs'
 						EDIT_NAME='Terminology.RenameTabs'
-						AutoSaveSearch={ false }
+						AutoSaveSearch={ true }
 						rowDefaultSearch={ rowDefaultSearch }
 						cbSearch={ this._onSearchViewCallback }
 						onLayoutLoaded={ this._onSearchLayoutLoaded }

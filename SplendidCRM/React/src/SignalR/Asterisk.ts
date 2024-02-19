@@ -71,7 +71,8 @@ export class AsteriskServer
 	}
 }
 
-export function AsteriskCreateHub(signalR: SignalR, history: H.History<H.LocationState>)
+// 01/15/2024 Paul.  Update History. 
+export function AsteriskCreateHub(signalR: SignalR, history: H.History)
 {
 	let manager: any = signalR.hub.createHubProxy(hubName);
 	manager.server = new AsteriskServer(manager);

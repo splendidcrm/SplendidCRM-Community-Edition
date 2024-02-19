@@ -169,7 +169,8 @@ export default class ListLayoutEditor extends React.Component<IListLayoutEditorP
 		activeFields[id] = obj;
 		if ( this._isMounted )
 		{
-			this.setState({ activeFields, draggingId: id, error: null });
+			// 01/13/2024 Paul.  createItemFromSource is called during initial layout for all items, so we cannot start dragging. 
+			this.setState({ activeFields, error: null });
 		}
 		return {
 			id        : id,
@@ -223,7 +224,8 @@ export default class ListLayoutEditor extends React.Component<IListLayoutEditorP
 		}
 		if ( this._isMounted )
 		{
-			this.setState({ rows, activeFields, error: null });
+			// 01/11/2024 Paul.  Clear dragging. 
+			this.setState({ rows, activeFields, draggingId: '', error: null });
 		}
 	}
 
@@ -301,6 +303,7 @@ export default class ListLayoutEditor extends React.Component<IListLayoutEditorP
 	private moveDraggableItem = (id: string, hoverColIndex: number, hoverRowIndex: number, didDrop: boolean) =>
 	{
 		const { activeFields } = this.state;
+		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.moveDraggableItem', id, hoverColIndex, hoverRowIndex, didDrop);
 		let { rows } = this.state;
 		let item: any = this.findField(id);
 		if ( item )

@@ -11,7 +11,7 @@
 // 1. React and fabric. 
 import * as React from 'react';
 import moment from 'moment';
-import * as XMLParser                                    from 'fast-xml-parser'                     ;
+import { XMLParser, XMLBuilder }                         from 'fast-xml-parser'                     ;
 import DateTime                                          from 'react-datetime'                      ;
 import 'react-datetime/css/react-datetime.css';
 // 2. Store and Types. 
@@ -200,12 +200,26 @@ export default class XomlBuilder extends React.Component<IXomlBuilderProps, IQue
 			let options: any = 
 			{
 				attributeNamePrefix: ''     ,
-				textNodeName       : 'Value',
+				// 02/18/2024 Paul.  parser v4 creates object for Value. 
+				// 02/18/2024 Paul.  When tag name is also Value, v4 creates an array, which is wrong and bad. 
+				//<CustomProperties>
+				//	<CustomProperty>
+				//		<Name>crm:Module</Name>
+				//		<Value>Accounts</Value>
+				//	</CustomProperty>
+				//	<CustomProperty>
+				//		<Name>crm:Related</Name>
+				//		<Value></Value>
+				//	</CustomProperty>
+				//</CustomProperties>
+				//textNodeName       : 'Value',
 				ignoreAttributes   : false  ,
 				ignoreNameSpace    : true   ,
 				parseAttributeValue: true   ,
 				trimValues         : false  ,
 			};
+			// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
+			const parser = new XMLParser(options);
 
 			let REPORT_NAME          : string  = null;
 			let MODULE               : string  = (row ? row['BASE_MODULE'] : null);
@@ -220,7 +234,8 @@ export default class XomlBuilder extends React.Component<IXomlBuilderProps, IQue
 			let filterXmlJson        : any     = null;
 			if ( !Sql.IsEmptyString(row[DATA_FIELD]) )
 			{
-				reportXml     = XMLParser.parse(row[DATA_FIELD], options);
+				// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
+				reportXml     = parser.parse(row[DATA_FIELD]);
 				// 05/20/2020 Paul.  A single record will not come in as an array, so convert to an array. 
 				if ( reportXml.Filters && reportXml.Filters.Filter && !Array.isArray(reportXml.Filters.Filter) )
 				{
@@ -244,7 +259,7 @@ export default class XomlBuilder extends React.Component<IXomlBuilderProps, IQue
 							case 'crm:RelatedModules':
 								// 05/15/2021 Paul.  Ignore data from file and just use latest QueryBuilderState. 
 								//sValue = this.decodeHTML(sValue);
-								//relatedModuleXml = XMLParser.parse(sValue, options);
+								//relatedModuleXml = parser.parse(sValue);
 								//// 05/14/2021 Paul.  If there is only one, convert to an array. 
 								//if ( relatedModuleXml.Relationships && relatedModuleXml.Relationships.Relationship && !Array.isArray(relatedModuleXml.Relationships.Relationship) )
 								//{
@@ -257,7 +272,7 @@ export default class XomlBuilder extends React.Component<IXomlBuilderProps, IQue
 							case 'crm:Relationships' :
 								// 05/15/2021 Paul.  Ignore data from file and just use latest QueryBuilderState. 
 								//sValue = this.decodeHTML(sValue);
-								//relationshipXml  = XMLParser.parse(sValue, options);
+								//relationshipXml  = parser.parse(sValue);
 								//// 05/14/2021 Paul.  If there is only one, convert to an array. 
 								//if ( relationshipXml.Relationships && relationshipXml.Relationships.Relationship && !Array.isArray(relationshipXml.Relationships.Relationship) )
 								//{
@@ -269,7 +284,8 @@ export default class XomlBuilder extends React.Component<IXomlBuilderProps, IQue
 								break;
 							case 'crm:Filters'       :
 								sValue = this.decodeHTML(sValue);
-								filterXml        = XMLParser.parse(sValue, options);
+								// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
+								filterXml        = parser.parse(sValue);
 								// 05/14/2021 Paul.  If there is only one, convert to an array. 
 								if ( filterXml.Filters && filterXml.Filters.Filter && !Array.isArray(filterXml.Filters.Filter) )
 								{
@@ -306,7 +322,8 @@ export default class XomlBuilder extends React.Component<IXomlBuilderProps, IQue
 			let sRelationships           : string = results.Relationships            ;
 			if ( !Sql.IsEmptyString(sRelatedModules) )
 			{
-				relatedModuleXml = XMLParser.parse(sRelatedModules, options);
+				// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
+				relatedModuleXml = parser.parse(sRelatedModules);
 				// 05/14/2021 Paul.  If there is only one, convert to an array. 
 				if ( relatedModuleXml.Relationships && relatedModuleXml.Relationships.Relationship && !Array.isArray(relatedModuleXml.Relationships.Relationship) )
 				{
@@ -318,7 +335,8 @@ export default class XomlBuilder extends React.Component<IXomlBuilderProps, IQue
 			}
 			if ( !Sql.IsEmptyString(sRelationships) )
 			{
-				relationshipXml  = XMLParser.parse(sRelationships, options);
+				// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
+				relationshipXml  = parser.parse(sRelationships);
 				// 05/14/2021 Paul.  If there is only one, convert to an array. 
 				if ( relationshipXml.Relationships && relationshipXml.Relationships.Relationship && !Array.isArray(relationshipXml.Relationships.Relationship) )
 				{
@@ -2247,7 +2265,7 @@ export default class XomlBuilder extends React.Component<IXomlBuilderProps, IQue
 										{ FILTER_SEARCH_MODE == 'date' || FILTER_SEARCH_MODE == 'date2'
 										? <DateTime
 											value={ FILTER_SEARCH_START_DATE != null ? moment(FILTER_SEARCH_START_DATE) : null }
-											viewDate={ FILTER_SEARCH_START_DATE != null ? moment(FILTER_SEARCH_START_DATE) : null }
+											initialViewDate={ FILTER_SEARCH_START_DATE != null ? moment(FILTER_SEARCH_START_DATE) : null }
 											onChange={ this._onFILTER_SEARCH_START_DATE_Change }
 											dateFormat={ this.DATE_FORMAT }
 											timeFormat={ false }
@@ -2274,7 +2292,7 @@ export default class XomlBuilder extends React.Component<IXomlBuilderProps, IQue
 										{ FILTER_SEARCH_MODE == 'date2'
 										? <DateTime
 											value={ FILTER_SEARCH_END_DATE != null ? moment(FILTER_SEARCH_END_DATE) : null }
-											viewDate={ FILTER_SEARCH_END_DATE != null ? moment(FILTER_SEARCH_END_DATE) : null }
+											initialViewDate={ FILTER_SEARCH_END_DATE != null ? moment(FILTER_SEARCH_END_DATE) : null }
 											onChange={ this._onFILTER_SEARCH_END_DATE_Change }
 											dateFormat={ this.DATE_FORMAT }
 											timeFormat={ false }

@@ -438,9 +438,9 @@ export default class DateMultiple extends SurveyQuestion<ISurveyQuestionProps, I
 								<DateTime
 									key={ ID + '_' + ANSWER_ID + '_' + resetIndex.toString() }
 									value={ VALUE[ANSWER_ID] != null ? moment(VALUE[ANSWER_ID]) : null }
-									viewDate={ VALUE[ANSWER_ID] != null ? moment(VALUE[ANSWER_ID]) : null }
+									initialViewDate={ VALUE[ANSWER_ID] != null ? moment(VALUE[ANSWER_ID]) : null }
 									onChange={ (value: moment.Moment | string) => { this._onChange(ANSWER_ID, value); } }
-									onBlur={ (event) => { this._onBlur(i, ANSWER_ID, event); } }
+									onClose={ (event) => { this._onBlur(i, ANSWER_ID, event); } }
 									dateFormat={ dateFormat }
 									timeFormat={ timeFormat }
 									input={ true }

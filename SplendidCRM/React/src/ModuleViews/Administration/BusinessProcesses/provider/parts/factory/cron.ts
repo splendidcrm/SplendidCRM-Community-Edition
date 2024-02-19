@@ -422,7 +422,8 @@ Cron.prototype.SetCronSelectValue = function(sID, sValue)
 			{
 				var nStart = parseInt(arrRange[0], 10);
 				var nEnd   = parseInt(arrRange[1], 10);
-				if ( nStart != NaN && nEnd != NaN )
+				// 01/15/2024 Paul.  use isNaN() instead. 
+				if ( !isNaN(nStart) && !isNaN(nEnd) )
 				{
 					if ( nStart <= nEnd )
 					{
@@ -437,7 +438,8 @@ Cron.prototype.SetCronSelectValue = function(sID, sValue)
 			else
 			{
 				var nParam = parseInt(arrRange[0], 10);
-				if ( nParam != NaN )
+				// 01/15/2024 Paul.  use isNaN() instead. 
+				if ( !isNaN(nParam) )
 				{
 					var sParam = nParam.toString();
 					this.SetOptionValue( lst, sParam );
@@ -472,7 +474,8 @@ Cron.prototype.SetCronCheckboxesValue = function(sID, sValue, nMaxItems)
 			{
 				var nStart = parseInt(arrRange[0], 10);
 				var nEnd   = parseInt(arrRange[1], 10);
-				if ( nStart != NaN && nEnd != NaN )
+				// 01/15/2024 Paul.  use isNaN() instead. 
+				if ( !isNaN(nStart) && !isNaN(nEnd) )
 				{
 					if ( nStart <= nEnd )
 					{
@@ -487,7 +490,8 @@ Cron.prototype.SetCronCheckboxesValue = function(sID, sValue, nMaxItems)
 			else
 			{
 				var nParam = parseInt(arrRange[0], 10);
-				if ( nParam != NaN )
+				// 01/15/2024 Paul.  use isNaN() instead. 
+				if ( !isNaN(nParam) )
 				{
 					let item: any = document.getElementById( sID + nParam.toString() );
 					item.checked = true;

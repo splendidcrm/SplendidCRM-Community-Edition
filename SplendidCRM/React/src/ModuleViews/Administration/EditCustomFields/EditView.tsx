@@ -10,7 +10,7 @@
 
 // 1. React and fabric. 
 import * as React from 'react';
-import { RouteComponentProps, withRouter }        from 'react-router-dom'                         ;
+import { RouteComponentProps, withRouter }        from '../Router5'                         ;
 import { observer }                               from 'mobx-react'                               ;
 import { FontAwesomeIcon }                        from '@fortawesome/react-fontawesome'           ;
 // 2. Store and Types. 
@@ -65,7 +65,7 @@ interface IAdminEditViewState
 }
 
 @observer
-export default class AdminEditView extends React.Component<IAdminEditViewProps, IAdminEditViewState>
+export default class EditCustomFieldsEditView extends React.Component<IAdminEditViewProps, IAdminEditViewState>
 {
 	private _isMounted   : boolean = false;
 	private refMap       : Record<string, React.RefObject<EditComponent<any, any>>>;
@@ -221,14 +221,17 @@ export default class AdminEditView extends React.Component<IAdminEditViewProps, 
 		const { EDIT_NAME } = this.state;
 		try
 		{
+			let item: any = null;
 			// 02/02/2021 Paul.  Load item first so that we can correct the state of the dropdown list. 
 			if ( !Sql.IsEmptyString(DuplicateID) )
 			{
-				await this.LoadItem(MODULE_NAME, DuplicateID);
+				// 02/06/2024 Paul.  item may not be available from state, so pass as parameter. 
+				item = await this.LoadItem(MODULE_NAME, DuplicateID);
 			}
 			else if ( !Sql.IsEmptyString(ID) )
 			{
-				await this.LoadItem(MODULE_NAME, ID);
+				// 02/06/2024 Paul.  item may not be available from state, so pass as parameter. 
+				item = await this.LoadItem(MODULE_NAME, ID);
 			}
 			else
 			{
@@ -243,7 +246,6 @@ export default class AdminEditView extends React.Component<IAdminEditViewProps, 
 			// 06/19/2018 Paul.  Always clear the item when setting the layout. 
 			if ( this._isMounted )
 			{
-				let { item } = this.state;
 				let hidden: boolean = true;
 				let vwPICK_LIST_VALUES: string[] = [];
 				if ( item != null )
@@ -284,7 +286,6 @@ export default class AdminEditView extends React.Component<IAdminEditViewProps, 
 
 	private LoadItem = async (sMODULE_NAME: string, sID: string) =>
 	{
-		let { layout } = this.state;
 		if ( !Sql.IsEmptyString(sID) )
 		{
 			try
@@ -303,6 +304,8 @@ export default class AdminEditView extends React.Component<IAdminEditViewProps, 
 					Sql.SetPageTitle(sMODULE_NAME, item, 'NAME');
 					let SUB_TITLE: any = Sql.DataPrivacyErasedField(item, 'NAME');
 					this.setState({ item, SUB_TITLE, __sql: d.__sql, LAST_DATE_MODIFIED });
+					// 02/06/2024 Paul.  item may not be available from state, so pass as parameter. 
+					return item;
 				}
 			}
 			catch(error)
@@ -311,6 +314,7 @@ export default class AdminEditView extends React.Component<IAdminEditViewProps, 
 				this.setState({ error });
 			}
 		}
+		return null;
 	}
 
 	private _onChange = (DATA_FIELD: string, DATA_VALUE: any, DISPLAY_FIELD?: string, DISPLAY_VALUE?: any): void =>

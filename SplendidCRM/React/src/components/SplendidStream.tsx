@@ -10,7 +10,7 @@
 
 // 1. React and fabric. 
 import * as React from 'react';
-import { RouteComponentProps }       from 'react-router-dom'             ;
+import { RouteComponentProps }       from '../Router5'             ;
 import { FontAwesomeIcon }           from '@fortawesome/react-fontawesome';
 import { observer }                  from 'mobx-react'                   ;
 import BootstrapTable                from 'react-bootstrap-table-next'   ;

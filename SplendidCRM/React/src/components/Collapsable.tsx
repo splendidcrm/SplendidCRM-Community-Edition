@@ -43,6 +43,8 @@ interface ICollapsableProps
 	name        : string;
 	onToggle?   : (open: boolean) => void;
 	initialOpen?: boolean;
+	// 01/15/2024 Paul.  Children not automatically included. 
+	children    : React.ReactNode;
 }
 
 interface ICollapsableState

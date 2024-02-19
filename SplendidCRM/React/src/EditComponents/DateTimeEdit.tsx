@@ -497,9 +497,9 @@ export default class DateTimeEdit extends EditComponent<IEditComponentProps, IDa
 										? <DateTime
 											key={ ID + '_' + resetIndex.toString() }
 											value={ DATA_VALUE != null ? moment(DATA_VALUE) : null }
-											viewDate={ DATA_VALUE != null ? moment(DATA_VALUE) : null }
+											initialViewDate={ DATA_VALUE != null ? moment(DATA_VALUE) : null }
 											onChange={ this._onDateChange }
-											onBlur={ this._onDateBlur }
+											onClose={ this._onDateBlur }
 											dateFormat={ DATE_FORMAT }
 											timeFormat={ false }
 											input={ true }

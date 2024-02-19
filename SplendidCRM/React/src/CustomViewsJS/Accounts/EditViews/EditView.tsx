@@ -9,9 +9,9 @@
  */
 
 // 1. React and fabric. 
-import * as React from 'react';
-import * as qs from 'query-string';
-import { RouteComponentProps }                    from 'react-router-dom'                         ;
+import React from 'react';
+import qs from 'query-string';
+import { RouteComponentProps }                    from '../Router5'                         ;
 import { observer }                               from 'mobx-react'                               ;
 import { FontAwesomeIcon }                        from '@fortawesome/react-fontawesome'           ;
 // 2. Store and Types. 

@@ -20,10 +20,11 @@ GO
  * You can contact SplendidCRM Software, Inc. at email address support@splendidcrm.com. 
  *********************************************************************************************************************/
 -- 01/28/2017 Paul.  EXCHANGE_WATERMARK for support of Exchange and Office365.
+-- 07/19/2023 Paul.  Increase size of EXCHANGE_WATERMARK to 1000.  Badly formed token. 
 Create Procedure dbo.spINBOUND_EMAILS_ExchangeWatermark
 	( @ID                 uniqueidentifier
 	, @MODIFIED_USER_ID   uniqueidentifier
-	, @EXCHANGE_WATERMARK varchar(100)
+	, @EXCHANGE_WATERMARK varchar(1000)
 	)
 as
   begin

@@ -9,7 +9,7 @@
  */
 
 import * as React from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps } from '../Router5';
 
 export interface IDetailViewProps extends RouteComponentProps<any>
 {

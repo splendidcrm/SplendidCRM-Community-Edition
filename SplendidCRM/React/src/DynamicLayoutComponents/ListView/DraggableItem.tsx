@@ -8,13 +8,15 @@
  * "Copyright (C) 2005-2022 SplendidCRM Software, Inc. All rights reserved."
  */
 
-import * as React from 'react';
-import { FontAwesomeIcon }                 from '@fortawesome/react-fontawesome';
-import { DragSource, DropTarget, ConnectDropTarget, ConnectDragSource, DropTargetMonitor, DropTargetConnector, DragSourceConnector, DragSourceMonitor } from 'react-dnd';
+// 1. React and fabric. 
+import React, { memo, FC, useState }                              from 'react';
+import { FontAwesomeIcon }                                        from '@fortawesome/react-fontawesome';
+import { useDrag, useDrop, DragSourceMonitor, DropTargetMonitor } from 'react-dnd';
 // 2. Store and Types. 
+import IDragItemState                                             from '../../types/IDragItemState'    ;
 // 3. Scripts. 
-import Sql                                 from '../../scripts/Sql';
-import L10n                                from '../../scripts/L10n';
+import Sql                                                        from '../../scripts/Sql'             ;
+import L10n                                                       from '../../scripts/L10n'            ;
 
 const style: React.CSSProperties =
 {
@@ -44,160 +46,127 @@ interface IDraggableItemProps
 	rowTotal?         : number;
 	setDragging       : (id: string) => void;
 	draggingId        : string;
-	connectDragSource?: ConnectDragSource;
 	moveDraggableItem : (id: string, hoverColIndex: number, hoverRowIndex: number, didDrop: boolean) => void;
 	remove            : (item, type) => void;
 }
 
-const source =
+// 12/31/2023 Paul.  react-dnd v15 requires use of hooks. 
+const DraggableItem: FC<IDraggableItemProps> = memo(function DraggableItem(props: IDraggableItemProps)
 {
-	beginDrag(props: IDraggableItemProps)
-	{
-		//console.log((new Date()).toISOString() + ' ' + 'DraggableItem' + '.beginDrag', props);
-		return {
-			id        : props.id        ,
-			fieldIndex: props.fieldIndex,
-			colIndex  : props.colIndex  ,
-			rowIndex  : props.rowIndex  ,
-			origId    : props.id        ,
-		};
-	},
-	endDrag(props: IDraggableItemProps, monitor: DragSourceMonitor)
-	{
-		const { fieldIndex, colIndex, rowIndex } = props;
-		//console.log((new Date()).toISOString() + ' ' + 'DraggableItem' + '.endDrag', props, monitor.getItem(), monitor);
-		if ( monitor.didDrop() )
-		{
-			const id            : string = monitor.getItem().id        ;
-			const hoverColIndex : number = monitor.getItem().colIndex  ;
-			const hoverRowIndex : number = monitor.getItem().rowIndex  ;
-			props.moveDraggableItem(id, hoverColIndex, hoverRowIndex, true);
-		}
-		else
-		{
-			props.remove(monitor.getItem(), monitor.getItemType());
-		}
-	}
-};
-
-function collect(connect: DragSourceConnector, monitor: DragSourceMonitor)
-{
-	//console.log((new Date()).toISOString() + ' ' + 'DraggableItem' + '.collect', connect, monitor);
-	return {
-		connectDragSource: connect.dragSource(),
-		isDragging       : monitor.isDragging(),
-		didDrop          : monitor.didDrop(),
-	};
-}
-
-class DraggableItem extends React.Component<IDraggableItemProps>
-{
-	constructor(props: IDraggableItemProps)
-	{
-		super(props);
-		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.constructor', props);
-	}
-
-	shouldComponentUpdate(nextProps: IDraggableItemProps)
-	{
-		if ( this.props.draggingId !== nextProps.draggingId && nextProps.draggingId == nextProps.id )
-		{
-			return true;
-		}
-		else if ( this.props.isDragging != nextProps.isDragging || this.props.didDrop != nextProps.didDrop )
-		{
-			return true;
-		}
-		else if ( this.props.fieldIndex != nextProps.fieldIndex || this.props.colIndex != nextProps.colIndex || this.props.rowIndex != nextProps.rowIndex )
-		{
-			return true;
-		}
-		else if ( this.props.id != nextProps.id || JSON.stringify(this.props.item) != JSON.stringify(nextProps.item) )
-		{
-			return true;
-		}
-		return false;
-	}
-
-	componentWillUpdate(nextProps)
-	{
-		if ( nextProps.isDragging )
-		{
-			//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.componentWillUpdate', nextProps);
-			nextProps.setDragging(nextProps.id);
-		}
-		if ( nextProps.didDrop && nextProps.id == nextProps.draggingId )
-		{
-			//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.componentWillUpdate', nextProps);
-			nextProps.setDragging('');
-		}
-	}
-
-	public render()
-	{
-		const { item, id, draggingId, rowTotal, connectDragSource, colIndex, onEditClick } = this.props;
-		const opacity = id == draggingId ? 0 : 1;
-		if ( connectDragSource )
-		{
-			let DATA_FIELD : string = null;
-			let HEADER_TEXT: string = null;
-			if ( item )
+	const { item, id, draggingId, rowTotal, fieldIndex, colIndex, rowIndex, onEditClick, moveDraggableItem, remove, setDragging } = props;
+	//console.log((new Date()).toISOString() + ' ' + 'DraggableItem' + '.props', props);
+	const [collect, connectDragSource, dragPreview] = useDrag
+	(
+		() => ({
+			type: 'ITEM',
+			item: (monitor: DragSourceMonitor) =>
 			{
-				DATA_FIELD  = item.DATA_FIELD;
-				if ( !Sql.IsEmptyString(item.HEADER_TEXT) )
+				//console.log((new Date()).toISOString() + ' ' + 'DraggableItem' + '.item/begin', props, monitor);
+				return {
+					id        : id        ,
+					fieldIndex: fieldIndex,
+					colIndex  : colIndex  ,
+					rowIndex  : rowIndex  ,
+					origId    : id        ,
+				};
+			},
+			collect: (monitor: DragSourceMonitor) => (
+			{
+				isDragging: monitor.isDragging(),
+				didDrop   : monitor.didDrop(),
+			}),
+			end: (item: IDragItemState, monitor: DragSourceMonitor) =>
+			{
+				//console.log((new Date()).toISOString() + ' ' + 'DraggableItem' + '.end', item, props);
+				if ( monitor.didDrop() )
 				{
-					HEADER_TEXT = L10n.Term(item.HEADER_TEXT)
+					// 12/31/2023 Paul.  Upgrade DnD. 
+					const id            : string = item.id        ;
+					const hoverColIndex : number = item.colIndex  ;
+					const hoverRowIndex : number = item.rowIndex  ;
+					moveDraggableItem(id, hoverColIndex, hoverRowIndex, true);
 				}
-				if ( item.COLUMN_TYPE == 'TemplateColumn' )
+				else
 				{
-					if ( item.DATA_FORMAT == 'Hover' )
-					{
-						DATA_FIELD  = L10n.Term('DynamicLayout.LBL_HOVER_TYPE');
-						HEADER_TEXT = item.URL_FIELD;
-					}
-					else if ( item.DATA_FORMAT == 'ImageButton' )
-					{
-						DATA_FIELD  = L10n.Term('DynamicLayout.LBL_IMAGE_BUTTON_TYPE');
-						HEADER_TEXT = item.URL_FIELD;
-					}
-					else if ( item.DATA_FORMAT == 'JavaScript' )
-					{
-						DATA_FIELD = L10n.Term('DynamicLayout.LBL_JAVASCRIPT_TYPE');
-					}
+					remove(item, monitor.getItemType());
 				}
-			}
-			return (
-				connectDragSource(
-					<div
-						draggable
-						className='grab'
-						style={{ ...style, opacity, flexBasis: `${100 / rowTotal}%` }}
-						id={ 'ctlDynamicLayout_' + id }
-					>
-						{ item
-						? DATA_FIELD
-						: null
-						}
-						<br />
-						{ item
-						? HEADER_TEXT
-						: null
-						}
-						{ item && (item.FIELD_TYPE != 'Blank' && item.FIELD_TYPE != 'Separator')
-						? <span style={ {cursor: 'pointer'} } onClick={ () => onEditClick(id) }>
-							<FontAwesomeIcon icon="edit" size="lg" />
-						</span>
-						: null
-						}
-					</div>
-				)
-			);
-		}
-		else
+				setDragging('');
+			},
+			canDrag: (monitor: DragSourceMonitor) =>
+			{
+				return true;
+			},
+		}),
+		[id, fieldIndex, colIndex, rowIndex, moveDraggableItem, remove, setDragging],
+	);
+	//console.log((new Date()).toISOString() + ' ' + 'DraggableItem' + ' collected', collect);
+	const [dragging, setLocalDragging] = useState(false);
+	if ( dragging != collect.isDragging )
+	{
+		//console.log((new Date()).toISOString() + ' ' + 'DraggableItem' + ' dragging changed', collect.isDragging);
+		if ( collect.isDragging )
 		{
-			return null;
+			props.setDragging(props.id);
+		}
+		if ( collect.didDrop )
+		{
+			props.setDragging('');
+		}
+		setLocalDragging(collect.isDragging);
+	}
+
+	const opacity = id == draggingId ? 0 : 1;
+	let DATA_FIELD : string = null;
+	let HEADER_TEXT: string = null;
+	if ( item )
+	{
+		DATA_FIELD  = item.DATA_FIELD;
+		if ( !Sql.IsEmptyString(item.HEADER_TEXT) )
+		{
+			HEADER_TEXT = L10n.Term(item.HEADER_TEXT)
+		}
+		if ( item.COLUMN_TYPE == 'TemplateColumn' )
+		{
+			if ( item.DATA_FORMAT == 'Hover' )
+			{
+				DATA_FIELD  = L10n.Term('DynamicLayout.LBL_HOVER_TYPE');
+				HEADER_TEXT = item.URL_FIELD;
+			}
+			else if ( item.DATA_FORMAT == 'ImageButton' )
+			{
+				DATA_FIELD  = L10n.Term('DynamicLayout.LBL_IMAGE_BUTTON_TYPE');
+				HEADER_TEXT = item.URL_FIELD;
+			}
+			else if ( item.DATA_FORMAT == 'JavaScript' )
+			{
+				DATA_FIELD = L10n.Term('DynamicLayout.LBL_JAVASCRIPT_TYPE');
+			}
 		}
 	}
-}
+	return (
+			<div ref={ (node) => connectDragSource(node) }
+				draggable
+				className='grab'
+				style={{ ...style, opacity, flexBasis: `${100 / rowTotal}%` }}
+				id={ 'ctlDynamicLayout_' + id }
+			>
+				{ item
+				? DATA_FIELD
+				: null
+				}
+				<br />
+				{ item
+				? HEADER_TEXT
+				: null
+				}
+				{ item && (item.FIELD_TYPE != 'Blank' && item.FIELD_TYPE != 'Separator')
+				? <span style={ {cursor: 'pointer'} } onClick={ () => onEditClick(id) }>
+					<FontAwesomeIcon icon="edit" size="lg" />
+				</span>
+				: null
+				}
+			</div>
+	);
+});
 
-export default DragSource('ITEM', source, collect)(DraggableItem);
+export default DraggableItem;

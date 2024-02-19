@@ -10,7 +10,7 @@
 
 // 1. React and fabric. 
 import * as React from 'react';
-import * as XMLParser                                 from 'fast-xml-parser'                  ;
+import { XMLParser, XMLBuilder }                      from 'fast-xml-parser'                  ;
 import { NavDropdown }                                from 'react-bootstrap'                  ;
 // 2. Store and Types. 
 // 3. Scripts. 
@@ -116,12 +116,25 @@ export default class RuleBuilder extends React.Component<IRuleBuilderProps, IRul
 			let options: any = 
 			{
 				attributeNamePrefix: ''     ,
+				// 02/18/2024 Paul.  parser v4 does not have an issue with node name as there is no value tag. 
+				//  <Table1>
+				//    <ID>e15d60bf-2f50-426f-9f6f-1ed54350e281</ID>
+				//    <RULE_NAME>Update Region</RULE_NAME>
+				//    <PRIORITY>0</PRIORITY>
+				//    <REEVALUATION>Never</REEVALUATION>
+				//    <ACTIVE>true</ACTIVE>
+				//    <CONDITION>this.ToString(this["BILLING_ADDRESS_CITY"]) == "Holly Springs"</CONDITION>
+				//    <THEN_ACTIONS>this["PHONE_OFFICE"]  = "919-604-1258"</THEN_ACTIONS>
+				//    <ELSE_ACTIONS />
+				//  </Table1>
 				textNodeName       : 'Value',
 				ignoreAttributes   : false  ,
 				ignoreNameSpace    : true   ,
 				parseAttributeValue: true   ,
 				trimValues         : false  ,
 			};
+			// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
+			const parser = new XMLParser(options);
 
 			let rulesXml    : any     = null;
 			let rulesXmlJson: string  = null;
@@ -129,7 +142,7 @@ export default class RuleBuilder extends React.Component<IRuleBuilderProps, IRul
 			{
 				// 08/12/2023 Paul.  XMLParser 3.21.1 is not parsing &amp;, and 4.2.7 crashes the build, so manually parse. 
 				const RULES_XML = row['RULES_XML'].replace(/&amp;/g, '&');
-				rulesXml     = XMLParser.parse(RULES_XML, options);
+				rulesXml     = parser.parse(RULES_XML);
 				// 05/20/2020 Paul.  A single record will not come in as an array, so convert to an array. 
 				if ( rulesXml.NewDataSet && rulesXml.NewDataSet.Table1 && !Array.isArray(rulesXml.NewDataSet.Table1) )
 				{
@@ -170,12 +183,25 @@ export default class RuleBuilder extends React.Component<IRuleBuilderProps, IRul
 				let options: any = 
 				{
 					attributeNamePrefix: ''     ,
+					// 02/18/2024 Paul.  parser v4 does not have an issue with node name as there is no value tag. 
+					//  <Table1>
+					//    <ID>e15d60bf-2f50-426f-9f6f-1ed54350e281</ID>
+					//    <RULE_NAME>Update Region</RULE_NAME>
+					//    <PRIORITY>0</PRIORITY>
+					//    <REEVALUATION>Never</REEVALUATION>
+					//    <ACTIVE>true</ACTIVE>
+					//    <CONDITION>this.ToString(this["BILLING_ADDRESS_CITY"]) == "Holly Springs"</CONDITION>
+					//    <THEN_ACTIONS>this["PHONE_OFFICE"]  = "919-604-1258"</THEN_ACTIONS>
+					//    <ELSE_ACTIONS />
+					//  </Table1>
 					textNodeName       : 'Value',
 					ignoreAttributes   : false  ,
 					ignoreNameSpace    : true   ,
 					parseAttributeValue: true   ,
 					trimValues         : false  ,
 				};
+				// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
+				const parser = new XMLParser(options);
 
 				let rulesXml    : any     = null;
 				let rulesXmlJson: string  = null;
@@ -183,7 +209,7 @@ export default class RuleBuilder extends React.Component<IRuleBuilderProps, IRul
 				{
 					// 08/12/2023 Paul.  XMLParser 3.21.1 is not parsing &amp;, and 4.2.7 crashes the build, so manually parse. 
 					const RULES_XML = nextProps.row['RULES_XML'].replace(/&amp;/g, '&');
-					rulesXml     = XMLParser.parse(RULES_XML, options);
+					rulesXml     = parser.parse(RULES_XML);
 					// 05/20/2020 Paul.  A single record will not come in as an array, so convert to an array. 
 					if ( rulesXml.NewDataSet && rulesXml.NewDataSet.Table1 && !Array.isArray(rulesXml.NewDataSet.Table1) )
 					{

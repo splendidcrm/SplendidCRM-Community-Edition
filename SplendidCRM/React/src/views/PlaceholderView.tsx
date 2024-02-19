@@ -10,16 +10,16 @@
 
 // 1. React and fabric. 
 import * as React from 'react';
-import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
+import { Link, RouteComponentProps, withRouter } from '../Router5';
 // 2. Store and Types. 
 // 3. Scripts. 
 // 4. Components and Views. 
 
 interface IPlaceholderViewProps extends RouteComponentProps<any>
 {
-	MODULE_NAME: string;
-	SUB_TITLE  : string;
-	ID         : string;
+	MODULE_NAME?: string;
+	SUB_TITLE?  : string;
+	ID?         : string;
 }
 
 class PlaceholderView extends React.Component<IPlaceholderViewProps>

@@ -144,3 +144,10 @@ if exists (select * from INFORMATION_SCHEMA.COLUMNS where TABLE_NAME = 'INBOUND_
 end -- if;
 GO
 
+-- 07/19/2023 Paul.  Increase size of EXCHANGE_WATERMARK to 1000.  Badly formed token. 
+if exists (select * from INFORMATION_SCHEMA.COLUMNS where TABLE_NAME = 'INBOUND_EMAILS' and COLUMN_NAME = 'EXCHANGE_WATERMARK' and CHARACTER_MAXIMUM_LENGTH < 1000) begin -- then
+	print 'alter table INBOUND_EMAILS alter column EXCHANGE_WATERMARK nvarchar(1000) null';
+	alter table INBOUND_EMAILS alter column EXCHANGE_WATERMARK nvarchar(1000) null;
+end -- if;
+GO
+

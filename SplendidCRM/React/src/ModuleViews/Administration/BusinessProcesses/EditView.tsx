@@ -10,10 +10,10 @@
 
 // 1. React and fabric. 
 import * as React from 'react';
-import { RouteComponentProps }                      from 'react-router-dom'                             ;
+import { RouteComponentProps }                      from '../Router5'                                   ;
 import { observer }                                 from 'mobx-react'                                   ;
 import { FontAwesomeIcon }                          from '@fortawesome/react-fontawesome'               ;
-import * as XMLParser                               from 'fast-xml-parser'                              ;
+import { XMLParser, XMLBuilder }                    from 'fast-xml-parser'                              ;
 // 2. Store and Types. 
 import { EditComponent }                            from '../../../types/EditComponent'                 ;
 import { HeaderButtons }                            from '../../../types/HeaderButtons'                 ;
@@ -284,11 +284,13 @@ export default class BusinessProcessesEditView extends React.Component<IAdminEdi
 				});
 				if ( !Sql.IsEmptyString(DuplicateID) )
 				{
-					await this.LoadItem(MODULE_NAME, DuplicateID);
+					// 02/06/2024 Paul.  layout may not be available from state, so pass as parameter. 
+					await this.LoadItem(MODULE_NAME, DuplicateID, layout);
 				}
 				else
 				{
-					await this.LoadItem(MODULE_NAME, ID);
+					// 02/06/2024 Paul.  layout may not be available from state, so pass as parameter. 
+					await this.LoadItem(MODULE_NAME, ID, layout);
 				}
 			}
 		}
@@ -299,9 +301,9 @@ export default class BusinessProcessesEditView extends React.Component<IAdminEdi
 		}
 	}
 
-	private LoadItem = async (sMODULE_NAME: string, sID: string) =>
+	// 02/06/2024 Paul.  layout may not be available from state, so pass as parameter. 
+	private LoadItem = async (sMODULE_NAME: string, sID: string, layout: any[]) =>
 	{
-		let { layout } = this.state;
 		if ( !Sql.IsEmptyString(sID) )
 		{
 			try
@@ -846,6 +848,9 @@ export default class BusinessProcessesEditView extends React.Component<IAdminEdi
 			const currentItem = Object.assign({}, this.state.item, this.state.editedItem);
 			currentItem['MODULE_NAME'] = currentItem['BASE_MODULE'];
 			let headerButtons = HeaderButtonsFactory(SplendidCache.UserTheme);
+			// 02/11/2024 Paul.  DynamicPopupView is not rerendering when module changes, so change the key. 
+			// 02/11/2024 Paul.  use of ...params in withRouter() is causing router params to overwrite existing properties of sub-components. 
+			// The solution could be to insert params first, then let properties override. 
 			return (
 			<div>
 				{ !callback && headerButtons
@@ -859,6 +864,7 @@ export default class BusinessProcessesEditView extends React.Component<IAdminEdi
 					onChange={ (e) => this._onFileUploadEvent(e) }
 				/>
 				<DynamicPopupView
+					key={ POPUP_MODULE_NAME }
 					isOpen={ popupOpen }
 					isSearchView={ false }
 					fromLayoutName={ EDIT_NAME }

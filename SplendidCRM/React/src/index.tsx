@@ -12,10 +12,10 @@
 // 02/26/2022 Paul.  Remove core-js as we don't seem to be using any of its features. 
 // 02/26/2022 Paul.  Remove react-hot-loader as we do not need hot loading and it should not be used in production. 
 // 02/26/2022 Paul.  Remove whatwg-fetch as it is no londer needed as we require latest browsers. 
-import * as React                                  from 'react'                  ;
-import * as ReactDOM                               from 'react-dom'              ;
-import { Router }                                  from 'react-router'           ;
-import * as RoutesModule                           from './routes'               ;
+import React                                       from 'react'                  ;
+import ReactDOM                                    from 'react-dom/client'       ;
+import { createBrowserRouter, RouterProvider, redirect }     from  'react-router-dom'      ;
+import { resetRoutes, publicRoutes, privateRoutes, cleanupRoutes, redirectRoutes, SplendidRedirect, SplendidRoute }  from './routes';
 import { Provider }                                from 'mobx-react'             ;
 import { RouterStore, syncHistoryWithStore }       from 'mobx-react-router'      ;
 import { createBrowserHistory, createHashHistory } from 'history'                ;
@@ -27,6 +27,10 @@ import SplendidCache                               from './scripts/SplendidCache
 import { StartsWith, EndsWith }                    from './scripts/utility'      ;
 import SignalRStore                                from './SignalR/SignalRStore' ;
 // 4. Components and Views. 
+import App                                         from './App'                  ;
+import PrivateRoute                                from './PrivateRoute'         ;
+import PublicRouteFC                               from './PublicRouteFC'        ;
+import RedirectView                                from './views/RedirectView'   ;
 // 5. Styles and Themes. 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
@@ -35,10 +39,21 @@ import 'react-treeview/react-treeview.css';
 // 09/10/2019 Paul.  This style is required to get the model popups to fill the screen. 
 import './styles/gentelella/custom.css';
 import './index.scss';
-// 09/02/2019 Paul.  Try using ASP.NET themes. 
+
+declare global
+{
+	interface Document
+	{
+		components: any;
+		getComponentById(id: string);
+	}
+	interface Window
+	{
+		[key: string]: any;
+	}
+}
 
 
-let routes = RoutesModule.routes;
 Credentials.LoadCredentials();
 
 const routingStore = new RouterStore();
@@ -47,7 +62,7 @@ if (document.getElementsByTagName('base')[0])
 {
 	baseUrl = document.getElementsByTagName('base')[0].getAttribute('href');
 }
-//console.log((new Date()).toISOString() + ' ' + 'baseUrl = ' + baseUrl);
+console.log((new Date()).toISOString() + ' ' + 'baseUrl = ' + baseUrl);
 let history = null;
 // 11/12/2020 Paul.  iOS issue: Blocked attempt to use history.pushState() to chante session history from URL. 
 // 11/14/2020 Paul.  If you are using react-router, make sure you use the HashRouter and not the BrowserRouter, 
@@ -55,11 +70,11 @@ let history = null;
 // https://gist.github.com/twilson63/f32d798bc8aaed6a020011f4a1543e20
 if ( window.cordova && window.cordova.platformId == 'ios' )
 {
-	history = syncHistoryWithStore(createHashHistory({ basename: baseUrl, hashType: 'slash' }), routingStore);
+	history = syncHistoryWithStore(createHashHistory(), routingStore);
 }
 else
 {
-	history = syncHistoryWithStore(createBrowserHistory({ basename: baseUrl }), routingStore);
+	history = syncHistoryWithStore(createBrowserHistory(), routingStore);
 }
 
 let sRemoteServer = '';
@@ -107,7 +122,8 @@ else
 if ( StartsWith(pathname.toLowerCase(), baseUrl.toLowerCase()) )
 {
 	// 06/23/2019 Paul.  Keep the leading slash. 
-	pathname = pathname.substring(baseUrl.length - 1);
+	// 01/20/2024 paul.  history may no longer be relative. 
+	//pathname = pathname.substring(baseUrl.length - 1);
 }
 if ( !EndsWith(sRemoteServer, '/') )
 {
@@ -130,7 +146,7 @@ try
 {
 	if ( !Sql.IsEmptyString(pathname) )
 	{
-		//console.log((new Date()).toISOString() + ' ' + 'Starting at ' + pathname);
+		///console.log((new Date()).toISOString() + ' ' + 'Starting at ' + pathname);
 		// 06/22/2019 Paul.  Routing should be automatic. 
 		if ( pathname.toLowerCase() == '/login' && StartsWith(window.location.hash, '#id_token') )
 		{
@@ -182,66 +198,67 @@ const stores =
 	signalRStore : SignalRStore ,
 };
 
-declare global
+// https://www.telerik.com/blogs/react-basics-how-to-use-react-router-v6
+const redirects_direct = redirectRoutes().map((r: SplendidRedirect) =>
 {
-	interface Document
-	{
-		components: any;
-		getComponentById(id: string);
-	}
-	interface Window
-	{
-		[key: string]: any;
-	}
-}
-
-// https://medium.com/@BrianSayler/diagnosing-a-sick-react-router-d797bf1b90eb
-class DebugRouter extends Router
-{
-	constructor(props)
-	{
-		super(props);
-		//console.log((new Date()).toISOString() + ' ' + 'initial history is:', JSON.stringify(props.history, null,2))
-		props.history.listen((location, action) =>
+	return {
+		path: r.from,
+		loader: () =>
 		{
-			console.log((new Date()).toISOString() + ' ' + `index.tsx: The current URL is ${location.pathname}${location.search}${location.hash}`)
-			//console.log((new Date()).toISOString() + ' ' + `The last navigation action was ${action}`, props.history);
-		});
-	}
-}
-
-// 05/06/2021 Paul.  Track browser history changes so that we can determine if last event was a POP event. 
-class TrackingRouter  extends Router
+			console.log((new Date()).toISOString() + ' redirecting: ', r.to);
+			redirect(r.to);
+		}
+	};
+});
+const redirects = redirectRoutes().map((r: SplendidRedirect) =>
 {
-	constructor(props)
-	{
-		super(props);
-		props.history.listen((location, action) =>
-		{
-			//console.log((new Date()).toISOString() + ' ' + `The last navigation action was ${action}`, props.history);
-			SplendidCache.HistoryChanged(location, action);
-		});
-	}
-}
-
-/*
-// 07/10/2019 Paul.  We don't access components by ID. 
-document.components = document.components || {};
-
-document.getComponentById = document.getComponentById || function (id: string)
+	return {
+		path: r.from,
+		element: <RedirectView from={ r.from } to={ r.to } />,
+	};
+});
+//console.log((new Date()).toISOString() + ' redirects', redirects);
+const privates = privateRoutes().map((r: SplendidRoute) =>
 {
-	return document.components[id];
-}
-*/
+	return {
+		path: r.path,
+		element: <PrivateRoute />,
+		children: [r]
+	};
+});
+const publics = publicRoutes().map((r: SplendidRoute) =>
+{
+	return {
+		path: r.path,
+		element: <PublicRouteFC />,
+		children: [r]
+	};
+});
+
+
+const allRoutes = [
+	...resetRoutes(),
+	...redirects,
+	...privates,
+	...publics,
+	...cleanupRoutes(),
+];
+//console.log((new Date()).toISOString() + ' allRoutes', allRoutes);
+
+// https://reactrouter.com/en/main/upgrading/v6-data
+const router = createBrowserRouter(allRoutes, { basename: baseUrl });
+window.splendidBaseUrl = baseUrl;
+window.reactHistory = history;
 
 function render()
 {
-	ReactDOM.render(
-			<Provider {...stores}>
-				<TrackingRouter history={history} children={routes} />
-			</Provider>
-		,
-		document.getElementById('root') as HTMLElement
+	const root = ReactDOM.createRoot(document.getElementById('root')!);
+	root.render(
+		<Provider {...stores}>
+			<App>
+				<RouterProvider router={ router } />
+			</App>
+		</Provider>
 	);
 }
 
@@ -261,14 +278,4 @@ else
 			divFooterCopyright.style.display = 'none';
 		}
 	}
-}
-
-declare let module: { hot: any };
-if ( module.hot )
-{
-	module.hot.accept('./routes', () =>
-	{
-		routes = (require('./routes') as typeof RoutesModule).routes;
-		render();
-	});
 }

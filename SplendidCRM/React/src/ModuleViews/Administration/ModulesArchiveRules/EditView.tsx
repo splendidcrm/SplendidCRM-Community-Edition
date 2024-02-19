@@ -10,7 +10,7 @@
 
 // 1. React and fabric. 
 import * as React from 'react';
-import { RouteComponentProps }                      from 'react-router-dom'                             ;
+import { RouteComponentProps }                      from '../Router5'                             ;
 import { observer }                                 from 'mobx-react'                                   ;
 import { FontAwesomeIcon }                          from '@fortawesome/react-fontawesome'               ;
 // 2. Store and Types. 
@@ -245,11 +245,13 @@ export default class ModulesArchiveRulesEditView extends React.Component<IAdminE
 				});
 				if ( !Sql.IsEmptyString(DuplicateID) )
 				{
-					await this.LoadItem(MODULE_NAME, DuplicateID);
+					// 02/06/2024 Paul.  layout may not be available from state, so pass as parameter. 
+					await this.LoadItem(MODULE_NAME, DuplicateID, layout);
 				}
 				else
 				{
-					await this.LoadItem(MODULE_NAME, ID);
+					// 02/06/2024 Paul.  layout may not be available from state, so pass as parameter. 
+					await this.LoadItem(MODULE_NAME, ID, layout);
 				}
 			}
 		}
@@ -260,9 +262,9 @@ export default class ModulesArchiveRulesEditView extends React.Component<IAdminE
 		}
 	}
 
-	private LoadItem = async (sMODULE_NAME: string, sID: string) =>
+	// 02/06/2024 Paul.  layout may not be available from state, so pass as parameter. 
+	private LoadItem = async (sMODULE_NAME: string, sID: string, layout: any[]) =>
 	{
-		let { layout } = this.state;
 		if ( !Sql.IsEmptyString(sID) )
 		{
 			try

@@ -116,6 +116,9 @@ exec dbo.spTERMINOLOGY_InsertOnly N'TXT_REMOVE_ME'                              
 exec dbo.spTERMINOLOGY_InsertOnly N'TXT_REMOVE_ME_CLICK'                           , N'en-US', N'EmailMan', null, null, N'click here';
 -- 06/04/2015 Paul.  Add module abbreviation. 
 exec dbo.spTERMINOLOGY_InsertOnly N'LBL_MODULE_ABBREVIATION'                       , N'en-US', N'EmailMan', null, null, N'EmM';
+-- 07/18/2023 Paul.  Provide a way to archive imported messages. 
+exec dbo.spTERMINOLOGY_InsertOnly N'LBL_ARCHIVE_BUTTON_LABEL'                      , N'en-US', N'EmailMan', null, null, N'Archive';
+exec dbo.spTERMINOLOGY_InsertOnly N'LBL_ARCHIVE_BUTTON_TITLE'                      , N'en-US', N'EmailMan', null, null, N'Archive';
 GO
 /* -- #if Oracle
 	COMMIT WORK;

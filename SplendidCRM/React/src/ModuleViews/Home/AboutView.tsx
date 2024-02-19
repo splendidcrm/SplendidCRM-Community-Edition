@@ -10,7 +10,7 @@
 
 // 1. React and fabric. 
 import * as React from 'react';
-import { Link, RouteComponentProps, withRouter }     from 'react-router-dom'           ;
+import { Link, RouteComponentProps, withRouter }     from '../Router5'           ;
 // 2. Store and Types. 
 // 3. Scripts. 
 import Sql                                           from '../../scripts/Sql'          ;

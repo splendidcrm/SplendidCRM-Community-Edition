@@ -9,9 +9,9 @@
  */
 
 // 1. React and fabric. 
-import * as React from 'react';
-import * as qs from 'query-string';
-import { RouteComponentProps, withRouter }       from 'react-router-dom'                      ;
+import React from 'react';
+import qs from 'query-string';
+import { RouteComponentProps, withRouter }       from '../Router5'                      ;
 // 2. Store and Types. 
 import MODULE                                    from '../../../types/MODULE'                 ;
 // 3. Scripts. 
@@ -108,6 +108,8 @@ class Precompile extends React.Component<IPrecompileProps, IPrecompileState>
 					let currentIndex   : number  = null;
 					let lstModulePages : any[]   = [];
 					let layout         : any     = null;
+					// 02/06/2024 Paul.  Provide a way to detect Azure enabled. 
+					let bAzureRestExists: boolean = Sql.ToBoolean(SplendidCache.Config('AzureRestExists'))
 					// 04/10/2021 Paul.  Make two passes so that admin modules can be placed at the end. 
 					for ( let MODULE_NAME in lstMODULES )
 					{
@@ -232,7 +234,8 @@ class Precompile extends React.Component<IPrecompileProps, IPrecompileState>
 						// 04/14/2021 Paul.  Use of relative path is required for Azure modules that are an extra level deep. 
 						let RELATIVE_PATH: string = module.RELATIVE_PATH;
 						RELATIVE_PATH = RELATIVE_PATH.replace('~/', '');
-						if ( ignoreAzure )
+						// 02/06/2024 Paul.  Provide a way to detect Azure enabled. 
+						if ( ignoreAzure || !bAzureRestExists )
 						{
 							if ( RELATIVE_PATH.indexOf('Azure') >= 0 )
 							{

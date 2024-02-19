@@ -69,5 +69,6 @@ using System.Reflection;
 // 04/10/2022 Paul.  Version 14.5 add Pacific theme. 
 // 07/31/2022 Paul.  Version 14.6 includes experimental Angular code. 
 // 10/09/2022 Paul.  Version 14.7 Add support for Invoices in Payments.EditView. 
-[assembly: AssemblyVersion("14.7.*")]
+// 02/17/2024 Paul.  Version 15.0 Upgrades React to version 18 and most react packages. 
+[assembly: AssemblyVersion("15.0.*")]
 

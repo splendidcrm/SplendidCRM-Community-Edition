@@ -9,13 +9,13 @@
  */
 
 // 1. React and fabric. 
-import * as React from 'react';
-import * as qs from 'query-string';
-import { RouteComponentProps, withRouter }          from 'react-router-dom'                       ;
+import React from 'react';
+import qs from 'query-string';
+import { RouteComponentProps, withRouter }          from '../Router5'                             ;
 import { Modal, ModalTitle }                        from 'react-bootstrap'                        ;
 import { observer }                                 from 'mobx-react'                             ;
 import { FontAwesomeIcon }                          from '@fortawesome/react-fontawesome'         ;
-import * as XMLParser                               from 'fast-xml-parser'                        ;
+import { XMLParser, XMLBuilder }                    from 'fast-xml-parser'                        ;
 // 2. Store and Types. 
 import { EditComponent }                            from '../types/EditComponent'                 ;
 import { HeaderButtons }                            from '../types/HeaderButtons'                 ;
@@ -46,7 +46,7 @@ let MODULE_NAME: string = 'Reports';
 interface IEditViewProps extends RouteComponentProps<any>
 {
 	ID?                : string;
-	LAYOUT_NAME        : string;
+	LAYOUT_NAME?       : string;
 	rowDefaultSearch?  : any;
 	onLayoutLoaded?    : any;
 	onSubmit?          : any;
@@ -290,6 +290,31 @@ export default class ReportEditView extends React.Component<IEditViewProps, IEdi
 		{
 			try
 			{
+				let options: any = 
+				{
+					attributeNamePrefix: ''     ,
+					// 02/18/2024 Paul.  parser v4 creates object for Value. 
+					// 02/18/2024 Paul.  When tag name is also Value, v4 creates an array, which is wrong and bad. 
+					//<CustomProperties>
+					//	<CustomProperty>
+					//		<Name>crm:Module</Name>
+					//		<Value>Accounts</Value>
+					//	</CustomProperty>
+					//	<CustomProperty>
+					//		<Name>crm:Related</Name>
+					//		<Value>
+					//	</Value>
+					//	</CustomProperty>
+					//</CustomProperties>
+					//textNodeName       : 'Value',
+					ignoreAttributes   : false  ,
+					ignoreNameSpace    : true   ,
+					parseAttributeValue: true   ,
+					trimValues         : false  ,
+				};
+				// 02/18/2024 Paul.  Upgrade to fast-xml-parser v4. 
+				const parser = new XMLParser(options);
+
 				// 11/19/2019 Paul.  Change to allow return of SQL. 
 				const d = await EditView_LoadItem(sMODULE_NAME, sID);
 				let item: any = d.results;
@@ -308,7 +333,7 @@ export default class ReportEditView extends React.Component<IEditViewProps, IEdi
 					let sRDL: string = Sql.ToString(item['RDL']);
 					if ( !Sql.IsEmptyString(sRDL) && StartsWith(sRDL, '<?xml') )
 					{
-						let xml: any = XMLParser.parse(sRDL);
+						let xml: any = parser.parse(sRDL);
 						if ( xml.Report != null )
 						{
 							item['PAGE_WIDTH' ] = Sql.ToString(xml.Report.PageWidth );
@@ -443,6 +468,11 @@ export default class ReportEditView extends React.Component<IEditViewProps, IEdi
 						// 04/01/2020 Paul.  We need to include the ReportDesign, which may not have been edited, so could be in item, or editedItem. 
 						row = this.data;
 						row.ID = (isDuplicate ? null : ID);
+						// 01/09/2024 Paul.  Must set the report type in order to allow editing. 
+						if ( !row.REPORT_TYPE )
+						{
+							row.REPORT_TYPE = 'Tabular';
+						}
 						delete row['SHOW_QUERY'];
 						if ( LAST_DATE_MODIFIED != null )
 						{

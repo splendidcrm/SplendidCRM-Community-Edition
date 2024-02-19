@@ -10,8 +10,7 @@
 
 // 1. React and fabric. 
 import * as React from 'react';
-import * as XMLParser                                 from 'fast-xml-parser'                      ;
-import { RouteComponentProps, withRouter }            from 'react-router-dom'                     ;
+import { RouteComponentProps, withRouter }            from '../Router5'                           ;
 // 2. Store and Types. 
 import { DetailComponent }                            from '../types/DetailComponent'             ;
 import ACL_ACCESS                                     from '../types/ACL_ACCESS'                  ;
