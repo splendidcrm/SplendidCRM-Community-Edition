@@ -10,7 +10,7 @@
 
 // 1. React and fabric. 
 import * as React from 'react';
-import { XMLParser, XMLBuilder }              from 'fast-xml-parser'         ;
+import * as XMLParser from 'fast-xml-parser';
 // 2. Store and Types. 
 import { IEditComponentProps, EditComponent } from '../types/EditComponent'  ;
 // 3. Scripts. 
@@ -250,9 +250,7 @@ export default class Label extends React.PureComponent<IEditComponentProps, ILab
 									});
 									*/
 									// 11/24/2019 Paul.  New xml parsing method. 
-									// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
-									const parser = new XMLParser();
-									let xml = parser.parse(DATA_VALUE);
+									let xml = XMLParser.parse(DATA_VALUE);
 									if ( xml.Values && xml.Values.Value && Array.isArray(xml.Values.Value) )
 									{
 										let xmlVALUES: string[] = xml.Values.Value;

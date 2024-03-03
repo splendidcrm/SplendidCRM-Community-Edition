@@ -10,7 +10,7 @@
 
 // 1. React and fabric. 
 import * as React from 'react';
-import { XMLParser, XMLBuilder }                from 'fast-xml-parser'              ;
+import * as XMLParser from 'fast-xml-parser';
 import { Appear }                               from 'react-lifecycle-appear'       ;
 // 2. Store and Types. 
 import ISurveyQuestionProps                     from '../types/ISurveyQuestionProps';
@@ -270,28 +270,14 @@ export default class DropdownMatrix extends SurveyQuestion<ISurveyQuestionProps,
 			let options: any = 
 			{
 				attributeNamePrefix: '',
-				// 02/16/2024 Paul.  parser v4 creates object for Value. 
-				// 02/16/2024 Paul.  Heading and Options at same level causes confusion. 
-				//textNodeName       : 'Value',
-				// <Menus>
-				// 	<Menu>
-				// 		<Heading>Size</Heading>
-				// 		<Options>Small  Medium  Large</Options>
-				// 	</Menu>
-				// 	<Menu>
-				// 		<Heading>Color</Heading>
-				// 		<Options>Red  Green  Blue</Options>
-				// 	</Menu>
-				// </Menus>
+				textNodeName       : 'Label',
 				ignoreAttributes   : false,
 				ignoreNameSpace    : true,
 				parseAttributeValue: true,
 				trimValues         : false,
 			};
-			// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
-			const parser = new XMLParser(options);
 			// 07/11/2021 Paul.  should be parsing sCOLUMN_CHOICES and not props.row.COLUMN_CHOICES. 
-			let xml: any = parser.parse(sCOLUMN_CHOICES);
+			let xml: any = XMLParser.parse(sCOLUMN_CHOICES, options);
 			//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.constructor', xml);
 			if ( xml.Menus && xml.Menus.Menu )
 			{
@@ -673,27 +659,13 @@ export default class DropdownMatrix extends SurveyQuestion<ISurveyQuestionProps,
 			let options: any = 
 			{
 				attributeNamePrefix: '',
-				// 02/16/2024 Paul.  parser v4 creates object for Value. 
-				// 02/16/2024 Paul.  Heading and Options at same level causes confusion. 
-				//textNodeName       : 'Value',
-				// <Menus>
-				// 	<Menu>
-				// 		<Heading>Size</Heading>
-				// 		<Options>Small  Medium  Large</Options>
-				// 	</Menu>
-				// 	<Menu>
-				// 		<Heading>Color</Heading>
-				// 		<Options>Red  Green  Blue</Options>
-				// 	</Menu>
-				// </Menus>
+				textNodeName       : 'Label',
 				ignoreAttributes   : false,
 				ignoreNameSpace    : true,
 				parseAttributeValue: true,
 				trimValues         : false,
 			};
-			// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
-			const parser = new XMLParser(options);
-			let xml: any = parser.parse(this.props.row.COLUMN_CHOICES);
+			let xml: any = XMLParser.parse(this.props.row.COLUMN_CHOICES, options);
 			if ( xml.Menus && xml.Menus.Menu )
 			{
 				if ( Array.isArray(xml.Menus.Menu) )

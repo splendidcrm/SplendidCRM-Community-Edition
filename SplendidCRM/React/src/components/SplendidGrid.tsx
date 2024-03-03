@@ -10,12 +10,12 @@
 
 // 1. React and fabric. 
 import * as React from 'react';
-import { RouteComponentProps }       from '../Router5'                       ;
+import { RouteComponentProps }       from '../Router5'                 ;
 import { observer }                  from 'mobx-react'                       ;
 import BootstrapTable                from 'react-bootstrap-table-next'       ;
 import { FontAwesomeIcon }           from '@fortawesome/react-fontawesome'   ;
 import paginationFactory, { PaginationProvider, PaginationListStandalone, PaginationTotalStandalone } from 'react-bootstrap-table2-paginator';
-import { XMLParser, XMLBuilder }     from 'fast-xml-parser'                  ;
+import * as XMLParser                from 'fast-xml-parser'                  ;
 // 2. Store and Types. 
 import MODULE                        from '../types/MODULE'                  ;
 import ACL_ACCESS                    from '../types/ACL_ACCESS'              ;
@@ -1813,14 +1813,10 @@ class SplendidGrid extends React.Component<ISplendidGridProps, ISplendidGridStat
 						ignoreNameSpace    : true,
 						parseAttributeValue: true,
 						trimValues         : false,
-						format             : true,
-						// 02/17/2024 Paul.  parser v4 requires suppressBooleanAttributes, otherwise Visible does not include ="true"
-						allowBooleanAttributes: true,
-						suppressBooleanAttributes: false,
+
 					};
-					// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
-					const builder = new XMLBuilder(options);
-					let sXML: string = '<?xml version="1.0" encoding="UTF-8"?>' + builder.build(objSavedSearch);
+					let parser = new XMLParser.j2xParser(options);
+					let sXML: string = '<?xml version="1.0" encoding="UTF-8"?>' + parser.parse(objSavedSearch);
 					//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.handleTableChange', sortField, SEARCH_VALUES, sXML);
 					try
 					{

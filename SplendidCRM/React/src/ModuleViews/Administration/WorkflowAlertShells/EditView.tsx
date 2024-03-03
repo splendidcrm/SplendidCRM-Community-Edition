@@ -11,8 +11,8 @@
 // 1. React and fabric. 
 import React from 'react';
 import qs from 'query-string';
-import { XMLParser, XMLBuilder }                    from 'fast-xml-parser'                              ;
-import { RouteComponentProps }                      from '../Router5'                                   ;
+import * as XMLParser                               from 'fast-xml-parser'                              ;
+import { RouteComponentProps }                      from '../Router5'                             ;
 import { observer }                                 from 'mobx-react'                                   ;
 import { FontAwesomeIcon }                          from '@fortawesome/react-fontawesome'               ;
 // 2. Store and Types. 
@@ -114,7 +114,6 @@ export default class WorkflowAlertShellsEditView extends React.Component<IAdminE
 	constructor(props: IAdminEditViewProps)
 	{
 		super(props);
-		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.constructor', props);
 		let EDIT_NAME = props.MODULE_NAME + '.EditView';
 		if ( !Sql.IsEmptyString(props.LAYOUT_NAME) )
 		{
@@ -309,27 +308,12 @@ export default class WorkflowAlertShellsEditView extends React.Component<IAdminE
 				let options: any = 
 				{
 					attributeNamePrefix: ''     ,
-					// 02/18/2024 Paul.  parser v4 creates object for Value. 
-					// 02/18/2024 Paul.  When tag name is also Value, v4 creates an array, which is wrong and bad. 
-					//<CustomProperties>
-					//	<CustomProperty>
-					//		<Name>crm:Module</Name>
-					//		<Value>Accounts</Value>
-					//	</CustomProperty>
-					//	<CustomProperty>
-					//		<Name>crm:Related</Name>
-					//		<Value>
-					//	</Value>
-					//	</CustomProperty>
-					//</CustomProperties>
-					//textNodeName       : 'Value',
+					textNodeName       : 'Value',
 					ignoreAttributes   : false  ,
 					ignoreNameSpace    : true   ,
 					parseAttributeValue: true   ,
 					trimValues         : false  ,
 				};
-				// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
-				const parser = new XMLParser(options);
 
 				// 11/19/2019 Paul.  Change to allow return of SQL. 
 				const d = await EditView_LoadItem(sMODULE_NAME, sID, true);
@@ -351,11 +335,9 @@ export default class WorkflowAlertShellsEditView extends React.Component<IAdminE
 				}
 				if ( item != null )
 				{
-					let sRDL: string = Sql.ToString(item['RDL']);
-					if ( !Sql.IsEmptyString(sRDL) )
+					if ( !Sql.IsEmptyString(item['RDL']) )
 					{
-						// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
-						let reportXml: any = parser.parse(sRDL);
+						let reportXml: any = XMLParser.parse(item['RDL'], options);
 						// 05/20/2020 Paul.  A single record will not come in as an array, so convert to an array. 
 						if ( reportXml.Filters && reportXml.Filters.Filter && !Array.isArray(reportXml.Filters.Filter) )
 						{
@@ -726,7 +708,6 @@ export default class WorkflowAlertShellsEditView extends React.Component<IAdminE
 		}
 		else if ( error )
 		{
-			console.error((new Date()).toISOString() + ' ' + this.constructor.name + '.render', error);
 			return (<ErrorComponent error={error} />);
 		}
 		else

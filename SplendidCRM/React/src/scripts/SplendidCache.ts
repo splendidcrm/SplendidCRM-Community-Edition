@@ -9,7 +9,7 @@
  */
 
 // 1. React and fabric. 
-import { XMLParser, XMLBuilder }                       from 'fast-xml-parser'            ;
+import * as XMLParser                                  from 'fast-xml-parser'            ;
 import { observable, _resetGlobalState }               from 'mobx'                       ;
 // 2. Store and Types. 
 import MODULE                                          from '../types/MODULE'            ;
@@ -743,14 +743,9 @@ export class SplendidCacheStore
 			ignoreNameSpace    : true ,
 			parseAttributeValue: true ,
 			trimValues         : false,
-			format             : true,
-			// 02/17/2024 Paul.  parser v4 requires suppressBooleanAttributes, otherwise Visible does not include ="true"
-			allowBooleanAttributes: true,
-			suppressBooleanAttributes: false,
 		};
-		// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
-		const builder = new XMLBuilder(options);
-		let sXML: string = '<?xml version="1.0" encoding="UTF-8"?>' + builder.build(objSavedSearch);
+		let parser = new XMLParser.j2xParser(options);
+		let sXML: string = '<?xml version="1.0" encoding="UTF-8"?>' + parser.parse(objSavedSearch);
 		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onClickTeam', sXML);
 
 		// 01/12/202- Paul.  Before resetting, update the cached version. 
@@ -850,9 +845,8 @@ export class SplendidCacheStore
 					parseAttributeValue: true,
 					trimValues         : false,
 				};
-				// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
-				const parser = new XMLParser(options);
-				let xml = parser.parse(search.CONTENTS);
+				let tObj = XMLParser.getTraversalObj(search.CONTENTS, options);
+				let xml  = XMLParser.convertToJson(tObj, options);
 				if ( xml.SavedSearch != null && xml.SavedSearch.SearchFields !== undefined && xml.SavedSearch.SearchFields != null )
 				{
 					let xSearchFields = xml.SavedSearch.SearchFields;

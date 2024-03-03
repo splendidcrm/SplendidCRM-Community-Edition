@@ -10,12 +10,12 @@
 
 // 1. React and fabric. 
 import React from 'react';
-import { RouteComponentProps, withRouter }            from '../Router5'                             ;
+import { RouteComponentProps, withRouter }            from '../Router5'                       ;
 import { FontAwesomeIcon }                            from '@fortawesome/react-fontawesome'         ;
 import { Modal, Tabs, Tab, NavDropdown }              from 'react-bootstrap'                        ;
 import { observer }                                   from 'mobx-react'                             ;
-import { XMLParser, XMLBuilder }                      from 'fast-xml-parser'                        ;
-import qs                                             from 'query-string'                           ;
+import * as XMLParser                                 from 'fast-xml-parser'                        ;
+import qs                                        from 'query-string'                           ;
 // 2. Store and Types. 
 import ACL_FIELD_ACCESS                               from '../types/ACL_FIELD_ACCESS'              ;
 import { EditComponent }                              from '../types/EditComponent'                 ;
@@ -375,31 +375,12 @@ class ImportView extends React.Component<IImportViewProps, IImportViewState>
 			let options: any = 
 			{
 				attributeNamePrefix: ''     ,
-				// 02/18/2024 Paul.  parser v4 does not have an issue with node name as there is no value tag. 
-				//<Import Name="Contacts Import 4">
-				//	<Module>Leads</Module>
-				//	<SourceType>excel</SourceType>
-				//	<HasHeader>True</HasHeader>
-				//	<Fields>
-				//		<Field Name="ID">
-				//			<Type>Guid</Type>
-				//			<Length>0</Length>
-				//			<Default>
-				//			</Default>
-				//			<Mapping>ImportField000</Mapping>
-				//			<DuplicateFilter>False</DuplicateFilter>
-				//		</Field>
-				//	</Fields>
-				//</Import>
 				textNodeName       : 'Value',
 				ignoreAttributes   : false  ,
 				ignoreNameSpace    : true   ,
 				parseAttributeValue: true   ,
 				trimValues         : false  ,
 			};
-			// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
-			const parser = new XMLParser(options);
-
 			//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onHyperLinkCallback', json.d.results);
 			let ASSIGNED_USER_ID    : string  = Sql.ToString (json.d.results.ASSIGNED_USER_ID    );
 			let NAME                : string  = Sql.ToString (json.d.results.NAME                );
@@ -419,8 +400,7 @@ class ImportView extends React.Component<IImportViewProps, IImportViewState>
 			let xmlSampleJson       : string  = null;
 			if ( !Sql.IsEmptyString(json.d.results.CONTENT) )
 			{
-				// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
-				importMap     = parser.parse(json.d.results.CONTENT)
+				importMap     = XMLParser.parse(json.d.results.CONTENT, options)
 				// 05/20/2020 Paul.  A single record will not come in as an array, so convert to an array. 
 				if ( importMap.Import && importMap.Import.Fields && !Array.isArray(importMap.Import.Fields.Field) )
 				{
@@ -1065,9 +1045,7 @@ class ImportView extends React.Component<IImportViewProps, IImportViewState>
 						parseAttributeValue: true   ,
 						trimValues         : false  ,
 					};
-					// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
-					const parser = new XMLParser(options);
-					xmlSample = parser.parse(json.d.xmlSample);
+					xmlSample = XMLParser.parse(json.d.xmlSample, options);
 					// 05/21/2020 Paul.  If there is only one record, the list will need to be converted to an array. 
 					if ( xmlSample.xml )
 					{

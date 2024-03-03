@@ -13,7 +13,6 @@ import * as React from 'react';
 import { RouteComponentProps }                      from '../Router5'                                   ;
 import { observer }                                 from 'mobx-react'                                   ;
 import { FontAwesomeIcon }                          from '@fortawesome/react-fontawesome'               ;
-import { XMLParser, XMLBuilder }                    from 'fast-xml-parser'                              ;
 // 2. Store and Types. 
 import { EditComponent }                            from '../../../types/EditComponent'                 ;
 import { HeaderButtons }                            from '../../../types/HeaderButtons'                 ;

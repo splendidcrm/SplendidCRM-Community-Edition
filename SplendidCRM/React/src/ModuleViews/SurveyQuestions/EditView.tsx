@@ -11,11 +11,11 @@
 // 1. React and fabric. 
 import React from 'react';
 import qs from 'query-string';
-import { XMLParser, XMLBuilder }                      from 'fast-xml-parser'                           ;
-import { RouteComponentProps, withRouter }            from '../Router5'                                ;
+import * as XMLParser                                 from 'fast-xml-parser'                           ;
+import { RouteComponentProps, withRouter }            from '../Router5'                          ;
 import { observer }                                   from 'mobx-react'                                ;
 import { FontAwesomeIcon }                            from '@fortawesome/react-fontawesome'            ;
-import Select, { components, OptionProps, SingleValueProps } from 'react-select'                       ;
+import Select, { components, OptionProps, SingleValueProps } from 'react-select'                              ;
 // 2. Store and Types. 
 import { EditComponent }                              from '../../types/EditComponent'                 ;
 import { HeaderButtons }                              from '../../types/HeaderButtons'                 ;
@@ -554,32 +554,24 @@ export default class SurveyQuestionsEditView extends React.Component<IEditViewPr
 
 					try
 					{
-						// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
+						// 03/03/2024 Paul.  Fix issue reading. 
+						// <Demographic><Field Name="NAME" Visible="" Required="">Name:</Field></Demographic>
+						// https://www.npmjs.com/package/fast-xml-parser
+						let options: any = 
+						{
+							attributeNamePrefix: '',
+							textNodeName       : 'Label',
+							ignoreAttributes   : false,
+							ignoreNameSpace    : true,
+							parseAttributeValue: true,
+							trimValues         : false,
+						};
 						let sANSWER_CHOICES: string = Sql.ToString (item["ANSWER_CHOICES"]);
 						let sCOLUMN_CHOICES: string = Sql.ToString (item["COLUMN_CHOICES"]);
 						if ( sQUESTION_TYPE == "Rating Scale" )
 						{
 							item['COLUMN_CHOICES'] = null;
-							// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
-							let options: any = 
-							{
-								attributeNamePrefix: '',
-								// 02/16/2024 Paul.  parser v4 creates object for Label.  
-								// 02/16/2024 Paul.  Label and Weight at same level causes confusion. 
-								// <Ratings>
-								//	<Rating>
-								//		<Label>11</Label>
-								//		<Weight>1</Weight>
-								//	</Rating>
-								// </Ratings>
-								//textNodeName       : 'Label',
-								ignoreAttributes   : false,
-								ignoreNameSpace    : true,
-								parseAttributeValue: true,
-								trimValues         : false,
-							};
-							const parser = new XMLParser(options);
-							let xml = parser.parse(sCOLUMN_CHOICES);
+							let xml = XMLParser.parse(sCOLUMN_CHOICES, options);
 							if ( xml.Ratings && xml.Ratings.Rating && Array.isArray(xml.Ratings.Rating) )
 							{
 								let nl: any[] = xml.Ratings.Rating;
@@ -598,30 +590,7 @@ export default class SurveyQuestionsEditView extends React.Component<IEditViewPr
 						else if ( sQUESTION_TYPE == "Dropdown Matrix" )
 						{
 							item['COLUMN_CHOICES'] = null;
-							// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
-							let options: any = 
-							{
-								attributeNamePrefix: '',
-								// 02/16/2024 Paul.  parser v4 creates object for Value. 
-								// 02/16/2024 Paul.  Heading and Options at same level causes confusion. 
-								//textNodeName       : 'Value',
-								// <Menus>
-								// 	<Menu>
-								// 		<Heading>Size</Heading>
-								// 		<Options>Small  Medium  Large</Options>
-								// 	</Menu>
-								// 	<Menu>
-								// 		<Heading>Color</Heading>
-								// 		<Options>Red  Green  Blue</Options>
-								// 	</Menu>
-								// </Menus>
-								ignoreAttributes   : false,
-								ignoreNameSpace    : true,
-								parseAttributeValue: true,
-								trimValues         : false,
-							};
-							const parser = new XMLParser(options);
-							let xml = parser.parse(sCOLUMN_CHOICES);
+							let xml = XMLParser.parse(sCOLUMN_CHOICES, options);
 							if ( xml.Menus && xml.Menus.Menu && Array.isArray(xml.Menus.Menu) )
 							{
 								let nl: any[] = xml.Menus.Menu;
@@ -640,28 +609,11 @@ export default class SurveyQuestionsEditView extends React.Component<IEditViewPr
 						else if ( sQUESTION_TYPE == "Demographic" )
 						{
 							item['COLUMN_CHOICES'] = null;
-							// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
-							let options: any = 
-							{
-								attributeNamePrefix: '',
-								// 02/16/2024 Paul.  parser v4 does not have an issue with node name as there are no two tags in same cell. 
-								// <Demographic>
-								// 	<Field Name="NAME" Visible="True" Required="False" TargetField="FIRST_NAME">First Name:</Field>
-								// 	<Field Name="COMPANY" Visible="True" Required="True" TargetField="LAST_NAME">Last Name:</Field>
-								// </Demographic>
-								textNodeName       : 'Value',
-								ignoreAttributes   : false,
-								ignoreNameSpace    : true,
-								parseAttributeValue: true,
-								trimValues         : false,
-							};
-							const parser = new XMLParser(options);
-							let xml = parser.parse(sCOLUMN_CHOICES);
+							let xml = XMLParser.parse(sCOLUMN_CHOICES, options);
 							if ( xml.Demographic && xml.Demographic.Field && Array.isArray(xml.Demographic.Field) )
 							{
 								let nl: any[] = xml.Demographic.Field;
-								// 02/17/2024 Paul.  Not sure why started at 1 and not 0. 
-								for ( let n: number = 0; n <= nl.length; n++ )
+								for ( let n: number = 1; n <= nl.length; n++ )
 								{
 									let xField: any = nl[n];
 									let sNAME: string = xField.Name;
@@ -1572,27 +1524,13 @@ export default class SurveyQuestionsEditView extends React.Component<IEditViewPr
 		let options: any = 
 		{
 			attributeNamePrefix: '@',
-			// 02/16/2024 Paul.  parser v4 creates object for Label.  
-			// 02/16/2024 Paul.  Label and Weight at same level causes confusion. 
-			// <Ratings>
-			//	<Rating>
-			//		<Label>11</Label>
-			//		<Weight>1</Weight>
-			//	</Rating>
-			// </Ratings>
-			//textNodeName       : 'Label',
+			textNodeName       : 'Value',
 			ignoreAttributes   : false,
 			ignoreNameSpace    : true,
 			parseAttributeValue: true,
 			trimValues         : false,
-			format             : true,
-			// 02/17/2024 Paul.  parser v4 requires suppressBooleanAttributes, otherwise Visible does not include ="true"
-			allowBooleanAttributes: true,
-			suppressBooleanAttributes: false,
 		};
-		// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
-		const builder = new XMLBuilder(options);
-
+		let parser = new XMLParser.j2xParser(options);
 		let xml: any = {};
 		xml.Ratings = {};
 		xml.Ratings.Rating = [];
@@ -1607,7 +1545,7 @@ export default class SurveyQuestionsEditView extends React.Component<IEditViewPr
 				xRating.Weight = Sql.ToInteger(dtRatings[n].Weight);
 			}
 		}
-		let sCOLUMN_CHOICES: string = '<?xml version="1.0" encoding="UTF-8"?>' + builder.build(xml);
+		let sCOLUMN_CHOICES: string = '<?xml version="1.0" encoding="UTF-8"?>' + parser.parse(xml);
 		return sCOLUMN_CHOICES;
 	}
 
@@ -1618,31 +1556,13 @@ export default class SurveyQuestionsEditView extends React.Component<IEditViewPr
 		let options: any = 
 		{
 			attributeNamePrefix: '@',
-			// 02/16/2024 Paul.  parser v4 creates object for Value. 
-			// 02/16/2024 Paul.  Heading and Options at same level causes confusion. 
-			//textNodeName       : 'Value',
-			// <Menus>
-			// 	<Menu>
-			// 		<Heading>Size</Heading>
-			// 		<Options>Small  Medium  Large</Options>
-			// 	</Menu>
-			// 	<Menu>
-			// 		<Heading>Color</Heading>
-			// 		<Options>Red  Green  Blue</Options>
-			// 	</Menu>
-			// </Menus>
+			textNodeName       : 'Value',
 			ignoreAttributes   : false,
 			ignoreNameSpace    : true,
 			parseAttributeValue: true,
 			trimValues         : false,
-			format             : true,
-			// 02/17/2024 Paul.  parser v4 requires suppressBooleanAttributes, otherwise Visible does not include ="true"
-			allowBooleanAttributes: true,
-			suppressBooleanAttributes: false,
 		};
-		// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
-		const builder = new XMLBuilder(options);
-
+		let parser = new XMLParser.j2xParser(options);
 		let xml: any = {};
 		xml.Menus = {};
 		xml.Menus.Menu = [];
@@ -1657,7 +1577,7 @@ export default class SurveyQuestionsEditView extends React.Component<IEditViewPr
 				xMenu.Options = Sql.ToString(dtMenus[n].Options).replace(/\s\s*$/, '');  // TrimEnd();
 			}
 		}
-		let sCOLUMN_CHOICES: string = '<?xml version="1.0" encoding="UTF-8"?>' + builder.build(xml);
+		let sCOLUMN_CHOICES: string = '<?xml version="1.0" encoding="UTF-8"?>' + parser.parse(xml);
 		return sCOLUMN_CHOICES;
 	}
 
@@ -1667,24 +1587,13 @@ export default class SurveyQuestionsEditView extends React.Component<IEditViewPr
 		let options: any = 
 		{
 			attributeNamePrefix: '@',
-			// 02/16/2024 Paul.  parser v4 does not have an issue with node name as there are no two tags in same cell. 
-			// <Demographic>
-			// 	<Field Name="NAME" Visible="True" Required="False" TargetField="FIRST_NAME">First Name:</Field>
-			// 	<Field Name="COMPANY" Visible="True" Required="True" TargetField="LAST_NAME">Last Name:</Field>
-			// </Demographic>
 			textNodeName       : 'Value',
 			ignoreAttributes   : false,
 			ignoreNameSpace    : true,
 			parseAttributeValue: true,
 			trimValues         : false,
-			format             : true,
-			// 02/17/2024 Paul.  parser v4 requires suppressBooleanAttributes, otherwise Visible does not include ="true"
-			allowBooleanAttributes: true,
-			suppressBooleanAttributes: false,
 		};
-		// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
-		const builder = new XMLBuilder(options);
-
+		let parser = new XMLParser.j2xParser(options);
 		let xml: any = {};
 		xml.Demographic = {};
 		xml.Demographic.Field = [];
@@ -1707,7 +1616,7 @@ export default class SurveyQuestionsEditView extends React.Component<IEditViewPr
 				xField["@TargetField"] = (field ? field['TARGET_FIELD_NAME'] : null);
 			}
 		}
-		let sCOLUMN_CHOICES: string = '<?xml version="1.0" encoding="UTF-8"?>' + builder.build(xml);
+		let sCOLUMN_CHOICES: string = '<?xml version="1.0" encoding="UTF-8"?>' + parser.parse(xml);
 		return sCOLUMN_CHOICES;
 	}
 
@@ -1987,7 +1896,8 @@ export default class SurveyQuestionsEditView extends React.Component<IEditViewPr
 	{
 		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onTEXT_Change: ' + DATA_FIELD, e);
 		const data: SelectOption = e.target.value;
-		this._onChange(DATA_FIELD, data['id']);
+		// 03/03/2024 Paul.  Fix issue with data. 
+		this._onChange(DATA_FIELD, data);
 	}
 
 	private _onCHECKBOX_Change = (e, DATA_FIELD: string): void =>

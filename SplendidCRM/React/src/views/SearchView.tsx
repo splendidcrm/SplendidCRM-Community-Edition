@@ -12,9 +12,9 @@
 import * as React from 'react';
 import { FontAwesomeIcon }                      from '@fortawesome/react-fontawesome'   ;
 import { faAngleDoubleUp, faAngleDoubleDown }   from '@fortawesome/free-solid-svg-icons';
-import { RouteComponentProps }                  from '../Router5'                       ;
+import { RouteComponentProps }                  from '../Router5'                 ;
 import { observer }                             from 'mobx-react'                       ;
-import { XMLParser, XMLBuilder }                from 'fast-xml-parser'                  ;
+import * as XMLParser                           from 'fast-xml-parser'                  ;
 // 2. Store and Types. 
 import MODULE                                   from '../types/MODULE'                  ;
 // 3. Scripts. 
@@ -144,15 +144,6 @@ export default class SearchView extends React.Component<ISearchViewProps, ISearc
 					let options: any = 
 					{
 						attributeNamePrefix: '',
-						// 02/18/2024 Paul.  parser v4 does not have an issue with node name as there is no value tag. 
-						//  <SearchFields>
-						//    <Field Name="CATEGORY_ID" Type="ListBox"></Field>
-						//    <Field Name="SUBCATEGORY_ID" Type="ListBox"></Field>
-						//    <Field Name="EXP_DATE" Type="DateRange">
-						//      <Before>02/25/2024</Before>
-						//      <After>02/18/2024</After>
-						//    </Field>
-						//  </SearchFields>
 						textNodeName       : 'Value',
 						ignoreAttributes   : false,
 						ignoreNameSpace    : true,
@@ -160,9 +151,8 @@ export default class SearchView extends React.Component<ISearchViewProps, ISearc
 						trimValues         : false,
 
 					};
-					// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
-					const parser = new XMLParser(options);
-					let xml = parser.parse(search.CONTENTS);
+					let tObj = XMLParser.getTraversalObj(search.CONTENTS, options);
+					let xml = XMLParser.convertToJson(tObj, options);
 					//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.constructor', xml);
 					if ( xml.SavedSearch != null )
 					{
@@ -446,24 +436,14 @@ export default class SearchView extends React.Component<ISearchViewProps, ISearc
 						let options: any = 
 						{
 							attributeNamePrefix: '',
-							// 02/18/2024 Paul.  parser v4 does not have an issue with node name as there is no value tag. 
-							//  <SearchFields>
-							//    <Field Name="CATEGORY_ID" Type="ListBox"></Field>
-							//    <Field Name="SUBCATEGORY_ID" Type="ListBox"></Field>
-							//    <Field Name="EXP_DATE" Type="DateRange">
-							//      <Before>02/25/2024</Before>
-							//      <After>02/18/2024</After>
-							//    </Field>
-							//  </SearchFields>
 							textNodeName       : 'Value',
 							ignoreAttributes   : false,
 							ignoreNameSpace    : true,
 							parseAttributeValue: true,
 							trimValues         : false,
 						};
-						// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
-						const parser = new XMLParser(options);
-						let xml = parser.parse(search.CONTENTS);
+						let tObj = XMLParser.getTraversalObj(search.CONTENTS, options);
+						let xml = XMLParser.convertToJson(tObj, options);
 						//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.constructor', xml);
 						if ( xml.SavedSearch != null && xml.SavedSearch.SearchFields !== undefined && xml.SavedSearch.SearchFields != null )
 						{
@@ -1242,14 +1222,10 @@ export default class SearchView extends React.Component<ISearchViewProps, ISearc
 					ignoreNameSpace    : true,
 					parseAttributeValue: true,
 					trimValues         : false,
-					format             : true,
-					// 02/17/2024 Paul.  parser v4 requires suppressBooleanAttributes, otherwise Visible does not include ="true"
-					allowBooleanAttributes: true,
-					suppressBooleanAttributes: false,
+
 				};
-				// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
-				const builder = new XMLBuilder(options);
-				let sXML: string = '<?xml version="1.0" encoding="UTF-8"?>' + builder.build(objSavedSearch);
+				let parser = new XMLParser.j2xParser(options);
+				let sXML: string = '<?xml version="1.0" encoding="UTF-8"?>' + parser.parse(objSavedSearch);
 				//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onSubmit', sXML);
 
 				await UpdateSavedSearch(null, SEARCH_MODULE, sXML, null, SAVED_SEARCH_ID);
@@ -1314,19 +1290,15 @@ export default class SearchView extends React.Component<ISearchViewProps, ISearc
 				let options: any = 
 				{
 					attributeNamePrefix: '@',
-					textNodeName       : 'Value',
-					ignoreAttributes   : false,
-					ignoreNameSpace    : true,
+					textNodeName: 'Value',
+					ignoreAttributes: false,
+					ignoreNameSpace: true,
 					parseAttributeValue: true,
-					trimValues         : false,
-					format             : true,
-					// 02/17/2024 Paul.  parser v4 requires suppressBooleanAttributes, otherwise Visible does not include ="true"
-					allowBooleanAttributes: true,
-					suppressBooleanAttributes: false,
+					trimValues: false,
+
 				};
-				// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
-				const builder = new XMLBuilder(options);
-				let sXML: string = '<?xml version="1.0" encoding="UTF-8"?>' + builder.build(objSavedSearch);
+				let parser = new XMLParser.j2xParser(options);
+				let sXML: string = '<?xml version="1.0" encoding="UTF-8"?>' + parser.parse(objSavedSearch);
 				//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onClear', sXML);
 
 				await UpdateSavedSearch(null, SEARCH_MODULE, sXML, null, null);
@@ -1418,24 +1390,14 @@ export default class SearchView extends React.Component<ISearchViewProps, ISearc
 				let options: any = 
 				{
 					attributeNamePrefix: '',
-					// 02/18/2024 Paul.  parser v4 does not have an issue with node name as there is no value tag. 
-					//  <SearchFields>
-					//    <Field Name="CATEGORY_ID" Type="ListBox"></Field>
-					//    <Field Name="SUBCATEGORY_ID" Type="ListBox"></Field>
-					//    <Field Name="EXP_DATE" Type="DateRange">
-					//      <Before>02/25/2024</Before>
-					//      <After>02/18/2024</After>
-					//    </Field>
-					//  </SearchFields>
 					textNodeName       : 'Value',
 					ignoreAttributes   : false,
 					ignoreNameSpace    : true,
 					parseAttributeValue: true,
 					trimValues         : false,
 				};
-				// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
-				const parser = new XMLParser(options);
-				let xml = parser.parse(search.CONTENTS);
+				let tObj = XMLParser.getTraversalObj(search.CONTENTS, options);
+				let xml = XMLParser.convertToJson(tObj, options);
 				//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.constructor', xml);
 				if ( xml.SavedSearch != null && xml.SavedSearch.SearchFields !== undefined && xml.SavedSearch.SearchFields != null )
 				{
@@ -1469,7 +1431,8 @@ export default class SearchView extends React.Component<ISearchViewProps, ISearc
 						}
 						else if ( xFields.Name !== undefined )
 						{
-							let xField = xFields[0];
+							// 03/02/2024 Paul.  xFields is not an array. 
+							let xField = xFields;
 							rowDefaultSearch[xField.Name] = xField.Value;
 							// 11/25/2020 Paul.  DateRange is an exception in that it does not have a Value field. 
 							if ( xField.Type == 'DateRange' && xField.Value === undefined )
@@ -1593,19 +1556,15 @@ export default class SearchView extends React.Component<ISearchViewProps, ISearc
 				let options: any = 
 				{
 					attributeNamePrefix: '@',
-					textNodeName       : 'Value',
-					ignoreAttributes   : false,
-					ignoreNameSpace    : true,
+					textNodeName: 'Value',
+					ignoreAttributes: false,
+					ignoreNameSpace: true,
 					parseAttributeValue: true,
-					trimValues         : false,
-					format             : true,
-					// 02/17/2024 Paul.  parser v4 requires suppressBooleanAttributes, otherwise Visible does not include ="true"
-					allowBooleanAttributes: true,
-					suppressBooleanAttributes: false,
+					trimValues: false,
+
 				};
-				// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
-				const builder = new XMLBuilder(options);
-				let sXML: string = '<?xml version="1.0" encoding="UTF-8"?>' + builder.build(objSavedSearch);
+				let parser = new XMLParser.j2xParser(options);
+				let sXML: string = '<?xml version="1.0" encoding="UTF-8"?>' + parser.parse(objSavedSearch);
 				//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onSave', sXML);
 
 				let gID = await UpdateSavedSearch(null, SEARCH_MODULE, sXML, SAVED_SEARCH_NEW_NAME, null);
@@ -1731,19 +1690,15 @@ export default class SearchView extends React.Component<ISearchViewProps, ISearc
 				let options: any = 
 				{
 					attributeNamePrefix: '@',
-					textNodeName       : 'Value',
-					ignoreAttributes   : false,
-					ignoreNameSpace    : true,
+					textNodeName: 'Value',
+					ignoreAttributes: false,
+					ignoreNameSpace: true,
 					parseAttributeValue: true,
-					trimValues         : false,
-					format             : true,
-					// 02/17/2024 Paul.  parser v4 requires suppressBooleanAttributes, otherwise Visible does not include ="true"
-					allowBooleanAttributes: true,
-					suppressBooleanAttributes: false,
+					trimValues: false,
+
 				};
-				// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
-				const builder = new XMLBuilder(options);
-				let sXML: string = '<?xml version="1.0" encoding="UTF-8"?>' + builder.build(objSavedSearch);
+				let parser = new XMLParser.j2xParser(options);
+				let sXML: string = '<?xml version="1.0" encoding="UTF-8"?>' + parser.parse(objSavedSearch);
 				//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onUpdate', sXML);
 
 				// 05/08/2019 Paul.  Before resetting, update the cached version. 

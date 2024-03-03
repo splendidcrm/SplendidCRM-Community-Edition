@@ -15,7 +15,6 @@ import { observer }                                   from 'mobx-react'         
 import { FontAwesomeIcon }                            from '@fortawesome/react-fontawesome'            ;
 import * as am4core                                   from "@amcharts/amcharts4/core"                  ;
 import * as am4charts                                 from "@amcharts/amcharts4/charts"                ;
-import { XMLParser, XMLBuilder }                      from 'fast-xml-parser'                           ;
 // 2. Store and Types. 
 import { HeaderButtons }                              from '../../types/HeaderButtons'                 ;
 // 3. Scripts. 

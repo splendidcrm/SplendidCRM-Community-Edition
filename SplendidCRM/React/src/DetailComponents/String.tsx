@@ -10,9 +10,9 @@
 
 // 1. React and fabric. 
 import * as React from 'react';
-import { XMLParser, XMLBuilder }            from 'fast-xml-parser'               ;
+import * as XMLParser from 'fast-xml-parser';
 // 2. Store and Types. 
-import { IDetailComponentProps }            from '../types/DetailComponent'      ;
+import { IDetailComponentProps, IDetailComponentState, DetailComponent } from '../types/DetailComponent';
 // 3. Scripts. 
 import Sql                                  from '../scripts/Sql'                ;
 import L10n                                 from '../scripts/L10n'               ;
@@ -313,9 +313,7 @@ export default class SplendidString extends React.Component<IStringComponentProp
 										});
 										*/
 										// 11/24/2019 Paul.  New xml parsing method. 
-										// 02/16/2024 Paul.  Upgrade to fast-xml-parser v4. 
-										const parser = new XMLParser();
-										let xml = parser.parse(DATA_VALUE);
+										let xml = XMLParser.parse(DATA_VALUE);
 										if ( xml.Values && xml.Values.Value && Array.isArray(xml.Values.Value) )
 										{
 											let xmlVALUES: string[] = xml.Values.Value;
