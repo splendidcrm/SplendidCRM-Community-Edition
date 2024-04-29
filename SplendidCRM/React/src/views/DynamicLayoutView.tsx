@@ -73,7 +73,7 @@ class DynamicLayoutView extends React.Component<IDynamicLayoutViewProps, IDynami
 	{
 		const { MODULE_NAME, ID, VIEW_NAME } = this.props;
 		let { LAYOUT_NAME } = this.state;
-		console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.componentDidMount ' + this.props.MODULE_NAME + ' ' + this.props.ID, LAYOUT_NAME);
+		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.componentDidMount ' + this.props.MODULE_NAME + ' ' + this.props.ID, LAYOUT_NAME);
 		this._isMounted = true;
 		try
 		{

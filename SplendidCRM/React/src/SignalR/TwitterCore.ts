@@ -89,7 +89,7 @@ export class TwitterServerCore
 		.then( () =>
 		{
 			this.started = false;
-			console.log('ChatHub connection started');
+			console.log('Twitter connection started');
 			this.joinGroup();
 		});
 	}

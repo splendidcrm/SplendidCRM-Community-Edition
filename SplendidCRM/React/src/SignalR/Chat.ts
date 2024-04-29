@@ -18,6 +18,27 @@ import SplendidCache  from '../scripts/SplendidCache';
 
 const hubName = 'ChatManagerHub';
 
+export interface ChatMessageProps
+{
+	CHAT_CHANNEL_ID     : string;
+	ID                  : string;
+	NAME                : string;
+	DESCRIPTION         : string;
+	DATE_ENTERED        : string;
+	PARENT_ID           : string;
+	PARENT_TYPE         : string;
+	PARENT_NAME         : string;
+	CREATED_BY_ID       : string;
+	CREATED_BY          : string;
+	CREATED_BY_PICTURE  : string;
+	NOTE_ATTACHMENT_ID  : string;
+	FILENAME            : string;
+	FILE_EXT            : string;
+	FILE_MIME_TYPE      : string;
+	FILE_SIZE           : string;
+	ATTACHMENT_READY    : number;
+};
+
 export class ChatServer
 {
 	chatManager: SignalR.Hub.Proxy;
@@ -65,17 +86,16 @@ export function ChatCreateHub(signalR: SignalR, history: H.History)
 			manager.off('newMessage');
 		}
 	};
-	/*
-	manager.on('newMessage', (CHAT_CHANNEL_ID, ID, NAME, DESCRIPTION, DATE_ENTERED, PARENT_ID, PARENT_TYPE, PARENT_NAME, CREATED_BY_ID, CREATED_BY, CREATED_BY_PICTURE, NOTE_ATTACHMENT_ID, FILENAME, FILE_EXT, FILE_MIME_TYPE, FILE_SIZE, ATTACHMENT_READY) =>
+	// 04/27/2024 Paul.  SignalR core does not support more than 10 parameters, so convert to dictionary. 
+	// This code is just for debugging.  real events occur in ChatDashboardView.tsx. 
+	manager.on('newMessage', (oCommandArguments: ChatMessageProps) =>
 	{
-		let oCommandArguments: any = { CHAT_CHANNEL_ID, ID, NAME, DESCRIPTION, DATE_ENTERED, PARENT_ID, PARENT_TYPE, PARENT_NAME, CREATED_BY_ID, CREATED_BY, CREATED_BY_PICTURE, NOTE_ATTACHMENT_ID, FILENAME, FILE_EXT, FILE_MIME_TYPE, FILE_SIZE, ATTACHMENT_READY };
-		console.log((new Date()).toISOString() + ' ' + hubName + '.newMessage', oCommandArguments);
+		//console.log((new Date()).toISOString() + ' ' + hubName + '.newMessage', oCommandArguments);
 		//if ( this.history != null )
 		//{
 		//	history.push('/Reset/ChatDashboard/' + CHAT_CHANNEL_ID);
 		//}
 	});
-	*/
 	return manager;
 }
 

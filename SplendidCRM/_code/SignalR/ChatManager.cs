@@ -135,8 +135,11 @@ namespace SplendidCRM
 										TimeZone T10n             = TimeZone.CreateTimeZone(gTIMEZONE);
 										// 04/01/2020 Paul.  Move json utils to RestUtil. 
 										string   sDATE_ENTERED    = RestUtil.ToJsonDate(T10n.FromServerTime(dtDATE_ENTERED));
-										Clients.Group(gCHAT_CHANNEL_ID.ToString()).newMessage(gCHAT_CHANNEL_ID, gID, sNAME, sDESCRIPTION, sDATE_ENTERED, NullID(gPARENT_ID), sPARENT_TYPE, sPARENT_NAME, NullID(gCREATED_BY_ID), sCREATED_BY, sCREATED_BY_PICTURE, NullID(gNOTE_ATTACHMENT_ID), sFILENAME, sFILE_EXT, sFILE_MIME_TYPE, lFILE_SIZE, bATTACHMENT_READY);
+										//Clients.Group(gCHAT_CHANNEL_ID.ToString()).newMessage(gCHAT_CHANNEL_ID, gID, sNAME, sDESCRIPTION, sDATE_ENTERED, NullID(gPARENT_ID), sPARENT_TYPE, sPARENT_NAME, NullID(gCREATED_BY_ID), sCREATED_BY, sCREATED_BY_PICTURE, NullID(gNOTE_ATTACHMENT_ID), sFILENAME, sFILE_EXT, sFILE_MIME_TYPE, lFILE_SIZE, bATTACHMENT_READY);
 										//Clients.All.allMessage(gCHAT_CHANNEL_ID, gID, sDESCRIPTION, dtDATE_ENTERED, gUSER_ID, sCREATED_BY, NullID(gPARENT_ID), sPARENT_TYPE);
+										// 04/27/2024 Paul.  SignalR core does not support more than 10 parameters, so convert to dictionary. 
+										Dictionary<string, object> dict = RestUtil.ToJson("", "ChatMessages", dt.Rows[0], T10n);
+										Clients.Group(gCHAT_CHANNEL_ID.ToString()).newMessage((dict["d"] as Dictionary<string, object>)["results"]);
 									}
 								}
 							}

@@ -80,7 +80,7 @@ else
 let sRemoteServer = '';
 // 07/01/2023 Paul.  ASP.NET Core will not have /React in the base. 
 let sReactBase    = '';
-if ( baseUrl.indexOf('/React') >= 0 )
+if ( baseUrl.toLowerCase().indexOf('/react') >= 0 )
 {
 	sReactBase = 'React/';
 }
@@ -146,7 +146,7 @@ try
 {
 	if ( !Sql.IsEmptyString(pathname) )
 	{
-		///console.log((new Date()).toISOString() + ' ' + 'Starting at ' + pathname);
+		console.log((new Date()).toISOString() + ' ' + 'Starting at ' + pathname);
 		// 06/22/2019 Paul.  Routing should be automatic. 
 		if ( pathname.toLowerCase() == '/login' && StartsWith(window.location.hash, '#id_token') )
 		{
@@ -161,10 +161,20 @@ try
 		}
 		else if ( !StartsWith(pathname, '/Reload') )
 		{
-			//s//console.log('index.tsx: ' + pathname);
+			//console.log('index.tsx: ' + pathname);
 			// 05/22/2023 Paul.  We are having an issue of the pathname being treated as a module name.  It only seems to happen with url http://localhost/SplendidCRM
 			if ( pathname + '/' == baseUrl )
-				history.push('/Home');
+			{
+				// 04/26/2024 Paul.  Core is not redirecting properly this early. 
+				if ( pathname.toLowerCase().indexOf('/react', 0) >= 0 )
+				{
+					history.push('/Home');
+				}
+				else
+				{
+					history.push(pathname + '/Home');
+				}
+			}
 			else
 				history.push(pathname);
 		}

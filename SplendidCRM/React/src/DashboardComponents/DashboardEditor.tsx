@@ -63,7 +63,7 @@ class DashboardEditor extends React.Component<IDashboardEditorProps, IDashboardE
 	{
 		super(props);
 		Credentials.SetViewMode('DashboardEditView');
-		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.constructor');
+		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.constructor', props);
 		this.state =
 		{
 			ID              : props.ID,

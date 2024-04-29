@@ -108,7 +108,7 @@ class ResetView extends React.Component<IResetViewProps, IResetViewPropsState>
 		const { history } = this.props;
 		const { sRedirectUrl } = this.state;
 		let { resetCount } = this.state;
-		console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.ResetTimer', sRedirectUrl, resetCount);
+		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.ResetTimer', sRedirectUrl, resetCount);
 		// 02/11/2024 Paul.  there seem to be times when Reset dies not navigate.  Keep trying. 
 		resetCount++;
 		this.setState({ resetCount });
@@ -130,7 +130,9 @@ class ResetView extends React.Component<IResetViewProps, IResetViewPropsState>
 		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.render', sRedirectUrl, resetCount);
 		return (<MainContent>
 			<div style={ {fontSize: '20px', fontWeight: 'bold', padding: '20px'} }>
-				Reset: { JSON.stringify(location) }
+				<div style={ {display: 'none'} }>
+					Reset: { JSON.stringify(location) }
+				</div>
 				{ sRedirectUrl
 				? <Navigate to={ sRedirectUrl } replace={ true } />
 				: null

@@ -68,6 +68,7 @@ class UnifiedSearch extends React.Component<IUnifiedSearchProps, IUnifiedSearchS
 			// 10/29/2022 Paul.  Do not allow an empty search. 
 			error = L10n.Term("Home.ERR_ONE_CHAR");
 		}
+		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.constructor', search, props);
 		this.state =
 		{
 			layout     : [],

@@ -38,7 +38,7 @@ class RootView extends React.Component<IRootViewProps, IRootViewState>
 
 	async componentDidMount()
 	{
-		console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.componentDidMount');
+		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.componentDidMount');
 		try
 		{
 			let status = await AuthenticatedMethod(this.props, this.constructor.name + '.componentDidMount');

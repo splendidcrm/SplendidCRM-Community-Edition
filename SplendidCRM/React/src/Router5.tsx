@@ -77,7 +77,7 @@ export class SplendidHistory
 
 export const withRouter = <Props extends RouteComponentProps<any>>(Component: React.ComponentClass<Props>) => {
 	return (props: Props) => {
-		//console.log('withRouter:', props, Component);
+		//console.log('withRouter start: ' + Component.name, props, Component);
 		let location: any = { pathname: ''};
 		let navigate: any = function(to: string, options: any) { console.log('withRouter Dummy navigate: ', to); };
 		let match   : any = [];
@@ -86,7 +86,8 @@ export const withRouter = <Props extends RouteComponentProps<any>>(Component: Re
 		// 02/11/2024 Paul.  Non-page view should not include params as it will overwrite MODULE_NAME. 
 		let params  : any = null;
 		const sComponentName: string = Component.name;
-		if ( EndsWith(sComponentName, 'View') )
+		// 04/03/2024 Paul.  Must include all components that use query parameters. 
+		if ( EndsWith(sComponentName, 'View') || sComponentName == 'DashboardEditor' || sComponentName == 'UnifiedSearch' )
 		{
 			// 02/11/2024 Paul.  SearchView and QuickCreate cannot accept parameters, otherwise embedded EditView will try to load item. 
 			let isSearchView  = false;
@@ -132,7 +133,7 @@ export const withRouter = <Props extends RouteComponentProps<any>>(Component: Re
 		}
 		// 01/21/2024. Paul.  Convert history.push() to navigate() to avoid having to change 300 files. 
 		const history: SplendidHistory = new SplendidHistory(navigate);
-		//console.log('withRouter', Component.name, params, location);
+		//console.log('withRouter final: ', Component.name, params, location);
 		// 02/11/2024 Paul.  Experimenting with properties replacing params. 
 		return (
 			<Component

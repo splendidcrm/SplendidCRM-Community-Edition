@@ -31,6 +31,8 @@ import { UpdateModule, UpdateModuleTable }       from '../scripts/ModuleUpdate' 
 import { jsonReactState }                        from '../scripts/Application'                 ;
 import { AuthenticatedMethod, LoginRedirect }    from '../scripts/Login'                       ;
 import SignalRStore                              from '../SignalR/SignalRStore'                ;
+import SignalRCoreStore                          from '../SignalR/SignalRCoreStore'            ;
+import { ChatMessageProps }                      from '../SignalR/Chat'                        ;
 // 4. Components and Views. 
 import HeaderButtonsFactory                      from '../ThemeComponents/HeaderButtonsFactory';
 import PopupView                                 from '../views/PopupView'                     ;
@@ -133,6 +135,11 @@ class ChatDashboardView extends React.Component<IChatDashboardViewProps, IChatDa
 			{
 				SignalRStore.chatManager.on('newMessage', this.newMessage);
 			}
+			// 04/27/2024 Paul.  Core needs separate event. 
+			if ( SignalRCoreStore.chatManager )
+			{
+				SignalRCoreStore.chatManager.hub.on('newMessage', this.newMessage);
+			}
 		}
 		catch(error)
 		{
@@ -159,11 +166,10 @@ class ChatDashboardView extends React.Component<IChatDashboardViewProps, IChatDa
 		}
 	}
 
-	private newMessage = (CHAT_CHANNEL_ID, ID, NAME, DESCRIPTION, DATE_ENTERED, PARENT_ID, PARENT_TYPE, PARENT_NAME, CREATED_BY_ID, CREATED_BY, CREATED_BY_PICTURE, NOTE_ATTACHMENT_ID, FILENAME, FILE_EXT, FILE_MIME_TYPE, FILE_SIZE, ATTACHMENT_READY) =>
+	private newMessage = (row: ChatMessageProps) =>
 	{
 		let { dtMessages } = this.state;
-		let row: any = { CHAT_CHANNEL_ID, ID, NAME, DESCRIPTION, DATE_ENTERED, PARENT_ID, PARENT_TYPE, PARENT_NAME, CREATED_BY_ID, CREATED_BY, CREATED_BY_PICTURE, NOTE_ATTACHMENT_ID, FILENAME, FILE_EXT, FILE_MIME_TYPE, FILE_SIZE, ATTACHMENT_READY };
-		//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.newMessage', row);
+		console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.newMessage', row);
 		if ( dtMessages == null )
 		{
 			dtMessages = [];

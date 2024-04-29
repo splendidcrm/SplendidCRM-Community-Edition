@@ -1097,7 +1097,9 @@ namespace SplendidCRM.Crm
 				string sServerScheme    = Sql.ToString(Application["ServerScheme"   ]);
 				string sServerName      = Sql.ToString(Application["ServerName"     ]);
 				string sApplicationPath = Sql.ToString(Application["ApplicationPath"]);
-				sSiteURL = sServerScheme + "://" + sServerName + sApplicationPath;
+				// 04/21/2024 Paul.  A customer was using a port instead of an application path on IIS. 
+				string sServerPort      = Sql.ToString(Application["ServerPort"     ]);
+				sSiteURL = sServerScheme + "://" + sServerName + sServerPort + sApplicationPath;
 			}
 			if ( !sSiteURL.StartsWith("http") )
 				sSiteURL = "http://" + sSiteURL;
