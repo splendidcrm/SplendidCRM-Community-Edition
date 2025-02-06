@@ -310,9 +310,10 @@ export default class CheckBoxList extends EditComponent<IEditComponentProps, ICh
 				else
 				{
 					let SELECTED_VALUES: string[] = [];
-					for ( let i = 0; i < DATA_VALUE.length; i++ )
+					// 12/29/2024 Paul.  Use current values not old values. 
+					for ( let i = 0; i < NEW_DATA_VALUE.length; i++ )
 					{
-						if ( DATA_VALUE[i] && i < LIST_VALUES.length )
+						if ( NEW_DATA_VALUE[i] && i < LIST_VALUES.length )
 						{
 							SELECTED_VALUES.push(LIST_VALUES[i]);
 						}
@@ -332,7 +333,8 @@ export default class CheckBoxList extends EditComponent<IEditComponentProps, ICh
 					}
 					*/
 					//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '._onChange ' + DATA_FIELD, SELECTED_VALUES);
-					this.setState({ DATA_VALUE }, this.validate);
+					// 12/29/2024 Paul.  Need to update local values. 
+					this.setState({ DATA_VALUE: NEW_DATA_VALUE }, this.validate);
 					onChanged(DATA_FIELD, SELECTED_VALUES);
 					onUpdate (DATA_FIELD, SELECTED_VALUES);
 				}
@@ -389,13 +391,17 @@ export default class CheckBoxList extends EditComponent<IEditComponentProps, ICh
 					styList.height = FORMAT_ROWS.toString() + 'px';
 					styList.overflowY = 'auto';
 				}
-				return (
-					<span id={ ID } style={ styList } className={ CSS_CLASS }>
-						{
-							LIST_VALUES.map((item, index) => 
+				// 12/29/2024 Paul.  List values are not aligned vertically. 
+				if (DATA_FORMAT != '1')
+				{
+					styList.display = 'flex';
+					styList.flexDirection = 'column';
+					styCheckbox.marginTop = '0px';
+					styCheckbox.marginBottom = '0px';
+					return (
+						<div id={ ID } style={ styList } className={ CSS_CLASS }>
 							{
-								//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.render ' + DATA_FIELD + '[' + item + '] ' + index + ' = ' + DATA_VALUE[index]);
-								if (DATA_FORMAT != '1')
+								LIST_VALUES.map((item, index) => 
 								{
 									return (<div>
 										<Form.Check
@@ -408,9 +414,20 @@ export default class CheckBoxList extends EditComponent<IEditComponentProps, ICh
 											disabled={ !ENABLED }
 										/><br />
 									</div>);
-								}
-								else
+								})
+							}
+							{ UI_REQUIRED ? <span id={ID + '_REQUIRED'} key={ID + '_REQUIRED'} className="required" style={cssRequired} >{L10n.Term('.ERR_REQUIRED_FIELD')}</span> : null}
+						</div>
+					);
+				}
+				else
+				{
+					return (
+						<span id={ ID } style={ styList } className={ CSS_CLASS }>
+							{
+								LIST_VALUES.map((item, index) => 
 								{
+									//console.log((new Date()).toISOString() + ' ' + this.constructor.name + '.render ' + DATA_FIELD + '[' + item + '] ' + index + ' = ' + DATA_VALUE[index]);
 									return (
 										<Form.Check
 											id={ ID + '_' + item.toString() }
@@ -421,12 +438,12 @@ export default class CheckBoxList extends EditComponent<IEditComponentProps, ICh
 											onChange={ (ev: React.ChangeEvent<HTMLInputElement>) => this._onChange(ev, item, index) }
 											disabled={ !ENABLED }
 										/>);
-								}
-							})
-						}
-						{ UI_REQUIRED ? <span id={ID + '_REQUIRED'} key={ID + '_REQUIRED'} className="required" style={cssRequired} >{L10n.Term('.ERR_REQUIRED_FIELD')}</span> : null}
-					</span>
-				);
+								})
+							}
+							{ UI_REQUIRED ? <span id={ID + '_REQUIRED'} key={ID + '_REQUIRED'} className="required" style={cssRequired} >{L10n.Term('.ERR_REQUIRED_FIELD')}</span> : null}
+						</span>
+					);
+				}
 			}
 		}
 		catch(error)

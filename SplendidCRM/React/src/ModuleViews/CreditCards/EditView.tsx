@@ -30,6 +30,8 @@ import { sPLATFORM_LAYOUT }                   from '../../scripts/SplendidInitUI
 import { EditView_LoadItem, EditView_LoadLayout, EditView_ConvertItem } from '../../scripts/EditView';
 import { UpdateModule }                       from '../../scripts/ModuleUpdate'            ;
 import { jsonReactState }                     from '../../scripts/Application'             ;
+import { ToJsonDate }                         from '../../scripts/Formatting'              ;
+import { Right }                              from '../../scripts/utility'                 ;
 // 4. Components and Views. 
 import ErrorComponent                         from '../../components/ErrorComponent'       ;
 import DumpSQL                                from '../../components/DumpSQL'              ;
@@ -79,6 +81,8 @@ export default class CreditCardsEditView extends React.Component<IEditViewProps,
 	private dynamicButtonsBottom = React.createRef<DynamicButtons>();
 	private OPPORTUNITY_ID: string = null;
 	private QUOTE_ID      : string = null;
+	private ACCOUNT_ID    : string = null;
+	private CONTACT_ID    : string = null;
 
 	public get data (): any
 	{
@@ -365,6 +369,8 @@ export default class CreditCardsEditView extends React.Component<IEditViewProps,
 					rowDefaultSearch = {};
 					if ( sPARENT_TYPE == 'Accounts' )
 					{
+						// 05/24/2024 Paul.  Must save as ACCOUNT_ID and CONTACT_ID. 
+						this.ACCOUNT_ID = item['ID'        ];
 						rowDefaultSearch['ACCOUNT_ID'         ] = item['ID'                         ];
 						rowDefaultSearch['ACCOUNT_NAME'       ] = item['NAME'                       ];
 						rowDefaultSearch['ADDRESS_STREET'     ] = item['BILLING_ADDRESS_STREET'     ];
@@ -375,6 +381,9 @@ export default class CreditCardsEditView extends React.Component<IEditViewProps,
 					}
 					else if ( sPARENT_TYPE == 'Contacts' )
 					{
+						// 05/24/2024 Paul.  Must save as ACCOUNT_ID and CONTACT_ID. 
+						this.CONTACT_ID = item['ID'        ];
+						this.ACCOUNT_ID = item['ACCOUNT_ID'];
 						rowDefaultSearch['CONTACT_ID'         ] = item['ID'                         ];
 						rowDefaultSearch['CONTACT_NAME'       ] = item['NAME'                       ];
 						rowDefaultSearch['NAME'               ] = item['NAME'                       ];
@@ -488,6 +497,15 @@ export default class CreditCardsEditView extends React.Component<IEditViewProps,
 					let nInvalidFields: number = SplendidDynamic_EditView.BuildDataRow(row, this.refMap);
 					if ( nInvalidFields == 0 )
 					{
+						// 05/24/2024 Paul.  Must save as ACCOUNT_ID and CONTACT_ID. 
+						row['ACCOUNT_ID'         ] = this.ACCOUNT_ID;
+						row['CONTACT_ID'         ] = this.CONTACT_ID;
+						row['CARD_NUMBER_DISPLAY'] = '****' + Right(Sql.ToString(row['CARD_NUMBER']), 4);
+						// 05/24/2024 Paul.  Convert MM/YYYY to date. 
+						const nMonth: number = Sql.ToInteger(row['EXPIRATION_MONTH']);
+						const nYear : number = Sql.ToInteger(row['EXPIRATION_YEAR' ]);
+						const dtEXPIRATION_DATE: Date = new Date(nYear, nMonth - 1, 1, 12, 0, 0);
+						row['EXPIRATION_DATE'] = ToJsonDate(dtEXPIRATION_DATE);
 						if ( LAST_DATE_MODIFIED != null )
 						{
 							row['LAST_DATE_MODIFIED'] = LAST_DATE_MODIFIED;

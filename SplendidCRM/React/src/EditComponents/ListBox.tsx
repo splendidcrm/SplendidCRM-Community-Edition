@@ -69,7 +69,8 @@ export default class ListBox extends EditComponent<IEditComponentProps, IListBox
 		{
 			if ( Math.abs(FORMAT_ROWS) > 0 )
 			{
-				bVALUE_MISSING = DATA_VALUE != null && DATA_VALUE.length > 0;
+				// 02/04/2025 Paul.  Switch condition. 
+				bVALUE_MISSING = !(DATA_VALUE != null && DATA_VALUE.length > 0);
 			}
 			else
 			{

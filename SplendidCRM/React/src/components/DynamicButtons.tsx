@@ -644,6 +644,17 @@ class DynamicButtons extends React.Component<IDynamicButtonsProps, IDynamicButto
 								objTEXT_FIELD[i] = row[arrTEXT_FIELD[i]];
 							}
 						}
+						// 05/24/2024 Paul.  Allow security properties to be included. 
+						if ( arrTEXT_FIELD[i].indexOf(".") > 0 )
+						{
+							const sFieldName = arrTEXT_FIELD[i].toLowerCase();
+							if      ( sFieldName == "security.user_id"           ) objTEXT_FIELD[i] = Security.USER_ID()          ;
+							else if ( sFieldName == "security.user_name"         ) objTEXT_FIELD[i] = Security.USER_NAME()        ;
+							else if ( sFieldName == "security.team_id"           ) objTEXT_FIELD[i] = Security.TEAM_ID()          ;
+							else if ( sFieldName == "security.team_name"         ) objTEXT_FIELD[i] = Security.TEAM_NAME()        ;
+							else if ( sFieldName == "security.primary_role_id"   ) objTEXT_FIELD[i] = Security.PRIMARY_ROLE_ID()  ;
+							else if ( sFieldName == "security.primary_role_name" ) objTEXT_FIELD[i] = Security.PRIMARY_ROLE_NAME();
+						}
 					}
 				}
 			}

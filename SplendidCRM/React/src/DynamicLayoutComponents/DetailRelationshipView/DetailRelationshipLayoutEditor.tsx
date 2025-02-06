@@ -14,6 +14,7 @@ import { FontAwesomeIcon }                          from '@fortawesome/react-fon
 // 3. Scripts. 
 import Sql                                          from '../../scripts/Sql'                   ;
 import L10n                                         from '../../scripts/L10n'                  ;
+import Credentials                                  from '../../scripts/Credentials'        ;
 import { CreateSplendidRequest, GetSplendidResult } from '../../scripts/SplendidRequest'       ;
 // 4. Components and Views. 
 import DetailRelationshipPropertiesEditor           from './DetailRelationshipPropertiesEditor';
@@ -246,6 +247,13 @@ export default class DetailRelationshipLayoutEditor extends React.Component<IDet
 		}
 	}
 
+	// 08/17/2024 Paul.  Add support for DetailView Relationships export. 
+	private _onExport = (e) =>
+	{
+		const { layoutName } = this.state;
+		window.location.href = Credentials.RemoteServer + 'Administration/DynamicLayout/Relationships/export.aspx?NAME=' + layoutName;
+	}
+
 	private _onEditPropertiesComplete = (layoutField) =>
 	{
 		let { activeFields, selectedId } = this.state;
@@ -281,6 +289,7 @@ export default class DetailRelationshipLayoutEditor extends React.Component<IDet
 					<div style={{ padding: '.5em', whiteSpace: 'nowrap' }}>
 						<button type="button" className='button' style={ {marginRight: '2px'} } onClick={ this._onSave  }>{ L10n.Term('.LBL_SAVE_BUTTON_LABEL'  ) }</button>
 						<button type="button" className='button' style={ {marginRight: '2px'} } onClick={ this._onCancel}>{ L10n.Term('.LBL_CANCEL_BUTTON_LABEL') }</button>
+						<button type="button" className='button' style={ {marginRight: '2px'} } onClick={ this._onExport         }>{ L10n.Term('.LBL_EXPORT_BUTTON_LABEL'           ) }</button>
 					</div>
 					<div className='error' style={ {paddingLeft: '10px'} }>{ error }</div>
 					{ moduleFields && moduleFields.length > 0

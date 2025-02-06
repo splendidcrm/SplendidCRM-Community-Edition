@@ -764,6 +764,20 @@ LayoutDetailViewRelationshipUI.prototype.LoadView = function()
 		PageCommand.call(context, 'Cancel', null);
 	}, this.PageCommand, this);
 
+	// 08/17/2024 Paul.  Allow Export of DetailView Relationships. 
+	var btnLayoutExport               = document.createElement('input');
+	btnLayoutExport.id                = 'btnLayoutExport';
+	btnLayoutExport.type              = 'button';
+	btnLayoutExport.className         = 'button';
+	btnLayoutExport.value             = L10n.Term('.LBL_EXPORT_BUTTON_LABEL');
+	btnLayoutExport.style.cursor      = 'pointer';
+	btnLayoutExport.style.marginRight = '3px';
+	divLayoutButtons.appendChild(btnLayoutExport);
+	btnLayoutExport.onclick = BindArguments(function(PageCommand, context)
+	{
+		window.location.href = '../Relationships/export.aspx?NAME=' + context.DETAIL_NAME;
+	}, this.PageCommand, this);
+
 	var spnError = document.createElement('span');
 	spnError.id        = 'divLayoutButtons_Error';
 	spnError.className = 'error';

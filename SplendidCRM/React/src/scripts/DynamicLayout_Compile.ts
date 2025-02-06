@@ -12,7 +12,8 @@
 //Types and interfaces need to be imported, everything else can be required.
 const React                                  = require('react'                                );
 const { Modal }                              = require('react-bootstrap'                      );
-const { XMLParser, XMLBuilder }              = require('fast-xml-parser'                      );
+// 09/19/2024 Paul.  To use XMLParser in dynamic control, must use root. 
+const XMLParser                              = require('fast-xml-parser'                      );
 const qs                                     = require('query-string'                         ).default;
 const posed                                  = require('react-pose'                           ).default;
 const Babel                                  = require('@babel/standalone'                    );

@@ -2049,6 +2049,22 @@ namespace SplendidCRM
 											}
 											dt.AcceptChanges();
 										}
+										// 05/24/2024 Paul.  We need to prevent credit card numbers from being returned from API. 
+										else if ( sTABLE_NAME == "CREDIT_CARDS" )
+										{
+											foreach ( DataRow row in dt.Rows )
+											{
+												foreach ( DataColumn col in dt.Columns )
+												{
+													if ( col.ColumnName == "CARD_NUMBER" )
+													{
+														if ( !Sql.IsEmptyString(row[col.ColumnName]) )
+															row[col.ColumnName] = Sql.sEMPTY_PASSWORD;
+													}
+												}
+											}
+											dt.AcceptChanges();
+										}
 									}
 								}
 							}
@@ -2758,6 +2774,23 @@ namespace SplendidCRM
 							dtUPDATE.Columns.Add(sColumnName);
 						}
 					}
+					// 05/24/2025 Paul.  Don't add field if it is the empty password.  That way old value will automatically be used. 
+					else if ( sTABLE_NAME == "CREDIT_CARDS")
+					{
+						if ( String.Compare(sColumnName, "CARD_NUMBER") == 0 )
+						{
+							// 05/24/2024 Paul.  A credit card number is a required field, so it cannot be cleared. 
+							string sPASSWORD = Sql.ToString(dict[sColumnName]);
+							if ( sPASSWORD != Sql.sEMPTY_PASSWORD )
+							{
+								dtUPDATE.Columns.Add(sColumnName);
+							}
+						}
+						else
+						{
+							dtUPDATE.Columns.Add(sColumnName);
+						}
+					}
 					else if ( sTABLE_NAME == "CONTACTS")
 					{
 						if ( String.Compare(sColumnName, "PORTAL_PASSWORD") == 0 )
@@ -2878,6 +2911,122 @@ namespace SplendidCRM
 								if ( !Sql.IsEmptyString(sPASSWORD) && sPASSWORD != Sql.sEMPTY_PASSWORD && (SplendidCRM.Security.AdminUserAccess("Users", "edit") >= 0) )
 								{
 									row[sColumnName] = Security.HashPassword(sPASSWORD);
+								}
+							}
+							else if ( dtUPDATE.Columns.Contains(sColumnName) )
+							{
+								row[sColumnName] = dict[sColumnName];
+							}
+						}
+						// 05/24/2024 Paul.  Must encrypt credit card numbers. 
+						else if ( sTABLE_NAME == "CREDIT_CARDS")
+						{
+							if ( String.Compare(sColumnName, "CARD_NUMBER") == 0 && dtUPDATE.Columns.Contains(sColumnName) )
+							{
+								string sCARD_NUMBER = Sql.ToString(dict[sColumnName]);
+								Guid gCREDIT_CARD_KEY = Sql.ToGuid(Application["CONFIG.CreditCardKey"]);
+								Guid gCREDIT_CARD_IV  = Sql.ToGuid(Application["CONFIG.CreditCardIV" ]);
+								if ( !Sql.IsEmptyString(sCARD_NUMBER) && sCARD_NUMBER != Sql.sEMPTY_PASSWORD )
+								{
+									string sENCRYPTED_CARD_NUMBER = Security.EncryptPassword(sCARD_NUMBER, gCREDIT_CARD_KEY, gCREDIT_CARD_IV);
+									if ( Security.DecryptPassword(sENCRYPTED_CARD_NUMBER, gCREDIT_CARD_KEY, gCREDIT_CARD_IV) != sCARD_NUMBER )
+										throw(new Exception("Decryption failed"));
+									row["CARD_NUMBER"] = sENCRYPTED_CARD_NUMBER;
+									if ( !dtUPDATE.Columns.Contains("IS_ENCRYPTED") )
+										dtUPDATE.Columns.Add("IS_ENCRYPTED", typeof(System.Boolean));
+									row["IS_ENCRYPTED"] = true;
+								}
+
+								string   sNAME                = String.Empty;
+								string   sCARD_TYPE           = String.Empty;
+								string   sSECURITY_CODE       = String.Empty;
+								string   sBANK_NAME           = String.Empty;
+								string   sBANK_ROUTING_NUMBER = String.Empty;
+								DateTime dtEXPIRATION_DATE    = DateTime.MinValue;
+								string   sADDRESS_STREET      = String.Empty;
+								string   sADDRESS_CITY        = String.Empty;
+								string   sADDRESS_STATE       = String.Empty;
+								string   sADDRESS_POSTALCODE  = String.Empty;
+								string   sADDRESS_COUNTRY     = String.Empty;
+								string   sEMAIL               = String.Empty;
+								string   sPHONE               = String.Empty;
+								if ( dict.ContainsKey("NAME"               ) ) sNAME                =              Sql.ToString(dict["NAME"               ]);
+								if ( dict.ContainsKey("CARD_TYPE"          ) ) sCARD_TYPE           =              Sql.ToString(dict["CARD_TYPE"          ]);
+								if ( dict.ContainsKey("SECURITY_CODE"      ) ) sSECURITY_CODE       =              Sql.ToString(dict["SECURITY_CODE"      ]);
+								if ( dict.ContainsKey("BANK_NAME"          ) ) sBANK_NAME           =              Sql.ToString(dict["BANK_NAME"          ]);
+								if ( dict.ContainsKey("BANK_ROUTING_NUMBER") ) sBANK_ROUTING_NUMBER =              Sql.ToString(dict["BANK_ROUTING_NUMBER"]);
+								if ( dict.ContainsKey("EXPIRATION_DATE"    ) ) dtEXPIRATION_DATE    = FromJsonDate(Sql.ToString(dict["EXPIRATION_DATE"    ]));
+								if ( dict.ContainsKey("ADDRESS_STREET"     ) ) sADDRESS_STREET      =              Sql.ToString(dict["ADDRESS_STREET"     ]);
+								if ( dict.ContainsKey("ADDRESS_CITY"       ) ) sADDRESS_CITY        =              Sql.ToString(dict["ADDRESS_CITY"       ]);
+								if ( dict.ContainsKey("ADDRESS_STATE"      ) ) sADDRESS_STATE       =              Sql.ToString(dict["ADDRESS_STATE"      ]);
+								if ( dict.ContainsKey("ADDRESS_POSTALCODE" ) ) sADDRESS_POSTALCODE  =              Sql.ToString(dict["ADDRESS_POSTALCODE" ]);
+								if ( dict.ContainsKey("ADDRESS_COUNTRY"    ) ) sADDRESS_COUNTRY     =              Sql.ToString(dict["ADDRESS_COUNTRY"    ]);
+								if ( dict.ContainsKey("EMAIL"              ) ) sEMAIL               =              Sql.ToString(dict["EMAIL"              ]);
+								if ( dict.ContainsKey("PHONE"              ) ) sPHONE               =              Sql.ToString(dict["PHONE"              ]);
+								if ( !dtUPDATE.Columns.Contains("CARD_TOKEN") )
+									dtUPDATE.Columns.Add("CARD_TOKEN", typeof(System.String));
+								if ( !dtUPDATE.Columns.Contains("SECURITY_CODE") )
+									dtUPDATE.Columns.Add("SECURITY_CODE", typeof(System.String));
+								if ( !dtUPDATE.Columns.Contains("BANK_ROUTING_NUMBER") )
+									dtUPDATE.Columns.Add("BANK_ROUTING_NUMBER", typeof(System.String));
+								
+								// 05/25/2024 Paul.  Add support for PayTrace.  
+								if ( Sql.ToBoolean(Application["CONFIG.PayTrace.Enabled"]) && !Sql.IsEmptyString(Application["CONFIG.PayTrace.UserName"]) )
+								{
+									if ( sCARD_NUMBER != Sql.sEMPTY_PASSWORD )
+									{
+										string sCREDIT_CARD_NUMBER = sCARD_NUMBER;
+										// 08/16/2015 Paul.  Only update the profile if the card number has changed. 
+										// 12/15/2015 Paul.  Add EMAIL and PHONE for Authorize.Net. 
+										PayTraceUtils.UpdateCustomerProfile(Application, ref gID, sNAME, sCREDIT_CARD_NUMBER, sSECURITY_CODE, dtEXPIRATION_DATE.Month, dtEXPIRATION_DATE.Year, sADDRESS_STREET, sADDRESS_CITY, sADDRESS_STATE, sADDRESS_POSTALCODE, sADDRESS_COUNTRY, sEMAIL, sPHONE);
+										// 09/13/2013 Paul.  We store the PayTrace Customer ID in the CARD_NUMBER field.  We use the Credit Card ID as the Customer ID. 
+										row["CARD_NUMBER"  ] = Security.EncryptPassword(gID.ToString(), gCREDIT_CARD_KEY, gCREDIT_CARD_IV);
+										row["CARD_TOKEN"   ]  = gID.ToString();
+										// 09/24/2013 Paul.  After updating the customer profile with the security code, clear it so that it is not stored in the database.
+										row["SECURITY_CODE"] = String.Empty;
+									}
+								}
+								// 05/25/2024 Paul.  Add support for Authorize.Net
+								else if ( Sql.ToBoolean(Application["CONFIG.AuthorizeNet.Enabled"]) && !Sql.IsEmptyString(Application["CONFIG.AuthorizeNet.UserName"]) )
+								{
+									// 11/08/2019 Paul.  Move sEMPTY_PASSWORD to Sql. 
+									if ( sCARD_NUMBER != Sql.sEMPTY_PASSWORD )
+									{
+										string sCARD_TOKEN         = String.Empty;
+										string sCREDIT_CARD_NUMBER = sCARD_NUMBER;
+										AuthorizeNetUtils.UpdateCustomerProfile(Application, ref sCARD_TOKEN, sNAME, sCREDIT_CARD_NUMBER, sSECURITY_CODE, sBANK_NAME, sBANK_ROUTING_NUMBER, dtEXPIRATION_DATE, sADDRESS_STREET, sADDRESS_CITY, sADDRESS_STATE, sADDRESS_POSTALCODE, sADDRESS_COUNTRY, sEMAIL, sPHONE);
+										row["CARD_NUMBER"  ] = Security.EncryptPassword(sCARD_TOKEN, gCREDIT_CARD_KEY, gCREDIT_CARD_IV);
+										row["CARD_TOKEN"   ] = String.Empty;
+										row["SECURITY_CODE"] = String.Empty;
+									}
+								}
+								// 05/25/2024 Paul.  Add CARD_TOKEN for use with PayPal REST API. 
+								else if ( !Sql.IsEmptyString(Application["CONFIG.PayPal.ClientID"]) && !Sql.IsEmptyString(Application["CONFIG.PayPal.ClientSecret"]) )
+								{
+									// 11/08/2019 Paul.  Move sEMPTY_PASSWORD to Sql. 
+									if ( sCARD_NUMBER != Sql.sEMPTY_PASSWORD )
+									{
+										string sCARD_TOKEN         = String.Empty;
+										string sCREDIT_CARD_NUMBER = sCARD_NUMBER;
+										// 12/15/2015 Paul.  Add EMAIL and PHONE for Authorize.Net. 
+										PayPalRest.StoreCreditCard(Application, ref sCARD_TOKEN, sNAME, sCARD_TYPE, sCREDIT_CARD_NUMBER, sSECURITY_CODE, dtEXPIRATION_DATE.Month, dtEXPIRATION_DATE.Year, sADDRESS_STREET, sADDRESS_CITY, sADDRESS_STATE, sADDRESS_POSTALCODE, sADDRESS_COUNTRY, sEMAIL, sPHONE);
+										row["CARD_NUMBER"  ] = Security.EncryptPassword(sCARD_TOKEN, gCREDIT_CARD_KEY, gCREDIT_CARD_IV);
+										row["SECURITY_CODE"] = String.Empty;
+									}
+								}
+								// 05/25/2024 Paul.  We should always be saving a card token instead of a card number. 
+								else
+								{
+									// 11/08/2019 Paul.  Move sEMPTY_PASSWORD to Sql. 
+									if ( sCARD_NUMBER != Sql.sEMPTY_PASSWORD )
+									{
+										string sCARD_TOKEN         = String.Empty;
+										string sCREDIT_CARD_NUMBER = sCARD_NUMBER;
+										SplendidCharge.CC.StoreCreditCard(Application, ref sCARD_TOKEN, sNAME, sCARD_TYPE, sCREDIT_CARD_NUMBER, sSECURITY_CODE, sBANK_NAME, sBANK_ROUTING_NUMBER, dtEXPIRATION_DATE.Month, dtEXPIRATION_DATE.Year, sADDRESS_STREET, sADDRESS_CITY, sADDRESS_STATE, sADDRESS_POSTALCODE, sADDRESS_COUNTRY, sEMAIL, sPHONE);
+										row["CARD_NUMBER"        ] = Security.EncryptPassword(sCARD_TOKEN, gCREDIT_CARD_KEY, gCREDIT_CARD_IV);
+										row["SECURITY_CODE"      ] = String.Empty;
+										row["BANK_ROUTING_NUMBER"] = String.Empty;
+									}
 								}
 							}
 							else if ( dtUPDATE.Columns.Contains(sColumnName) )
@@ -3007,6 +3156,13 @@ namespace SplendidCRM
 											sSQL = "select *"              + ControlChars.CrLf
 											     + "  from vwCONTACTS_Edit"+ ControlChars.CrLf
 											     + " where 1 = 1"          + ControlChars.CrLf;
+										}
+										// 05/25/2024 Paul.  Must use Edit view to get CARD_NUMBER. 
+										else if ( sTABLE_NAME == "CREDIT_CARDS" )
+										{
+											sSQL = "select *"                  + ControlChars.CrLf
+											     + "  from vwCREDIT_CARDS_Edit"+ ControlChars.CrLf
+											     + " where 1 = 1"              + ControlChars.CrLf;
 										}
 										else
 										{

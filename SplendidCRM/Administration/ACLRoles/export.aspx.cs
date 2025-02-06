@@ -136,7 +136,8 @@ namespace SplendidCRM.Administration.ACLRoles
 				sb.AppendLine("end -- if;");
 				sb.AppendLine("GO");
 				sb.AppendLine("");
-				Response.ContentType = "text/txt";
+				// 08/17/2024 Paul.  The correct MIME type is text/plain. 
+				Response.ContentType = "text/plain";
 				// 12/17/2017 Paul.  File extension will use 3 so that it is after ACL_ACTIONS_Initialize. 
 				Response.AddHeader("Content-Disposition", "attachment;filename=" + Utils.ContentDispositionEncode(Request.Browser, "ACL_ROLES " + sNAME + ".3.sql"));
 				Response.Write(sb.ToString());

@@ -132,7 +132,8 @@ namespace SplendidCRM.Administration.EditCustomFields
 				}
 				sb.AppendLine("GO");
 				sb.AppendLine("");
-				Response.ContentType = "text/txt";
+				// 08/17/2024 Paul.  The correct MIME type is text/plain. 
+				Response.ContentType = "text/plain";
 				string sTABLE_NAME = Crm.Modules.TableName(sMODULE_NAME);
 				Response.AddHeader("Content-Disposition", "attachment;filename=" + Utils.ContentDispositionEncode(Request.Browser, sTABLE_NAME + ".2.sql"));
 				Response.Write(sb.ToString());

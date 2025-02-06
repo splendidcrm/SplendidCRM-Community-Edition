@@ -212,7 +212,8 @@ export default class DateTimePicker extends EditComponent<IDateTimePickerProps, 
 					MINUTE   = formatDate(DATA_VALUE, 'mm');
 					MERIDIEM = formatDate(DATA_VALUE, 'a' );
 				}
-				else
+				// 10/21/2024 Paul.  row may exist while value still is null.  Must set dropdown values correctly otherwise control returns invalid Date. 
+				if ( row === null || DATA_VALUE === null )
 				{
 					HOUR     = HOURS_LIST   [0];
 					MINUTE   = MINUTES_LIST [0];

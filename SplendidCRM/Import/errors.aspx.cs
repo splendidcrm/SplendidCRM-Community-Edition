@@ -66,7 +66,8 @@ namespace SplendidCRM.Import
 							}
 							else if ( sSourceType == "other_tab" )
 							{
-								Response.ContentType = "text/txt";
+								// 08/17/2024 Paul.  The correct MIME type is text/plain. 
+								Response.ContentType = "text/plain";
 								Response.AddHeader("Content-Disposition", "attachment;filename=import_errors.txt");
 								SplendidExport.ExportDelimited(Response.OutputStream, new DataView(dt), "", 0, dt.Rows.Count, '\t' );
 							}

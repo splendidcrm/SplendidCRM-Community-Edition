@@ -673,6 +673,33 @@ class SplendidGrid extends React.Component<ISplendidGridProps, ISplendidGridStat
 		return url;
 	}
 
+	// 10/28/2024 Paul.  User should be able to open a new table by right-click on item name.  Change from span to anchor. 
+	public getRelatedEditUrl = (row): string =>
+	{
+		const { history, RELATED_MODULE, ADMIN_MODE } = this.props;
+		let admin = '';
+		let module:MODULE = SplendidCache.Module(RELATED_MODULE, this.constructor.name + '.getRelatedEditUrl');
+		if ( module.IS_ADMIN )
+		{
+			admin = '/Administration';
+		}
+		let url: string = Credentials.RemoteServer + Credentials.ReactBase + `${admin}${RELATED_MODULE}/Edit/${row.ID}`;
+		return url;
+	}
+
+	public getRelatedViewUrl = (row): string =>
+	{
+		const { history, RELATED_MODULE, ADMIN_MODE } = this.props;
+		let admin = '';
+		let module:MODULE = SplendidCache.Module(RELATED_MODULE, this.constructor.name + '.getRelatedViewUrl');
+		if ( module.IS_ADMIN )
+		{
+			admin = '/Administration';
+		}
+		let url: string = Credentials.RemoteServer + Credentials.ReactBase + `${admin}${RELATED_MODULE}/View/${row.ID}`;
+		return url;
+	}
+
 	public _onChangeFavorites = async (row, rowIndex) =>
 	{
 		const { MODULE_NAME } = this.props;
@@ -917,21 +944,21 @@ class SplendidGrid extends React.Component<ISplendidGridProps, ISplendidGridStat
 				: null
 				}
 				{ !disableView && nVIEW_ACLACCESS >= 0
-				? <span style={ {cursor: 'pointer', padding: '3px', textDecoration: 'none'} } onClick={ () => this._onViewRelated(row) } title={ L10n.Term('.LNK_VIEW') }>
+				? <a href={ this.getRelatedViewUrl(row) } style={ {cursor: 'pointer', padding: '3px', textDecoration: 'none'} } onClick={ (e) => { e.preventDefault(); this._onViewRelated(row); } } title={ L10n.Term('.LNK_VIEW') }>
 					{ this.legacyIcons
 					? <img src={ this.themeURL + 'view_inline.gif'} style={ {borderWidth: '0px'} } />
 					: <FontAwesomeIcon icon='file' size='lg' />
 					}
-				</span>
+				</a>
 				: null
 				}
 				{ !this.legacyIcons && !(disableEdit || archiveView) && nEDIT_ACLACCESS >= 0 && Sql.IsEmptyGuid(row.PENDING_PROCESS_ID)
-				? <span style={ {cursor: 'pointer', padding: '3px', textDecoration: 'none'} } onClick={ () => this._onEditRelated(row) } title={ L10n.Term('.LNK_EDIT') }>
+				? <a href={ this.getRelatedEditUrl(row) } style={ {cursor: 'pointer', padding: '3px', textDecoration: 'none'} } onClick={ (e) => { e.preventDefault(); this._onEditRelated(row); } } title={ L10n.Term('.LNK_EDIT') }>
 					{ this.legacyIcons
 					? <img src={ this.themeURL + 'edit_inline.gif'} style={ {borderWidth: '0px'} } />
 					: <FontAwesomeIcon icon='edit' size='lg' />
 					}
-				</span>
+				</a>
 				: null
 				}
 				{ !this.legacyIcons && nDELETE_ACLACCESS >= 0 && Sql.IsEmptyGuid(row.PENDING_PROCESS_ID) && cbRemove && (!cbShowRemove || cbShowRemove(row))

@@ -305,7 +305,8 @@ namespace SplendidCRM.Import
 					}
 					case "tab"  :
 					{
-						Response.ContentType = "text/txt";
+						// 08/17/2024 Paul.  The correct MIME type is text/plain. 
+						Response.ContentType = "text/plain";
 						// 08/06/2008 yxy21969.  Make sure to encode all URLs. 
 						// 12/20/2009 Paul.  Use our own encoding so that a space does not get converted to a +. 
 						Response.AddHeader("Content-Disposition", "attachment;filename=" + Utils.ContentDispositionEncode(HttpContext.Current.Request.Browser, ModuleName + ".txt"));

@@ -978,6 +978,17 @@ namespace SplendidCRM
 								if ( rdr.Table.Columns.Contains(arrTEXT_FIELD[i]) )
 									objTEXT_FIELD[i] = Sql.ToString(rdr[arrTEXT_FIELD[i]]);
 							}
+							// 05/24/2024 Paul.  Allow security properties to be included. 
+							if ( arrTEXT_FIELD[i].Contains(".") )
+							{
+								string sFieldName = arrTEXT_FIELD[i].ToLower();
+								if      ( sFieldName == "security.user_id"           ) objTEXT_FIELD[i] = Security.USER_ID          ;
+								else if ( sFieldName == "security.user_name"         ) objTEXT_FIELD[i] = Security.USER_NAME        ;
+								else if ( sFieldName == "security.team_id"           ) objTEXT_FIELD[i] = Security.TEAM_ID          ;
+								else if ( sFieldName == "security.team_name"         ) objTEXT_FIELD[i] = Security.TEAM_NAME        ;
+								else if ( sFieldName == "security.primary_role_id"   ) objTEXT_FIELD[i] = Security.PRIMARY_ROLE_ID  ;
+								else if ( sFieldName == "security.primary_role_name" ) objTEXT_FIELD[i] = Security.PRIMARY_ROLE_NAME;
+							}
 						}
 					}
 					// 11/08/2020 Paul.  An Admin Only control should not be added as it would allow the visible/hidden flag to ignore the admin only rule. 

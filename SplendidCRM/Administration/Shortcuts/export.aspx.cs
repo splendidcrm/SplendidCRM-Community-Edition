@@ -113,7 +113,8 @@ namespace SplendidCRM.Administration.Shortcuts
 				}
 				sb.AppendLine("GO");
 				sb.AppendLine("");
-				Response.ContentType = "text/txt";
+				// 08/17/2024 Paul.  The correct MIME type is text/plain. 
+				Response.ContentType = "text/plain";
 				// 12/20/2009 Paul.  Use our own encoding so that a space does not get converted to a +. 
 				// 02/16/2010 Paul.  Must include all parts of the name in the encoding. 
 				Response.AddHeader("Content-Disposition", "attachment;filename=" + Utils.ContentDispositionEncode(Request.Browser, "SHORTCUTS " + sNAME + ".1.sql"));

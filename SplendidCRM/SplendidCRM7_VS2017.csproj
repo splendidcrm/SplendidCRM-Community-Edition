@@ -642,6 +642,10 @@
       <DependentUpon>default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="Administration\DynamicLayout\EditRelationships\export.aspx.cs">
+      <DependentUpon>export.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="Administration\DynamicLayout\EditRelationships\ListView.ascx.cs">
       <DependentUpon>ListView.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -708,6 +712,10 @@
     </Compile>
     <Compile Include="Administration\DynamicLayout\ListView.ascx.cs">
       <DependentUpon>ListView.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Administration\DynamicLayout\Relationships\export.aspx.cs">
+      <DependentUpon>export.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Administration\DynamicLayout\_code\DynamicLayoutView.cs">
@@ -2707,6 +2715,10 @@
     <Compile Include="_code\OpenXML\DocumentExtensions.cs" />
     <Compile Include="_code\OpenXML\FormFiller.cs" />
     <Compile Include="_code\OrderUtils.cs" />
+    <Compile Include="_code\PayPal\SplendidCharge.cs" />
+    <Compile Include="_code\PayPal\PayTraceUtils.cs" />
+    <Compile Include="_code\PayPal\AuthorizeNetUtils.cs" />
+    <Compile Include="_code\PayPal\PayPalRest.cs" />
     <Compile Include="_code\PopUtils.cs" />
     <Compile Include="_code\PortalCache.cs" />
     <Compile Include="_code\QuickBooks\QuickBooksClientFactory.cs" />
@@ -4927,6 +4939,7 @@
     <Content Include="Administration\DynamicLayout\DetailViews\NewRecord.ascx" />
     <Content Include="Administration\DynamicLayout\DetailViews\Popup.aspx" />
     <Content Include="Administration\DynamicLayout\DetailViews\PopupView.ascx" />
+    <Content Include="Administration\DynamicLayout\EditRelationships\export.aspx" />
     <Content Include="Administration\DynamicLayout\EditViews\default.aspx" />
     <Content Include="Administration\DynamicLayout\EditViews\EditView.ascx" />
     <Content Include="Administration\DynamicLayout\EditViews\export.aspx" />
@@ -4950,6 +4963,7 @@
     <Content Include="Administration\DynamicLayout\html5\LayoutTerminologyUI.js" />
     <Content Include="Administration\DynamicLayout\html5\ListView.ascx" />
     <Content Include="Administration\DynamicLayout\ListView.ascx" />
+    <Content Include="Administration\DynamicLayout\Relationships\export.aspx" />
     <Content Include="Administration\DynamicLayout\_controls\LayoutButtons.ascx" />
     <Content Include="Administration\DynamicLayout\_controls\SearchBasic.ascx" />
     <Content Include="Administration\EditCustomFields\default.aspx" />

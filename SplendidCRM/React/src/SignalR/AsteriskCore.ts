@@ -134,7 +134,8 @@ export class AsteriskServerCore
 		})
 		.then( () =>
 		{
-			this.started = false;
+			// 12/01/2024 Paul.  Set started flag. 
+			this.started = true;
 			console.log('AsteriskHub connection started');
 			this.joinGroup();
 		});

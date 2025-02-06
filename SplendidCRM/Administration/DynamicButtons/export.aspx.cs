@@ -41,13 +41,16 @@ namespace SplendidCRM.Administration.DynamicButtons
 			if ( !this.Visible )
 				return;
 			
-			string sNAME = Sql.ToString(Request["NAME"]);
-			if ( !Sql.IsEmptyString(sNAME) )
+			string sNAME   = Sql.ToString(Request["NAME"]);
+			// 09/18/2024 Paul.  Allow export by module. 
+			string sMODULE = Sql.ToString(Request["MODULE"]);
+			if ( !Sql.IsEmptyString(sNAME) || !Sql.IsEmptyString(sMODULE) )
 			{
 				StringBuilder sb = new StringBuilder();
 				// 03/15/2018 Paul.  Mark record as deleted instead of deleting. 
 				//sb.AppendLine("delete from DYNAMIC_BUTTONS where VIEW_NAME = '" + sNAME + "';");
-				sb.AppendLine("update DYNAMIC_BUTTONS set DELETED = 1, DATE_MODIFIED_UTC = getutcdate(), MODIFIED_USER_ID = null where DELETED = 0 and VIEW_NAME = '" + sNAME + "';");
+				if ( !Sql.IsEmptyString(sNAME)  )
+					sb.AppendLine("update DYNAMIC_BUTTONS set DELETED = 1, DATE_MODIFIED_UTC = getutcdate(), MODIFIED_USER_ID = null where DELETED = 0 and VIEW_NAME = '" + sNAME + "';");
 				
 				DbProviderFactory dbf = DbProviderFactories.GetFactory();
 				using ( IDbConnection con = dbf.CreateConnection() )
@@ -56,12 +59,25 @@ namespace SplendidCRM.Administration.DynamicButtons
 					string sSQL;
 					sSQL = "select *                         " + ControlChars.CrLf
 					     + "  from vwDYNAMIC_BUTTONS         " + ControlChars.CrLf
-					     + " where VIEW_NAME = @VIEW_NAME    " + ControlChars.CrLf
-					     + " order by CONTROL_INDEX         " + ControlChars.CrLf;
+					     + " where 1 = 1                     " + ControlChars.CrLf;
+					if ( !Sql.IsEmptyString(sNAME) )
+					{
+						sSQL += "   and VIEW_NAME = @VIEW_NAME" + ControlChars.CrLf;
+						sSQL += " order by CONTROL_INDEX      " + ControlChars.CrLf;
+					}
+					else if ( !Sql.IsEmptyString(sMODULE) )
+					{
+					}
 					using ( IDbCommand cmd = con.CreateCommand() )
 					{
 						cmd.CommandText = sSQL;
-						Sql.AddParameter(cmd, "@VIEW_NAME", sNAME);
+						if ( !Sql.IsEmptyString(sNAME)  )
+							Sql.AddParameter(cmd, "@VIEW_NAME", sNAME);
+						else if ( !Sql.IsEmptyString(sMODULE)  )
+						{
+							Sql.AppendParameterWithNull(cmd, sMODULE.Split(','), "MODULE_NAME");
+							cmd.CommandText += " order by VIEW_NAME, CONTROL_INDEX" + ControlChars.CrLf;
+						}
 					
 						using ( DbDataAdapter da = dbf.CreateDataAdapter() )
 						{
@@ -107,8 +123,11 @@ namespace SplendidCRM.Administration.DynamicButtons
 										nONCLICK_SCRIPT_Length     = Math.Max(nONCLICK_SCRIPT_Length    , Sql.EscapeSQL(Sql.ToString(row["ONCLICK_SCRIPT"    ])).Length + 2);
 									}
 
-									sb.AppendLine("if not exists(select * from DYNAMIC_BUTTONS where VIEW_NAME = '" + sNAME + "' and DELETED = 0) begin -- then");
-									sb.AppendLine("	print 'DYNAMIC_BUTTONS " + sNAME + "';");
+									if ( !Sql.IsEmptyString(sNAME)  )
+									{
+										sb.AppendLine("if not exists(select * from DYNAMIC_BUTTONS where VIEW_NAME = '" + sNAME + "' and DELETED = 0) begin -- then");
+										sb.AppendLine("	print 'DYNAMIC_BUTTONS " + sNAME + "';");
+									}
 
 									foreach(DataRow row in dtFields.Rows)
 									{
@@ -160,7 +179,8 @@ namespace SplendidCRM.Administration.DynamicButtons
 											case "HyperLink" :  sb.AppendLine("	exec dbo.spDYNAMIC_BUTTONS_InsHyperLink  '" + sVIEW_NAME + "', " + sCONTROL_INDEX + ", " + Sql.FormatSQL(sMODULE_NAME, nMODULE_NAME_Length) + ", " + Sql.FormatSQL(sMODULE_ACCESS_TYPE, nMODULE_ACCESS_TYPE_Length) + ", " + Sql.FormatSQL(sTARGET_NAME, nTARGET_NAME_Length) + ", " + Sql.FormatSQL(sTARGET_ACCESS_TYPE, nTARGET_ACCESS_TYPE_Length) + ", "                                                             + Sql.FormatSQL(sURL_FORMAT, nURL_FORMAT_Length) + ", " + Sql.FormatSQL(sTEXT_FIELD    , nTEXT_FIELD_Length    ) + ", " + Sql.FormatSQL(sCONTROL_TEXT, nCONTROL_TEXT_Length) + ", " + Sql.FormatSQL(sCONTROL_TOOLTIP, nCONTROL_TOOLTIP_Length) + ", " + Sql.FormatSQL(sCONTROL_ACCESSKEY, nCONTROL_ACCESSKEY_Length) + ", " + Sql.FormatSQL(sONCLICK_SCRIPT, nONCLICK_SCRIPT_Length) + ", " + Sql.FormatSQL(sURL_TARGET    , nURL_TARGET_Length    ) + ", " + nMOBILE_ONLY.ToString() + ";");  break;
 										}
 									}
-									sb.AppendLine("end -- if;");
+									if ( !Sql.IsEmptyString(sNAME)  )
+										sb.AppendLine("end -- if;");
 								}
 							}
 						}
@@ -168,7 +188,8 @@ namespace SplendidCRM.Administration.DynamicButtons
 				}
 				sb.AppendLine("GO");
 				sb.AppendLine("");
-				Response.ContentType = "text/txt";
+				// 08/17/2024 Paul.  The correct MIME type is text/plain. 
+				Response.ContentType = "text/plain";
 				// 12/20/2009 Paul.  Use our own encoding so that a space does not get converted to a +. 
 				// 02/16/2010 Paul.  Must include all parts of the name in the encoding. 
 				Response.AddHeader("Content-Disposition", "attachment;filename=" + Utils.ContentDispositionEncode(Request.Browser, "DYNAMIC_BUTTONS " + sNAME + ".1.sql"));

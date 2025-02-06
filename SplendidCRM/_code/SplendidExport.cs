@@ -104,7 +104,8 @@ namespace SplendidCRM
 						Response.End();
 						break;
 					case "tab"  :
-						Response.ContentType = "text/txt";
+						// 08/17/2024 Paul.  The correct MIME type is text/plain. 
+						Response.ContentType = "text/plain";
 						// 08/06/2008 yxy21969.  Make sure to encode all URLs. 
 						// 12/20/2009 Paul.  Use our own encoding so that a space does not get converted to a +. 
 						Response.AddHeader("Content-Disposition", "attachment;filename=" + Utils.ContentDispositionEncode(HttpContext.Current.Request.Browser, sModuleName + ".txt"));
@@ -298,7 +299,7 @@ namespace SplendidCRM
 			return cell;
 		}
 
-		// http://www.lateral8.com/articles/2010/6/11/openxml-sdk-20-formatting-excel-values.aspx
+		// https://github.com/closedxml/closedxml/wiki/NumberFormatId-Lookup-Table
 		private static UInt32Value OpenXML_CreateCellFormat(Stylesheet styleSheet, UInt32Value fontIndex, UInt32Value fillIndex, UInt32Value numberFormatId)
 		{
 			CellFormat cellFormat = new CellFormat();
@@ -536,6 +537,7 @@ namespace SplendidCRM
 				
 					Worksheet worksheet = worksheetPart.Worksheet;
 					SheetData sheetData = worksheet.GetFirstChild<SheetData>();
+					// https://github.com/closedxml/closedxml/wiki/NumberFormatId-Lookup-Table
 					UInt32Value numberStyleId = OpenXML_CreateCellFormat(workbookStylesPart.Stylesheet, null, null, UInt32Value.FromUInt32( 3));
 					UInt32Value doubleStyleId = OpenXML_CreateCellFormat(workbookStylesPart.Stylesheet, null, null, UInt32Value.FromUInt32( 4));
 					UInt32Value dateStyleId   = OpenXML_CreateCellFormat(workbookStylesPart.Stylesheet, null, null, UInt32Value.FromUInt32(14));
@@ -1140,6 +1142,7 @@ namespace SplendidCRM
 				
 					Worksheet worksheet = worksheetPart.Worksheet;
 					SheetData sheetData = worksheet.GetFirstChild<SheetData>();
+					// https://github.com/closedxml/closedxml/wiki/NumberFormatId-Lookup-Table
 					UInt32Value numberStyleId = OpenXML_CreateCellFormat(workbookStylesPart.Stylesheet, null, null, UInt32Value.FromUInt32( 3));
 					UInt32Value doubleStyleId = OpenXML_CreateCellFormat(workbookStylesPart.Stylesheet, null, null, UInt32Value.FromUInt32( 4));
 					UInt32Value dateStyleId   = OpenXML_CreateCellFormat(workbookStylesPart.Stylesheet, null, null, UInt32Value.FromUInt32(14));

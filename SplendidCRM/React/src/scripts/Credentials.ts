@@ -15,7 +15,7 @@ import moment                from 'moment'                     ;
 // 3. Scripts. 
 import Sql                   from '../scripts/Sql'             ;
 import L10n                  from '../scripts/L10n'            ;
-import Aes                   from '../scripts/Aes'             ;
+import Aes                   from '../scripts/aes'             ;
 import SplendidCache         from '../scripts/SplendidCache'   ;
 import { Crm_Config }        from '../scripts/Crm'             ;
 import { FromJsonDate }      from '../scripts/Formatting'      ;
@@ -55,8 +55,9 @@ class CredentialsStore
 	// https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-date-and-time-format-strings
 	sUSER_DATE_FORMAT              = 'MM/DD/YYYY';
 	sUSER_TIME_FORMAT              = 'h:mm a';
-	sUSER_CURRENCY_ID              = 'E340202E-6291-4071-B327-A34CB4DF239B';
-	sUSER_TIMEZONE_ID              = 'BFA61AF7-26ED-4020-A0C1-39A15E4E9E0A';
+	// 09/19/2024 Paul.. Guids are returned from api in lower case. 
+	sUSER_CURRENCY_ID              = 'e340202e-6291-4071-b327-a34cb4df239b';
+	sUSER_TIMEZONE_ID              = 'bfa61af7-26ed-4020-a0c1-39a15e4e9e0a';
 	// 10/28/2021 Paul.  This is our indicator to redirect to User Wizard. 
 	sORIGINAL_TIMEZONE_ID          = null;
 	sFULL_NAME                     = '';
@@ -130,8 +131,9 @@ class CredentialsStore
 		// https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-date-and-time-format-strings
 		this.sUSER_DATE_FORMAT              = 'MM/DD/YYYY';
 		this.sUSER_TIME_FORMAT              = 'h:mm a';
-		this.sUSER_CURRENCY_ID              = 'E340202E-6291-4071-B327-A34CB4DF239B';
-		this.sUSER_TIMEZONE_ID              = 'BFA61AF7-26ED-4020-A0C1-39A15E4E9E0A';
+		// 09/19/2024 Paul.. Guids are returned from api in lower case. 
+		this.sUSER_CURRENCY_ID              = 'e340202e-6291-4071-b327-a34cb4df239b';
+		this.sUSER_TIMEZONE_ID              = 'bfa61af7-26ed-4020-a0c1-39a15e4e9e0a';
 		// 10/28/2021 Paul.  This is our indicator to redirect to User Wizard. 
 		this.sORIGINAL_TIMEZONE_ID          = null;
 		this.sFULL_NAME                     = '';
@@ -500,8 +502,9 @@ class CredentialsStore
 		if ( currency != null )
 		{
 			let gBASE_CURRENCY = SplendidCache.Config('base_currency');
+			// 09/19/2024 Paul.. Guids are returned from api in lower case. 
 			if ( Sql.IsEmptyGuid(gBASE_CURRENCY) )
-				gBASE_CURRENCY = 'E340202E-6291-4071-B327-A34CB4DF239B';
+				gBASE_CURRENCY = 'e340202e-6291-4071-b327-a34cb4df239b';
 			this.bUSER_CurrencyUSDollars       = (this.sUSER_CURRENCY_ID.toUpperCase() == gBASE_CURRENCY.toUpperCase());
 			this.dUSER_CurrencyCONVERSION_RATE = currency.CONVERSION_RATE;
 			if ( this.dUSER_CurrencyCONVERSION_RATE <= 0 )

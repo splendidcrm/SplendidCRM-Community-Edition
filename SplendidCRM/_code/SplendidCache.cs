@@ -9125,6 +9125,18 @@ namespace SplendidCRM
 												objs[L10n.NAME + "." + "." + sLIST_NAME + "." + sID] = sDISPLAY_NAME;
 											}
 										}
+										// 05/24/2024 Paul.  Just now including credit card years. 
+										using ( DataTable dt = SplendidCache.CreditCardYears() )
+										{
+											string sLIST_NAME = "credit_card_year";
+											for ( int i = 0; i < dt.Rows.Count; i++ )
+											{
+												DataRow row = dt.Rows[i];
+												string sNAME         = Sql.ToString(row["NAME"        ]);
+												string sDISPLAY_NAME = Sql.ToString(row["DISPLAY_NAME"]);
+												objs[L10n.NAME + "." + "." + sLIST_NAME + "." + sNAME] = sDISPLAY_NAME;
+											}
+										}
 									}
 									// 08/19/2019 Paul.  Modules are used by the ReportDesigner, so it is a non-admin list. 
 									using ( DataTable dt = SplendidCache.Modules() )
@@ -9798,6 +9810,18 @@ namespace SplendidCRM
 											{
 												DataRow row = dt.Rows[i];
 												string sID = Sql.ToString(row["ID"]);
+												layout.Add(sID);
+											}
+										}
+										// 05/24/2024 Paul.  Just now including credit card years. 
+										using ( DataTable dt = SplendidCache.CreditCardYears() )
+										{
+											List<string> layout = new List<string>();
+											objs.Add(L10n.NAME + ".credit_card_year", layout);
+											for ( int i = 0; i < dt.Rows.Count; i++ )
+											{
+												DataRow row = dt.Rows[i];
+												string sID = Sql.ToString(row["NAME"]);
 												layout.Add(sID);
 											}
 										}
@@ -11095,10 +11119,11 @@ namespace SplendidCRM
 				profile.USER_TIME_FORMAT = Sql.ToString(HttpContext.Current.Session["USER_SETTINGS/TIMEFORMAT"]);
 				// 04/23/2013 Paul.  The HTML5 Offline Client now supports Atlantic theme. 
 				profile.USER_THEME       = Sql.ToString(HttpContext.Current.Session["USER_SETTINGS/THEME"     ]);
-				profile.USER_CURRENCY_ID = Sql.ToString(HttpContext.Current.Session["USER_SETTINGS/CURRENCY"  ]);
-				profile.USER_TIMEZONE_ID = Sql.ToString(HttpContext.Current.Session["USER_SETTINGS/TIMEZONE"  ]);
+				// 09/19/2024 Paul.. Guids are returned from api in lower case. 
+				profile.USER_CURRENCY_ID = Sql.ToString(HttpContext.Current.Session["USER_SETTINGS/CURRENCY"  ]).ToLower();
+				profile.USER_TIMEZONE_ID = Sql.ToString(HttpContext.Current.Session["USER_SETTINGS/TIMEZONE"  ]).ToLower();
 				// 10/28/2021 Paul.  This is our indicator to redirect to User Wizard. 
-				profile.ORIGINAL_TIMEZONE_ID = Sql.ToString(HttpContext.Current.Session["USER_SETTINGS/TIMEZONE/ORIGINAL"  ]);
+				profile.ORIGINAL_TIMEZONE_ID = Sql.ToString(HttpContext.Current.Session["USER_SETTINGS/TIMEZONE/ORIGINAL"  ]).ToLower();
 				// 11/21/2014 Paul.  Add User Picture. 
 				profile.PICTURE          = Security.PICTURE  ;
 				profile.EXCHANGE_ALIAS   = Sql.ToString(HttpContext.Current.Session["EXCHANGE_ALIAS"          ]);

@@ -122,6 +122,14 @@ export async function ListView_LoadModule(sMODULE_NAME: string, sSORT_FIELD: str
 	{
 		obj['$searchvalues'] = rowSEARCH_VALUES;
 	}
+	// 09/17/2024 Paul.  Send duplicate filter info.  (not really needed here, but just good to follow the pattern). 
+	if (rowSEARCH_VALUES != null && rowSEARCH_VALUES['DUPLICATE_FILTER'] != null && Array.isArray(rowSEARCH_VALUES['DUPLICATE_FILTER']) && rowSEARCH_VALUES['DUPLICATE_FILTER'].length > 0)
+	{
+		obj['$duplicatefields'] = rowSEARCH_VALUES['DUPLICATE_FILTER'].join(',');
+		// 09/17/2024 Paul.  Must remove DUPLICATE_FILTER from $searchvalues. 
+		obj['$searchvalues'] = Sql.DeepCopy(rowSEARCH_VALUES);
+		delete obj['$searchvalues'].DUPLICATE_FILTER;
+	}
 	let sBody = JSON.stringify(obj);
 	let res = await CreateSplendidRequest('Rest.svc/PostModuleList', 'POST', 'application/octet-stream', sBody);
 	//xhr.SearchValues = rowSEARCH_VALUES;
@@ -168,6 +176,9 @@ export async function ListView_ExportModule(sMODULE_NAME: string, sSORT_FIELD: s
 	if (rowSEARCH_VALUES != null && rowSEARCH_VALUES['DUPLICATE_FILTER'] != null && Array.isArray(rowSEARCH_VALUES['DUPLICATE_FILTER']) && rowSEARCH_VALUES['DUPLICATE_FILTER'].length > 0)
 	{
 		obj['$duplicatefields'] = rowSEARCH_VALUES['DUPLICATE_FILTER'].join(',');
+		// 09/17/2024 Paul.  Must remove DUPLICATE_FILTER from $searchvalues. 
+		obj['$searchvalues'] = Sql.DeepCopy(rowSEARCH_VALUES);
+		delete obj['$searchvalues'].DUPLICATE_FILTER;
 	}
 	obj['ModuleName'] = sMODULE_NAME;
 	// 08/11/2020 Paul.  Both methods work.  The problem with Excel was that we needed to issue Response.Flush() before the Response.End(). 
@@ -254,6 +265,9 @@ export async function ListView_LoadModulePaginated(sMODULE_NAME: string, sSORT_F
 	if (rowSEARCH_VALUES != null && rowSEARCH_VALUES['DUPLICATE_FILTER'] != null && Array.isArray(rowSEARCH_VALUES['DUPLICATE_FILTER']) && rowSEARCH_VALUES['DUPLICATE_FILTER'].length > 0)
 	{
 		obj['$duplicatefields'] = rowSEARCH_VALUES['DUPLICATE_FILTER'].join(',');
+		// 09/17/2024 Paul.  Must remove DUPLICATE_FILTER from $searchvalues. 
+		obj['$searchvalues'] = Sql.DeepCopy(rowSEARCH_VALUES);
+		delete obj['$searchvalues'].DUPLICATE_FILTER;
 	}
 	let res = null;
 	if ( bADMIN_MODE )

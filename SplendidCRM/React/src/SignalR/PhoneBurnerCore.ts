@@ -104,7 +104,8 @@ export class PhoneBurnerServerCore
 		})
 		.then( () =>
 		{
-			this.started = false;
+			// 12/01/2024 Paul.  Set started flag. 
+			this.started = true;
 			console.log('TwilioHub connection started');
 			this.joinGroup();
 		});
