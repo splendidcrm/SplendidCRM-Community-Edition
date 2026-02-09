@@ -381,7 +381,9 @@ exec dbo.spTERMINOLOGY_InsertOnly N'LBL_WINDOWS_AUTHENTICATION_REQUIRED'        
 exec dbo.spTERMINOLOGY_InsertOnly N'LBL_EMAIL_TEST'                                , N'en-US', N'Users', null, null, N'Test';
 -- 08/11/2020 Paul.  Employees module may be disabled, so create a Users version of LBL_RESET_PREFERENCES. 
 exec dbo.spTERMINOLOGY_InsertOnly N'LBL_RESET_PREFERENCES'                         , N'en-US', N'Users', null, null, N'Reset Preferences';
-
+-- 08/22/2025 Paul.   Confirm impersonation. 
+exec dbo.spTERMINOLOGY_InsertOnly N'NTC_CONFIRM_IMPERSONATION'                     , N'en-US', N'Users', null, null, N'Are you sure?';
+exec dbo.spTERMINOLOGY_InsertOnly N'ERR_IMPERSONATION_DISABLED'                    , N'en-US', N'Users', null, null, N'Impersonation has been disabled.';
 GO
 
 

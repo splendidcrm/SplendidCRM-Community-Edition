@@ -72,5 +72,6 @@ using System.Reflection;
 // 02/17/2024 Paul.  Version 15.0 Upgrades React to version 18 and most react packages. 
 // 08/07/2025 Paul.  Version 15.1 Add support for DuoUniversal 2-factor authentication. 
 // 08/22/2025 Paul.  Version 15.2 Add impersonation to React Client. 
-[assembly: AssemblyVersion("15.2.*")]
+// 01/02/2026 Paul.  Version 15.3 Add Replication Tables. 
+[assembly: AssemblyVersion("15.3.*")]
 

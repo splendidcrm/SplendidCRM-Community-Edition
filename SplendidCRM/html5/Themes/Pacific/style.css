@@ -279,6 +279,11 @@ tr.listViewPaginationTdS1
 {
 	color: #444444;
 }
+/* 01/03/2026 Paul.  Missing style to align column right. */
+.gridViewright
+{
+	text-align: right;
+}
 .pageNumbers
 {
 	color: #444444;

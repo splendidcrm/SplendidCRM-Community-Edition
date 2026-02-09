@@ -103,6 +103,9 @@ import PayTraceListView               from './ModuleViews/Administration/PayTrac
 import PayTraceDetailView             from './ModuleViews/Administration/PayTrace/DetailView'                      ;
 // 12/26/2022 Paul.  Add support for Microsoft Teams. 
 import MicrosoftTeamsConfigView       from './ModuleViews/Administration/MicrosoftTeams/ConfigView'                ;
+// 01/01/2026 Paul.  Add Replication. 
+import ReplicationTablesListView      from './ModuleViews/Administration/ReplicationTables/ListView'               ;
+import ReplicationTablesDetailView    from './ModuleViews/Administration/ReplicationTables/DetailView'             ;
 
 import AdminDynamicLayout             from './DynamicLayoutComponents/DynamicLayoutEditor'                         ;
 import GoogleOAuth                    from './views/GoogleOAuth'                                                   ;
@@ -354,6 +357,9 @@ export function privateRoutes()
 		{ exact: true, path: "/Administration/Avaya/ConfigView"                         , Component: AdminConfigView                },
 		{ exact: true, path: "/Administration/Avaya/View/:ID"                           , Component: AvayaDetailView                },
 		{              path: "/Administration/Avaya"                                    , Component: AvayaListView                  },
+		{ exact: true, path: "/Administration/ReplicationTables/View/:ID"               , Component: ReplicationTablesDetailView    },
+		{              path: "/Administration/ReplicationTables/List"                   , Component: ReplicationTablesListView      },
+		{              path: "/Administration/ReplicationTables"                        , Component: ReplicationTablesListView      },
 
 		{ exact: true, path: "/Administration/Azure/:MODULE_NAME/ConfigView"            , Component: AdminConfigView                },
 		{ exact: true, path: "/Administration/Azure/:MODULE_NAME/ReadOnlyListView"      , Component: AdminReadOnlyListView          },

@@ -3561,9 +3561,14 @@ namespace SplendidCRM
 											string sITEM_SUMMARY = Sql.ToString(row["ITEM_SUMMARY"]);
 											if ( arrLastModule == null || sLAST_MODULE != sMODULE_NAME )
 											{
-												arrLastModule = new List<object>();
-												objs.Add(sMODULE_NAME, arrLastModule);
-												sLAST_MODULE = sMODULE_NAME;
+												// 11/12/2025 Paul.  ContactInfo and Contactinfo are both in database. 
+												// Protect against duplicate exception. 
+												if ( !objs.ContainsKey(sMODULE_NAME) )
+												{
+													arrLastModule = new List<object>();
+													objs.Add(sMODULE_NAME, arrLastModule);
+													sLAST_MODULE = sMODULE_NAME;
+												}
 											}
 											Dictionary<string, object> obj = new Dictionary<string, object>();
 											obj["ID"  ] = gITEM_ID;

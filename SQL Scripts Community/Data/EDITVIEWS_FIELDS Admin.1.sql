@@ -260,6 +260,20 @@ end else begin
 end -- if;
 GO
 
+-- 08/07/2025 Paul.  Add support for DuoUniversal. 
+-- delete from EDITVIEWS_FIELDS where EDIT_NAME = 'DuoUniversal.ConfigView';
+if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'DuoUniversal.ConfigView' and DELETED = 0) begin -- then
+	print 'EDITVIEWS_FIELDS DuoUniversal.ConfigView';
+	exec dbo.spEDITVIEWS_InsertOnly            'DuoUniversal.ConfigView', 'DuoUniversal', 'vwCONFIG_Edit', '15%', '35%', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsCheckBox    'DuoUniversal.ConfigView'          ,  0, 'DuoUniversal.LBL_DUO_UNIVERSAL_ENABLED' , 'DuoUniversal.Enabled'               , 0, 1, null, null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'DuoUniversal.ConfigView'          ,  1, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'DuoUniversal.ConfigView'          ,  2, 'DuoUniversal.LBL_CLIENT_ID'             , 'DuoUniversal.ClientID'              , 0, 1, 150, 35, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'DuoUniversal.ConfigView'          ,  3, 'DuoUniversal.LBL_CLIENT_SECRET'         , 'DuoUniversal.ClientSecret'          , 0, 1, 150, 35, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'DuoUniversal.ConfigView'          ,  4, 'DuoUniversal.LBL_OAUTH_API_KEY'         , 'DuoUniversal.ApiHostURL'            , 0, 1, 150, 35, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'DuoUniversal.ConfigView'          ,  5, 'DuoUniversal.LBL_REDIRECT_URL'          , 'DuoUniversal.RedirectUrl'           , 0, 1, 255, 60, null;
+end -- if;
+GO
+
 -- delete from EDITVIEWS_FIELDS where EDIT_NAME = 'LinkedIn.ConfigView';
 if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'LinkedIn.ConfigView' and DELETED = 0) begin -- then
 	print 'EDITVIEWS_FIELDS LinkedIn.ConfigView';

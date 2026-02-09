@@ -473,6 +473,8 @@ exec dbo.spTERMINOLOGY_InsertOnly N'LBL_QUICK_SEARCH_NEW_BUTTON'                
 exec dbo.spTERMINOLOGY_InsertOnly N'LBL_QUICK_SEARCH_PLACEHOLDER'                  , N'en-US', null, null, null, N'Search...';
 exec dbo.spTERMINOLOGY_InsertOnly N'LBL_BULK_ACTION'                               , N'en-US', null, null, null, N'Bulk Action';
 exec dbo.spTERMINOLOGY_InsertOnly N'LNK_SEARCH_FILTER'                             , N'en-US', null, null, null, N'Filter';
+-- 01/27/2024 Paul.  Pacific theme Quick New button. 
+exec dbo.spTERMINOLOGY_InsertOnly N'LBL_QUICK_SEARCH_NEW_BUTTON'                   , N'en-US', null, null, null, N'New';
 GO
 
 set nocount off;

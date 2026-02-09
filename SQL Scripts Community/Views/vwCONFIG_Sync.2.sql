@@ -45,6 +45,7 @@ GO
 -- 03/14/2021 Paul.  smtpserver and smtpport are needed by the React Client. 
 -- 03/17/2021 Paul.  PaymentGateway_ID is not confidencial as it is our own ID and it is needed by React Client. 
 -- 12/26/2022 Paul.  Instead of returning secret values, return empty password **********. 
+-- 08/07/2025 Paul.  DuoUniversal.ClientID is needed in the React Client to authorize. 
 Create View dbo.vwCONFIG_Sync
 as
 select ID
@@ -93,6 +94,7 @@ select ID
               when NAME in   ('Watson.ClientID', 'Watson.ClientSecret', 'Watson.OAuthAccessToken', 'Watson.OAuthRefreshToken', 'Watson.OAuthExpiresAt') then '**********'
               when NAME in   ('FreshBooks.ApiToken') then '**********'
               when NAME in   ('PhoneBurner.ClientSecret', 'PhoneBurner.OAuthAccessToken', 'PhoneBurner.OAuthClientSecret', 'PhoneBurner.OAuthExpiresAt', 'PhoneBurner.OAuthRefreshToken') then '**********'
+              when NAME in   ('DuoUniversal.ClientSecret') then '**********'
               when NAME in   ('enable_reminder_popdowns', 'enable_email_reminders', 'default_password') then '**********'
               when NAME like '%Password'      then '**********'
               when NAME like '%.UserName'     then '**********'

@@ -210,6 +210,20 @@ if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Google.Confi
 end -- if;
 GO
 
+-- 08/07/2025 Paul.  Add support for DuoUniversal. 
+-- delete from DETAILVIEWS_FIELDS where DETAIL_NAME = 'DuoUniversal.ConfigView';
+if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'DuoUniversal.ConfigView' and DELETED = 0) begin -- then
+	print 'DETAILVIEWS_FIELDS DuoUniversal.ConfigView';
+	exec dbo.spDETAILVIEWS_InsertOnly            'DuoUniversal.ConfigView', 'DuoUniversal', 'vwCONFIG_Edit', '15%', '35%', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsCheckBox    'DuoUniversal.ConfigView'    ,  0, 'DuoUniversal.LBL_DUO_UNIVERSAL_ENABLED', 'DuoUniversal.Enabled'               , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBlank       'DuoUniversal.ConfigView'    ,  1, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound       'DuoUniversal.ConfigView'    ,  2, 'DuoUniversal.LBL_CLIENT_ID'            , 'DuoUniversal.ClientID'              , '{0}', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound       'DuoUniversal.ConfigView'    ,  3, 'DuoUniversal.LBL_CLIENT_SECRET'        , 'DuoUniversal.ClientSecret'          , '{0}', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound       'DuoUniversal.ConfigView'    ,  4, 'DuoUniversal.LBL_API_HOST_URL'         , 'DuoUniversal.ApiHostURL'            , '{0}', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsCheckBox    'DuoUniversal.ConfigView'    ,  5, 'DuoUniversal.LBL_REDIRECT_URL'         , 'DuoUniversal.RedirectUrl'           , null;
+end -- if;
+GO
+ 
 -- delete from DETAILVIEWS_FIELDS where DETAIL_NAME = 'LinkedIn.ConfigView';
 if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'LinkedIn.ConfigView' and DELETED = 0) begin -- then
 	print 'DETAILVIEWS_FIELDS LinkedIn.ConfigView';

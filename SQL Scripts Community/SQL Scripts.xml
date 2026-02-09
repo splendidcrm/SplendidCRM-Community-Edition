@@ -54411,6 +54411,7 @@ GO
 -- 03/14/2021 Paul.  smtpserver and smtpport are needed by the React Client. 
 -- 03/17/2021 Paul.  PaymentGateway_ID is not confidencial as it is our own ID and it is needed by React Client. 
 -- 12/26/2022 Paul.  Instead of returning secret values, return empty password **********. 
+-- 08/07/2025 Paul.  DuoUniversal.ClientID is needed in the React Client to authorize. 
 Create View dbo.vwCONFIG_Sync
 as
 select ID
@@ -54459,6 +54460,7 @@ select ID
               when NAME in   ('Watson.ClientID', 'Watson.ClientSecret', 'Watson.OAuthAccessToken', 'Watson.OAuthRefreshToken', 'Watson.OAuthExpiresAt') then '**********'
               when NAME in   ('FreshBooks.ApiToken') then '**********'
               when NAME in   ('PhoneBurner.ClientSecret', 'PhoneBurner.OAuthAccessToken', 'PhoneBurner.OAuthClientSecret', 'PhoneBurner.OAuthExpiresAt', 'PhoneBurner.OAuthRefreshToken') then '**********'
+              when NAME in   ('DuoUniversal.ClientSecret') then '**********'
               when NAME in   ('enable_reminder_popdowns', 'enable_email_reminders', 'default_password') then '**********'
               when NAME like '%Password'      then '**********'
               when NAME like '%.UserName'     then '**********'
@@ -149824,6 +149826,20 @@ if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'Google.Confi
 end -- if;
 GO
 
+-- 08/07/2025 Paul.  Add support for DuoUniversal. 
+-- delete from DETAILVIEWS_FIELDS where DETAIL_NAME = 'DuoUniversal.ConfigView';
+if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'DuoUniversal.ConfigView' and DELETED = 0) begin -- then
+	print 'DETAILVIEWS_FIELDS DuoUniversal.ConfigView';
+	exec dbo.spDETAILVIEWS_InsertOnly            'DuoUniversal.ConfigView', 'DuoUniversal', 'vwCONFIG_Edit', '15%', '35%', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsCheckBox    'DuoUniversal.ConfigView'    ,  0, 'DuoUniversal.LBL_DUO_UNIVERSAL_ENABLED', 'DuoUniversal.Enabled'               , null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBlank       'DuoUniversal.ConfigView'    ,  1, null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound       'DuoUniversal.ConfigView'    ,  2, 'DuoUniversal.LBL_CLIENT_ID'            , 'DuoUniversal.ClientID'              , '{0}', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound       'DuoUniversal.ConfigView'    ,  3, 'DuoUniversal.LBL_CLIENT_SECRET'        , 'DuoUniversal.ClientSecret'          , '{0}', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsBound       'DuoUniversal.ConfigView'    ,  4, 'DuoUniversal.LBL_API_HOST_URL'         , 'DuoUniversal.ApiHostURL'            , '{0}', null;
+	exec dbo.spDETAILVIEWS_FIELDS_InsCheckBox    'DuoUniversal.ConfigView'    ,  5, 'DuoUniversal.LBL_REDIRECT_URL'         , 'DuoUniversal.RedirectUrl'           , null;
+end -- if;
+GO
+ 
 -- delete from DETAILVIEWS_FIELDS where DETAIL_NAME = 'LinkedIn.ConfigView';
 if not exists(select * from DETAILVIEWS_FIELDS where DETAIL_NAME = 'LinkedIn.ConfigView' and DELETED = 0) begin -- then
 	print 'DETAILVIEWS_FIELDS LinkedIn.ConfigView';
@@ -159253,6 +159269,20 @@ end else begin
 		exec dbo.spEDITVIEWS_FIELDS_InsBound       'Google.ConfigView'          ,  6, 'Google.LBL_PUSH_NOTIFICATION_URL'       , 'GoogleApps.PushNotificationURL'   , 0, 1, 255, 60, 3;
 		exec dbo.spEDITVIEWS_FIELDS_InsButton      'Google.ConfigView'          ,  7, null                                     , 'Exchange.LBL_TEST_URL'           , 'TestPushURL', -1;
 	end -- if; 
+end -- if;
+GO
+
+-- 08/07/2025 Paul.  Add support for DuoUniversal. 
+-- delete from EDITVIEWS_FIELDS where EDIT_NAME = 'DuoUniversal.ConfigView';
+if not exists(select * from EDITVIEWS_FIELDS where EDIT_NAME = 'DuoUniversal.ConfigView' and DELETED = 0) begin -- then
+	print 'EDITVIEWS_FIELDS DuoUniversal.ConfigView';
+	exec dbo.spEDITVIEWS_InsertOnly            'DuoUniversal.ConfigView', 'DuoUniversal', 'vwCONFIG_Edit', '15%', '35%', null;
+	exec dbo.spEDITVIEWS_FIELDS_InsCheckBox    'DuoUniversal.ConfigView'          ,  0, 'DuoUniversal.LBL_DUO_UNIVERSAL_ENABLED' , 'DuoUniversal.Enabled'               , 0, 1, null, null, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBlank       'DuoUniversal.ConfigView'          ,  1, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'DuoUniversal.ConfigView'          ,  2, 'DuoUniversal.LBL_CLIENT_ID'             , 'DuoUniversal.ClientID'              , 0, 1, 150, 35, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'DuoUniversal.ConfigView'          ,  3, 'DuoUniversal.LBL_CLIENT_SECRET'         , 'DuoUniversal.ClientSecret'          , 0, 1, 150, 35, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'DuoUniversal.ConfigView'          ,  4, 'DuoUniversal.LBL_OAUTH_API_KEY'         , 'DuoUniversal.ApiHostURL'            , 0, 1, 150, 35, null;
+	exec dbo.spEDITVIEWS_FIELDS_InsBound       'DuoUniversal.ConfigView'          ,  5, 'DuoUniversal.LBL_REDIRECT_URL'          , 'DuoUniversal.RedirectUrl'           , 0, 1, 255, 60, null;
 end -- if;
 GO
 
@@ -228417,6 +228447,8 @@ exec dbo.spTERMINOLOGY_InsertOnly N'LBL_QUICK_SEARCH_NEW_BUTTON'                
 exec dbo.spTERMINOLOGY_InsertOnly N'LBL_QUICK_SEARCH_PLACEHOLDER'                  , N'en-US', null, null, null, N'Search...';
 exec dbo.spTERMINOLOGY_InsertOnly N'LBL_BULK_ACTION'                               , N'en-US', null, null, null, N'Bulk Action';
 exec dbo.spTERMINOLOGY_InsertOnly N'LNK_SEARCH_FILTER'                             , N'en-US', null, null, null, N'Filter';
+-- 01/27/2024 Paul.  Pacific theme Quick New button. 
+exec dbo.spTERMINOLOGY_InsertOnly N'LBL_QUICK_SEARCH_NEW_BUTTON'                   , N'en-US', null, null, null, N'New';
 GO
 
 set nocount off;
@@ -238414,7 +238446,9 @@ exec dbo.spTERMINOLOGY_InsertOnly N'LBL_WINDOWS_AUTHENTICATION_REQUIRED'        
 exec dbo.spTERMINOLOGY_InsertOnly N'LBL_EMAIL_TEST'                                , N'en-US', N'Users', null, null, N'Test';
 -- 08/11/2020 Paul.  Employees module may be disabled, so create a Users version of LBL_RESET_PREFERENCES. 
 exec dbo.spTERMINOLOGY_InsertOnly N'LBL_RESET_PREFERENCES'                         , N'en-US', N'Users', null, null, N'Reset Preferences';
-
+-- 08/22/2025 Paul.   Confirm impersonation. 
+exec dbo.spTERMINOLOGY_InsertOnly N'NTC_CONFIRM_IMPERSONATION'                     , N'en-US', N'Users', null, null, N'Are you sure?';
+exec dbo.spTERMINOLOGY_InsertOnly N'ERR_IMPERSONATION_DISABLED'                    , N'en-US', N'Users', null, null, N'Impersonation has been disabled.';
 GO
 
 

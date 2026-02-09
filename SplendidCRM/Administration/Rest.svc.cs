@@ -2624,6 +2624,7 @@ namespace SplendidCRM.Administration
 							, new AdminModule(L10n, "ZipCodes"              , "Administration.LBL_ZIPCODES_TITLE"                , "Administration.LBL_ZIPCODES"                , 16, dictModuleTabOrder , "ZipCodes.LNK_NEW_ZIPCODE"                  , "Administration.gif")
 							, new AdminModule(L10n, "NAICSCodes"            , "Administration.LBL_MANAGE_NAICS_CODES_TITLE"      , "Administration.LBL_MANAGE_NAICS_CODES"      , 17, dictModuleTabOrder , "NAICSCodes.LNK_NEW_NAICS_CODE"             , "Administration.gif")
 							, new AdminModule(L10n, "ModulesArchiveRules"   , "Administration.LBL_MODULE_ARCHIVE_RULES_TITLE"    , "Administration.LBL_MODULE_ARCHIVE_RULES"    , 18, dictModuleTabOrder , "ModulesArchiveRules.LNK_NEW_ARCHIVE_RULE"  , "Backups.gif")
+							, new AdminModule(L10n, "ReplicationTables"     , "Administration.LBL_REPLICATION_TABLES_TITLE"      , "Administration.LBL_REPLICATION_TABLES"      , 19, dictModuleTabOrder , String.Empty                                , "Backups.gif")
 							};
 							BuildAdminModules(L10n, objs, "SystemView", "Administration.LBL_ADMINISTRATION_HOME_TITLE", arrSystemView);
 							break;

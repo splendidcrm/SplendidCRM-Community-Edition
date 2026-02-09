@@ -37,12 +37,12 @@ namespace SplendidCRM
 		public static bool     bInsideArchive = false;
 		public static DateTime dtLastBuild    = DateTime.MinValue;
 
-		private static string TabSpace(int nNumber)
+		public static string TabSpace(int nNumber)
 		{
 			return Strings.Space(nNumber).Replace(' ', '\t');
 		}
 
-		private static string CsDataType(string sDATA_TYPE)
+		public static string CsDataType(string sDATA_TYPE)
 		{
 			string sCOLUMN_TYPE = String.Empty;
 			switch ( sDATA_TYPE )
@@ -70,7 +70,7 @@ namespace SplendidCRM
 			return sCOLUMN_TYPE;
 		}
 
-		private static string SqlDataType(string sDATA_TYPE, string sCHARACTER_MAXIMUM_LENGTH, string sNUMERIC_PRECISION, string sNUMERIC_SCALE)
+		public static string SqlDataType(string sDATA_TYPE, string sCHARACTER_MAXIMUM_LENGTH, string sNUMERIC_PRECISION, string sNUMERIC_SCALE)
 		{
 			string sCOLUMN_TYPE = String.Empty;
 			switch ( sDATA_TYPE )
@@ -98,7 +98,7 @@ namespace SplendidCRM
 			return sCOLUMN_TYPE;
 		}
 
-		private static string BuildArchiveTable(HttpContext Context, string sTABLE_NAME)
+		public static string BuildArchiveTable(HttpContext Context, string sTABLE_NAME)
 		{
 			sTABLE_NAME = sTABLE_NAME.ToUpper();
 			int nCOLUMN_MAX_LENGTH = 0;

@@ -23,6 +23,6 @@
  *********************************************************************************************************************/
 </script>
 <div id="divFooterCopyright" align="center" class="copyRight">
-	Copyright &copy; 2005-2025 <asp:HyperLink ID="lnkSplendidCRM" NavigateUrl="http://www.splendidcrm.com" Text="SplendidCRM Software, Inc." Target="_blank" CssClass="copyRightLink" runat="server" /> All Rights Reserved.<br />
+	Copyright &copy; 2005-2026 <asp:HyperLink ID="lnkSplendidCRM" NavigateUrl="http://www.splendidcrm.com" Text="SplendidCRM Software, Inc." Target="_blank" CssClass="copyRightLink" runat="server" /> All Rights Reserved.<br />
 </div>
 

@@ -1750,6 +1750,7 @@ ul.msg_list li a .message {
 	white-space: normal
 }
 
+/* 01/04/2026 Paul.  Decrease margin top so that dropdown will not disappear to quickly. */
 .dropdown-menu {
 	border: medium none;
 	box-shadow: none;
@@ -1765,7 +1766,8 @@ ul.msg_list li a .message {
 	z-index: 9998;
 	border: 1px solid #D9DEE4;
 	border-top-left-radius: 0;
-	border-top-right-radius: 0
+	border-top-right-radius: 0;
+	margin-top: -5px;
 }
 
 .dropdown-menu > li > a {
