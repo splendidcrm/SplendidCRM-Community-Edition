@@ -181,11 +181,23 @@ namespace SplendidCRM.Contacts
 							if ( !Sql.IsEmptyGuid(gID) )
 							{
 								string sSQL ;
-								sSQL = "select *"               + ControlChars.CrLf
-								     + "  from " + m_sVIEW_NAME + ControlChars.CrLf;
+								// 10/10/2026 Paul.  Add SYNC_CONTACT and EXCHANGE_FOLDER fields.
+								sSQL = "select " + m_sVIEW_NAME + ".*"               + ControlChars.CrLf
+								     + "     , (case when vwCONTACTS_USERS.CONTACT_ID          is null then 0 else 1 end) as SYNC_CONTACT   " + ControlChars.CrLf
+								     + "     , (case when vwCONTACTS_USERS_EXCHANGE.CONTACT_ID is null then 0 else 1 end) as EXCHANGE_FOLDER" + ControlChars.CrLf
+								     + "  from " + m_sVIEW_NAME + ControlChars.CrLf
+								     + "  left outer join vwCONTACTS_USERS                                                                  " + ControlChars.CrLf
+								     + "               on vwCONTACTS_USERS.CONTACT_ID            = " + m_sVIEW_NAME + ".ID                  " + ControlChars.CrLf
+								     + "              and vwCONTACTS_USERS.USER_ID               = @SYNC_USER_ID                            " + ControlChars.CrLf
+								     + "              and vwCONTACTS_USERS.SERVICE_NAME is null                                             " + ControlChars.CrLf
+								     + "  left outer join vwCONTACTS_USERS                         vwCONTACTS_USERS_EXCHANGE                " + ControlChars.CrLf
+								     + "               on vwCONTACTS_USERS_EXCHANGE.CONTACT_ID   = " + m_sVIEW_NAME + ".ID                  " + ControlChars.CrLf
+								     + "              and vwCONTACTS_USERS_EXCHANGE.USER_ID      = @SYNC_USER_ID                            " + ControlChars.CrLf
+								     + "              and vwCONTACTS_USERS_EXCHANGE.SERVICE_NAME = N'Exchange'                              " + ControlChars.CrLf;
 								using ( IDbCommand cmd = con.CreateCommand() )
 								{
 									cmd.CommandText = sSQL;
+									Sql.AddParameter(cmd, "@SYNC_USER_ID", Security.USER_ID);
 									Security.Filter(cmd, m_sMODULE, "edit");
 									Sql.AppendParameter(cmd, gID, "ID", false);
 									using ( DbDataAdapter da = dbf.CreateDataAdapter() )
@@ -365,7 +377,8 @@ namespace SplendidCRM.Contacts
 								}
 							}
 							// 11/22/2023 Paul.  When unsyncing, we need to immediately clear the remote flag. 
-							if ( rowCurrent != null )
+							// 10/10/2026 Paul.  Confirm SYNC_CONTACT field exists. 
+							if ( rowCurrent != null && rowCurrent.Table.Columns.Contains("SYNC_CONTACT"))
 							{
 								bool bSYNC_CONTACT_old = Sql.ToBoolean(rowCurrent["SYNC_CONTACT"]);
 								bool bSYNC_CONTACT_new = new DynamicControl(this, rowCurrent, "SYNC_CONTACT").Checked;

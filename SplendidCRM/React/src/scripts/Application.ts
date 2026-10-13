@@ -353,6 +353,7 @@ export async function Application_GetReactState(source): Promise<any>
 	//console.log((new Date()).toISOString() + ' ' + 'Application_GetReactState TabMenu', json.d.TAB_MENU);
 	//console.log((new Date()).toISOString() + ' ' + 'Application_GetReactState TERMINOLOGY', json.d.TERMINOLOGY);
 	// 12/23/2019 Paul.  Return the team tree as an object tree instead of XML. 
+	//console.log((new Date()).toISOString() + ' ' + 'Application_GetReactState TEAM_TREE', json.d.TEAM_TREE);
 	Credentials.SetTeamTree                   (json.d.TEAM_TREE                );
 	// 05/28/2019 Paul.  Set the profile last so that any obserable on bIsAuthenticated will fire after state completely set. 
 	Credentials.SetUserProfile                (json.d.USER_PROFILE             );

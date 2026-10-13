@@ -640,7 +640,8 @@ namespace SplendidCRM
 				return dtChanges;
 			}
 
-			public static void GetAuditData(HttpApplicationState Application, L10N L10n, TimeZone T10n, string sModule, Guid gAUDIT_ID, ref Guid gID, ref bool bArchiveView, StringBuilder sbSQLCode)
+			// 03/24/2026 Paul.  Rename to avoid name collision when porting to Core. 
+			public static void GetAuditDataID(HttpApplicationState Application, L10N L10n, TimeZone T10n, string sModule, Guid gAUDIT_ID, ref Guid gID, ref bool bArchiveView, StringBuilder sbSQLCode)
 			{
 				string sTableName = Sql.ToString(Application["Modules." + sModule + ".TableName"]);
 				// 05/04/2008 Paul.  Protect against SQL Injection. A table name will never have a space character.

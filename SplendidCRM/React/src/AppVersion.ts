@@ -9,5 +9,5 @@
  */
 
 export const AppName = 'SplendidCRM';
-export const AppVersion = '15.3.9499';
-
+// 09/09/2026 Paul.  Version comes from SplendidCRM6_Core build. 
+export const AppVersion = '16.0.26286.0353';

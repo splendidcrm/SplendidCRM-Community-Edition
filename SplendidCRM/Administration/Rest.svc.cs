@@ -1198,6 +1198,23 @@ namespace SplendidCRM.Administration
 			}
 		}
 
+		// 09/09/2026 Paul.  Reload still useful. 
+		[OperationContract]
+		[WebInvoke(Method="POST", BodyStyle=WebMessageBodyStyle.WrappedRequest, RequestFormat=WebMessageFormat.Json, ResponseFormat=WebMessageFormat.Json)]
+		public void Reload()
+		{
+			HttpApplicationState Application = HttpContext.Current.Application;
+			HttpSessionState     Session     = HttpContext.Current.Session;
+			
+			L10N L10n = new L10N(Sql.ToString(HttpContext.Current.Session["USER_SETTINGS/CULTURE"]));
+			if ( !Security.IsAuthenticated() || !Security.IS_ADMIN )
+			{
+				throw(new Exception(L10n.Term("ACL.LBL_INSUFFICIENT_ACCESS")));
+			}
+			SplendidInit.InitApp(HttpContext.Current);
+			SplendidInit.LoadUserPreferences(Security.USER_ID, Sql.ToString(Session["USER_SETTINGS/THEME"]), Sql.ToString(Session["USER_SETTINGS/CULTURE"]));
+		}
+
 		[OperationContract]
 		[WebInvoke(Method="POST", BodyStyle=WebMessageBodyStyle.WrappedRequest, RequestFormat=WebMessageFormat.Json, ResponseFormat=WebMessageFormat.Json)]
 		public void RebuildAudit()

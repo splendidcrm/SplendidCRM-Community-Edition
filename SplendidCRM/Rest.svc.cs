@@ -3496,7 +3496,7 @@ namespace SplendidCRM
 			Guid          gTIMEZONE    = Sql.ToGuid(HttpContext.Current.Session["USER_SETTINGS/TIMEZONE"]);
 			TimeZone      T10n         = TimeZone.CreateTimeZone(gTIMEZONE);
 			// 10/31/2021 Paul.  Moved GetAuditData to ModuleUtils. 
-			ModuleUtils.Audit.GetAuditData(Application, L10n, T10n, ModuleName, AUDIT_ID, ref gID, ref bArchiveView, sbDumpSQL);
+			ModuleUtils.Audit.GetAuditDataID(Application, L10n, T10n, ModuleName, AUDIT_ID, ref gID, ref bArchiveView, sbDumpSQL);
 			
 			string sBaseURI = Request.Url.Scheme + "://" + Request.Url.Host + Request.Url.AbsolutePath;
 			JavaScriptSerializer json = new JavaScriptSerializer();

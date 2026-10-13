@@ -20,7 +20,7 @@ import Sql                                          from '../scripts/Sql'       
 import L10n                                         from '../scripts/L10n'               ;
 import Credentials                                  from '../scripts/Credentials'        ;
 import SplendidCache                                from '../scripts/SplendidCache'      ;
-import { Admin_GetReactState }                      from '../scripts/Application'        ;
+import { Admin_GetReactState, Application_ClearStore } from '../scripts/Application'        ;
 import { Crm_Config }                               from '../scripts/Crm'                ;
 import { UpdateModule, AdminProcedure }             from '../scripts/ModuleUpdate'       ;
 import { CreateSplendidRequest, GetSplendidResult } from '../scripts/SplendidRequest'    ;
@@ -168,6 +168,24 @@ class AdministrationView extends React.Component<IAdministrationViewProps, IAdmi
 	private onPrecompile = () =>
 	{
 		this.props.history.push('/Administration/_devtools/Precompile');
+	}
+
+	// 09/09/2026 Paul.  Reload still useful. 
+	private onReload = async () =>
+	{
+		try
+		{
+			let res = await CreateSplendidRequest('Administration/Rest.svc/Reload', 'POST', 'application/json; charset=utf-8', null);
+			let json = await GetSplendidResult(res);
+			// 09/09/10/2026 Paul.  Must clear in order to force a reload of the state. 
+			await Application_ClearStore();
+			await Admin_GetReactState(this.constructor.name + '.onReload');
+		}
+		catch(error)
+		{
+			console.error((new Date()).toISOString() + ' ' + this.constructor.name + '.onReload', error);
+			this.setState({ error });
+		}
 	}
 
 	// 06/11/2023 Paul.  Add Purge Demo Data. 
@@ -366,6 +384,8 @@ class AdministrationView extends React.Component<IAdministrationViewProps, IAdmi
 		{
 			return (<div style={ {textAlign: 'center'} }>
 				(&nbsp;
+				<a href='#' onClick={ (e) => { e.preventDefault(); return this.onReload(); } }  className='tabDetailViewDL2Link'>Reload</a>
+				&nbsp;
 				<a href='#' onClick={ (e) => { e.preventDefault(); return this.onPrecompile(); } }  className='tabDetailViewDL2Link'>Precompile</a>
 				&nbsp;)
 			</div>

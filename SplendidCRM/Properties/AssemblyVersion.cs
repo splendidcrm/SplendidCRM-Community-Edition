@@ -73,5 +73,7 @@ using System.Reflection;
 // 08/07/2025 Paul.  Version 15.1 Add support for DuoUniversal 2-factor authentication. 
 // 08/22/2025 Paul.  Version 15.2 Add impersonation to React Client. 
 // 01/02/2026 Paul.  Version 15.3 Add Replication Tables. 
-[assembly: AssemblyVersion("15.3.*")]
+// 03/20/2026 Paul.  Version 15.4 Update React packages. 
+// 03/28/2026 Paul.  Version 16.0 Convert core to use Async.
+[assembly: AssemblyVersion("16.0.*")]
 
